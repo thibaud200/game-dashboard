@@ -550,8 +550,24 @@ export default function GamesPage({
                   />
                 </div>
 
+                <div>
+                  <Label htmlFor="has_expansion">has an expansion</Label>
+                  <checbox value="true"></checkbox>
+                  <Label htmlFor="expansion">Expansion</Label>
+                  <Textarea
+                    id="expansion"
+                    value={formData.expansion}
+                    onChange={(e) => setFormData(prev => ({ ...prev, expansion: e.target.value }))}
+                    className="bg-slate-700 border-slate-600 text-white"
+                    placeholder="Brief game expansion"
+                    rows={3}
+                  />
+                </div>
+
                 {/* Characters Section */}
                 <div className="space-y-2">
+                  <Label htmlFor="has_character">has an Roles</Label>
+                  <checbox value="true"></checkbox>
                   <div className="flex items-center justify-between">
                     <Label>Characters/Roles</Label>
                     <Button 

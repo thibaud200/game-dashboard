@@ -65,6 +65,7 @@ const mockData = {
   recentGames: [
     {
       game_id: 1,
+      bgg_id: 12345,
       name: 'Strategy Pro',
       image: 'https://images.unsplash.com/photo-1606092195730-5d7b9af1efc5?w=150&h=150&fit=crop',
       min_players: 2,
@@ -80,7 +81,11 @@ const mockData = {
       weight: 3.5,
       age_min: 14,
       players: '2-4',
-      game_type: 'competitive',
+      supports_cooperative: false,
+      supports_competitive: true,
+      supports_campaign: true,
+      has_expansion: false,
+      has_characters: true,
       expansions: [],
       characters: [
         {
@@ -90,7 +95,7 @@ const mockData = {
           abilities: ['Battle Tactics', 'Resource Management', 'Unit Command']
         }
       ],
-      bgg_id: 12345
+
     },
     {
       game_id: 2,
@@ -109,7 +114,11 @@ const mockData = {
       weight: 2.8,
       age_min: 12,
       players: '3-6',
-      game_type: 'competitive',
+      supports_cooperative: false,
+      supports_competitive: true,
+      supports_campaign: true,
+      has_expansion: true,
+      has_characters: true,
       expansions: [
         {
           id: 67890,
@@ -150,7 +159,11 @@ const mockData = {
       weight: 1.5,
       age_min: 10,
       players: '2-8',
-      game_type: 'cooperative',
+      supports_cooperative: false,
+      supports_competitive: true,
+      supports_campaign: false,
+      has_expansion: false,
+      has_characters: false,
       expansions: [],
       characters: [],
       bgg_id: 34567
@@ -172,7 +185,11 @@ const mockData = {
       weight: 4.2,
       age_min: 16,
       players: '2-5',
-      game_type: 'campaign',
+      supports_cooperative: false,
+      supports_competitive: true,
+      supports_campaign: true,
+      has_expansion: true,
+      has_characters: true,
       expansions: [
         {
           id: 45678,
