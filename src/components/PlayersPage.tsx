@@ -9,7 +9,9 @@ import {
   Gamepad2,
   Medal,
   Trash2,
-  Settings
+  Settings,
+  Edit,
+  Mail
 } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
@@ -18,6 +20,7 @@ import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
 import { Badge } from '@/components/ui/badge'
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog'
 import { Label } from '@/components/ui/label'
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
 
 interface Player {
   player_id: number
@@ -26,14 +29,18 @@ interface Player {
   stats: string
   games_played: number
   wins: number
+  total_score: number
+  average_score: number
   created_at: Date
   favorite_game: string
+  email: string
 }
 
 interface PlayersPageProps {
   players: Player[]
   onNavigation: (view: string) => void
-  onAddPlayer: (player: Omit<Player, 'player_id' | 'stats' | 'games_played' | 'wins' | 'created_at'>) => void
+  onAddPlayer: (player: Omit<Player, 'player_id' | 'stats' | 'games_played' | 'wins' | 'total_score' | 'average_score' | 'created_at'>) => void
+  onUpdatePlayer: (playerId: number, player: Partial<Player>) => void
   onDeletePlayer: (playerId: number) => void
   currentView?: string
 }
@@ -42,28 +49,78 @@ export default function PlayersPage({
   players, 
   onNavigation, 
   onAddPlayer, 
+  onUpdatePlayer,
   onDeletePlayer,
   currentView = 'players'
 }: PlayersPageProps) {
   const [searchQuery, setSearchQuery] = useState('')
-  const [newPlayer, setNewPlayer] = useState({
+  const [editingPlayer, setEditingPlayer] = useState<Player | null>(null)
+  const [isAddDialogOpen, setIsAddDialogOpen] = useState(false)
+  const [isEditDialogOpen, setIsEditDialogOpen] = useState(false)
+  const [formData, setFormData] = useState({
     player_name: '',
     avatar: '',
-    favorite_game: ''
+    favorite_game: '',
+    email: '',
+    total_score: 0,
+    games_played: 0,
+    wins: 0
   })
 
   const filteredPlayers = players.filter(player =>
-    player.player_name.toLowerCase().includes(searchQuery.toLowerCase())
+    player.player_name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+    player.email.toLowerCase().includes(searchQuery.toLowerCase())
   )
 
+  const resetForm = () => {
+    setFormData({
+      player_name: '',
+      avatar: '',
+      favorite_game: '',
+      email: '',
+      total_score: 0,
+      games_played: 0,
+      wins: 0
+    })
+  }
+
   const handleAddPlayer = () => {
-    if (newPlayer.player_name.trim()) {
+    if (formData.player_name.trim()) {
       onAddPlayer({
-        player_name: newPlayer.player_name,
-        avatar: newPlayer.avatar || `https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=100&h=100&fit=crop&crop=face`,
-        favorite_game: newPlayer.favorite_game || 'None'
+        player_name: formData.player_name,
+        avatar: formData.avatar || `https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=100&h=100&fit=crop&crop=face`,
+        favorite_game: formData.favorite_game || 'None',
+        email: formData.email
       })
-      setNewPlayer({ player_name: '', avatar: '', favorite_game: '' })
+      resetForm()
+      setIsAddDialogOpen(false)
+    }
+  }
+
+  const handleEditPlayer = (player: Player) => {
+    setEditingPlayer(player)
+    setFormData({
+      player_name: player.player_name,
+      avatar: player.avatar,
+      favorite_game: player.favorite_game,
+      email: player.email,
+      total_score: player.total_score,
+      games_played: player.games_played,
+      wins: player.wins
+    })
+    setIsEditDialogOpen(true)
+  }
+
+  const handleUpdatePlayer = () => {
+    if (editingPlayer && formData.player_name.trim()) {
+      const averageScore = formData.games_played > 0 ? formData.total_score / formData.games_played : 0
+      onUpdatePlayer(editingPlayer.player_id, {
+        ...formData,
+        average_score: averageScore
+      })
+      resetForm()
+      setEditingPlayer(null)
+      setIsEditDialogOpen(false)
     }
   }
 
@@ -79,43 +136,54 @@ export default function PlayersPage({
             <ArrowLeft className="w-6 h-6" />
           </button>
           <h1 className="text-2xl font-bold">Players</h1>
-          <Dialog>
+          <Dialog open={isAddDialogOpen} onOpenChange={setIsAddDialogOpen}>
             <DialogTrigger asChild>
               <button className="p-2 hover:bg-white/10 rounded-lg transition-colors">
                 <Plus className="w-6 h-6" />
               </button>
             </DialogTrigger>
-            <DialogContent className="bg-slate-800 border-slate-700 text-white">
+            <DialogContent className="bg-slate-800 border-slate-700 text-white max-w-md">
               <DialogHeader>
                 <DialogTitle>Add New Player</DialogTitle>
               </DialogHeader>
               <div className="space-y-4">
                 <div>
-                  <Label htmlFor="player-name">Player Name</Label>
+                  <Label htmlFor="player-name">Player Name *</Label>
                   <Input
                     id="player-name"
-                    value={newPlayer.player_name}
-                    onChange={(e) => setNewPlayer(prev => ({ ...prev, player_name: e.target.value }))}
+                    value={formData.player_name}
+                    onChange={(e) => setFormData(prev => ({ ...prev, player_name: e.target.value }))}
                     className="bg-slate-700 border-slate-600 text-white"
                     placeholder="Enter player name"
                   />
                 </div>
                 <div>
-                  <Label htmlFor="avatar-url">Avatar URL (optional)</Label>
+                  <Label htmlFor="email">Email</Label>
+                  <Input
+                    id="email"
+                    type="email"
+                    value={formData.email}
+                    onChange={(e) => setFormData(prev => ({ ...prev, email: e.target.value }))}
+                    className="bg-slate-700 border-slate-600 text-white"
+                    placeholder="player@example.com"
+                  />
+                </div>
+                <div>
+                  <Label htmlFor="avatar-url">Avatar URL</Label>
                   <Input
                     id="avatar-url"
-                    value={newPlayer.avatar}
-                    onChange={(e) => setNewPlayer(prev => ({ ...prev, avatar: e.target.value }))}
+                    value={formData.avatar}
+                    onChange={(e) => setFormData(prev => ({ ...prev, avatar: e.target.value }))}
                     className="bg-slate-700 border-slate-600 text-white"
                     placeholder="https://..."
                   />
                 </div>
                 <div>
-                  <Label htmlFor="favorite-game">Favorite Game (optional)</Label>
+                  <Label htmlFor="favorite-game">Favorite Game</Label>
                   <Input
                     id="favorite-game"
-                    value={newPlayer.favorite_game}
-                    onChange={(e) => setNewPlayer(prev => ({ ...prev, favorite_game: e.target.value }))}
+                    value={formData.favorite_game}
+                    onChange={(e) => setFormData(prev => ({ ...prev, favorite_game: e.target.value }))}
                     className="bg-slate-700 border-slate-600 text-white"
                     placeholder="Favorite game"
                   />
@@ -192,17 +260,34 @@ export default function PlayersPage({
                     <Badge variant="secondary" className="bg-white/10 text-white text-xs">
                       {player.favorite_game}
                     </Badge>
+                    {player.email && (
+                      <span className="flex items-center space-x-1 text-xs text-white/60">
+                        <Mail className="w-3 h-3" />
+                        <span>{player.email}</span>
+                      </span>
+                    )}
+                  </div>
+                  <div className="mt-1">
                     <span className="text-xs text-white/40">
                       Joined {new Date(player.created_at).toLocaleDateString()}
+                      {player.average_score > 0 && ` • Avg: ${player.average_score.toFixed(1)} pts`}
                     </span>
                   </div>
                 </div>
-                <button
-                  onClick={() => onDeletePlayer(player.player_id)}
-                  className="p-2 hover:bg-red-500/20 rounded-lg transition-colors text-red-400"
-                >
-                  <Trash2 className="w-4 h-4" />
-                </button>
+                <div className="flex space-x-2">
+                  <button
+                    onClick={() => handleEditPlayer(player)}
+                    className="p-2 hover:bg-blue-500/20 rounded-lg transition-colors text-blue-400"
+                  >
+                    <Edit className="w-4 h-4" />
+                  </button>
+                  <button
+                    onClick={() => onDeletePlayer(player.player_id)}
+                    className="p-2 hover:bg-red-500/20 rounded-lg transition-colors text-red-400"
+                  >
+                    <Trash2 className="w-4 h-4" />
+                  </button>
+                </div>
               </div>
             </CardContent>
           </Card>
@@ -215,6 +300,93 @@ export default function PlayersPage({
           </div>
         )}
       </div>
+
+      {/* Edit Player Dialog */}
+      <Dialog open={isEditDialogOpen} onOpenChange={setIsEditDialogOpen}>
+        <DialogContent className="bg-slate-800 border-slate-700 text-white max-w-md max-h-[90vh] overflow-y-auto">
+          <DialogHeader>
+            <DialogTitle>Edit Player</DialogTitle>
+          </DialogHeader>
+          <div className="space-y-4">
+            <div>
+              <Label htmlFor="edit-player-name">Player Name *</Label>
+              <Input
+                id="edit-player-name"
+                value={formData.player_name}
+                onChange={(e) => setFormData(prev => ({ ...prev, player_name: e.target.value }))}
+                className="bg-slate-700 border-slate-600 text-white"
+                placeholder="Enter player name"
+              />
+            </div>
+            <div>
+              <Label htmlFor="edit-email">Email</Label>
+              <Input
+                id="edit-email"
+                type="email"
+                value={formData.email}
+                onChange={(e) => setFormData(prev => ({ ...prev, email: e.target.value }))}
+                className="bg-slate-700 border-slate-600 text-white"
+                placeholder="player@example.com"
+              />
+            </div>
+            <div>
+              <Label htmlFor="edit-avatar-url">Avatar URL</Label>
+              <Input
+                id="edit-avatar-url"
+                value={formData.avatar}
+                onChange={(e) => setFormData(prev => ({ ...prev, avatar: e.target.value }))}
+                className="bg-slate-700 border-slate-600 text-white"
+                placeholder="https://..."
+              />
+            </div>
+            <div>
+              <Label htmlFor="edit-favorite-game">Favorite Game</Label>
+              <Input
+                id="edit-favorite-game"
+                value={formData.favorite_game}
+                onChange={(e) => setFormData(prev => ({ ...prev, favorite_game: e.target.value }))}
+                className="bg-slate-700 border-slate-600 text-white"
+                placeholder="Favorite game"
+              />
+            </div>
+            <div className="grid grid-cols-2 gap-4">
+              <div>
+                <Label htmlFor="edit-total-score">Total Score</Label>
+                <Input
+                  id="edit-total-score"
+                  type="number"
+                  value={formData.total_score}
+                  onChange={(e) => setFormData(prev => ({ ...prev, total_score: parseInt(e.target.value) || 0 }))}
+                  className="bg-slate-700 border-slate-600 text-white"
+                />
+              </div>
+              <div>
+                <Label htmlFor="edit-games-played">Games Played</Label>
+                <Input
+                  id="edit-games-played"
+                  type="number"
+                  value={formData.games_played}
+                  onChange={(e) => setFormData(prev => ({ ...prev, games_played: parseInt(e.target.value) || 0 }))}
+                  className="bg-slate-700 border-slate-600 text-white"
+                />
+              </div>
+            </div>
+            <div>
+              <Label htmlFor="edit-wins">Wins</Label>
+              <Input
+                id="edit-wins"
+                type="number"
+                value={formData.wins}
+                onChange={(e) => setFormData(prev => ({ ...prev, wins: parseInt(e.target.value) || 0 }))}
+                className="bg-slate-700 border-slate-600 text-white"
+              />
+            </div>
+            <Button onClick={handleUpdatePlayer} className="w-full bg-blue-600 hover:bg-blue-700">
+              Update Player
+            </Button>
+          </div>
+        </DialogContent>
+      </Dialog>
 
       {/* Bottom Navigation */}
       <div className="fixed bottom-0 left-0 right-0 bg-slate-800/90 backdrop-blur-md border-t border-white/10">
