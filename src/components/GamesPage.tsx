@@ -111,6 +111,8 @@ export default function GamesPage({
     game_type: 'competitive' as 'competitive' | 'cooperative' | 'campaign' | 'hybrid',
     expansions: [] as Expansion[],
     characters: [] as Character[],
+    has_expansion: false,
+    has_characters: false,
     bgg_id: undefined as number | undefined
   })
 
