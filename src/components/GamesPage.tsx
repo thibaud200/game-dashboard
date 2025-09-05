@@ -142,6 +142,8 @@ export default function GamesPage({
       game_type: 'competitive',
       expansions: [],
       characters: [],
+      has_expansion: false,
+      has_characters: false,
       bgg_id: undefined
     })
   }
@@ -165,6 +167,8 @@ export default function GamesPage({
       game_type: bggGame.game_type,
       expansions: bggGame.expansions,
       characters: bggGame.characters,
+      has_expansion: bggGame.expansions.length > 0,
+      has_characters: bggGame.characters.length > 0,
       bgg_id: bggGame.id
     })
     setIsBGGSearchOpen(false)
@@ -186,7 +190,13 @@ export default function GamesPage({
         designer: formData.designer || 'Unknown',
         bgg_rating: formData.bgg_rating,
         weight: formData.weight,
-        age_min: formData.age_min
+        age_min: formData.age_min,
+        game_type: formData.game_type,
+        expansions: formData.expansions,
+        characters: formData.characters,
+        has_expansion: formData.has_expansion,
+        has_characters: formData.has_characters,
+        bgg_id: formData.bgg_id
       })
       resetForm()
       setIsAddDialogOpen(false)
@@ -213,6 +223,8 @@ export default function GamesPage({
       game_type: game.game_type,
       expansions: game.expansions || [],
       characters: game.characters || [],
+      has_expansion: game.has_expansion || false,
+      has_characters: game.has_characters || false,
       bgg_id: game.bgg_id
     })
     setIsEditDialogOpen(true)
@@ -554,14 +566,16 @@ export default function GamesPage({
                 </div>
 
                 <div>
-                  <Label htmlFor="has_expansion">has an expansion</Label>
-                  <Checkbox 
-                    id="has_expansion"
-                    checked={formData.has_expansion}
-                    onCheckedChange={(checked) => setFormData(prev => ({ ...prev, has_expansion: checked }))}
-                  />
-                  {/* Expansions Display */}
-                  {formData.expansions.length > 0 && (
+                  <div className="flex items-center space-x-2 mb-2">
+                    <Checkbox 
+                      id="has_expansion"
+                      checked={formData.has_expansion}
+                      onCheckedChange={(checked) => setFormData(prev => ({ ...prev, has_expansion: checked }))}
+                    />
+                    <Label htmlFor="has_expansion">Has expansions</Label>
+                  </div>
+                  {/* Expansions Display - only show if checkbox is checked AND there are expansions */}
+                  {formData.has_expansion && formData.expansions.length > 0 && (
                     <div className="space-y-2">
                       <Label>Expansions from BGG</Label>
                       <div className="space-y-1">
@@ -580,26 +594,30 @@ export default function GamesPage({
 
                 {/* Characters Section */}
                 <div className="space-y-2">
-                  <Label htmlFor="has_character">has an Roles</Label>
-                  <Checkbox 
-                    id="has_character"
-                    checked={formData.has_characters}
-                    onCheckedChange={(checked) => setFormData(prev => ({ ...prev, has_characters: checked }))}
-                  />
-                  <div className="flex items-center justify-between">
-                    <Label>Characters/Roles</Label>
-                    <Button 
-                      type="button"
-                      onClick={addCharacter}
-                      size="sm"
-                      variant="outline"
-                      className="border-slate-600 text-white hover:bg-slate-600"
-                    >
-                      <Plus className="w-3 h-3 mr-1" />
-                      Add Character
-                    </Button>
+                  <div className="flex items-center space-x-2 mb-2">
+                    <Checkbox 
+                      id="has_character"
+                      checked={formData.has_characters}
+                      onCheckedChange={(checked) => setFormData(prev => ({ ...prev, has_characters: checked }))}
+                    />
+                    <Label htmlFor="has_character">Has character roles</Label>
                   </div>
-                  {formData.characters.map((character, charIndex) => (
+                  {formData.has_characters && (
+                    <>
+                      <div className="flex items-center justify-between">
+                        <Label>Characters/Roles</Label>
+                        <Button 
+                          type="button"
+                          onClick={addCharacter}
+                          size="sm"
+                          variant="outline"
+                          className="border-slate-600 text-white hover:bg-slate-600"
+                        >
+                          <Plus className="w-3 h-3 mr-1" />
+                          Add Character
+                        </Button>
+                      </div>
+                      {formData.characters.map((character, charIndex) => (
                     <div key={charIndex} className="p-3 bg-slate-700 rounded-lg border border-slate-600 space-y-2">
                       <div className="flex space-x-2">
                         <Input
@@ -661,24 +679,9 @@ export default function GamesPage({
                       </div>
                     </div>
                   ))}
+                    </>
+                  )}
                 </div>
-
-                {/* Expansions Display */}
-                {formData.expansions.length > 0 && (
-                  <div className="space-y-2">
-                    <Label>Expansions from BGG</Label>
-                    <div className="space-y-1">
-                      {formData.expansions.map((expansion, index) => (
-                        <div key={index} className="p-2 bg-slate-700 rounded border border-slate-600 text-sm">
-                          <div className="font-medium">{expansion.name}</div>
-                          {expansion.year_published > 0 && (
-                            <div className="text-white/60 text-xs">{expansion.year_published}</div>
-                          )}
-                        </div>
-                      ))}
-                    </div>
-                  </div>
-                )}
 
                 <Button onClick={handleAddGame} className="w-full bg-emerald-600 hover:bg-emerald-700">
                   Add Game
@@ -1104,22 +1107,59 @@ export default function GamesPage({
               />
             </div>
 
+            <div>
+              <div className="flex items-center space-x-2 mb-2">
+                <Checkbox 
+                  id="edit-has_expansion"
+                  checked={formData.has_expansion}
+                  onCheckedChange={(checked) => setFormData(prev => ({ ...prev, has_expansion: checked }))}
+                />
+                <Label htmlFor="edit-has_expansion">Has expansions</Label>
+              </div>
+              {/* Expansions Display - only show if checkbox is checked AND there are expansions */}
+              {formData.has_expansion && formData.expansions.length > 0 && (
+                <div className="space-y-2">
+                  <Label>Expansions from BGG</Label>
+                  <div className="space-y-1">
+                    {formData.expansions.map((expansion, index) => (
+                      <div key={index} className="p-2 bg-slate-700 rounded border border-slate-600 text-sm">
+                        <div className="font-medium">{expansion.name}</div>
+                        {expansion.year_published > 0 && (
+                          <div className="text-white/60 text-xs">{expansion.year_published}</div>
+                        )}
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              )}
+            </div>
+
             {/* Characters Section */}
             <div className="space-y-2">
-              <div className="flex items-center justify-between">
-                <Label>Characters/Roles</Label>
-                <Button 
-                  type="button"
-                  onClick={addCharacter}
-                  size="sm"
-                  variant="outline"
-                  className="border-slate-600 text-white hover:bg-slate-600"
-                >
-                  <Plus className="w-3 h-3 mr-1" />
-                  Add Character
-                </Button>
+              <div className="flex items-center space-x-2 mb-2">
+                <Checkbox 
+                  id="edit-has_character"
+                  checked={formData.has_characters}
+                  onCheckedChange={(checked) => setFormData(prev => ({ ...prev, has_characters: checked }))}
+                />
+                <Label htmlFor="edit-has_character">Has character roles</Label>
               </div>
-              {formData.characters.map((character, charIndex) => (
+              {formData.has_characters && (
+                <>
+                  <div className="flex items-center justify-between">
+                    <Label>Characters/Roles</Label>
+                    <Button 
+                      type="button"
+                      onClick={addCharacter}
+                      size="sm"
+                      variant="outline"
+                      className="border-slate-600 text-white hover:bg-slate-600"
+                    >
+                      <Plus className="w-3 h-3 mr-1" />
+                      Add Character
+                    </Button>
+                  </div>
+                  {formData.characters.map((character, charIndex) => (
                 <div key={charIndex} className="p-3 bg-slate-700 rounded-lg border border-slate-600 space-y-2">
                   <div className="flex space-x-2">
                     <Input
@@ -1181,6 +1221,8 @@ export default function GamesPage({
                   </div>
                 </div>
               ))}
+                </>
+              )}
             </div>
             <Button onClick={handleUpdateGame} className="w-full bg-blue-600 hover:bg-blue-700">
               Update Game
