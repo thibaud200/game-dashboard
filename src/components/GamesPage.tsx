@@ -67,6 +67,11 @@ interface Game {
   game_type: 'competitive' | 'cooperative' | 'campaign' | 'hybrid'
   expansions: Expansion[]
   characters: Character[]
+  has_expansion: boolean
+  has_characters: boolean
+  supports_cooperative: boolean
+  supports_competitive: boolean
+  supports_campaign: boolean
   bgg_id?: number
 }
 
@@ -113,6 +118,9 @@ export default function GamesPage({
     characters: [] as Character[],
     has_expansion: false,
     has_characters: false,
+    supports_cooperative: false,
+    supports_competitive: true,
+    supports_campaign: false,
     manualExpansions: '',
     bgg_id: undefined as number | undefined
   })
@@ -145,6 +153,9 @@ export default function GamesPage({
       characters: [],
       has_expansion: false,
       has_characters: false,
+      supports_cooperative: false,
+      supports_competitive: true,
+      supports_campaign: false,
       manualExpansions: '',
       bgg_id: undefined
     })
@@ -171,6 +182,9 @@ export default function GamesPage({
       characters: bggGame.characters,
       has_expansion: bggGame.expansions.length > 0,
       has_characters: bggGame.characters.length > 0,
+      supports_cooperative: false,
+      supports_competitive: true,
+      supports_campaign: false,
       manualExpansions: '',
       bgg_id: bggGame.id
     })
@@ -199,6 +213,9 @@ export default function GamesPage({
         characters: formData.characters,
         has_expansion: formData.has_expansion,
         has_characters: formData.has_characters,
+        supports_cooperative: formData.supports_cooperative,
+        supports_competitive: formData.supports_competitive,
+        supports_campaign: formData.supports_campaign,
         bgg_id: formData.bgg_id
       })
       resetForm()
@@ -228,6 +245,10 @@ export default function GamesPage({
       characters: game.characters || [],
       has_expansion: game.has_expansion || false,
       has_characters: game.has_characters || false,
+      supports_cooperative: game.supports_cooperative || false,
+      supports_competitive: game.supports_competitive || true,
+      supports_campaign: game.supports_campaign || false,
+      manualExpansions: '',
       bgg_id: game.bgg_id
     })
     setIsEditDialogOpen(true)
@@ -573,7 +594,7 @@ export default function GamesPage({
                     <Checkbox 
                       id="has_expansion"
                       checked={formData.has_expansion}
-                      onCheckedChange={(checked) => setFormData(prev => ({ ...prev, has_expansion: checked }))}
+                      onCheckedChange={(checked) => setFormData(prev => ({ ...prev, has_expansion: !!checked }))}
                     />
                     <Label htmlFor="has_expansion">Has expansions</Label>
                   </div>
@@ -582,7 +603,7 @@ export default function GamesPage({
                     <div className="space-y-2">
                       {formData.expansions.length > 0 && (
                         <>
-                          <Label>Expansions</Label>
+                          <Label>Expansions from BGG</Label>
                           <div className="space-y-1">
                             {formData.expansions.map((expansion, index) => (
                               <div key={index} className="p-2 bg-slate-700 rounded border border-slate-600 text-sm">
@@ -614,11 +635,12 @@ export default function GamesPage({
                 </div>
 
                 {/* Characters Section */}
+                <div className="space-y-2">
                   <div className="flex items-center space-x-2 mb-2">
                     <Checkbox 
                       id="has_character"
                       checked={formData.has_characters}
-                      onCheckedChange={(checked) => setFormData(prev => ({ ...prev, has_characters: checked }))}
+                      onCheckedChange={(checked) => setFormData(prev => ({ ...prev, has_characters: !!checked }))}
                     />
                     <Label htmlFor="has_character">Has character roles</Label>
                   </div>
@@ -629,7 +651,7 @@ export default function GamesPage({
                         <Button 
                           type="button"
                           onClick={addCharacter}
-                          size="sm"
+                          
                           variant="outline"
                           className="border-slate-600 text-white hover:bg-slate-600"
                         >
@@ -649,7 +671,7 @@ export default function GamesPage({
                         <Button
                           type="button"
                           onClick={() => removeCharacter(charIndex)}
-                          size="sm"
+                          
                           variant="outline"
                           className="border-red-500 text-red-400 hover:bg-red-500/20"
                         >
@@ -668,7 +690,7 @@ export default function GamesPage({
                           <Button
                             type="button"
                             onClick={() => addAbility(charIndex)}
-                            size="sm"
+                            
                             variant="outline"
                             className="border-slate-500 text-white hover:bg-slate-500 h-6 text-xs"
                           >
@@ -683,12 +705,12 @@ export default function GamesPage({
                               onChange={(e) => updateAbility(charIndex, abilityIndex, e.target.value)}
                               placeholder="Ability name"
                               className="bg-slate-600 border-slate-500 text-white text-xs"
-                              size="sm"
+                              
                             />
                             <Button
                               type="button"
                               onClick={() => removeAbility(charIndex, abilityIndex)}
-                              size="sm"
+                              
                               variant="outline"
                               className="border-red-500 text-red-400 hover:bg-red-500/20 h-8 w-8 p-0"
                             >
@@ -1132,7 +1154,7 @@ export default function GamesPage({
                 <Checkbox 
                   id="edit-has_expansion"
                   checked={formData.has_expansion}
-                  onCheckedChange={(checked) => setFormData(prev => ({ ...prev, has_expansion: checked }))}
+                  onCheckedChange={(checked) => setFormData(prev => ({ ...prev, has_expansion: !!checked }))}
                 />
                 <Label htmlFor="edit-has_expansion">Has expansions</Label>
               </div>
@@ -1164,18 +1186,18 @@ export default function GamesPage({
                 <Checkbox 
                   id="edit-has_character"
                   checked={formData.has_characters}
-                  onCheckedChange={(checked) => setFormData(prev => ({ ...prev, has_characters: checked }))}
+                  onCheckedChange={(checked) => setFormData(prev => ({ ...prev, has_characters: !!checked }))}
                 />
                 <Label htmlFor="edit-has_character">Has character roles</Label>
               </div>
               {formData.has_characters && (
-                <>
+                <div className="space-y-3">
                   <div className="flex items-center justify-between">
                     <Label>Characters/Roles</Label>
                     <Button 
                       type="button"
                       onClick={addCharacter}
-                      size="sm"
+                      
                       variant="outline"
                       className="border-slate-600 text-white hover:bg-slate-600"
                     >
@@ -1184,68 +1206,68 @@ export default function GamesPage({
                     </Button>
                   </div>
                   {formData.characters.map((character, charIndex) => (
-                <div key={charIndex} className="p-3 bg-slate-700 rounded-lg border border-slate-600 space-y-2">
-                  <div className="flex space-x-2">
-                    <Input
-                      value={character.name}
-                      onChange={(e) => updateCharacter(charIndex, 'name', e.target.value)}
-                      placeholder="Character name"
-                      className="bg-slate-600 border-slate-500 text-white"
-                    />
-                    <Button
-                      type="button"
-                      onClick={() => removeCharacter(charIndex)}
-                      size="sm"
-                      variant="outline"
-                      className="border-red-500 text-red-400 hover:bg-red-500/20"
-                    >
-                      <Trash2 className="w-3 h-3" />
-                    </Button>
-                  </div>
-                  <Input
-                    value={character.description}
-                    onChange={(e) => updateCharacter(charIndex, 'description', e.target.value)}
-                    placeholder="Character description"
-                    className="bg-slate-600 border-slate-500 text-white"
-                  />
-                  <div className="space-y-1">
-                    <div className="flex items-center justify-between">
-                      <Label className="text-xs">Abilities</Label>
-                      <Button
-                        type="button"
-                        onClick={() => addAbility(charIndex)}
-                        size="sm"
-                        variant="outline"
-                        className="border-slate-500 text-white hover:bg-slate-500 h-6 text-xs"
-                      >
-                        <Plus className="w-2 h-2 mr-1" />
-                        Add Ability
-                      </Button>
-                    </div>
-                    {character.abilities.map((ability, abilityIndex) => (
-                      <div key={abilityIndex} className="flex space-x-1">
+                    <div key={charIndex} className="p-3 bg-slate-700 rounded-lg border border-slate-600 space-y-2">
+                      <div className="flex space-x-2">
                         <Input
-                          value={ability}
-                          onChange={(e) => updateAbility(charIndex, abilityIndex, e.target.value)}
-                          placeholder="Ability name"
-                          className="bg-slate-600 border-slate-500 text-white text-xs"
-                          size="sm"
+                          value={character.name}
+                          onChange={(e) => updateCharacter(charIndex, 'name', e.target.value)}
+                          placeholder="Character name"
+                          className="bg-slate-600 border-slate-500 text-white"
                         />
                         <Button
                           type="button"
-                          onClick={() => removeAbility(charIndex, abilityIndex)}
-                          size="sm"
+                          onClick={() => removeCharacter(charIndex)}
+                          
                           variant="outline"
-                          className="border-red-500 text-red-400 hover:bg-red-500/20 h-8 w-8 p-0"
+                          className="border-red-500 text-red-400 hover:bg-red-500/20"
                         >
-                          <Trash2 className="w-2 h-2" />
+                          <Trash2 className="w-3 h-3" />
                         </Button>
                       </div>
-                    ))}
-                  </div>
+                      <Input
+                        value={character.description}
+                        onChange={(e) => updateCharacter(charIndex, 'description', e.target.value)}
+                        placeholder="Character description"
+                        className="bg-slate-600 border-slate-500 text-white"
+                      />
+                      <div className="space-y-1">
+                        <div className="flex items-center justify-between">
+                          <Label className="text-xs">Abilities</Label>
+                          <Button
+                            type="button"
+                            onClick={() => addAbility(charIndex)}
+                            
+                            variant="outline"
+                            className="border-slate-500 text-white hover:bg-slate-500 h-6 text-xs"
+                          >
+                            <Plus className="w-2 h-2 mr-1" />
+                            Add Ability
+                          </Button>
+                        </div>
+                        {character.abilities.map((ability, abilityIndex) => (
+                          <div key={abilityIndex} className="flex space-x-1">
+                            <Input
+                              value={ability}
+                              onChange={(e) => updateAbility(charIndex, abilityIndex, e.target.value)}
+                              placeholder="Ability name"
+                              className="bg-slate-600 border-slate-500 text-white text-xs"
+                              
+                            />
+                            <Button
+                              type="button"
+                              onClick={() => removeAbility(charIndex, abilityIndex)}
+                              
+                              variant="outline"
+                              className="border-red-500 text-red-400 hover:bg-red-500/20 h-8 w-8 p-0"
+                            >
+                              <Trash2 className="w-2 h-2" />
+                            </Button>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                  ))}
                 </div>
-              ))}
-                </>
               )}
             </div>
             <Button onClick={handleUpdateGame} className="w-full bg-blue-600 hover:bg-blue-700">

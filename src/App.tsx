@@ -4,6 +4,48 @@ import Dashboard from '@/components/Dashboard'
 import PlayersPage from '@/components/PlayersPage'
 import GamesPage from '@/components/GamesPage'
 
+interface Player {
+  player_id: number
+  player_name: string
+  avatar: string
+  stats: string
+  games_played: number
+  wins: number
+  total_score: number
+  average_score: number
+  created_at: Date
+  favorite_game: string
+  email: string
+}
+
+interface Game {
+  game_id: number
+  bgg_id?: number
+  name: string
+  image: string
+  min_players: number
+  max_players: number
+  description: string
+  duration: string
+  difficulty: string
+  category: string
+  year_published: number
+  publisher: string
+  designer: string
+  bgg_rating: number
+  weight: number
+  age_min: number
+  players: string
+  game_type: 'competitive' | 'cooperative' | 'campaign' | 'hybrid'
+  supports_cooperative: boolean
+  supports_competitive: boolean
+  supports_campaign: boolean
+  has_expansion: boolean
+  has_characters: boolean
+  expansions: any[]
+  characters: any[]
+}
+
 // Mock data for initial display
 const mockData = {
   playersCount: 12,
@@ -81,6 +123,7 @@ const mockData = {
       weight: 3.5,
       age_min: 14,
       players: '2-4',
+      game_type: 'competitive' as const,
       supports_cooperative: false,
       supports_competitive: true,
       supports_campaign: true,
@@ -114,6 +157,7 @@ const mockData = {
       weight: 2.8,
       age_min: 12,
       players: '3-6',
+      game_type: 'competitive' as const,
       supports_cooperative: false,
       supports_competitive: true,
       supports_campaign: true,
@@ -159,6 +203,7 @@ const mockData = {
       weight: 1.5,
       age_min: 10,
       players: '2-8',
+      game_type: 'competitive' as const,
       supports_cooperative: false,
       supports_competitive: true,
       supports_campaign: false,
@@ -185,6 +230,7 @@ const mockData = {
       weight: 4.2,
       age_min: 16,
       players: '2-5',
+      game_type: 'competitive' as const,
       supports_cooperative: false,
       supports_competitive: true,
       supports_campaign: true,
@@ -228,34 +274,42 @@ export default function ModernDashboard() {
     loading: true,
     error: null
   })
-  const [recentPlayers, setRecentPlayers] = useState([])
-  const [recentGames, setRecentGames] = useState([])
+  const [recentPlayers, setRecentPlayers] = useState<Player[]>([])
+  const [recentGames, setRecentGames] = useState<Game[]>([])
   const [currentView, setCurrentView] = useState('dashboard')
   
   // Persistent data using useKV
-  const [players, setPlayers] = useKV('board-game-players', mockData.recentPlayers)
-  const [games, setGames] = useKV('board-game-games', mockData.recentGames)
+  const [players, setPlayers] = useKV<Player[]>('board-game-players', [])
+  const [games, setGames] = useKV<Game[]>('board-game-games', [])
 
   useEffect(() => {
+    // Initialize with mock data if empty
+    if (players && players.length === 0) {
+      setPlayers(mockData.recentPlayers)
+    }
+    if (games && games.length === 0) {
+      setGames(mockData.recentGames)
+    }
+    
     // Simulate loading data
     setTimeout(() => {
       setStats({
-        playersCount: players.length,
-        gamesCount: games.length,
+        playersCount: players?.length || 0,
+        gamesCount: games?.length || 0,
         loading: false,
         error: null
       })
-      setRecentPlayers(players.slice(0, 3))
-      setRecentGames(games.slice(0, 3))
+      setRecentPlayers(players?.slice(0, 3) || [])
+      setRecentGames(games?.slice(0, 3) || [])
     }, 1000)
-  }, [players, games])
+  }, [players, games, setPlayers, setGames])
 
   const handleNavigation = (view) => {
     setCurrentView(view)
   }
 
-  const addPlayer = (playerData) => {
-    const player = {
+  const addPlayer = (playerData: any) => {
+    const player: Player = {
       player_id: Date.now(),
       player_name: playerData.player_name,
       avatar: playerData.avatar || `https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=100&h=100&fit=crop&crop=face`,
@@ -268,12 +322,12 @@ export default function ModernDashboard() {
       favorite_game: playerData.favorite_game || 'None',
       email: playerData.email || ''
     }
-    setPlayers(currentPlayers => [...currentPlayers, player])
+    setPlayers((currentPlayers) => [...(currentPlayers || []), player])
   }
 
-  const updatePlayer = (playerId, playerData) => {
-    setPlayers(currentPlayers => 
-      currentPlayers.map(p => 
+  const updatePlayer = (playerId: number, playerData: any) => {
+    setPlayers((currentPlayers) => 
+      (currentPlayers || []).map(p => 
         p.player_id === playerId 
           ? { ...p, ...playerData, stats: `${playerData.total_score || p.total_score} pts` }
           : p
@@ -281,27 +335,25 @@ export default function ModernDashboard() {
     )
   }
 
-  const addGame = (gameData) => {
-    const game = {
+  const addGame = (gameData: any) => {
+    const game: Game = {
       game_id: Date.now(),
       ...gameData,
       players: `${gameData.min_players}-${gameData.max_players}`,
-      game_type: gameData.game_type || 'competitive',
       expansions: gameData.expansions || [],
       characters: gameData.characters || []
     }
-    setGames(currentGames => [...currentGames, game])
+    setGames((currentGames) => [...(currentGames || []), game])
   }
 
-  const updateGame = (gameId, gameData) => {
-    setGames(currentGames => 
-      currentGames.map(g => 
+  const updateGame = (gameId: number, gameData: any) => {
+    setGames((currentGames) => 
+      (currentGames || []).map(g => 
         g.game_id === gameId 
           ? { 
               ...g, 
               ...gameData, 
               players: `${gameData.min_players || g.min_players}-${gameData.max_players || g.max_players}`,
-              game_type: gameData.game_type || g.game_type || 'competitive',
               expansions: gameData.expansions || g.expansions || [],
               characters: gameData.characters || g.characters || []
             }
@@ -310,12 +362,12 @@ export default function ModernDashboard() {
     )
   }
 
-  const deletePlayer = (playerId) => {
-    setPlayers(currentPlayers => currentPlayers.filter(p => p.player_id !== playerId))
+  const deletePlayer = (playerId: number) => {
+    setPlayers((currentPlayers) => (currentPlayers || []).filter(p => p.player_id !== playerId))
   }
 
-  const deleteGame = (gameId) => {
-    setGames(currentGames => currentGames.filter(g => g.game_id !== gameId))
+  const deleteGame = (gameId: number) => {
+    setGames((currentGames) => (currentGames || []).filter(g => g.game_id !== gameId))
   }
 
   if (stats.loading) {
@@ -330,7 +382,7 @@ export default function ModernDashboard() {
   if (currentView === 'players') {
     return (
       <PlayersPage 
-        players={players}
+        players={players || []}
         onNavigation={handleNavigation}
         onAddPlayer={addPlayer}
         onUpdatePlayer={updatePlayer}
@@ -343,7 +395,7 @@ export default function ModernDashboard() {
   if (currentView === 'games') {
     return (
       <GamesPage 
-        games={games}
+        games={games || []}
         onNavigation={handleNavigation}
         onAddGame={addGame}
         onUpdateGame={updateGame}
