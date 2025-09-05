@@ -233,6 +233,16 @@ export default function GamesPage({
     }
   }
 
+  const getGameTypeColor = (type: string) => {
+    switch (type) {
+      case 'cooperative': return 'text-blue-400'
+      case 'competitive': return 'text-red-400'
+      case 'campaign': return 'text-purple-400'
+      case 'hybrid': return 'text-orange-400'
+      default: return 'text-white/60'
+    }
+  }
+
   const getGameTypeIcon = (type: string) => {
     switch (type) {
       case 'cooperative': return <Shield className="w-3 h-3" />
