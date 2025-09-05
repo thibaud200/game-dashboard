@@ -9,7 +9,7 @@ import {
   ArrowLeft
 } from 'lucide-react'
 
-// Mock data simulating your existing services
+// Simuler vos services existants
 const mockData = {
   playersCount: 426,
   gamesCount: 324,
@@ -64,7 +64,7 @@ const mockData = {
   ]
 }
 
-function App() {
+export default function ModernDashboard() {
   const [stats, setStats] = useState({
     playersCount: 0,
     gamesCount: 0,
@@ -76,7 +76,7 @@ function App() {
   const [currentView, setCurrentView] = useState('dashboard')
 
   useEffect(() => {
-    // Simulate data loading
+    // Simuler le chargement des données
     setTimeout(() => {
       setStats({
         playersCount: mockData.playersCount,
@@ -89,15 +89,15 @@ function App() {
     }, 1000)
   }, [])
 
-  const handleNavigation = (view: string) => {
+  const handleNavigation = (view) => {
     setCurrentView(view)
-    // In your real app, use react-router-dom here
+    // Dans votre vraie app, utilisez react-router-dom ici
   }
 
   if (stats.loading) {
     return (
       <div className="min-h-screen bg-gradient-to-br from-slate-900 to-slate-800 flex items-center justify-center">
-        <div className="text-white text-lg">Loading dashboard...</div>
+        <div className="text-white text-lg">Chargement du dashboard...</div>
       </div>
     )
   }
@@ -122,7 +122,7 @@ function App() {
           </button>
         </div>
 
-        {/* Circular stats */}
+        {/* Stats circulaires */}
         <div className="flex justify-center space-x-8 mb-8">
           <button
             onClick={() => handleNavigation('players')}
@@ -156,9 +156,9 @@ function App() {
         </div>
       </div>
 
-      {/* Main content */}
+      {/* Contenu principal */}
       <div className="px-4 space-y-6 pb-24">
-        {/* Players section */}
+        {/* Section Joueurs */}
         <div className="bg-white/10 backdrop-blur-md rounded-2xl p-4 border border-white/20 shadow-xl">
           <div className="flex items-center justify-between mb-4">
             <h2 className="text-lg font-semibold">Player Statistics</h2>
@@ -170,7 +170,7 @@ function App() {
             </button>
           </div>
           <div className="grid grid-cols-3 gap-3">
-            {recentPlayers.map((player: any) => (
+            {recentPlayers.map((player) => (
               <button
                 key={player.player_id}
                 onClick={() => handleNavigation(`player-${player.player_id}`)}
@@ -194,7 +194,7 @@ function App() {
           </div>
         </div>
 
-        {/* Recent games section */}
+        {/* Section Jeux récents */}
         <div className="bg-white/10 backdrop-blur-md rounded-2xl p-4 border border-white/20 shadow-xl">
           <div className="flex items-center justify-between mb-4">
             <h2 className="text-lg font-semibold">Recent Games</h2>
@@ -206,7 +206,7 @@ function App() {
             </button>
           </div>
           <div className="grid grid-cols-3 gap-3">
-            {recentGames.map((game: any) => (
+            {recentGames.map((game) => (
               <button
                 key={game.game_id}
                 onClick={() => handleNavigation(`game-${game.game_id}`)}
@@ -263,7 +263,7 @@ function App() {
           </div>
         </div>
 
-        {/* Quick actions */}
+        {/* Actions rapides */}
         <div className="grid grid-cols-2 gap-4">
           <button
             onClick={() => handleNavigation('current-game')}
@@ -334,5 +334,3 @@ function App() {
     </div>
   )
 }
-
-export default App
