@@ -12,7 +12,13 @@ import {
   Clock,
   Target,
   Calendar,
-  Star
+  Star,
+  ExternalLink,
+  Shield,
+  Swords,
+  Crown,
+  ChevronDown,
+  ChevronUp
 } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
@@ -22,6 +28,23 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from 
 import { Label } from '@/components/ui/label'
 import { Textarea } from '@/components/ui/textarea'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
+import BGGSearch from '@/components/BGGSearch'
+import { BGGGame } from '@/services/bggApi'
+
+interface Character {
+  id: string
+  name: string
+  description: string
+  abilities: string[]
+  avatar?: string
+}
+
+interface Expansion {
+  id: number
+  name: string
+  year_published: number
+  rank?: number
+}
 
 interface Game {
   game_id: number
@@ -40,6 +63,10 @@ interface Game {
   weight: number
   age_min: number
   players: string
+  game_type: 'competitive' | 'cooperative' | 'campaign' | 'hybrid'
+  expansions: Expansion[]
+  characters: Character[]
+  bgg_id?: number
 }
 
 interface GamesPageProps {
@@ -63,6 +90,8 @@ export default function GamesPage({
   const [editingGame, setEditingGame] = useState<Game | null>(null)
   const [isAddDialogOpen, setIsAddDialogOpen] = useState(false)
   const [isEditDialogOpen, setIsEditDialogOpen] = useState(false)
+  const [isBGGSearchOpen, setIsBGGSearchOpen] = useState(false)
+  const [expandedGame, setExpandedGame] = useState<number | null>(null)
   const [formData, setFormData] = useState({
     name: '',
     image: '',
@@ -77,7 +106,11 @@ export default function GamesPage({
     designer: '',
     bgg_rating: 0,
     weight: 0,
-    age_min: 8
+    age_min: 8,
+    game_type: 'competitive' as 'competitive' | 'cooperative' | 'campaign' | 'hybrid',
+    expansions: [] as Expansion[],
+    characters: [] as Character[],
+    bgg_id: undefined as number | undefined
   })
 
   const filteredGames = games.filter(game =>
@@ -102,8 +135,36 @@ export default function GamesPage({
       designer: '',
       bgg_rating: 0,
       weight: 0,
-      age_min: 8
+      age_min: 8,
+      game_type: 'competitive',
+      expansions: [],
+      characters: [],
+      bgg_id: undefined
     })
+  }
+
+  const handleBGGGameSelect = (bggGame: BGGGame) => {
+    setFormData({
+      name: bggGame.name,
+      image: bggGame.image,
+      min_players: bggGame.min_players,
+      max_players: bggGame.max_players,
+      description: bggGame.description,
+      duration: `${bggGame.min_playtime}-${bggGame.max_playtime} min`,
+      difficulty: bggGame.weight > 3.5 ? 'Expert' : bggGame.weight > 2.5 ? 'Intermediate' : 'Beginner',
+      category: bggGame.categories[0] || 'General',
+      year_published: bggGame.year_published,
+      publisher: bggGame.publishers[0] || 'Unknown',
+      designer: bggGame.designers[0] || 'Unknown',
+      bgg_rating: bggGame.rating,
+      weight: bggGame.weight,
+      age_min: bggGame.min_age,
+      game_type: bggGame.game_type,
+      expansions: bggGame.expansions,
+      characters: bggGame.characters,
+      bgg_id: bggGame.id
+    })
+    setIsBGGSearchOpen(false)
   }
 
   const handleAddGame = () => {
@@ -145,7 +206,11 @@ export default function GamesPage({
       designer: game.designer,
       bgg_rating: game.bgg_rating,
       weight: game.weight,
-      age_min: game.age_min
+      age_min: game.age_min,
+      game_type: game.game_type,
+      expansions: game.expansions || [],
+      characters: game.characters || [],
+      bgg_id: game.bgg_id
     })
     setIsEditDialogOpen(true)
   }
@@ -168,6 +233,16 @@ export default function GamesPage({
     }
   }
 
+  const getGameTypeIcon = (type: string) => {
+    switch (type) {
+      case 'cooperative': return <Shield className="w-3 h-3" />
+      case 'competitive': return <Swords className="w-3 h-3" />
+      case 'campaign': return <Crown className="w-3 h-3" />
+      case 'hybrid': return <Target className="w-3 h-3" />
+      default: return <Target className="w-3 h-3" />
+    }
+  }
+
   const getWeightStars = (weight: number) => {
     const stars = Math.round(weight)
     return Array.from({ length: 5 }, (_, i) => (
@@ -176,6 +251,70 @@ export default function GamesPage({
         className={`w-3 h-3 ${i < stars ? 'text-yellow-400 fill-current' : 'text-gray-400'}`} 
       />
     ))
+  }
+
+  const addCharacter = () => {
+    setFormData(prev => ({
+      ...prev,
+      characters: [
+        ...prev.characters,
+        {
+          id: `character-${Date.now()}`,
+          name: '',
+          description: '',
+          abilities: ['']
+        }
+      ]
+    }))
+  }
+
+  const updateCharacter = (index: number, field: keyof Character, value: string | string[]) => {
+    setFormData(prev => ({
+      ...prev,
+      characters: prev.characters.map((char, i) => 
+        i === index ? { ...char, [field]: value } : char
+      )
+    }))
+  }
+
+  const removeCharacter = (index: number) => {
+    setFormData(prev => ({
+      ...prev,
+      characters: prev.characters.filter((_, i) => i !== index)
+    }))
+  }
+
+  const addAbility = (charIndex: number) => {
+    setFormData(prev => ({
+      ...prev,
+      characters: prev.characters.map((char, i) => 
+        i === charIndex ? { ...char, abilities: [...char.abilities, ''] } : char
+      )
+    }))
+  }
+
+  const updateAbility = (charIndex: number, abilityIndex: number, value: string) => {
+    setFormData(prev => ({
+      ...prev,
+      characters: prev.characters.map((char, i) => 
+        i === charIndex ? {
+          ...char,
+          abilities: char.abilities.map((ability, j) => j === abilityIndex ? value : ability)
+        } : char
+      )
+    }))
+  }
+
+  const removeAbility = (charIndex: number, abilityIndex: number) => {
+    setFormData(prev => ({
+      ...prev,
+      characters: prev.characters.map((char, i) => 
+        i === charIndex ? {
+          ...char,
+          abilities: char.abilities.filter((_, j) => j !== abilityIndex)
+        } : char
+      )
+    }))
   }
 
   return (
@@ -196,11 +335,31 @@ export default function GamesPage({
                 <Plus className="w-6 h-6" />
               </button>
             </DialogTrigger>
-            <DialogContent className="bg-slate-800 border-slate-700 text-white max-w-lg max-h-[90vh] overflow-y-auto">
+            <DialogContent className="bg-slate-800 border-slate-700 text-white max-w-2xl max-h-[90vh] overflow-y-auto">
               <DialogHeader>
                 <DialogTitle>Add New Game</DialogTitle>
               </DialogHeader>
               <div className="space-y-4">
+                <div className="flex space-x-2">
+                  <Button 
+                    onClick={() => setIsBGGSearchOpen(true)}
+                    variant="outline" 
+                    className="border-teal-600 text-teal-400 hover:bg-teal-600/20"
+                  >
+                    <ExternalLink className="w-4 h-4 mr-2" />
+                    Search BoardGameGeek
+                  </Button>
+                </div>
+
+                {isBGGSearchOpen && (
+                  <div className="p-4 bg-slate-700 rounded-lg border border-slate-600">
+                    <BGGSearch 
+                      onGameSelect={handleBGGGameSelect}
+                      onClose={() => setIsBGGSearchOpen(false)}
+                    />
+                  </div>
+                )}
+
                 <div>
                   <Label htmlFor="game-name">Game Name *</Label>
                   <Input
@@ -283,15 +442,29 @@ export default function GamesPage({
                     </Select>
                   </div>
                   <div>
-                    <Label htmlFor="category">Category</Label>
-                    <Input
-                      id="category"
-                      value={formData.category}
-                      onChange={(e) => setFormData(prev => ({ ...prev, category: e.target.value }))}
-                      className="bg-slate-700 border-slate-600 text-white"
-                      placeholder="Strategy, Party, etc."
-                    />
+                    <Label htmlFor="game-type">Game Type</Label>
+                    <Select value={formData.game_type} onValueChange={(value: any) => setFormData(prev => ({ ...prev, game_type: value }))}>
+                      <SelectTrigger className="bg-slate-700 border-slate-600 text-white">
+                        <SelectValue />
+                      </SelectTrigger>
+                      <SelectContent className="bg-slate-700 border-slate-600">
+                        <SelectItem value="competitive">Competitive</SelectItem>
+                        <SelectItem value="cooperative">Cooperative</SelectItem>
+                        <SelectItem value="campaign">Campaign</SelectItem>
+                        <SelectItem value="hybrid">Hybrid</SelectItem>
+                      </SelectContent>
+                    </Select>
                   </div>
+                </div>
+                <div>
+                  <Label htmlFor="category">Category</Label>
+                  <Input
+                    id="category"
+                    value={formData.category}
+                    onChange={(e) => setFormData(prev => ({ ...prev, category: e.target.value }))}
+                    className="bg-slate-700 border-slate-600 text-white"
+                    placeholder="Strategy, Party, etc."
+                  />
                 </div>
                 <div className="grid grid-cols-2 gap-4">
                   <div>
@@ -366,6 +539,103 @@ export default function GamesPage({
                     rows={3}
                   />
                 </div>
+
+                {/* Characters Section */}
+                <div className="space-y-2">
+                  <div className="flex items-center justify-between">
+                    <Label>Characters/Roles</Label>
+                    <Button 
+                      type="button"
+                      onClick={addCharacter}
+                      size="sm"
+                      variant="outline"
+                      className="border-slate-600 text-white hover:bg-slate-600"
+                    >
+                      <Plus className="w-3 h-3 mr-1" />
+                      Add Character
+                    </Button>
+                  </div>
+                  {formData.characters.map((character, charIndex) => (
+                    <div key={charIndex} className="p-3 bg-slate-700 rounded-lg border border-slate-600 space-y-2">
+                      <div className="flex space-x-2">
+                        <Input
+                          value={character.name}
+                          onChange={(e) => updateCharacter(charIndex, 'name', e.target.value)}
+                          placeholder="Character name"
+                          className="bg-slate-600 border-slate-500 text-white"
+                        />
+                        <Button
+                          type="button"
+                          onClick={() => removeCharacter(charIndex)}
+                          size="sm"
+                          variant="outline"
+                          className="border-red-500 text-red-400 hover:bg-red-500/20"
+                        >
+                          <Trash2 className="w-3 h-3" />
+                        </Button>
+                      </div>
+                      <Input
+                        value={character.description}
+                        onChange={(e) => updateCharacter(charIndex, 'description', e.target.value)}
+                        placeholder="Character description"
+                        className="bg-slate-600 border-slate-500 text-white"
+                      />
+                      <div className="space-y-1">
+                        <div className="flex items-center justify-between">
+                          <Label className="text-xs">Abilities</Label>
+                          <Button
+                            type="button"
+                            onClick={() => addAbility(charIndex)}
+                            size="sm"
+                            variant="outline"
+                            className="border-slate-500 text-white hover:bg-slate-500 h-6 text-xs"
+                          >
+                            <Plus className="w-2 h-2 mr-1" />
+                            Add Ability
+                          </Button>
+                        </div>
+                        {character.abilities.map((ability, abilityIndex) => (
+                          <div key={abilityIndex} className="flex space-x-1">
+                            <Input
+                              value={ability}
+                              onChange={(e) => updateAbility(charIndex, abilityIndex, e.target.value)}
+                              placeholder="Ability name"
+                              className="bg-slate-600 border-slate-500 text-white text-xs"
+                              size="sm"
+                            />
+                            <Button
+                              type="button"
+                              onClick={() => removeAbility(charIndex, abilityIndex)}
+                              size="sm"
+                              variant="outline"
+                              className="border-red-500 text-red-400 hover:bg-red-500/20 h-8 w-8 p-0"
+                            >
+                              <Trash2 className="w-2 h-2" />
+                            </Button>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                  ))}
+                </div>
+
+                {/* Expansions Display */}
+                {formData.expansions.length > 0 && (
+                  <div className="space-y-2">
+                    <Label>Expansions from BGG</Label>
+                    <div className="space-y-1">
+                      {formData.expansions.map((expansion, index) => (
+                        <div key={index} className="p-2 bg-slate-700 rounded border border-slate-600 text-sm">
+                          <div className="font-medium">{expansion.name}</div>
+                          {expansion.year_published > 0 && (
+                            <div className="text-white/60 text-xs">{expansion.year_published}</div>
+                          )}
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                )}
+
                 <Button onClick={handleAddGame} className="w-full bg-emerald-600 hover:bg-emerald-700">
                   Add Game
                 </Button>
@@ -428,6 +698,13 @@ export default function GamesPage({
                           <Badge variant="secondary" className="bg-teal-600/20 text-teal-300 text-xs">
                             {game.category}
                           </Badge>
+                          <Badge 
+                            variant="outline" 
+                            className={`border-white/20 text-xs ${getGameTypeColor(game.game_type)}`}
+                          >
+                            {getGameTypeIcon(game.game_type)}
+                            <span className="ml-1 capitalize">{game.game_type}</span>
+                          </Badge>
                           <Badge variant="outline" className="border-white/20 text-white/60 text-xs">
                             {game.min_players === game.max_players ? `${game.min_players}` : `${game.min_players}-${game.max_players}`} players
                           </Badge>
@@ -471,6 +748,100 @@ export default function GamesPage({
                             {game.publisher !== 'Unknown' && game.publisher}
                           </div>
                         )}
+                        
+                        {/* Expansions and Characters Preview */}
+                        {(game.expansions?.length > 0 || game.characters?.length > 0) && (
+                          <div className="mt-2 flex items-center space-x-2 text-xs">
+                            {game.expansions?.length > 0 && (
+                              <Badge variant="outline" className="border-purple-500/30 text-purple-300">
+                                {game.expansions.length} expansion{game.expansions.length > 1 ? 's' : ''}
+                              </Badge>
+                            )}
+                            {game.characters?.length > 0 && (
+                              <Badge variant="outline" className="border-orange-500/30 text-orange-300">
+                                {game.characters.length} character{game.characters.length > 1 ? 's' : ''}
+                              </Badge>
+                            )}
+                            <button
+                              onClick={(e) => {
+                                e.stopPropagation()
+                                setExpandedGame(expandedGame === game.game_id ? null : game.game_id)
+                              }}
+                              className="text-white/60 hover:text-white transition-colors"
+                            >
+                              {expandedGame === game.game_id ? (
+                                <ChevronUp className="w-4 h-4" />
+                              ) : (
+                                <ChevronDown className="w-4 h-4" />
+                              )}
+                            </button>
+                          </div>
+                        )}
+                        
+                        {/* Expanded Details */}
+                        {expandedGame === game.game_id && (
+                          <div className="mt-3 pt-3 border-t border-white/10 space-y-3">
+                            {game.expansions && game.expansions.length > 0 && (
+                              <div>
+                                <h4 className="text-sm font-medium text-purple-300 mb-1">Expansions</h4>
+                                <div className="space-y-1">
+                                  {game.expansions.map((expansion) => (
+                                    <div key={expansion.id} className="text-xs text-white/70 bg-white/5 rounded p-2">
+                                      <div className="font-medium">{expansion.name}</div>
+                                      {expansion.year_published > 0 && (
+                                        <div className="text-white/50">({expansion.year_published})</div>
+                                      )}
+                                    </div>
+                                  ))}
+                                </div>
+                              </div>
+                            )}
+                            
+                            {game.characters && game.characters.length > 0 && (
+                              <div>
+                                <h4 className="text-sm font-medium text-orange-300 mb-1">Characters/Roles</h4>
+                                <div className="space-y-1">
+                                  {game.characters.map((character) => (
+                                    <div key={character.id} className="text-xs text-white/70 bg-white/5 rounded p-2">
+                                      <div className="font-medium">{character.name}</div>
+                                      {character.description && (
+                                        <div className="text-white/50 mb-1">{character.description}</div>
+                                      )}
+                                      {character.abilities && character.abilities.length > 0 && (
+                                        <div className="flex flex-wrap gap-1">
+                                          {character.abilities.filter(ability => ability.trim()).map((ability, index) => (
+                                            <Badge 
+                                              key={index}
+                                              variant="outline" 
+                                              className="border-orange-500/30 text-orange-200 text-xs h-5"
+                                            >
+                                              {ability}
+                                            </Badge>
+                                          ))}
+                                        </div>
+                                      )}
+                                    </div>
+                                  ))}
+                                </div>
+                              </div>
+                            )}
+
+                            {game.bgg_id && (
+                              <div className="pt-2">
+                                <a 
+                                  href={`https://boardgamegeek.com/boardgame/${game.bgg_id}`}
+                                  target="_blank"
+                                  rel="noopener noreferrer"
+                                  className="text-xs text-teal-400 hover:text-teal-300 flex items-center"
+                                  onClick={(e) => e.stopPropagation()}
+                                >
+                                  <ExternalLink className="w-3 h-3 mr-1" />
+                                  View on BoardGameGeek
+                                </a>
+                              </div>
+                            )}
+                          </div>
+                        )}
                       </div>
                       <div className="flex space-x-2 ml-4">
                         <button
@@ -504,7 +875,7 @@ export default function GamesPage({
 
       {/* Edit Game Dialog */}
       <Dialog open={isEditDialogOpen} onOpenChange={setIsEditDialogOpen}>
-        <DialogContent className="bg-slate-800 border-slate-700 text-white max-w-lg max-h-[90vh] overflow-y-auto">
+        <DialogContent className="bg-slate-800 border-slate-700 text-white max-w-2xl max-h-[90vh] overflow-y-auto">
           <DialogHeader>
             <DialogTitle>Edit Game</DialogTitle>
           </DialogHeader>
@@ -591,15 +962,29 @@ export default function GamesPage({
                 </Select>
               </div>
               <div>
-                <Label htmlFor="edit-category">Category</Label>
-                <Input
-                  id="edit-category"
-                  value={formData.category}
-                  onChange={(e) => setFormData(prev => ({ ...prev, category: e.target.value }))}
-                  className="bg-slate-700 border-slate-600 text-white"
-                  placeholder="Strategy, Party, etc."
-                />
+                <Label htmlFor="edit-game-type">Game Type</Label>
+                <Select value={formData.game_type} onValueChange={(value: any) => setFormData(prev => ({ ...prev, game_type: value }))}>
+                  <SelectTrigger className="bg-slate-700 border-slate-600 text-white">
+                    <SelectValue />
+                  </SelectTrigger>
+                  <SelectContent className="bg-slate-700 border-slate-600">
+                    <SelectItem value="competitive">Competitive</SelectItem>
+                    <SelectItem value="cooperative">Cooperative</SelectItem>
+                    <SelectItem value="campaign">Campaign</SelectItem>
+                    <SelectItem value="hybrid">Hybrid</SelectItem>
+                  </SelectContent>
+                </Select>
               </div>
+            </div>
+            <div>
+              <Label htmlFor="edit-category">Category</Label>
+              <Input
+                id="edit-category"
+                value={formData.category}
+                onChange={(e) => setFormData(prev => ({ ...prev, category: e.target.value }))}
+                className="bg-slate-700 border-slate-600 text-white"
+                placeholder="Strategy, Party, etc."
+              />
             </div>
             <div className="grid grid-cols-2 gap-4">
               <div>
@@ -674,6 +1059,103 @@ export default function GamesPage({
                 rows={3}
               />
             </div>
+
+            {/* Characters Section */}
+            <div className="space-y-2">
+              <div className="flex items-center justify-between">
+                <Label>Characters/Roles</Label>
+                <Button 
+                  type="button"
+                  onClick={addCharacter}
+                  size="sm"
+                  variant="outline"
+                  className="border-slate-600 text-white hover:bg-slate-600"
+                >
+                  <Plus className="w-3 h-3 mr-1" />
+                  Add Character
+                </Button>
+              </div>
+              {formData.characters.map((character, charIndex) => (
+                <div key={charIndex} className="p-3 bg-slate-700 rounded-lg border border-slate-600 space-y-2">
+                  <div className="flex space-x-2">
+                    <Input
+                      value={character.name}
+                      onChange={(e) => updateCharacter(charIndex, 'name', e.target.value)}
+                      placeholder="Character name"
+                      className="bg-slate-600 border-slate-500 text-white"
+                    />
+                    <Button
+                      type="button"
+                      onClick={() => removeCharacter(charIndex)}
+                      size="sm"
+                      variant="outline"
+                      className="border-red-500 text-red-400 hover:bg-red-500/20"
+                    >
+                      <Trash2 className="w-3 h-3" />
+                    </Button>
+                  </div>
+                  <Input
+                    value={character.description}
+                    onChange={(e) => updateCharacter(charIndex, 'description', e.target.value)}
+                    placeholder="Character description"
+                    className="bg-slate-600 border-slate-500 text-white"
+                  />
+                  <div className="space-y-1">
+                    <div className="flex items-center justify-between">
+                      <Label className="text-xs">Abilities</Label>
+                      <Button
+                        type="button"
+                        onClick={() => addAbility(charIndex)}
+                        size="sm"
+                        variant="outline"
+                        className="border-slate-500 text-white hover:bg-slate-500 h-6 text-xs"
+                      >
+                        <Plus className="w-2 h-2 mr-1" />
+                        Add Ability
+                      </Button>
+                    </div>
+                    {character.abilities.map((ability, abilityIndex) => (
+                      <div key={abilityIndex} className="flex space-x-1">
+                        <Input
+                          value={ability}
+                          onChange={(e) => updateAbility(charIndex, abilityIndex, e.target.value)}
+                          placeholder="Ability name"
+                          className="bg-slate-600 border-slate-500 text-white text-xs"
+                          size="sm"
+                        />
+                        <Button
+                          type="button"
+                          onClick={() => removeAbility(charIndex, abilityIndex)}
+                          size="sm"
+                          variant="outline"
+                          className="border-red-500 text-red-400 hover:bg-red-500/20 h-8 w-8 p-0"
+                        >
+                          <Trash2 className="w-2 h-2" />
+                        </Button>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              ))}
+            </div>
+
+            {/* Expansions Display */}
+            {formData.expansions.length > 0 && (
+              <div className="space-y-2">
+                <Label>Expansions from BGG</Label>
+                <div className="space-y-1">
+                  {formData.expansions.map((expansion, index) => (
+                    <div key={index} className="p-2 bg-slate-700 rounded border border-slate-600 text-sm">
+                      <div className="font-medium">{expansion.name}</div>
+                      {expansion.year_published > 0 && (
+                        <div className="text-white/60 text-xs">{expansion.year_published}</div>
+                      )}
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
+
             <Button onClick={handleUpdateGame} className="w-full bg-blue-600 hover:bg-blue-700">
               Update Game
             </Button>

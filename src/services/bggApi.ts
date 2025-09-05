@@ -1,0 +1,356 @@
+// BoardGameGeek API integration service
+export interface BGGGame {
+  id: number
+  name: string
+  image: string
+  thumbnail: string
+  description: string
+  min_players: number
+  max_players: number
+  playing_time: number
+  min_playtime: number
+  max_playtime: number
+  min_age: number
+  year_published: number
+  designers: string[]
+  publishers: string[]
+  categories: string[]
+  mechanics: string[]
+  rating: number
+  weight: number
+  rank: number
+  expansions: BGGExpansion[]
+  characters: BGGCharacter[]
+  game_type: 'competitive' | 'cooperative' | 'campaign' | 'hybrid'
+  is_expansion: boolean
+  base_game_id?: number
+}
+
+export interface BGGExpansion {
+  id: number
+  name: string
+  year_published: number
+  rank?: number
+}
+
+export interface BGGCharacter {
+  id: string
+  name: string
+  description: string
+  abilities: string[]
+  avatar?: string
+}
+
+export interface BGGSearchResult {
+  id: number
+  name: string
+  year_published: number
+  type: string
+}
+
+class BGGApiService {
+  private readonly baseUrl = 'https://boardgamegeek.com/xmlapi2'
+  private readonly corsProxy = 'https://api.allorigins.win/raw?url='
+
+  /**
+   * Search for games by name
+   */
+  async searchGames(query: string): Promise<BGGSearchResult[]> {
+    try {
+      const encodedQuery = encodeURIComponent(query)
+      const url = `${this.corsProxy}${encodeURIComponent(`${this.baseUrl}/search?query=${encodedQuery}&type=boardgame`)}`
+      
+      const response = await fetch(url)
+      if (!response.ok) {
+        throw new Error(`BGG API error: ${response.status}`)
+      }
+      
+      const xmlText = await response.text()
+      return this.parseSearchResults(xmlText)
+    } catch (error) {
+      console.error('Error searching BGG:', error)
+      return []
+    }
+  }
+
+  /**
+   * Get detailed game information by BGG ID
+   */
+  async getGameDetails(bggId: number): Promise<BGGGame | null> {
+    try {
+      const url = `${this.corsProxy}${encodeURIComponent(`${this.baseUrl}/thing?id=${bggId}&stats=1`)}`
+      
+      const response = await fetch(url)
+      if (!response.ok) {
+        throw new Error(`BGG API error: ${response.status}`)
+      }
+      
+      const xmlText = await response.text()
+      return this.parseGameDetails(xmlText, bggId)
+    } catch (error) {
+      console.error('Error fetching BGG game details:', error)
+      return null
+    }
+  }
+
+  /**
+   * Get expansions for a game
+   */
+  async getGameExpansions(bggId: number): Promise<BGGExpansion[]> {
+    try {
+      const url = `${this.corsProxy}${encodeURIComponent(`${this.baseUrl}/thing?id=${bggId}&stats=1`)}`
+      
+      const response = await fetch(url)
+      if (!response.ok) {
+        throw new Error(`BGG API error: ${response.status}`)
+      }
+      
+      const xmlText = await response.text()
+      return this.parseExpansions(xmlText)
+    } catch (error) {
+      console.error('Error fetching BGG expansions:', error)
+      return []
+    }
+  }
+
+  private parseSearchResults(xmlText: string): BGGSearchResult[] {
+    try {
+      const parser = new DOMParser()
+      const xmlDoc = parser.parseFromString(xmlText, 'text/xml')
+      const items = xmlDoc.getElementsByTagName('item')
+      
+      const results: BGGSearchResult[] = []
+      
+      for (let i = 0; i < items.length; i++) {
+        const item = items[i]
+        const id = parseInt(item.getAttribute('id') || '0')
+        const nameElement = item.getElementsByTagName('name')[0]
+        const yearElement = item.getElementsByTagName('yearpublished')[0]
+        
+        if (id && nameElement) {
+          results.push({
+            id,
+            name: nameElement.getAttribute('value') || '',
+            year_published: parseInt(yearElement?.getAttribute('value') || '0'),
+            type: item.getAttribute('type') || ''
+          })
+        }
+      }
+      
+      return results.slice(0, 10) // Limit to 10 results
+    } catch (error) {
+      console.error('Error parsing search results:', error)
+      return []
+    }
+  }
+
+  private parseGameDetails(xmlText: string, bggId: number): BGGGame | null {
+    try {
+      const parser = new DOMParser()
+      const xmlDoc = parser.parseFromString(xmlText, 'text/xml')
+      const item = xmlDoc.getElementsByTagName('item')[0]
+      
+      if (!item) return null
+
+      // Basic info
+      const names = item.getElementsByTagName('name')
+      const primaryName = names[0]?.getAttribute('value') || ''
+      
+      const images = item.getElementsByTagName('image')
+      const thumbnails = item.getElementsByTagName('thumbnail')
+      const descriptions = item.getElementsByTagName('description')
+      
+      // Player counts
+      const minPlayers = parseInt(this.getNodeValue(item, 'minplayers') || '1')
+      const maxPlayers = parseInt(this.getNodeValue(item, 'maxplayers') || '1')
+      const minAge = parseInt(this.getNodeValue(item, 'minage') || '8')
+      const playingTime = parseInt(this.getNodeValue(item, 'playingtime') || '0')
+      const minPlaytime = parseInt(this.getNodeValue(item, 'minplaytime') || playingTime.toString())
+      const maxPlaytime = parseInt(this.getNodeValue(item, 'maxplaytime') || playingTime.toString())
+      
+      // Publication info
+      const yearPublished = parseInt(this.getNodeValue(item, 'yearpublished') || '0')
+      
+      // Get categories and mechanics
+      const categories = this.getLinkValues(item, 'boardgamecategory')
+      const mechanics = this.getLinkValues(item, 'boardgamemechanic')
+      const designers = this.getLinkValues(item, 'boardgamedesigner')
+      const publishers = this.getLinkValues(item, 'boardgamepublisher')
+      
+      // Stats
+      const statistics = item.getElementsByTagName('statistics')[0]
+      const ratings = statistics?.getElementsByTagName('ratings')[0]
+      const average = parseFloat(ratings?.getElementsByTagName('average')[0]?.getAttribute('value') || '0')
+      const averageweight = parseFloat(ratings?.getElementsByTagName('averageweight')[0]?.getAttribute('value') || '0')
+      const rank = parseInt(ratings?.getElementsByTagName('rank')[0]?.getAttribute('value') || '0')
+
+      // Determine game type based on categories and mechanics
+      const gameType = this.determineGameType(categories, mechanics)
+      
+      // Get expansions
+      const expansions = this.parseExpansions(xmlText)
+
+      // Generate mock characters based on game theme
+      const characters = this.generateMockCharacters(primaryName, categories)
+
+      return {
+        id: bggId,
+        name: primaryName,
+        image: images[0]?.textContent || '',
+        thumbnail: thumbnails[0]?.textContent || '',
+        description: descriptions[0]?.textContent?.replace(/<[^>]*>/g, '') || '',
+        min_players: minPlayers,
+        max_players: maxPlayers,
+        playing_time: playingTime,
+        min_playtime: minPlaytime,
+        max_playtime: maxPlaytime,
+        min_age: minAge,
+        year_published: yearPublished,
+        designers,
+        publishers,
+        categories,
+        mechanics,
+        rating: average,
+        weight: averageweight,
+        rank,
+        expansions,
+        characters,
+        game_type: gameType,
+        is_expansion: this.getLinkValues(item, 'boardgameexpansion').length > 0,
+        base_game_id: this.getBaseGameId(item)
+      }
+    } catch (error) {
+      console.error('Error parsing game details:', error)
+      return null
+    }
+  }
+
+  private parseExpansions(xmlText: string): BGGExpansion[] {
+    try {
+      const parser = new DOMParser()
+      const xmlDoc = parser.parseFromString(xmlText, 'text/xml')
+      const item = xmlDoc.getElementsByTagName('item')[0]
+      
+      if (!item) return []
+
+      const expansionLinks = item.querySelectorAll('link[type="boardgameexpansion"]')
+      const expansions: BGGExpansion[] = []
+
+      expansionLinks.forEach(link => {
+        const id = parseInt(link.getAttribute('id') || '0')
+        const name = link.getAttribute('value') || ''
+        
+        if (id && name) {
+          expansions.push({
+            id,
+            name,
+            year_published: 0 // Would need separate API call for each expansion
+          })
+        }
+      })
+
+      return expansions
+    } catch (error) {
+      console.error('Error parsing expansions:', error)
+      return []
+    }
+  }
+
+  private generateMockCharacters(gameName: string, categories: string[]): BGGCharacter[] {
+    // Simple character generation based on game categories
+    const characters: BGGCharacter[] = []
+    
+    if (categories.some(cat => cat.toLowerCase().includes('fantasy') || cat.toLowerCase().includes('adventure'))) {
+      characters.push(
+        {
+          id: 'warrior',
+          name: 'Warrior',
+          description: 'A brave fighter skilled in combat',
+          abilities: ['Melee Combat', 'Heavy Armor', 'Battle Cry']
+        },
+        {
+          id: 'mage',
+          name: 'Mage',
+          description: 'A wielder of arcane magic',
+          abilities: ['Spell Casting', 'Elemental Magic', 'Mystic Shield']
+        }
+      )
+    }
+    
+    if (categories.some(cat => cat.toLowerCase().includes('sci-fi') || cat.toLowerCase().includes('space'))) {
+      characters.push(
+        {
+          id: 'pilot',
+          name: 'Pilot',
+          description: 'Expert spacecraft operator',
+          abilities: ['Ship Navigation', 'Evasive Maneuvers', 'Technical Repair']
+        },
+        {
+          id: 'engineer',
+          name: 'Engineer',
+          description: 'Technology specialist',
+          abilities: ['Equipment Repair', 'System Hacking', 'Shield Boost']
+        }
+      )
+    }
+
+    if (categories.some(cat => cat.toLowerCase().includes('economic') || cat.toLowerCase().includes('trading'))) {
+      characters.push(
+        {
+          id: 'merchant',
+          name: 'Merchant',
+          description: 'Expert trader and negotiator',
+          abilities: ['Resource Trading', 'Market Analysis', 'Profit Boost']
+        }
+      )
+    }
+
+    return characters
+  }
+
+  private determineGameType(categories: string[], mechanics: string[]): 'competitive' | 'cooperative' | 'campaign' | 'hybrid' {
+    const categoryStr = categories.join(' ').toLowerCase()
+    const mechanicStr = mechanics.join(' ').toLowerCase()
+    
+    if (mechanicStr.includes('cooperative') || categoryStr.includes('cooperative')) {
+      return 'cooperative'
+    }
+    
+    if (mechanicStr.includes('campaign') || categoryStr.includes('campaign') || categoryStr.includes('legacy')) {
+      return 'campaign'
+    }
+    
+    if (mechanicStr.includes('semi-cooperative') || mechanicStr.includes('team') && mechanicStr.includes('competitive')) {
+      return 'hybrid'
+    }
+    
+    return 'competitive'
+  }
+
+  private getNodeValue(item: Element, tagName: string): string | null {
+    const elements = item.getElementsByTagName(tagName)
+    return elements[0]?.getAttribute('value') || null
+  }
+
+  private getLinkValues(item: Element, type: string): string[] {
+    const links = item.querySelectorAll(`link[type="${type}"]`)
+    const values: string[] = []
+    
+    links.forEach(link => {
+      const value = link.getAttribute('value')
+      if (value) values.push(value)
+    })
+    
+    return values
+  }
+
+  private getBaseGameId(item: Element): number | undefined {
+    const baseGameLinks = item.querySelectorAll('link[type="boardgameimplementation"]')
+    if (baseGameLinks.length > 0) {
+      return parseInt(baseGameLinks[0].getAttribute('id') || '0') || undefined
+    }
+    return undefined
+  }
+}
+
+export const bggApiService = new BGGApiService()

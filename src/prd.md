@@ -44,9 +44,19 @@
 - **Success Criteria**: Easy to find specific players and see their game history
 
 ### Games Collection
-- **Functionality**: View, add, search, and delete games with detailed information
-- **Purpose**: Catalog available games with metadata like player count, duration, difficulty
-- **Success Criteria**: Quick access to game information when planning game nights
+- **Functionality**: View, add, search, and delete games with detailed information including BoardGameGeek integration
+- **Purpose**: Catalog available games with comprehensive metadata from BGG API, including expansions and character information
+- **Success Criteria**: Quick access to game information when planning game nights, automatic data population from BGG
+
+### BoardGameGeek Integration
+- **Functionality**: Search and import game data directly from BoardGameGeek database
+- **Purpose**: Eliminate manual data entry by leveraging the comprehensive BGG database
+- **Success Criteria**: Users can quickly find and import detailed game information with minimal typing
+
+### Enhanced Game Data
+- **Functionality**: Track game types (competitive, cooperative, campaign, hybrid), characters/roles, and expansions
+- **Purpose**: Provide comprehensive game information for better game selection and planning
+- **Success Criteria**: Users can easily identify suitable games based on type and player roles available
 
 ### Persistent Data Storage
 - **Functionality**: All data saves automatically and persists between sessions
@@ -142,9 +152,9 @@
 
 ## Implementation Considerations
 
-**Scalability Needs**: Local storage can handle hundreds of entries efficiently
-**Testing Focus**: Cross-browser compatibility, mobile responsiveness, data persistence
-**Critical Questions**: How to handle data export/import for users who want to backup their data
+**Scalability Needs**: Local storage can handle hundreds of entries efficiently; BGG API integration provides access to thousands of games
+**Testing Focus**: Cross-browser compatibility, mobile responsiveness, data persistence, BGG API error handling
+**Critical Questions**: How to handle BGG API rate limits and offline functionality when API is unavailable
 
 ## Reflection
 

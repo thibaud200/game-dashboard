@@ -79,7 +79,18 @@ const mockData = {
       bgg_rating: 7.8,
       weight: 3.5,
       age_min: 14,
-      players: '2-4'
+      players: '2-4',
+      game_type: 'competitive',
+      expansions: [],
+      characters: [
+        {
+          id: 'commander',
+          name: 'Commander',
+          description: 'Strategic military leader',
+          abilities: ['Battle Tactics', 'Resource Management', 'Unit Command']
+        }
+      ],
+      bgg_id: 12345
     },
     {
       game_id: 2,
@@ -97,7 +108,30 @@ const mockData = {
       bgg_rating: 7.2,
       weight: 2.8,
       age_min: 12,
-      players: '3-6'
+      players: '3-6',
+      game_type: 'competitive',
+      expansions: [
+        {
+          id: 67890,
+          name: 'Battle Arena: New Warriors',
+          year_published: 2024
+        }
+      ],
+      characters: [
+        {
+          id: 'warrior',
+          name: 'Warrior',
+          description: 'Fierce melee fighter',
+          abilities: ['Heavy Attack', 'Shield Block', 'Intimidate']
+        },
+        {
+          id: 'archer',
+          name: 'Archer',
+          description: 'Precise ranged combatant',
+          abilities: ['Long Shot', 'Multi-Shot', 'Eagle Eye']
+        }
+      ],
+      bgg_id: 23456
     },
     {
       game_id: 3,
@@ -115,7 +149,11 @@ const mockData = {
       bgg_rating: 6.9,
       weight: 1.5,
       age_min: 10,
-      players: '2-8'
+      players: '2-8',
+      game_type: 'cooperative',
+      expansions: [],
+      characters: [],
+      bgg_id: 34567
     },
     {
       game_id: 4,
@@ -133,7 +171,35 @@ const mockData = {
       bgg_rating: 8.1,
       weight: 4.2,
       age_min: 16,
-      players: '2-5'
+      players: '2-5',
+      game_type: 'campaign',
+      expansions: [
+        {
+          id: 45678,
+          name: 'Cosmic Empire: Alien Worlds',
+          year_published: 2021
+        },
+        {
+          id: 45679,
+          name: 'Cosmic Empire: Deep Space',
+          year_published: 2022
+        }
+      ],
+      characters: [
+        {
+          id: 'explorer',
+          name: 'Explorer',
+          description: 'Galactic scout and pioneer',
+          abilities: ['System Discovery', 'Resource Scanning', 'Jump Drive']
+        },
+        {
+          id: 'diplomat',
+          name: 'Diplomat',
+          description: 'Inter-species negotiator',
+          abilities: ['Trade Agreements', 'Alliance Formation', 'Cultural Exchange']
+        }
+      ],
+      bgg_id: 45678
     }
   ]
 }
@@ -202,7 +268,10 @@ export default function ModernDashboard() {
     const game = {
       game_id: Date.now(),
       ...gameData,
-      players: `${gameData.min_players}-${gameData.max_players}`
+      players: `${gameData.min_players}-${gameData.max_players}`,
+      game_type: gameData.game_type || 'competitive',
+      expansions: gameData.expansions || [],
+      characters: gameData.characters || []
     }
     setGames(currentGames => [...currentGames, game])
   }
@@ -211,7 +280,14 @@ export default function ModernDashboard() {
     setGames(currentGames => 
       currentGames.map(g => 
         g.game_id === gameId 
-          ? { ...g, ...gameData, players: `${gameData.min_players}-${gameData.max_players}` }
+          ? { 
+              ...g, 
+              ...gameData, 
+              players: `${gameData.min_players || g.min_players}-${gameData.max_players || g.max_players}`,
+              game_type: gameData.game_type || g.game_type || 'competitive',
+              expansions: gameData.expansions || g.expansions || [],
+              characters: gameData.characters || g.characters || []
+            }
           : g
       )
     )
