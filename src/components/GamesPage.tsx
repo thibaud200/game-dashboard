@@ -1180,11 +1180,10 @@ export default function GamesPage({
                     <Button 
                       type="button"
                       onClick={addCharacter}
-                      
                       variant="outline"
                       className="border-slate-600 text-white hover:bg-slate-600"
                     >
-                      <Plus className="w-3 h-3 mr-1" />
+                      <Plus className="w-4 h-4 mr-2" />
                       Add Character
                     </Button>
                   </div>
