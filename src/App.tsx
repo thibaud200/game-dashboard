@@ -361,7 +361,7 @@ export default function ModernDashboard() {
                       {player.favorite_game}
                     </Badge>
                     <span className="text-xs text-white/40">
-                      Joined {player.created_at.toLocaleDateString()}
+                      Joined {new Date(player.created_at).toLocaleDateString()}
                     </span>
                   </div>
                 </div>
