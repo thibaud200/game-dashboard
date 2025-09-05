@@ -113,6 +113,7 @@ export default function GamesPage({
     characters: [] as Character[],
     has_expansion: false,
     has_characters: false,
+    manualExpansions: '',
     bgg_id: undefined as number | undefined
   })
 
@@ -144,6 +145,7 @@ export default function GamesPage({
       characters: [],
       has_expansion: false,
       has_characters: false,
+      manualExpansions: '',
       bgg_id: undefined
     })
   }
@@ -169,6 +171,7 @@ export default function GamesPage({
       characters: bggGame.characters,
       has_expansion: bggGame.expansions.length > 0,
       has_characters: bggGame.characters.length > 0,
+      manualExpansions: '',
       bgg_id: bggGame.id
     })
     setIsBGGSearchOpen(false)
@@ -225,6 +228,7 @@ export default function GamesPage({
       characters: game.characters || [],
       has_expansion: game.has_expansion || false,
       has_characters: game.has_characters || false,
+      manualExpansions: '',
       bgg_id: game.bgg_id
     })
     setIsEditDialogOpen(true)
@@ -592,6 +596,20 @@ export default function GamesPage({
                           </div>
                         </>
                       )}
+                      
+                      {/* Manual expansion input - always show when checkbox is checked */}
+                      <div className="space-y-2">
+                        <Label>Manual Expansion Entry</Label>
+                        <Input
+                          placeholder="Enter expansion names (one per line)"
+                          className="bg-slate-600 border-slate-500 text-white"
+                          value={formData.manualExpansions || ''}
+                          onChange={(e) => setFormData(prev => ({ ...prev, manualExpansions: e.target.value }))}
+                        />
+                        <div className="text-xs text-white/60">
+                          Enter expansion names separated by new lines
+                        </div>
+                      </div>
                     </div>
                   )}
                 </div>
