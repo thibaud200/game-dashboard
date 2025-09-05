@@ -173,6 +173,7 @@ export default function ModernDashboard() {
         onNavigation={handleNavigation}
         onAddPlayer={addPlayer}
         onDeletePlayer={deletePlayer}
+        currentView={currentView}
       />
     )
   }
@@ -184,6 +185,7 @@ export default function ModernDashboard() {
         onNavigation={handleNavigation}
         onAddGame={addGame}
         onDeleteGame={deleteGame}
+        currentView={currentView}
       />
     )
   }

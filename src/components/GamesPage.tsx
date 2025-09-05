@@ -4,7 +4,10 @@ import {
   Plus,
   ArrowLeft,
   Search,
-  Trash2
+  Trash2,
+  Users,
+  TrendingUp,
+  Settings
 } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
@@ -30,13 +33,15 @@ interface GamesPageProps {
   onNavigation: (view: string) => void
   onAddGame: (game: Omit<Game, 'game_id'>) => void
   onDeleteGame: (gameId: number) => void
+  currentView?: string
 }
 
 export default function GamesPage({ 
   games, 
   onNavigation, 
   onAddGame, 
-  onDeleteGame 
+  onDeleteGame,
+  currentView = 'games'
 }: GamesPageProps) {
   const [searchQuery, setSearchQuery] = useState('')
   const [newGame, setNewGame] = useState({
@@ -239,6 +244,56 @@ export default function GamesPage({
             <p className="text-white/60">No games found</p>
           </div>
         )}
+      </div>
+
+      {/* Bottom Navigation */}
+      <div className="fixed bottom-0 left-0 right-0 bg-slate-800/90 backdrop-blur-md border-t border-white/10">
+        <div className="flex justify-around items-center py-2">
+          <button
+            onClick={() => onNavigation('dashboard')}
+            className={`flex flex-col items-center p-3 transition-colors ${
+              currentView === 'dashboard'
+                ? 'text-teal-400'
+                : 'text-white/60 hover:text-white'
+            }`}
+          >
+            <TrendingUp className="w-6 h-6 mb-1" />
+            <span className="text-xs">Dashboard</span>
+          </button>
+          <button
+            onClick={() => onNavigation('players')}
+            className={`flex flex-col items-center p-3 transition-colors ${
+              currentView === 'players'
+                ? 'text-teal-400'
+                : 'text-white/60 hover:text-white'
+            }`}
+          >
+            <Users className="w-6 h-6 mb-1" />
+            <span className="text-xs">Players</span>
+          </button>
+          <button
+            onClick={() => onNavigation('games')}
+            className={`flex flex-col items-center p-3 transition-colors ${
+              currentView === 'games'
+                ? 'text-teal-400'
+                : 'text-white/60 hover:text-white'
+            }`}
+          >
+            <Gamepad2 className="w-6 h-6 mb-1" />
+            <span className="text-xs">Games</span>
+          </button>
+          <button
+            onClick={() => onNavigation('settings')}
+            className={`flex flex-col items-center p-3 transition-colors ${
+              currentView === 'settings'
+                ? 'text-teal-400'
+                : 'text-white/60 hover:text-white'
+            }`}
+          >
+            <Settings className="w-6 h-6 mb-1" />
+            <span className="text-xs">Settings</span>
+          </button>
+        </div>
       </div>
     </div>
   )
