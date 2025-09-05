@@ -574,20 +574,24 @@ export default function GamesPage({
                     />
                     <Label htmlFor="has_expansion">Has expansions</Label>
                   </div>
-                  {/* Expansions Display - only show if checkbox is checked AND there are expansions */}
-                  {formData.has_expansion && formData.expansions.length > 0 && (
+                  {/* Expansions Display - show if checkbox is checked */}
+                  {formData.has_expansion && (
                     <div className="space-y-2">
-                      <Label>Expansions from BGG</Label>
-                      <div className="space-y-1">
-                        {formData.expansions.map((expansion, index) => (
-                          <div key={index} className="p-2 bg-slate-700 rounded border border-slate-600 text-sm">
-                            <div className="font-medium">{expansion.name}</div>
-                            {expansion.year_published > 0 && (
-                              <div className="text-white/60 text-xs">{expansion.year_published}</div>
-                            )}
+                      {formData.expansions.length > 0 && (
+                        <>
+                          <Label>Expansions from BGG</Label>
+                          <div className="space-y-1">
+                            {formData.expansions.map((expansion, index) => (
+                              <div key={index} className="p-2 bg-slate-700 rounded border border-slate-600 text-sm">
+                                <div className="font-medium">{expansion.name}</div>
+                                {expansion.year_published > 0 && (
+                                  <div className="text-white/60 text-xs">{expansion.year_published}</div>
+                                )}
+                              </div>
+                            ))}
                           </div>
-                        ))}
-                      </div>
+                        </>
+                      )}
                     </div>
                   )}
                 </div>
@@ -1116,20 +1120,24 @@ export default function GamesPage({
                 />
                 <Label htmlFor="edit-has_expansion">Has expansions</Label>
               </div>
-              {/* Expansions Display - only show if checkbox is checked AND there are expansions */}
-              {formData.has_expansion && formData.expansions.length > 0 && (
+              {/* Expansions Display - show if checkbox is checked */}
+              {formData.has_expansion && (
                 <div className="space-y-2">
-                  <Label>Expansions from BGG</Label>
-                  <div className="space-y-1">
-                    {formData.expansions.map((expansion, index) => (
-                      <div key={index} className="p-2 bg-slate-700 rounded border border-slate-600 text-sm">
-                        <div className="font-medium">{expansion.name}</div>
-                        {expansion.year_published > 0 && (
-                          <div className="text-white/60 text-xs">{expansion.year_published}</div>
-                        )}
+                  {formData.expansions.length > 0 && (
+                    <>
+                      <Label>Expansions from BGG</Label>
+                      <div className="space-y-1">
+                        {formData.expansions.map((expansion, index) => (
+                          <div key={index} className="p-2 bg-slate-700 rounded border border-slate-600 text-sm">
+                            <div className="font-medium">{expansion.name}</div>
+                            {expansion.year_published > 0 && (
+                              <div className="text-white/60 text-xs">{expansion.year_published}</div>
+                            )}
+                          </div>
+                        ))}
                       </div>
-                    ))}
-                  </div>
+                    </>
+                  )}
                 </div>
               )}
             </div>
