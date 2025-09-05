@@ -28,6 +28,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from 
 import { Label } from '@/components/ui/label'
 import { Textarea } from '@/components/ui/textarea'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
+import { Checkbox } from '@/components/ui/checkbox'
 import BGGSearch from '@/components/BGGSearch'
 import { BGGGame } from '@/services/bggApi'
 
@@ -552,7 +553,11 @@ export default function GamesPage({
 
                 <div>
                   <Label htmlFor="has_expansion">has an expansion</Label>
-                  <checbox value="true"></checkbox>
+                  <Checkbox 
+                    id="has_expansion"
+                    checked={formData.has_expansion}
+                    onCheckedChange={(checked) => setFormData(prev => ({ ...prev, has_expansion: checked }))}
+                  />
                   <Label htmlFor="expansion">Expansion</Label>
                   <Textarea
                     id="expansion"
@@ -567,7 +572,11 @@ export default function GamesPage({
                 {/* Characters Section */}
                 <div className="space-y-2">
                   <Label htmlFor="has_character">has an Roles</Label>
-                  <checbox value="true"></checkbox>
+                  <Checkbox 
+                    id="has_character"
+                    checked={formData.has_characters}
+                    onCheckedChange={(checked) => setFormData(prev => ({ ...prev, has_characters: checked }))}
+                  />
                   <div className="flex items-center justify-between">
                     <Label>Characters/Roles</Label>
                     <Button 
