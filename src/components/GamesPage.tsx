@@ -121,7 +121,6 @@ export default function GamesPage({
     supports_cooperative: false,
     supports_competitive: true,
     supports_campaign: false,
-    manualExpansions: '',
     bgg_id: undefined as number | undefined
   })
 
@@ -156,7 +155,6 @@ export default function GamesPage({
       supports_cooperative: false,
       supports_competitive: true,
       supports_campaign: false,
-      manualExpansions: '',
       bgg_id: undefined
     })
   }
@@ -185,7 +183,6 @@ export default function GamesPage({
       supports_cooperative: false,
       supports_competitive: true,
       supports_campaign: false,
-      manualExpansions: '',
       bgg_id: bggGame.id
     })
     setIsBGGSearchOpen(false)
@@ -616,20 +613,6 @@ export default function GamesPage({
                           </div>
                         </>
                       )}
-                      
-                      {/* Manual expansion input - always show when checkbox is checked */}
-                      <div className="space-y-2">
-                        <Label>Manual Expansion Entry</Label>
-                        <Input
-                          placeholder="Enter expansion names (one per line)"
-                          className="bg-slate-600 border-slate-500 text-white"
-                          value={formData.manualExpansions || ''}
-                          onChange={(e) => setFormData(prev => ({ ...prev, manualExpansions: e.target.value }))}
-                        />
-                        <div className="text-xs text-white/60">
-                          Enter expansion names separated by new lines
-                        </div>
-                      </div>
                     </div>
                   )}
                 </div>
