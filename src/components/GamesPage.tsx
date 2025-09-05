@@ -558,15 +558,23 @@ export default function GamesPage({
                     checked={formData.has_expansion}
                     onCheckedChange={(checked) => setFormData(prev => ({ ...prev, has_expansion: checked }))}
                   />
-                  <Label htmlFor="expansion">Expansion</Label>
-                  <Textarea
-                    id="expansion"
-                    value={formData.expansion}
-                    onChange={(e) => setFormData(prev => ({ ...prev, expansion: e.target.value }))}
-                    className="bg-slate-700 border-slate-600 text-white"
-                    placeholder="Brief game expansion"
-                    rows={3}
-                  />
+                  {/* Expansions Display */}
+                  {formData.expansions.length > 0 && (
+                    <div className="space-y-2">
+                      <Label>Expansions from BGG</Label>
+                      <div className="space-y-1">
+                        {formData.expansions.map((expansion, index) => (
+                          <div key={index} className="p-2 bg-slate-700 rounded border border-slate-600 text-sm">
+                            <div className="font-medium">{expansion.name}</div>
+                            {expansion.year_published > 0 && (
+                              <div className="text-white/60 text-xs">{expansion.year_published}</div>
+                            )}
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                  )}
+
                 </div>
 
                 {/* Characters Section */}
@@ -1173,24 +1181,6 @@ export default function GamesPage({
                 </div>
               ))}
             </div>
-
-            {/* Expansions Display */}
-            {formData.expansions.length > 0 && (
-              <div className="space-y-2">
-                <Label>Expansions from BGG</Label>
-                <div className="space-y-1">
-                  {formData.expansions.map((expansion, index) => (
-                    <div key={index} className="p-2 bg-slate-700 rounded border border-slate-600 text-sm">
-                      <div className="font-medium">{expansion.name}</div>
-                      {expansion.year_published > 0 && (
-                        <div className="text-white/60 text-xs">{expansion.year_published}</div>
-                      )}
-                    </div>
-                  ))}
-                </div>
-              </div>
-            )}
-
             <Button onClick={handleUpdateGame} className="w-full bg-blue-600 hover:bg-blue-700">
               Update Game
             </Button>
