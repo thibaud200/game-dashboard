@@ -228,7 +228,6 @@ export default function GamesPage({
       characters: game.characters || [],
       has_expansion: game.has_expansion || false,
       has_characters: game.has_characters || false,
-      manualExpansions: '',
       bgg_id: game.bgg_id
     })
     setIsEditDialogOpen(true)
@@ -583,7 +582,7 @@ export default function GamesPage({
                     <div className="space-y-2">
                       {formData.expansions.length > 0 && (
                         <>
-                          <Label>Expansions from BGG</Label>
+                          <Label>Expansions</Label>
                           <div className="space-y-1">
                             {formData.expansions.map((expansion, index) => (
                               <div key={index} className="p-2 bg-slate-700 rounded border border-slate-600 text-sm">
@@ -615,7 +614,6 @@ export default function GamesPage({
                 </div>
 
                 {/* Characters Section */}
-                <div className="space-y-2">
                   <div className="flex items-center space-x-2 mb-2">
                     <Checkbox 
                       id="has_character"
