@@ -1,21 +1,13 @@
 import React, { useState } from 'react'
-import { Button } from '@/components/ui/button'
 import { Input } from "@/components/ui/input"
-import { Checkbox } from "@/components/ui/checkbox"
 import { Textarea } from "@/components/ui/textarea"
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
-import { ArrowLeft, Play } from "@phosphor-icons/react"
 import BottomNavigation from './BottomNavigation'
-
 interface Player {
-  player_id: number
   player_name: string
-  avatar?: string
   games_played: number
-  wins: number
   total_score: number
-  average_score: number
+
   favorite_game?: string
   created_at: Date
   updated_at?: Date
