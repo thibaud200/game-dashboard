@@ -6,6 +6,9 @@ import GamesPage from '@/components/GamesPage'
 import GameDetailPage from '@/components/GameDetailPage'
 import GameExpansionsPage from '@/components/GameExpansionsPage'
 import GameCharactersPage from '@/components/GameCharactersPage'
+import PlayerStatsPage from '@/components/PlayerStatsPage'
+import GameStatsPage from '@/components/GameStatsPage'
+import SettingsPage from '@/components/SettingsPage'
 import ApiService from '@/services/ApiService'
 
 // Database-aligned interfaces
@@ -785,6 +788,17 @@ export default function ModernDashboard() {
       />
     )
   }
+
+  if (currentView === 'player-stats') {
+    return (
+      <PlayerStatsPage 
+        players={apiConnected ? recentPlayers : (players || [])}
+        games={apiConnected ? (games || []) : (games || [])}
+        onNavigation={handleNavigation}
+        currentView={currentView}
+      />
+    )
+  }
   
   if (currentView === 'games') {
     return (
@@ -800,6 +814,26 @@ export default function ModernDashboard() {
         onAddCharacter={addCharacter}
         onUpdateCharacter={updateCharacter}
         onDeleteCharacter={deleteCharacter}
+        currentView={currentView}
+      />
+    )
+  }
+
+  if (currentView === 'game-stats') {
+    return (
+      <GameStatsPage 
+        games={apiConnected ? (games || []) : (games || [])}
+        players={apiConnected ? recentPlayers : (players || [])}
+        onNavigation={handleNavigation}
+        currentView={currentView}
+      />
+    )
+  }
+
+  if (currentView === 'settings') {
+    return (
+      <SettingsPage 
+        onNavigation={handleNavigation}
         currentView={currentView}
       />
     )

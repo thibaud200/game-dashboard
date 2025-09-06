@@ -11,7 +11,8 @@ import {
   Trash2,
   Settings,
   Edit,
-  MoreVertical
+  MoreVertical,
+  BarChart3
 } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
@@ -39,6 +40,7 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu'
+import BottomNavigation from './BottomNavigation'
 
 interface Player {
   player_id: number
@@ -178,24 +180,38 @@ export default function PlayersPage({
             </TooltipContent>
           </Tooltip>
           <h1 className="text-2xl font-bold">Players</h1>
-          <Dialog open={isAddDialogOpen} onOpenChange={(open) => {
-            setIsAddDialogOpen(open)
-            if (!open) {
-              resetForm()
-            }
-          }}>
+          <div className="flex space-x-2">
             <Tooltip>
               <TooltipTrigger asChild>
-                <DialogTrigger asChild>
-                  <button className="p-2 hover:bg-white/10 rounded-lg transition-colors">
-                    <Plus className="w-6 h-6" />
-                  </button>
-                </DialogTrigger>
+                <button
+                  onClick={() => onNavigation('player-stats')}
+                  className="p-2 hover:bg-white/10 rounded-lg transition-colors"
+                >
+                  <BarChart3 className="w-6 h-6" />
+                </button>
               </TooltipTrigger>
               <TooltipContent>
-                <p>Add New Player</p>
+                <p>View Player Stats</p>
               </TooltipContent>
             </Tooltip>
+            <Dialog open={isAddDialogOpen} onOpenChange={(open) => {
+              setIsAddDialogOpen(open)
+              if (!open) {
+                resetForm()
+              }
+            }}>
+              <Tooltip>
+                <TooltipTrigger asChild>
+                  <DialogTrigger asChild>
+                    <button className="p-2 hover:bg-white/10 rounded-lg transition-colors">
+                      <Plus className="w-6 h-6" />
+                    </button>
+                  </DialogTrigger>
+                </TooltipTrigger>
+                <TooltipContent>
+                  <p>Add New Player</p>
+                </TooltipContent>
+              </Tooltip>
             <DialogContent className="bg-slate-800 border-slate-700 text-white max-w-md">
               <DialogHeader>
                 <DialogTitle>Add New Player</DialogTitle>
@@ -505,54 +521,7 @@ export default function PlayersPage({
       </Dialog>
 
       {/* Bottom Navigation */}
-      <div className="fixed bottom-0 left-0 right-0 bg-slate-800/90 backdrop-blur-md border-t border-white/10">
-        <div className="flex justify-around items-center py-2">
-          <button
-            onClick={() => onNavigation('dashboard')}
-            className={`flex flex-col items-center p-3 transition-colors ${
-              currentView === 'dashboard'
-                ? 'text-teal-400'
-                : 'text-white/60 hover:text-white'
-            }`}
-          >
-            <TrendingUp className="w-6 h-6 mb-1" />
-            <span className="text-xs">Dashboard</span>
-          </button>
-          <button
-            onClick={() => onNavigation('players')}
-            className={`flex flex-col items-center p-3 transition-colors ${
-              currentView === 'players'
-                ? 'text-teal-400'
-                : 'text-white/60 hover:text-white'
-            }`}
-          >
-            <Users className="w-6 h-6 mb-1" />
-            <span className="text-xs">Players</span>
-          </button>
-          <button
-            onClick={() => onNavigation('games')}
-            className={`flex flex-col items-center p-3 transition-colors ${
-              currentView === 'games'
-                ? 'text-teal-400'
-                : 'text-white/60 hover:text-white'
-            }`}
-          >
-            <Gamepad2 className="w-6 h-6 mb-1" />
-            <span className="text-xs">Games</span>
-          </button>
-          <button
-            onClick={() => onNavigation('settings')}
-            className={`flex flex-col items-center p-3 transition-colors ${
-              currentView === 'settings'
-                ? 'text-teal-400'
-                : 'text-white/60 hover:text-white'
-            }`}
-          >
-            <Settings className="w-6 h-6 mb-1" />
-            <span className="text-xs">Settings</span>
-          </button>
-        </div>
-      </div>
+      <BottomNavigation currentView={currentView} onNavigation={onNavigation} />
     </div>
   )
 }

@@ -20,7 +20,8 @@ import {
   ChevronDown,
   ChevronUp,
   MoreVertical,
-  ExternalLink
+  ExternalLink,
+  BarChart3
 } from 'lucide-react'
 import { DotsThreeVertical } from '@phosphor-icons/react'
 import { Button } from '@/components/ui/button'
@@ -53,6 +54,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { Checkbox } from '@/components/ui/checkbox'
 import BGGSearch from '@/components/BGGSearch'
 import { BGGGame } from '@/services/bggApi'
+import BottomNavigation from './BottomNavigation'
 
 interface Character {
   character_id?: number
@@ -448,19 +450,33 @@ export default function GamesPage({
             </TooltipContent>
           </Tooltip>
           <h1 className="text-2xl font-bold">Games</h1>
-          <Dialog open={isAddDialogOpen} onOpenChange={(open) => {
-            setIsAddDialogOpen(open)
-            if (!open) {
-              resetForm()
-              setIsBGGSearchOpen(false)
-            }
-          }}>
+          <div className="flex space-x-2">
             <Tooltip>
               <TooltipTrigger asChild>
-                <DialogTrigger asChild>
-                  <button className="p-2 hover:bg-white/10 rounded-lg transition-colors">
-                    <Plus className="w-6 h-6" />
-                  </button>
+                <button
+                  onClick={() => onNavigation('game-stats')}
+                  className="p-2 hover:bg-white/10 rounded-lg transition-colors"
+                >
+                  <BarChart3 className="w-6 h-6" />
+                </button>
+              </TooltipTrigger>
+              <TooltipContent>
+                <p>View Game Stats</p>
+              </TooltipContent>
+            </Tooltip>
+            <Dialog open={isAddDialogOpen} onOpenChange={(open) => {
+              setIsAddDialogOpen(open)
+              if (!open) {
+                resetForm()
+                setIsBGGSearchOpen(false)
+              }
+            }}>
+              <Tooltip>
+                <TooltipTrigger asChild>
+                  <DialogTrigger asChild>
+                    <button className="p-2 hover:bg-white/10 rounded-lg transition-colors">
+                      <Plus className="w-6 h-6" />
+                    </button>
                 </DialogTrigger>
               </TooltipTrigger>
               <TooltipContent>
@@ -1598,54 +1614,7 @@ export default function GamesPage({
       </Dialog>
 
       {/* Bottom Navigation */}
-      <div className="fixed bottom-0 left-0 right-0 bg-slate-800/90 backdrop-blur-md border-t border-white/10">
-        <div className="flex justify-around items-center py-2">
-          <button
-            onClick={() => onNavigation('dashboard')}
-            className={`flex flex-col items-center p-3 transition-colors ${
-              currentView === 'dashboard'
-                ? 'text-teal-400'
-                : 'text-white/60 hover:text-white'
-            }`}
-          >
-            <TrendingUp className="w-6 h-6 mb-1" />
-            <span className="text-xs">Dashboard</span>
-          </button>
-          <button
-            onClick={() => onNavigation('players')}
-            className={`flex flex-col items-center p-3 transition-colors ${
-              currentView === 'players'
-                ? 'text-teal-400'
-                : 'text-white/60 hover:text-white'
-            }`}
-          >
-            <Users className="w-6 h-6 mb-1" />
-            <span className="text-xs">Players</span>
-          </button>
-          <button
-            onClick={() => onNavigation('games')}
-            className={`flex flex-col items-center p-3 transition-colors ${
-              currentView === 'games'
-                ? 'text-teal-400'
-                : 'text-white/60 hover:text-white'
-            }`}
-          >
-            <Gamepad2 className="w-6 h-6 mb-1" />
-            <span className="text-xs">Games</span>
-          </button>
-          <button
-            onClick={() => onNavigation('settings')}
-            className={`flex flex-col items-center p-3 transition-colors ${
-              currentView === 'settings'
-                ? 'text-teal-400'
-                : 'text-white/60 hover:text-white'
-            }`}
-          >
-            <Settings className="w-6 h-6 mb-1" />
-            <span className="text-xs">Settings</span>
-          </button>
-        </div>
-      </div>
+      <BottomNavigation currentView={currentView} onNavigation={onNavigation} />
     </div>
   )
 }

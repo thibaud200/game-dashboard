@@ -6,9 +6,11 @@ import {
   Settings,
   Plus,
   Play,
-  ArrowLeft
+  ArrowLeft,
+  BarChart3
 } from 'lucide-react'
 import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip'
+import BottomNavigation from './BottomNavigation'
 
 interface DashboardProps {
   stats: {
@@ -67,19 +69,34 @@ export default function Dashboard({
             </TooltipContent>
           </Tooltip>
           <h1 className="text-2xl font-bold">Dashboard</h1>
-          <Tooltip>
-            <TooltipTrigger asChild>
-              <button
-                onClick={() => onNavigation('settings')}
-                className="p-2 hover:bg-white/10 rounded-lg transition-colors"
-              >
-                <Settings className="w-6 h-6" />
-              </button>
-            </TooltipTrigger>
-            <TooltipContent>
-              <p>Settings</p>
-            </TooltipContent>
-          </Tooltip>
+          <div className="flex space-x-2">
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <button
+                  onClick={() => onNavigation('player-stats')}
+                  className="p-2 hover:bg-white/10 rounded-lg transition-colors"
+                >
+                  <BarChart3 className="w-6 h-6" />
+                </button>
+              </TooltipTrigger>
+              <TooltipContent>
+                <p>View Stats</p>
+              </TooltipContent>
+            </Tooltip>
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <button
+                  onClick={() => onNavigation('settings')}
+                  className="p-2 hover:bg-white/10 rounded-lg transition-colors"
+                >
+                  <Settings className="w-6 h-6" />
+                </button>
+              </TooltipTrigger>
+              <TooltipContent>
+                <p>Settings</p>
+              </TooltipContent>
+            </Tooltip>
+          </div>
         </div>
 
         {/* Stats circulaires */}
@@ -285,54 +302,7 @@ export default function Dashboard({
       </div>
 
       {/* Bottom Navigation */}
-      <div className="fixed bottom-0 left-0 right-0 bg-slate-800/90 backdrop-blur-md border-t border-white/10">
-        <div className="flex justify-around items-center py-2">
-          <button
-            onClick={() => onNavigation('dashboard')}
-            className={`flex flex-col items-center p-3 transition-colors ${
-              currentView === 'dashboard'
-                ? 'text-teal-400'
-                : 'text-white/60 hover:text-white'
-            }`}
-          >
-            <TrendingUp className="w-6 h-6 mb-1" />
-            <span className="text-xs">Dashboard</span>
-          </button>
-          <button
-            onClick={() => onNavigation('players')}
-            className={`flex flex-col items-center p-3 transition-colors ${
-              currentView === 'players'
-                ? 'text-teal-400'
-                : 'text-white/60 hover:text-white'
-            }`}
-          >
-            <Users className="w-6 h-6 mb-1" />
-            <span className="text-xs">Players</span>
-          </button>
-          <button
-            onClick={() => onNavigation('games')}
-            className={`flex flex-col items-center p-3 transition-colors ${
-              currentView === 'games'
-                ? 'text-teal-400'
-                : 'text-white/60 hover:text-white'
-            }`}
-          >
-            <Gamepad2 className="w-6 h-6 mb-1" />
-            <span className="text-xs">Games</span>
-          </button>
-          <button
-            onClick={() => onNavigation('settings')}
-            className={`flex flex-col items-center p-3 transition-colors ${
-              currentView === 'settings'
-                ? 'text-teal-400'
-                : 'text-white/60 hover:text-white'
-            }`}
-          >
-            <Settings className="w-6 h-6 mb-1" />
-            <span className="text-xs">Settings</span>
-          </button>
-        </div>
-      </div>
+      <BottomNavigation currentView={currentView} onNavigation={onNavigation} />
     </div>
   )
 }
