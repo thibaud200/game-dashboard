@@ -1,7 +1,6 @@
 import React, { useState } from 'react'
-import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
-import { Checkbox } from "@/components/ui/checkbox"
+import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
@@ -13,12 +12,7 @@ import BottomNavigation from './BottomNavigation'
 interface Player {
   player_id: number
   player_name: string
-  avatar?: string
-  games_played: number
-  wins: number
-  total_score: number
-  average_score: number
-  favorite_game?: string
+  avatar: string
   created_at: Date
   updated_at?: Date
   stats?: string

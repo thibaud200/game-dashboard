@@ -1,5 +1,5 @@
-import { Alert, AlertTitle, AlertDescription } from "./components/ui/alert";
-import { Button } from "./components/ui/button";
+import { Alert, AlertTitle, AlertDescription } from "@/components/ui/alert";
+import { Button } from "@/components/ui/button";
 
 import { AlertTriangle, ArrowClockwise } from "@phosphor-icons/react";
 
