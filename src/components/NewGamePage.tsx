@@ -5,6 +5,7 @@ import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Textarea } from "@/components/ui/textarea"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
+import { Checkbox } from "@/components/ui/checkbox"
 import { ArrowLeft, Play, Users, Trophy, Timer } from '@phosphor-icons/react'
 import { toast } from 'sonner'
 import BottomNavigation from './BottomNavigation'
@@ -58,7 +59,7 @@ interface NewGamePageProps {
   players: Player[]
   onNavigation: (view: string) => void
   currentView: string
-  onCreateSession?: (sessionData: any) => Promise<void>
+  onCreateSession: (sessionData: any) => Promise<void>
 }
 
 export default function NewGamePage({ 
@@ -140,7 +141,6 @@ export default function NewGamePage({
           <Button
             onClick={() => onNavigation('dashboard')}
             variant="ghost"
-            size="sm"
             className="text-white hover:bg-white/10"
           >
             <ArrowLeft className="w-4 h-4" />
@@ -156,7 +156,7 @@ export default function NewGamePage({
               Game Setup
             </CardTitle>
           </CardHeader>
-          <CardContent className="space-y-4">
+          <CardContent>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div>
                 <Label className="text-white/80">Game</Label>
@@ -167,15 +167,13 @@ export default function NewGamePage({
                   <SelectContent className="bg-slate-800 border-white/20">
                     {games.map(game => (
                       <SelectItem key={game.game_id} value={game.game_id.toString()}>
-                        <div className="flex flex-col">
-                          <span className="text-white">{game.name}</span>
-                          <span className="text-white/60 text-sm">({game.min_players}-{game.max_players} players)</span>
-                        </div>
+                        {game.name}
                       </SelectItem>
                     ))}
                   </SelectContent>
                 </Select>
               </div>
+
               {selectedGame && (
                 <div>
                   <Label className="text-white/80">Session Type</Label>
@@ -201,6 +199,16 @@ export default function NewGamePage({
                 </div>
               )}
             </div>
+
+            {selectedGame && (
+              <div className="mt-4 p-3 bg-white/5 rounded-lg">
+                <p className="text-white/80 text-sm">
+                  Players: {selectedGame.min_players}-{selectedGame.max_players} • 
+                  Duration: {selectedGame.duration || 'Variable'} • 
+                  Difficulty: {selectedGame.difficulty || 'Not rated'}
+                </p>
+              </div>
+            )}
           </CardContent>
         </Card>
 
@@ -214,34 +222,24 @@ export default function NewGamePage({
               </CardTitle>
             </CardHeader>
             <CardContent>
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3">
                 {players.map(player => (
-                  <div
+                  <div 
                     key={player.player_id}
-                    className={`p-3 rounded-lg border cursor-pointer transition-colors ${
-                      selectedPlayers.includes(player.player_id)
-                        ? 'bg-teal-500/20 border-teal-400'
-                        : 'bg-white/5 border-white/20 hover:bg-white/10'
-                    }`}
-                    onClick={() => handlePlayerToggle(player.player_id)}
+                    className="flex items-center space-x-3 p-3 bg-white/5 rounded-lg hover:bg-white/10 transition-colors"
                   >
-                    <div className="flex items-center gap-3">
-                      <input
-                        type="checkbox"
-                        checked={selectedPlayers.includes(player.player_id)}
-                        onChange={() => handlePlayerToggle(player.player_id)}
-                        className="w-4 h-4 text-teal-500 bg-white/10 border-white/20 rounded"
-                        disabled={
-                          !selectedPlayers.includes(player.player_id) &&
-                          selectedPlayers.length >= (selectedGame?.max_players || 8)
-                        }
-                      />
-                      <img
-                        src={player.avatar}
-                        alt={player.player_name}
-                        className="w-8 h-8 rounded-full object-cover"
-                      />
-                      <span className="text-white">{player.player_name}</span>
+                    <Checkbox
+                      checked={selectedPlayers.includes(player.player_id)}
+                      onCheckedChange={() => handlePlayerToggle(player.player_id)}
+                    />
+                    <img
+                      src={player.avatar}
+                      alt={player.player_name}
+                      className="w-8 h-8 rounded-full object-cover"
+                    />
+                    <div>
+                      <p className="text-white font-medium">{player.player_name}</p>
+                      <p className="text-white/60 text-sm">{player.stats}</p>
                     </div>
                   </div>
                 ))}
@@ -250,13 +248,13 @@ export default function NewGamePage({
           </Card>
         )}
 
-        {/* Scores */}
-        {selectedPlayers.length > 0 && (
+        {/* Scoring */}
+        {selectedPlayers.length > 0 && sessionType === 'competitive' && (
           <Card className="bg-white/10 backdrop-blur-md border-white/20">
             <CardHeader>
               <CardTitle className="flex items-center gap-2 text-white">
                 <Trophy className="w-5 h-5" />
-                Player Scores
+                Scoring & Results
               </CardTitle>
             </CardHeader>
             <CardContent className="space-y-4">
@@ -265,26 +263,23 @@ export default function NewGamePage({
                 if (!player) return null
 
                 return (
-                  <div key={playerId} className="p-3 bg-white/5 rounded-lg border border-white/20">
-                    <div className="flex items-center gap-3">
-                      <img
-                        src={player.avatar}
-                        alt={player.player_name}
-                        className="w-8 h-8 rounded-full object-cover"
+                  <div key={playerId} className="flex items-center gap-4 p-3 bg-white/5 rounded-lg">
+                    <img
+                      src={player.avatar}
+                      alt={player.player_name}
+                      className="w-10 h-10 rounded-full object-cover"
+                    />
+                    <div className="flex-1">
+                      <p className="text-white font-medium">{player.player_name}</p>
+                    </div>
+                    <div className="flex items-center gap-2">
+                      <Input
+                        type="number"
+                        placeholder="Score"
+                        value={playerScores[playerId] || ''}
+                        onChange={(e) => handleScoreChange(playerId, e.target.value)}
+                        className="w-20 bg-white/5 border-white/20 text-white"
                       />
-                      <div className="flex-1">
-                        <span className="text-white font-medium">{player.player_name}</span>
-                      </div>
-                      <div>
-                        <Label className="text-white/60 text-sm">Score</Label>
-                        <Input
-                          type="number"
-                          placeholder="0"
-                          value={playerScores[playerId] || ''}
-                          onChange={(e) => handleScoreChange(playerId, e.target.value)}
-                          className="bg-white/5 border-white/20 text-white"
-                        />
-                      </div>
                     </div>
                   </div>
                 )
