@@ -1,14 +1,14 @@
 import React, { useState } from 'react'
-import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
+import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { Checkbox } from "@/components/ui/checkbox"
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { Textarea } from "@/components/ui/textarea"
-import { ArrowLeft, Play, Users, Trophy, Timer } from "@phosphor-icons/react"
-import { toast } from 'sonner'
+import { ArrowLeft, Play, Users, Trophy, Timer } from '@phosphor-icons/react'
 import BottomNavigation from './BottomNavigation'
+import { toast } from 'sonner'
 
 interface Player {
   player_id: number
@@ -54,14 +54,6 @@ interface Game {
   players?: string
 }
 
-interface SessionPlayer {
-  player_id: number
-  score: number
-  placement?: number
-  is_winner: boolean
-  notes?: string
-}
-
 interface NewGamePageProps {
   games: Game[]
   players: Player[]
@@ -72,7 +64,7 @@ interface NewGamePageProps {
 
 export default function NewGamePage({ 
   games, 
-  players, 
+  players,
   onNavigation, 
   currentView,
   onCreateSession 
@@ -92,99 +84,58 @@ export default function NewGamePage({
   const handlePlayerToggle = (playerId: number) => {
     setSelectedPlayers(prev => {
       if (prev.includes(playerId)) {
-        const newPlayers = prev.filter(id => id !== playerId)
-        
-        // Clean up scores and placements for removed player
-        const newScores = { ...playerScores }
-        const newPlacements = { ...playerPlacements }
-        delete newScores[playerId]
-        delete newPlacements[playerId]
-        setPlayerScores(newScores)
-        setPlayerPlacements(newPlacements)
-        
-        // Clear winner if this player was the winner
-        if (winnerId === playerId.toString()) {
-          setWinnerId('')
-        }
-        return newPlayers
+        return prev.filter(id => id !== playerId)
       } else {
         return [...prev, playerId]
       }
     })
   }
 
-  const handleScoreChange = (playerId: number, score: string) => {
+  const handleScoreChange = (playerId: number, value: string) => {
     setPlayerScores(prev => ({
       ...prev,
-      [playerId]: parseInt(score) || 0
+      [playerId]: parseInt(value) || 0
     }))
   }
 
-  const handlePlacementChange = (playerId: number, placement: string) => {
+  const handlePlacementChange = (playerId: number, value: string) => {
     setPlayerPlacements(prev => ({
       ...prev,
-      [playerId]: parseInt(placement) || 0
+      [playerId]: parseInt(value) || 1
     }))
   }
 
   const canSubmit = () => {
-    if (!selectedGame || selectedPlayers.length === 0) return false
-    
-    // Check minimum players requirement
-    if (selectedPlayers.length < selectedGame.min_players) return false
-    
-    // For competitive games, need scores or placements
-    if (sessionType === 'competitive') {
-      const hasScores = selectedPlayers.some(playerId => (playerScores[playerId] || 0) > 0)
-      const hasPlacements = selectedPlayers.some(playerId => (playerPlacements[playerId] || 0) > 0)
-      if (!hasScores && !hasPlacements) return false
-    }
-    
-    return true
+    return selectedGameId && 
+           selectedPlayers.length >= (selectedGame?.min_players || 1) &&
+           selectedPlayers.length <= (selectedGame?.max_players || 8)
   }
 
   const handleSubmit = async () => {
-    if (!canSubmit() || !selectedGame || !onCreateSession) return
+    if (!selectedGame || !onCreateSession) return
 
     setIsSubmitting(true)
-
     try {
-      const sessionPlayers: SessionPlayer[] = selectedPlayers.map(playerId => ({
-        player_id: playerId,
-        score: playerScores[playerId] || 0,
-        placement: playerPlacements[playerId] || 0,
-        is_winner: winnerId === playerId.toString(),
-        notes: ''
-      }))
-
       const sessionData = {
-        game_id: selectedGame.game_id,
+        game_id: parseInt(selectedGameId),
         session_date: new Date(),
-        duration_minutes: duration ? parseInt(duration) : undefined,
-        winner_player_id: winnerId ? parseInt(winnerId) : undefined,
+        duration_minutes: duration ? parseInt(duration) : null,
+        winner_player_id: winnerId ? parseInt(winnerId) : null,
         session_type: sessionType,
-        notes: notes,
-        players: sessionPlayers
+        notes: notes || null,
+        players: selectedPlayers.map(playerId => ({
+          player_id: playerId,
+          score: playerScores[playerId] || 0,
+          placement: playerPlacements[playerId] || null,
+          is_winner: winnerId === playerId.toString()
+        }))
       }
 
       await onCreateSession(sessionData)
-      
       toast.success('Game session created successfully!')
-      
-      // Reset form
-      setSelectedGameId('')
-      setSelectedPlayers([])
-      setPlayerScores({})
-      setPlayerPlacements({})
-      setWinnerId('')
-      setDuration('')
-      setNotes('')
-      
-      // Navigate back to dashboard
       onNavigation('dashboard')
-      
     } catch (error) {
-      console.error('Error creating game session:', error)
+      console.error('Error creating session:', error)
       toast.error('Failed to create game session')
     } finally {
       setIsSubmitting(false)
@@ -324,7 +275,7 @@ export default function NewGamePage({
                         className="w-8 h-8 rounded-full object-cover"
                       />
                       <span className="text-white font-medium">{player.player_name}</span>
-                      <div className="ml-auto">
+                      <div className="ml-auto flex items-center">
                         <Checkbox
                           checked={winnerId === playerId.toString()}
                           onCheckedChange={(checked) => 
@@ -402,7 +353,7 @@ export default function NewGamePage({
         <div className="flex gap-4">
           <Button
             onClick={() => onNavigation('dashboard')}
-            variant="secondary"
+            variant="outline"
             className="flex-1 bg-white/10 text-white border-white/20 hover:bg-white/20"
           >
             Cancel
