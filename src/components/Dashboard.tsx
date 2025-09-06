@@ -6,8 +6,7 @@ import {
   Settings,
   Plus,
   Play,
-  ArrowLeft,
-
+  ArrowLeft
 } from 'lucide-react'
 import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip'
 import BottomNavigation from './BottomNavigation'

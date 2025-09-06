@@ -1,5 +1,7 @@
 import React, { useState, useEffect } from 'react'
 import { useKV } from '@github/spark/hooks'
+import { TooltipProvider } from '@/components/ui/tooltip'
+import { Toaster } from '@/components/ui/sonner'
 import Dashboard from '@/components/Dashboard'
 import PlayersPage from '@/components/PlayersPage'
 import GamesPage from '@/components/GamesPage'
@@ -775,104 +777,120 @@ export default function ModernDashboard() {
 
   if (stats.loading) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-slate-900 to-slate-800 flex items-center justify-center">
-        <div className="text-center">
-          <div className="text-white text-lg mb-2">Chargement du dashboard...</div>
-          {!apiConnected && (
-            <div className="text-white/60 text-sm">Mode hors-ligne activé</div>
-          )}
+      <TooltipProvider>
+        <div className="min-h-screen bg-gradient-to-br from-slate-900 to-slate-800 flex items-center justify-center">
+          <div className="text-center">
+            <div className="text-white text-lg mb-2">Chargement du dashboard...</div>
+            {!apiConnected && (
+              <div className="text-white/60 text-sm">Mode hors-ligne activé</div>
+            )}
+          </div>
         </div>
-      </div>
+      </TooltipProvider>
     )
   }
 
   // Render different pages based on current view
   if (currentView === 'players') {
     return (
-      <PlayersPage 
-        players={apiConnected ? recentPlayers : (players || [])}
-        onNavigation={handleNavigation}
-        onAddPlayer={addPlayer}
-        onUpdatePlayer={updatePlayer}
-        onDeletePlayer={deletePlayer}
-        currentView={currentView}
-      />
+      <TooltipProvider>
+        <PlayersPage 
+          players={apiConnected ? recentPlayers : (players || [])}
+          onNavigation={handleNavigation}
+          onAddPlayer={addPlayer}
+          onUpdatePlayer={updatePlayer}
+          onDeletePlayer={deletePlayer}
+          currentView={currentView}
+        />
+        <Toaster />
+      </TooltipProvider>
     )
   }
 
   if (currentView === 'player-stats') {
     return (
-      <PlayerStatsPage 
-        players={apiConnected ? recentPlayers : (players || [])}
-        games={apiConnected ? (games || []) : (games || [])}
-        onNavigation={handleNavigation}
-        currentView={currentView}
-        selectedPlayerId={currentPlayerId || undefined}
-      />
+      <TooltipProvider>
+        <PlayerStatsPage 
+          players={apiConnected ? recentPlayers : (players || [])}
+          games={apiConnected ? (games || []) : (games || [])}
+          onNavigation={handleNavigation}
+          currentView={currentView}
+          selectedPlayerId={currentPlayerId || undefined}
+        />
+      </TooltipProvider>
     )
   }
   
   if (currentView === 'games') {
     return (
-      <GamesPage 
-        games={apiConnected ? (games || []) : (games || [])}
-        onNavigation={handleNavigation}
-        onAddGame={addGame}
-        onUpdateGame={updateGame}
-        onDeleteGame={deleteGame}
-        onAddExpansion={addExpansion}
-        onUpdateExpansion={updateExpansion}
-        onDeleteExpansion={deleteExpansion}
-        onAddCharacter={addCharacter}
-        onUpdateCharacter={updateCharacter}
-        onDeleteCharacter={deleteCharacter}
-        currentView={currentView}
-      />
+      <TooltipProvider>
+        <GamesPage 
+          games={apiConnected ? (games || []) : (games || [])}
+          onNavigation={handleNavigation}
+          onAddGame={addGame}
+          onUpdateGame={updateGame}
+          onDeleteGame={deleteGame}
+          onAddExpansion={addExpansion}
+          onUpdateExpansion={updateExpansion}
+          onDeleteExpansion={deleteExpansion}
+          onAddCharacter={addCharacter}
+          onUpdateCharacter={updateCharacter}
+          onDeleteCharacter={deleteCharacter}
+          currentView={currentView}
+        />
+        <Toaster />
+      </TooltipProvider>
     )
   }
 
   if (currentView === 'game-stats') {
     return (
-      <GameStatsPage 
-        games={apiConnected ? (games || []) : (games || [])}
-        players={apiConnected ? recentPlayers : (players || [])}
-        onNavigation={handleNavigation}
-        currentView={currentView}
-        selectedGameId={currentGameId || undefined}
-      />
+      <TooltipProvider>
+        <GameStatsPage 
+          games={apiConnected ? (games || []) : (games || [])}
+          players={apiConnected ? recentPlayers : (players || [])}
+          onNavigation={handleNavigation}
+          currentView={currentView}
+          selectedGameId={currentGameId || undefined}
+        />
+      </TooltipProvider>
     )
   }
 
   if (currentView === 'new-game') {
     return (
-      <NewGamePage 
-        games={apiConnected ? (games || []) : (games || [])}
-        players={apiConnected ? recentPlayers : (players || [])}
-        onNavigation={handleNavigation}
-        currentView={currentView}
-        onCreateSession={async (sessionData) => {
-          try {
-            if (apiConnected) {
-              await ApiService.createSession(sessionData)
-            } else {
-              // For local storage, we could save sessions to useKV but it's not implemented yet
-              console.log('Session saved locally:', sessionData)
+      <TooltipProvider>
+        <NewGamePage 
+          games={apiConnected ? (games || []) : (games || [])}
+          players={apiConnected ? recentPlayers : (players || [])}
+          onNavigation={handleNavigation}
+          currentView={currentView}
+          onCreateSession={async (sessionData) => {
+            try {
+              if (apiConnected) {
+                await ApiService.createSession(sessionData)
+              } else {
+                // For local storage, we could save sessions to useKV but it's not implemented yet
+                console.log('Session saved locally:', sessionData)
+              }
+            } catch (error) {
+              console.error('Error creating session:', error)
+              throw error
             }
-          } catch (error) {
-            console.error('Error creating session:', error)
-            throw error
-          }
-        }}
-      />
+          }}
+        />
+      </TooltipProvider>
     )
   }
 
   if (currentView === 'settings') {
     return (
-      <SettingsPage 
-        onNavigation={handleNavigation}
-        currentView={currentView}
-      />
+      <TooltipProvider>
+        <SettingsPage 
+          onNavigation={handleNavigation}
+          currentView={currentView}
+        />
+      </TooltipProvider>
     )
   }
 
@@ -887,18 +905,20 @@ export default function ModernDashboard() {
     }
     
     return (
-      <GameDetailPage 
-        game={currentGame}
-        onNavigation={handleNavigation}
-        currentView={currentView}
-        navigationSource={navigationSource}
-        onAddExpansion={addExpansion}
-        onUpdateExpansion={updateExpansion}
-        onDeleteExpansion={deleteExpansion}
-        onAddCharacter={addCharacter}
-        onUpdateCharacter={updateCharacter}
-        onDeleteCharacter={deleteCharacter}
-      />
+      <TooltipProvider>
+        <GameDetailPage 
+          game={currentGame}
+          onNavigation={handleNavigation}
+          currentView={currentView}
+          navigationSource={navigationSource}
+          onAddExpansion={addExpansion}
+          onUpdateExpansion={updateExpansion}
+          onDeleteExpansion={deleteExpansion}
+          onAddCharacter={addCharacter}
+          onUpdateCharacter={updateCharacter}
+          onDeleteCharacter={deleteCharacter}
+        />
+      </TooltipProvider>
     )
   }
 
@@ -913,14 +933,17 @@ export default function ModernDashboard() {
     }
     
     return (
-      <GameExpansionsPage 
-        game={currentGame}
-        onNavigation={handleNavigation}
-        navigationSource={navigationSource}
-        onAddExpansion={addExpansion}
-        onUpdateExpansion={updateExpansion}
-        onDeleteExpansion={deleteExpansion}
-      />
+      <TooltipProvider>
+        <GameExpansionsPage 
+          game={currentGame}
+          onNavigation={handleNavigation}
+          navigationSource={navigationSource}
+          onAddExpansion={addExpansion}
+          onUpdateExpansion={updateExpansion}
+          onDeleteExpansion={deleteExpansion}
+        />
+        <Toaster />
+      </TooltipProvider>
     )
   }
 
@@ -935,25 +958,31 @@ export default function ModernDashboard() {
     }
     
     return (
-      <GameCharactersPage 
-        game={currentGame}
-        onNavigation={handleNavigation}
-        navigationSource={navigationSource}
-        onAddCharacter={addCharacter}
-        onUpdateCharacter={updateCharacter}
-        onDeleteCharacter={deleteCharacter}
-      />
+      <TooltipProvider>
+        <GameCharactersPage 
+          game={currentGame}
+          onNavigation={handleNavigation}
+          navigationSource={navigationSource}
+          onAddCharacter={addCharacter}
+          onUpdateCharacter={updateCharacter}
+          onDeleteCharacter={deleteCharacter}
+        />
+        <Toaster />
+      </TooltipProvider>
     )
   }
 
   // Dashboard (default view)
   return (
-    <Dashboard 
-      stats={stats}
-      recentPlayers={recentPlayers}
-      recentGames={recentGames}
-      currentView={currentView}
-      onNavigation={handleNavigation}
-    />
+    <TooltipProvider>
+      <Dashboard 
+        stats={stats}
+        recentPlayers={recentPlayers}
+        recentGames={recentGames}
+        currentView={currentView}
+        onNavigation={handleNavigation}
+      />
+      <Toaster />
+    </TooltipProvider>
   )
 }
