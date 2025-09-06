@@ -2,7 +2,14 @@ import React, { useState } from 'react'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
-import { ArrowLeft, Users, Clock, Star, Weight, Calendar, Factory, User, Plus, Gamepad2, UserCircle } from '@phosphor-icons/react'
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+  DropdownMenuSeparator
+} from '@/components/ui/dropdown-menu'
+import { ArrowLeft, Users, Clock, Star, Weight, Calendar, Factory, User, Plus, Gamepad2, UserCircle, DotsThreeVertical } from '@phosphor-icons/react'
 
 interface Game {
   game_id: number
@@ -84,7 +91,43 @@ export default function GameDetailPage({ game, onNavigation, currentView }: Game
               Retour aux jeux
             </Button>
             <div className="h-6 w-px bg-slate-600"></div>
-            <h1 className="text-xl font-semibold text-white">{game.name}</h1>
+            <h1 className="text-xl font-semibold text-white flex-1">{game.name}</h1>
+            
+            {/* Mobile Context Menu */}
+            <div className="md:hidden">
+              <DropdownMenu>
+                <DropdownMenuTrigger asChild>
+                  <Button variant="ghost" size="sm" className="text-white/80 hover:text-white hover:bg-white/10">
+                    <DotsThreeVertical className="w-5 h-5" />
+                  </Button>
+                </DropdownMenuTrigger>
+                <DropdownMenuContent align="end" className="bg-slate-800 border-slate-700 text-white">
+                  {game.has_expansion && (
+                    <DropdownMenuItem 
+                      onClick={() => onNavigation('game-expansions', game.game_id)}
+                      className="hover:bg-slate-700 focus:bg-slate-700"
+                    >
+                      <Plus className="w-4 h-4 mr-2" />
+                      Extensions ({game.expansions?.length || 0})
+                    </DropdownMenuItem>
+                  )}
+                  {game.has_characters && (
+                    <DropdownMenuItem 
+                      onClick={() => onNavigation('game-characters', game.game_id)}
+                      className="hover:bg-slate-700 focus:bg-slate-700"
+                    >
+                      <UserCircle className="w-4 h-4 mr-2" />
+                      Personnages ({game.characters?.length || 0})
+                    </DropdownMenuItem>
+                  )}
+                  {(!game.has_expansion && !game.has_characters) && (
+                    <DropdownMenuItem disabled className="text-slate-400">
+                      Aucune action disponible
+                    </DropdownMenuItem>
+                  )}
+                </DropdownMenuContent>
+              </DropdownMenu>
+            </div>
           </div>
         </div>
       </div>
@@ -193,8 +236,8 @@ export default function GameDetailPage({ game, onNavigation, currentView }: Game
           </CardContent>
         </Card>
 
-        {/* Action Buttons */}
-        <div className="flex gap-4 mb-8">
+        {/* Action Buttons - Desktop Only */}
+        <div className="hidden md:flex gap-4 mb-8">
           <Button 
             onClick={() => onNavigation('game-expansions', game.game_id)}
             className="bg-primary hover:bg-primary/90 text-primary-foreground"
