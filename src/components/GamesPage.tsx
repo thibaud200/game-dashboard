@@ -22,6 +22,7 @@ import {
   ChevronUp,
   MoreVertical
 } from 'lucide-react'
+import { DotsThreeVertical } from '@phosphor-icons/react'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Card, CardContent } from '@/components/ui/card'
@@ -884,12 +885,12 @@ export default function GamesPage({
                   <img
                     src={game.image}
                     alt={game.name}
-                    className="w-24 h-24 object-cover rounded-l-lg"
+                    className="w-20 h-20 sm:w-24 sm:h-24 object-cover rounded-l-lg flex-shrink-0"
                   />
-                  <div className="flex-1 p-4">
+                  <div className="flex-1 p-3 sm:p-4 min-w-0">
                     <div className="flex items-start justify-between">
-                      <div className="flex-1">
-                        <h3 className="font-semibold text-white mb-1">{game.name}</h3>
+                      <div className="flex-1 min-w-0 pr-2">
+                        <h3 className="font-semibold text-white mb-1 truncate">{game.name}</h3>
                         <p className="text-sm text-white/70 mb-2 line-clamp-2">{game.description}</p>
                         
                         <div className="flex flex-wrap gap-2 mb-2">
@@ -1061,11 +1062,14 @@ export default function GamesPage({
                       </div>
                       
                       {/* Actions Menu */}
-                      <div className="ml-4">
+                      <div className="ml-2 flex-shrink-0">
                         <DropdownMenu>
                           <DropdownMenuTrigger asChild>
-                            <button className="p-2 hover:bg-white/10 rounded-lg transition-colors text-white/60 hover:text-white">
-                              <MoreVertical className="w-4 h-4" />
+                            <button 
+                              className="p-2 hover:bg-white/10 rounded-lg transition-colors text-white hover:text-white min-w-[44px] min-h-[44px] flex items-center justify-center bg-white/10 border border-white/20 shadow-lg"
+                              aria-label="Game options menu"
+                            >
+                              <DotsThreeVertical className="w-5 h-5" />
                             </button>
                           </DropdownMenuTrigger>
                           <DropdownMenuContent align="end" className="bg-slate-800 border-slate-700 text-white">
