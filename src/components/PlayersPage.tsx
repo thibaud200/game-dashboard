@@ -437,6 +437,7 @@ export default function PlayersPage({
           </div>
         )}
       </div>
+      </div>
 
       {/* Edit Player Dialog */}
       <Dialog open={isEditDialogOpen} onOpenChange={(open) => {

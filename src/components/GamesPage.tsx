@@ -1239,6 +1239,7 @@ export default function GamesPage({
           </div>
         )}
       </div>
+      </div>
 
       {/* Edit Game Dialog */}
       <Dialog open={isEditDialogOpen} onOpenChange={(open) => {
