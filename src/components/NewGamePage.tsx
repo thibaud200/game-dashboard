@@ -1,13 +1,15 @@
 import React, { useState } from 'react'
 import { Input } from "@/components/ui/input"
-import { Textarea } from "@/components/ui/textarea"
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import BottomNavigation from './BottomNavigation'
-interface Player {
-  player_name: string
-  games_played: number
-  total_score: number
 
+interface Player {
+  player_id: number
+  player_name: string
+  avatar?: string
+  games_played: number
+  wins: number
+  total_score: number
+  average_score: number
   favorite_game?: string
   created_at: Date
   updated_at?: Date
@@ -48,6 +50,9 @@ interface GameSession {
   session_id?: number
   game_id: number
   session_date: Date
+  duration_minutes?: number
+  winner_player_id?: number
+  session_type: 'competitive' | 'cooperative' | 'campaign' | 'hybrid'
   duration_minutes?: number
   winner_player_id?: number
   session_type: 'competitive' | 'cooperative' | 'campaign' | 'hybrid'
@@ -97,9 +102,6 @@ export default function NewGamePage({
         
         // Clear winner if this player was the winner
         if (winnerId === playerId.toString()) {
-          setWinnerId('')
-        }
-        
         return newPlayers
       } else {
         return [...prev, playerId]
