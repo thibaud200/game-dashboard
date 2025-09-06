@@ -140,19 +140,6 @@ export default function Dashboard({
         <div className="bg-white/10 backdrop-blur-md rounded-2xl p-4 border border-white/20 shadow-xl">
           <div className="flex items-center justify-between mb-4">
             <h2 className="text-lg font-semibold">Player Statistics</h2>
-            <Tooltip>
-              <TooltipTrigger asChild>
-                <button
-                  onClick={() => onNavigation('players')}
-                  className="text-teal-400 hover:text-teal-300 transition-colors"
-                >
-                  <TrendingUp className="w-5 h-5" />
-                </button>
-              </TooltipTrigger>
-              <TooltipContent>
-                <p>View Player Statistics</p>
-              </TooltipContent>
-            </Tooltip>
           </div>
           <div className="grid grid-cols-3 gap-3">
             {recentPlayers.map((player) => (
