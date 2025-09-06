@@ -29,6 +29,7 @@ import {
   AlertDialogTitle, 
   AlertDialogTrigger 
 } from '@/components/ui/alert-dialog'
+import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip'
 import { Label } from '@/components/ui/label'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
 
@@ -145,12 +146,19 @@ export default function PlayersPage({
       {/* Header */}
       <div className="px-4 pt-8 pb-6">
         <div className="flex items-center justify-between mb-6">
-          <button
-            onClick={() => onNavigation('dashboard')}
-            className="p-2 hover:bg-white/10 rounded-lg transition-colors"
-          >
-            <ArrowLeft className="w-6 h-6" />
-          </button>
+          <Tooltip>
+            <TooltipTrigger asChild>
+              <button
+                onClick={() => onNavigation('dashboard')}
+                className="p-2 hover:bg-white/10 rounded-lg transition-colors"
+              >
+                <ArrowLeft className="w-6 h-6" />
+              </button>
+            </TooltipTrigger>
+            <TooltipContent>
+              <p>Back to Dashboard</p>
+            </TooltipContent>
+          </Tooltip>
           <h1 className="text-2xl font-bold">Players</h1>
           <Dialog open={isAddDialogOpen} onOpenChange={(open) => {
             setIsAddDialogOpen(open)
@@ -158,11 +166,18 @@ export default function PlayersPage({
               resetForm()
             }
           }}>
-            <DialogTrigger asChild>
-              <button className="p-2 hover:bg-white/10 rounded-lg transition-colors">
-                <Plus className="w-6 h-6" />
-              </button>
-            </DialogTrigger>
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <DialogTrigger asChild>
+                  <button className="p-2 hover:bg-white/10 rounded-lg transition-colors">
+                    <Plus className="w-6 h-6" />
+                  </button>
+                </DialogTrigger>
+              </TooltipTrigger>
+              <TooltipContent>
+                <p>Add New Player</p>
+              </TooltipContent>
+            </Tooltip>
             <DialogContent className="bg-slate-800 border-slate-700 text-white max-w-md">
               <DialogHeader>
                 <DialogTitle>Add New Player</DialogTitle>
@@ -279,18 +294,32 @@ export default function PlayersPage({
                   </div>
                 </div>
                 <div className="flex space-x-2">
-                  <button
-                    onClick={() => handleEditPlayer(player)}
-                    className="p-2 hover:bg-blue-500/20 rounded-lg transition-colors text-blue-400"
-                  >
-                    <Edit className="w-4 h-4" />
-                  </button>
-                  <AlertDialog>
-                    <AlertDialogTrigger asChild>
-                      <button className="p-2 hover:bg-red-500/20 rounded-lg transition-colors text-red-400">
-                        <Trash2 className="w-4 h-4" />
+                  <Tooltip>
+                    <TooltipTrigger asChild>
+                      <button
+                        onClick={() => handleEditPlayer(player)}
+                        className="p-2 hover:bg-blue-500/20 rounded-lg transition-colors text-blue-400"
+                      >
+                        <Edit className="w-4 h-4" />
                       </button>
-                    </AlertDialogTrigger>
+                    </TooltipTrigger>
+                    <TooltipContent>
+                      <p>Edit Player</p>
+                    </TooltipContent>
+                  </Tooltip>
+                  <AlertDialog>
+                    <Tooltip>
+                      <TooltipTrigger asChild>
+                        <AlertDialogTrigger asChild>
+                          <button className="p-2 hover:bg-red-500/20 rounded-lg transition-colors text-red-400">
+                            <Trash2 className="w-4 h-4" />
+                          </button>
+                        </AlertDialogTrigger>
+                      </TooltipTrigger>
+                      <TooltipContent>
+                        <p>Delete Player</p>
+                      </TooltipContent>
+                    </Tooltip>
                     <AlertDialogContent className="bg-slate-800 border-slate-700 text-white">
                       <AlertDialogHeader>
                         <AlertDialogTitle>Delete Player</AlertDialogTitle>

@@ -3,6 +3,7 @@ import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
+import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip'
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -102,26 +103,40 @@ export default function GameDetailPage({
       <div className="bg-slate-800/50 backdrop-blur-sm border-b border-slate-700/50 sticky top-0 z-10">
         <div className="max-w-7xl mx-auto px-4 md:px-6 py-3 md:py-4">
           <div className="flex items-center gap-3 md:gap-4">
-            <Button
-              variant="ghost"
-              size="sm"
-              onClick={() => onNavigation('games')}
-              className="text-white/80 hover:text-white hover:bg-white/10 p-2"
-            >
-              <ArrowLeft className="w-4 h-4 md:mr-2" />
-              <span className="hidden md:inline">Retour aux jeux</span>
-            </Button>
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  onClick={() => onNavigation('games')}
+                  className="text-white/80 hover:text-white hover:bg-white/10 p-2"
+                >
+                  <ArrowLeft className="w-4 h-4 md:mr-2" />
+                  <span className="hidden md:inline">Retour aux jeux</span>
+                </Button>
+              </TooltipTrigger>
+              <TooltipContent>
+                <p>Back to Games List</p>
+              </TooltipContent>
+            </Tooltip>
             <div className="h-6 w-px bg-slate-600 hidden md:block"></div>
             <h1 className="text-lg md:text-xl font-semibold text-white flex-1 truncate">{game.name}</h1>
             
             {/* Mobile Context Menu */}
             <div className="md:hidden">
               <DropdownMenu>
-                <DropdownMenuTrigger asChild>
-                  <Button variant="ghost" size="sm" className="text-white/80 hover:text-white hover:bg-white/10 p-2">
-                    <DotsThreeVertical className="w-5 h-5" />
-                  </Button>
-                </DropdownMenuTrigger>
+                <Tooltip>
+                  <TooltipTrigger asChild>
+                    <DropdownMenuTrigger asChild>
+                      <Button variant="ghost" size="sm" className="text-white/80 hover:text-white hover:bg-white/10 p-2">
+                        <DotsThreeVertical className="w-5 h-5" />
+                      </Button>
+                    </DropdownMenuTrigger>
+                  </TooltipTrigger>
+                  <TooltipContent>
+                    <p>More Options</p>
+                  </TooltipContent>
+                </Tooltip>
                 <DropdownMenuContent align="end" className="bg-slate-800 border-slate-700 text-white w-56">
                   <DropdownMenuItem 
                     onClick={() => setActiveTab('overview')}

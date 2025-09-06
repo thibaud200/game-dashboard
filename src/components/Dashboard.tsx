@@ -8,6 +8,7 @@ import {
   Play,
   ArrowLeft
 } from 'lucide-react'
+import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip'
 
 interface DashboardProps {
   stats: {
@@ -52,52 +53,80 @@ export default function Dashboard({
       {/* Header */}
       <div className="px-4 pt-8 pb-6">
         <div className="flex items-center justify-between mb-6">
-          <button
-            onClick={() => onNavigation('back')}
-            className="p-2 hover:bg-white/10 rounded-lg transition-colors"
-          >
-            <ArrowLeft className="w-6 h-6" />
-          </button>
+          <Tooltip>
+            <TooltipTrigger asChild>
+              <button
+                onClick={() => onNavigation('back')}
+                className="p-2 hover:bg-white/10 rounded-lg transition-colors"
+              >
+                <ArrowLeft className="w-6 h-6" />
+              </button>
+            </TooltipTrigger>
+            <TooltipContent>
+              <p>Go Back</p>
+            </TooltipContent>
+          </Tooltip>
           <h1 className="text-2xl font-bold">Dashboard</h1>
-          <button
-            onClick={() => onNavigation('settings')}
-            className="p-2 hover:bg-white/10 rounded-lg transition-colors"
-          >
-            <Settings className="w-6 h-6" />
-          </button>
+          <Tooltip>
+            <TooltipTrigger asChild>
+              <button
+                onClick={() => onNavigation('settings')}
+                className="p-2 hover:bg-white/10 rounded-lg transition-colors"
+              >
+                <Settings className="w-6 h-6" />
+              </button>
+            </TooltipTrigger>
+            <TooltipContent>
+              <p>Settings</p>
+            </TooltipContent>
+          </Tooltip>
         </div>
 
         {/* Stats circulaires */}
         <div className="flex justify-center space-x-8 mb-8">
-          <button
-            onClick={() => onNavigation('players')}
-            className="group relative"
-          >
-            <div className="w-20 h-20 rounded-full bg-gradient-to-r from-teal-400 to-teal-600 flex items-center justify-center shadow-lg">
-              <div className="text-center">
-                <div className="text-xs text-white/80">Players</div>
-                <div className="text-lg font-bold text-white">
-                  {stats.playersCount}
+          <Tooltip>
+            <TooltipTrigger asChild>
+              <button
+                onClick={() => onNavigation('players')}
+                className="group relative"
+              >
+                <div className="w-20 h-20 rounded-full bg-gradient-to-r from-teal-400 to-teal-600 flex items-center justify-center shadow-lg">
+                  <div className="text-center">
+                    <div className="text-xs text-white/80">Players</div>
+                    <div className="text-lg font-bold text-white">
+                      {stats.playersCount}
+                    </div>
+                  </div>
                 </div>
-              </div>
-            </div>
-            <div className="absolute inset-0 rounded-full border-4 border-teal-300 animate-pulse opacity-0 group-hover:opacity-100 transition-opacity"></div>
-          </button>
+                <div className="absolute inset-0 rounded-full border-4 border-teal-300 animate-pulse opacity-0 group-hover:opacity-100 transition-opacity"></div>
+              </button>
+            </TooltipTrigger>
+            <TooltipContent>
+              <p>View All Players</p>
+            </TooltipContent>
+          </Tooltip>
 
-          <button
-            onClick={() => onNavigation('games')}
-            className="group relative"
-          >
-            <div className="w-20 h-20 rounded-full bg-gradient-to-r from-emerald-400 to-emerald-600 flex items-center justify-center shadow-lg">
-              <div className="text-center">
-                <div className="text-xs text-white/80">Games</div>
-                <div className="text-lg font-bold text-white">
-                  {stats.gamesCount}
+          <Tooltip>
+            <TooltipTrigger asChild>
+              <button
+                onClick={() => onNavigation('games')}
+                className="group relative"
+              >
+                <div className="w-20 h-20 rounded-full bg-gradient-to-r from-emerald-400 to-emerald-600 flex items-center justify-center shadow-lg">
+                  <div className="text-center">
+                    <div className="text-xs text-white/80">Games</div>
+                    <div className="text-lg font-bold text-white">
+                      {stats.gamesCount}
+                    </div>
+                  </div>
                 </div>
-              </div>
-            </div>
-            <div className="absolute inset-0 rounded-full border-4 border-emerald-300 animate-pulse opacity-0 group-hover:opacity-100 transition-opacity"></div>
-          </button>
+                <div className="absolute inset-0 rounded-full border-4 border-emerald-300 animate-pulse opacity-0 group-hover:opacity-100 transition-opacity"></div>
+              </button>
+            </TooltipTrigger>
+            <TooltipContent>
+              <p>View All Games</p>
+            </TooltipContent>
+          </Tooltip>
         </div>
       </div>
 
@@ -107,12 +136,19 @@ export default function Dashboard({
         <div className="bg-white/10 backdrop-blur-md rounded-2xl p-4 border border-white/20 shadow-xl">
           <div className="flex items-center justify-between mb-4">
             <h2 className="text-lg font-semibold">Player Statistics</h2>
-            <button
-              onClick={() => onNavigation('players')}
-              className="text-teal-400 hover:text-teal-300 transition-colors"
-            >
-              <TrendingUp className="w-5 h-5" />
-            </button>
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <button
+                  onClick={() => onNavigation('players')}
+                  className="text-teal-400 hover:text-teal-300 transition-colors"
+                >
+                  <TrendingUp className="w-5 h-5" />
+                </button>
+              </TooltipTrigger>
+              <TooltipContent>
+                <p>View Player Statistics</p>
+              </TooltipContent>
+            </Tooltip>
           </div>
           <div className="grid grid-cols-3 gap-3">
             {recentPlayers.map((player) => (
@@ -143,12 +179,19 @@ export default function Dashboard({
         <div className="bg-white/10 backdrop-blur-md rounded-2xl p-4 border border-white/20 shadow-xl">
           <div className="flex items-center justify-between mb-4">
             <h2 className="text-lg font-semibold">Recent Games</h2>
-            <button
-              onClick={() => onNavigation('games')}
-              className="text-teal-400 hover:text-teal-300 transition-colors"
-            >
-              <Gamepad2 className="w-5 h-5" />
-            </button>
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <button
+                  onClick={() => onNavigation('games')}
+                  className="text-teal-400 hover:text-teal-300 transition-colors"
+                >
+                  <Gamepad2 className="w-5 h-5" />
+                </button>
+              </TooltipTrigger>
+              <TooltipContent>
+                <p>View All Games</p>
+              </TooltipContent>
+            </Tooltip>
           </div>
           <div className="grid grid-cols-3 gap-3">
             {recentGames.map((game) => (
@@ -210,20 +253,34 @@ export default function Dashboard({
 
         {/* Actions rapides */}
         <div className="grid grid-cols-2 gap-4">
-          <button
-            onClick={() => onNavigation('current-game')}
-            className="bg-gradient-to-r from-teal-500 to-teal-600 rounded-2xl p-4 flex flex-col items-center justify-center hover:from-teal-600 hover:to-teal-700 transition-all duration-200 shadow-lg hover:shadow-xl hover:scale-105"
-          >
-            <Play className="w-8 h-8 mb-2" />
-            <span className="font-medium">New Game</span>
-          </button>
-          <button
-            onClick={() => onNavigation('create-player')}
-            className="bg-gradient-to-r from-emerald-500 to-emerald-600 rounded-2xl p-4 flex flex-col items-center justify-center hover:from-emerald-600 hover:to-emerald-700 transition-all duration-200 shadow-lg hover:shadow-xl hover:scale-105"
-          >
-            <Plus className="w-8 h-8 mb-2" />
-            <span className="font-medium">Add Player</span>
-          </button>
+          <Tooltip>
+            <TooltipTrigger asChild>
+              <button
+                onClick={() => onNavigation('current-game')}
+                className="bg-gradient-to-r from-teal-500 to-teal-600 rounded-2xl p-4 flex flex-col items-center justify-center hover:from-teal-600 hover:to-teal-700 transition-all duration-200 shadow-lg hover:shadow-xl hover:scale-105"
+              >
+                <Play className="w-8 h-8 mb-2" />
+                <span className="font-medium">New Game</span>
+              </button>
+            </TooltipTrigger>
+            <TooltipContent>
+              <p>Start a New Game Session</p>
+            </TooltipContent>
+          </Tooltip>
+          <Tooltip>
+            <TooltipTrigger asChild>
+              <button
+                onClick={() => onNavigation('create-player')}
+                className="bg-gradient-to-r from-emerald-500 to-emerald-600 rounded-2xl p-4 flex flex-col items-center justify-center hover:from-emerald-600 hover:to-emerald-700 transition-all duration-200 shadow-lg hover:shadow-xl hover:scale-105"
+              >
+                <Plus className="w-8 h-8 mb-2" />
+                <span className="font-medium">Add Player</span>
+              </button>
+            </TooltipTrigger>
+            <TooltipContent>
+              <p>Create a New Player</p>
+            </TooltipContent>
+          </Tooltip>
         </div>
       </div>
 

@@ -46,6 +46,7 @@ import {
   DropdownMenuTrigger,
   DropdownMenuSeparator
 } from '@/components/ui/dropdown-menu'
+import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip'
 import { Label } from '@/components/ui/label'
 import { Textarea } from '@/components/ui/textarea'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
@@ -433,12 +434,19 @@ export default function GamesPage({
       {/* Header */}
       <div className="px-4 pt-8 pb-6">
         <div className="flex items-center justify-between mb-6">
-          <button
-            onClick={() => onNavigation('dashboard')}
-            className="p-2 hover:bg-white/10 rounded-lg transition-colors"
-          >
-            <ArrowLeft className="w-6 h-6" />
-          </button>
+          <Tooltip>
+            <TooltipTrigger asChild>
+              <button
+                onClick={() => onNavigation('dashboard')}
+                className="p-2 hover:bg-white/10 rounded-lg transition-colors"
+              >
+                <ArrowLeft className="w-6 h-6" />
+              </button>
+            </TooltipTrigger>
+            <TooltipContent>
+              <p>Back to Dashboard</p>
+            </TooltipContent>
+          </Tooltip>
           <h1 className="text-2xl font-bold">Games</h1>
           <Dialog open={isAddDialogOpen} onOpenChange={(open) => {
             setIsAddDialogOpen(open)
@@ -447,11 +455,18 @@ export default function GamesPage({
               setIsBGGSearchOpen(false)
             }
           }}>
-            <DialogTrigger asChild>
-              <button className="p-2 hover:bg-white/10 rounded-lg transition-colors">
-                <Plus className="w-6 h-6" />
-              </button>
-            </DialogTrigger>
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <DialogTrigger asChild>
+                  <button className="p-2 hover:bg-white/10 rounded-lg transition-colors">
+                    <Plus className="w-6 h-6" />
+                  </button>
+                </DialogTrigger>
+              </TooltipTrigger>
+              <TooltipContent>
+                <p>Add New Game</p>
+              </TooltipContent>
+            </Tooltip>
             <DialogContent className="bg-slate-800 border-slate-700 text-white max-w-2xl max-h-[90vh] overflow-y-auto">
               <DialogHeader>
                 <DialogTitle>Add New Game</DialogTitle>
@@ -1050,29 +1065,50 @@ export default function GamesPage({
                       <div className="ml-2 flex-shrink-0">
                         {/* Desktop Actions - Direct buttons */}
                         <div className="hidden sm:flex items-center space-x-1">
-                          <button 
-                            onClick={() => onNavigation('game-detail', game.game_id, 'games')}
-                            className="p-2 hover:bg-white/10 rounded-lg transition-colors text-white/60 hover:text-white"
-                            aria-label="View game details"
-                          >
-                            <Eye className="w-4 h-4" />
-                          </button>
-                          <button 
-                            onClick={() => handleEditGame(game)}
-                            className="p-2 hover:bg-white/10 rounded-lg transition-colors text-white/60 hover:text-white"
-                            aria-label="Edit game"
-                          >
-                            <Edit className="w-4 h-4" />
-                          </button>
-                          <AlertDialog>
-                            <AlertDialogTrigger asChild>
+                          <Tooltip>
+                            <TooltipTrigger asChild>
                               <button 
-                                className="p-2 hover:bg-red-500/20 rounded-lg transition-colors text-red-400 hover:text-red-300"
-                                aria-label="Delete game"
+                                onClick={() => onNavigation('game-detail', game.game_id, 'games')}
+                                className="p-2 hover:bg-white/10 rounded-lg transition-colors text-white/60 hover:text-white"
+                                aria-label="View game details"
                               >
-                                <Trash2 className="w-4 h-4" />
+                                <Eye className="w-4 h-4" />
                               </button>
-                            </AlertDialogTrigger>
+                            </TooltipTrigger>
+                            <TooltipContent>
+                              <p>View Details</p>
+                            </TooltipContent>
+                          </Tooltip>
+                          <Tooltip>
+                            <TooltipTrigger asChild>
+                              <button 
+                                onClick={() => handleEditGame(game)}
+                                className="p-2 hover:bg-white/10 rounded-lg transition-colors text-white/60 hover:text-white"
+                                aria-label="Edit game"
+                              >
+                                <Edit className="w-4 h-4" />
+                              </button>
+                            </TooltipTrigger>
+                            <TooltipContent>
+                              <p>Edit Game</p>
+                            </TooltipContent>
+                          </Tooltip>
+                          <AlertDialog>
+                            <Tooltip>
+                              <TooltipTrigger asChild>
+                                <AlertDialogTrigger asChild>
+                                  <button 
+                                    className="p-2 hover:bg-red-500/20 rounded-lg transition-colors text-red-400 hover:text-red-300"
+                                    aria-label="Delete game"
+                                  >
+                                    <Trash2 className="w-4 h-4" />
+                                  </button>
+                                </AlertDialogTrigger>
+                              </TooltipTrigger>
+                              <TooltipContent>
+                                <p>Delete Game</p>
+                              </TooltipContent>
+                            </Tooltip>
                             <AlertDialogContent className="bg-slate-800 border-slate-700 text-white">
                               <AlertDialogHeader>
                                 <AlertDialogTitle>Delete Game</AlertDialogTitle>

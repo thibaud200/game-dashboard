@@ -6,6 +6,7 @@ import { Label } from '@/components/ui/label'
 import { Textarea } from '@/components/ui/textarea'
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog'
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from '@/components/ui/alert-dialog'
+import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip'
 import { ArrowLeft, Plus, Edit, Trash, Calendar, Users, Gamepad2, TrendingUp, Settings } from '@phosphor-icons/react'
 import { toast } from 'sonner'
 
@@ -222,37 +223,51 @@ export default function GameExpansionsPage({
         <div className="bg-slate-800/50 backdrop-blur-sm border-b border-slate-700/50 sticky top-0 z-10">
           <div className="max-w-7xl mx-auto px-4 md:px-6 py-3 md:py-4">
             <div className="flex items-center gap-3 md:gap-4">
-              <Button
-                variant="ghost"
-                size="sm"
-                onClick={() => {
-                  // Contextual navigation based on source
-                  if (navigationSource === 'game-detail') {
-                    onNavigation('game-detail', game.game_id)
-                  } else {
-                    onNavigation('games')
-                  }
-                }}
-                className="text-white/80 hover:text-white hover:bg-white/10 p-2"
-              >
-                <ArrowLeft className="w-4 h-4 md:mr-2" />
-                <span className="hidden md:inline">
-                  {navigationSource === 'game-detail' ? 'Retour au jeu' : 'Retour aux jeux'}
-                </span>
-              </Button>
+              <Tooltip>
+                <TooltipTrigger asChild>
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    onClick={() => {
+                      // Contextual navigation based on source
+                      if (navigationSource === 'game-detail') {
+                        onNavigation('game-detail', game.game_id)
+                      } else {
+                        onNavigation('games')
+                      }
+                    }}
+                    className="text-white/80 hover:text-white hover:bg-white/10 p-2"
+                  >
+                    <ArrowLeft className="w-4 h-4 md:mr-2" />
+                    <span className="hidden md:inline">
+                      {navigationSource === 'game-detail' ? 'Retour au jeu' : 'Retour aux jeux'}
+                    </span>
+                  </Button>
+                </TooltipTrigger>
+                <TooltipContent>
+                  <p>{navigationSource === 'game-detail' ? 'Back to Game Details' : 'Back to Games List'}</p>
+                </TooltipContent>
+              </Tooltip>
               <div className="h-6 w-px bg-slate-600 hidden md:block"></div>
               <h1 className="text-lg md:text-xl font-semibold text-white flex-1 truncate">
                 Extensions - {game.name}
               </h1>
               
               <Dialog open={isAddDialogOpen} onOpenChange={setIsAddDialogOpen}>
-                <DialogTrigger asChild>
-                  <Button className="bg-primary hover:bg-primary/90 text-primary-foreground text-sm md:text-base">
-                    <Plus className="w-4 h-4 md:mr-2" />
-                    <span className="hidden md:inline">Ajouter une extension</span>
-                    <span className="md:hidden">Ajouter</span>
-                  </Button>
-                </DialogTrigger>
+                <Tooltip>
+                  <TooltipTrigger asChild>
+                    <DialogTrigger asChild>
+                      <Button className="bg-primary hover:bg-primary/90 text-primary-foreground text-sm md:text-base">
+                        <Plus className="w-4 h-4 md:mr-2" />
+                        <span className="hidden md:inline">Ajouter une extension</span>
+                        <span className="md:hidden">Ajouter</span>
+                      </Button>
+                    </DialogTrigger>
+                  </TooltipTrigger>
+                  <TooltipContent>
+                    <p>Add New Expansion</p>
+                  </TooltipContent>
+                </Tooltip>
                 <DialogContent className="bg-slate-800 border-slate-700 max-w-md mx-4">
                   <DialogHeader>
                     <DialogTitle className="text-white">Ajouter une extension</DialogTitle>
@@ -312,26 +327,40 @@ export default function GameExpansionsPage({
                   )}
 
                   <div className="flex gap-2 pt-2 md:pt-4">
-                    <Button
-                      variant="outline"
-                      size="sm"
-                      onClick={() => openEditDialog(expansion)}
-                      className="border-slate-600 text-slate-300 hover:bg-slate-700/50 flex-1"
-                    >
-                      <Edit className="w-4 h-4 md:mr-2" />
-                      <span className="hidden md:inline">Modifier</span>
-                    </Button>
-                    
-                    <AlertDialog>
-                      <AlertDialogTrigger asChild>
+                    <Tooltip>
+                      <TooltipTrigger asChild>
                         <Button
                           variant="outline"
                           size="sm"
-                          className="border-red-600/50 text-red-400 hover:bg-red-600/10 hover:border-red-600"
+                          onClick={() => openEditDialog(expansion)}
+                          className="border-slate-600 text-slate-300 hover:bg-slate-700/50 flex-1"
                         >
-                          <Trash className="w-4 h-4" />
+                          <Edit className="w-4 h-4 md:mr-2" />
+                          <span className="hidden md:inline">Modifier</span>
                         </Button>
-                      </AlertDialogTrigger>
+                      </TooltipTrigger>
+                      <TooltipContent>
+                        <p>Edit Expansion</p>
+                      </TooltipContent>
+                    </Tooltip>
+                    
+                    <AlertDialog>
+                      <Tooltip>
+                        <TooltipTrigger asChild>
+                          <AlertDialogTrigger asChild>
+                            <Button
+                              variant="outline"
+                              size="sm"
+                              className="border-red-600/50 text-red-400 hover:bg-red-600/10 hover:border-red-600"
+                            >
+                              <Trash className="w-4 h-4" />
+                            </Button>
+                          </AlertDialogTrigger>
+                        </TooltipTrigger>
+                        <TooltipContent>
+                          <p>Delete Expansion</p>
+                        </TooltipContent>
+                      </Tooltip>
                       <AlertDialogContent className="bg-slate-800 border-slate-700 mx-4">
                         <AlertDialogHeader>
                           <AlertDialogTitle className="text-white">
