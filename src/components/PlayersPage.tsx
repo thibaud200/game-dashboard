@@ -48,7 +48,7 @@ interface Player {
 
 interface PlayersPageProps {
   players: Player[]
-  onNavigation: (view: string) => void
+  onNavigation: (view: string, gameId?: number, source?: string) => void
   onAddPlayer: (player: Omit<Player, 'player_id' | 'stats' | 'games_played' | 'wins' | 'total_score' | 'average_score' | 'created_at'>) => void
   onUpdatePlayer: (playerId: number, player: Partial<Player>) => void
   onDeletePlayer: (playerId: number) => void

@@ -101,7 +101,7 @@ interface Game {
 
 interface GamesPageProps {
   games: Game[]
-  onNavigation: (view: string, gameId?: number) => void
+  onNavigation: (view: string, gameId?: number, source?: string) => void
   onAddGame: (game: Omit<Game, 'game_id' | 'players'>) => void
   onUpdateGame: (gameId: number, game: Partial<Game>) => void
   onDeleteGame: (gameId: number) => void
@@ -1059,7 +1059,7 @@ export default function GamesPage({
                           </DropdownMenuTrigger>
                           <DropdownMenuContent align="end" className="bg-slate-800 border-slate-700 text-white">
                             <DropdownMenuItem 
-                              onClick={() => onNavigation('game-detail', game.game_id)}
+                              onClick={() => onNavigation('game-detail', game.game_id, 'games')}
                               className="hover:bg-slate-700 cursor-pointer"
                             >
                               <Eye className="w-4 h-4 mr-2" />
@@ -1073,7 +1073,7 @@ export default function GamesPage({
                               Edit Game
                             </DropdownMenuItem>
                             <DropdownMenuItem 
-                              onClick={() => onNavigation('game-expansions', game.game_id)}
+                              onClick={() => onNavigation('game-expansions', game.game_id, 'games')}
                               className="hover:bg-slate-700 cursor-pointer"
                             >
                               <Crown className="w-4 h-4 mr-2" />
@@ -1081,7 +1081,7 @@ export default function GamesPage({
                             </DropdownMenuItem>
                             {(game.has_characters || game.characters?.length > 0) && (
                               <DropdownMenuItem 
-                                onClick={() => onNavigation('game-characters', game.game_id)}
+                                onClick={() => onNavigation('game-characters', game.game_id, 'games')}
                                 className="hover:bg-slate-700 cursor-pointer"
                               >
                                 <Users className="w-4 h-4 mr-2" />

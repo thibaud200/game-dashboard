@@ -350,6 +350,7 @@ export default function ModernDashboard() {
   const [recentGames, setRecentGames] = useState<Game[]>([])
   const [currentView, setCurrentView] = useState('dashboard')
   const [currentGameId, setCurrentGameId] = useState<number | null>(null)
+  const [navigationSource, setNavigationSource] = useState<string>('games') // Track where user came from
   const [apiConnected, setApiConnected] = useState(false)
   
   // Persistent data using useKV as fallback
@@ -409,10 +410,23 @@ export default function ModernDashboard() {
     }
   }
 
-  const handleNavigation = (view: string, gameId?: number) => {
+  const handleNavigation = (view: string, gameId?: number, source?: string) => {
     setCurrentView(view)
     if (gameId !== undefined) {
       setCurrentGameId(gameId)
+    }
+    // Track navigation source for contextual back navigation
+    if (source) {
+      setNavigationSource(source)
+    } else if (view === 'game-detail') {
+      setNavigationSource('games') // Default source when viewing game detail
+    } else if (view === 'game-expansions' || view === 'game-characters') {
+      // Check if we're coming from game detail (mobile contextual navigation)
+      if (currentView === 'game-detail') {
+        setNavigationSource('game-detail')
+      } else {
+        setNavigationSource('games')
+      }
     }
   }
 
@@ -800,6 +814,7 @@ export default function ModernDashboard() {
         game={currentGame}
         onNavigation={handleNavigation}
         currentView={currentView}
+        navigationSource={navigationSource}
         onAddExpansion={addExpansion}
         onUpdateExpansion={updateExpansion}
         onDeleteExpansion={deleteExpansion}
@@ -824,6 +839,7 @@ export default function ModernDashboard() {
       <GameExpansionsPage 
         game={currentGame}
         onNavigation={handleNavigation}
+        navigationSource={navigationSource}
         onAddExpansion={addExpansion}
         onUpdateExpansion={updateExpansion}
         onDeleteExpansion={deleteExpansion}
@@ -845,6 +861,7 @@ export default function ModernDashboard() {
       <GameCharactersPage 
         game={currentGame}
         onNavigation={handleNavigation}
+        navigationSource={navigationSource}
         onAddCharacter={addCharacter}
         onUpdateCharacter={updateCharacter}
         onDeleteCharacter={deleteCharacter}

@@ -27,7 +27,8 @@ interface Game {
 
 interface GameCharactersPageProps {
   game: Game
-  onNavigation: (view: string, gameId?: number) => void
+  onNavigation: (view: string, gameId?: number, source?: string) => void
+  navigationSource?: string
   onAddCharacter: (gameId: number, characterData: any) => Promise<GameCharacter>
   onUpdateCharacter: (characterId: number, characterData: any) => Promise<void>
   onDeleteCharacter: (characterId: number) => Promise<void>
@@ -37,6 +38,7 @@ interface GameCharactersPageProps {
 export default function GameCharactersPage({ 
   game, 
   onNavigation, 
+  navigationSource = 'games',
   onAddCharacter, 
   onUpdateCharacter, 
   onDeleteCharacter,
@@ -249,11 +251,20 @@ export default function GameCharactersPage({
               <Button
                 variant="ghost"
                 size="sm"
-                onClick={() => onNavigation('game-detail', game.game_id)}
+                onClick={() => {
+                  // Contextual navigation based on source
+                  if (navigationSource === 'game-detail') {
+                    onNavigation('game-detail', game.game_id)
+                  } else {
+                    onNavigation('games')
+                  }
+                }}
                 className="text-white/80 hover:text-white hover:bg-white/10 p-2"
               >
                 <ArrowLeft className="w-4 h-4 md:mr-2" />
-                <span className="hidden md:inline">Retour au jeu</span>
+                <span className="hidden md:inline">
+                  {navigationSource === 'game-detail' ? 'Retour au jeu' : 'Retour aux jeux'}
+                </span>
               </Button>
               <div className="h-6 w-px bg-slate-600 hidden md:block"></div>
               <h1 className="text-lg md:text-xl font-semibold text-white flex-1 truncate">

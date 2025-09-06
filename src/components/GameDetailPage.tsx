@@ -65,8 +65,9 @@ interface GameCharacter {
 
 interface GameDetailPageProps {
   game: Game
-  onNavigation: (view: string, gameId?: number) => void
+  onNavigation: (view: string, gameId?: number, source?: string) => void
   currentView: string
+  navigationSource?: string
   onAddExpansion?: (gameId: number, expansionData: any) => Promise<any>
   onUpdateExpansion?: (expansionId: number, expansionData: any) => Promise<any>
   onDeleteExpansion?: (expansionId: number) => Promise<void>
@@ -79,6 +80,7 @@ export default function GameDetailPage({
   game, 
   onNavigation, 
   currentView,
+  navigationSource = 'games',
   onAddExpansion,
   onUpdateExpansion,
   onDeleteExpansion,
@@ -144,14 +146,14 @@ export default function GameDetailPage({
                   </DropdownMenuItem>
                   <DropdownMenuSeparator className="bg-slate-600" />
                   <DropdownMenuItem 
-                    onClick={() => onNavigation('game-expansions', game.game_id)}
+                    onClick={() => onNavigation('game-expansions', game.game_id, 'game-detail')}
                     className="hover:bg-slate-700 focus:bg-slate-700"
                   >
                     <Crown className="w-4 h-4 mr-2" />
                     Gérer les extensions
                   </DropdownMenuItem>
                   <DropdownMenuItem 
-                    onClick={() => onNavigation('game-characters', game.game_id)}
+                    onClick={() => onNavigation('game-characters', game.game_id, 'game-detail')}
                     className="hover:bg-slate-700 focus:bg-slate-700"
                   >
                     <UserCircle className="w-4 h-4 mr-2" />
@@ -402,7 +404,7 @@ export default function GameDetailPage({
                 <Button
                   size="sm"
                   variant="outline"
-                  onClick={() => onNavigation('game-expansions', game.game_id)}
+                  onClick={() => onNavigation('game-expansions', game.game_id, 'game-detail')}
                   className="border-slate-600 text-slate-300 hover:bg-slate-700/50 text-xs"
                 >
                   Gérer
@@ -445,7 +447,7 @@ export default function GameDetailPage({
                 <Button
                   size="sm"
                   variant="outline"
-                  onClick={() => onNavigation('game-characters', game.game_id)}
+                  onClick={() => onNavigation('game-characters', game.game_id, 'game-detail')}
                   className="border-slate-600 text-slate-300 hover:bg-slate-700/50 text-xs"
                 >
                   Gérer

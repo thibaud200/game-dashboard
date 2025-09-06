@@ -37,7 +37,7 @@ interface DashboardProps {
     category: string
   }>
   currentView: string
-  onNavigation: (view: string) => void
+  onNavigation: (view: string, gameId?: number, source?: string) => void
 }
 
 export default function Dashboard({ 
