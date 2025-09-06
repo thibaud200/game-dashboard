@@ -1,27 +1,71 @@
-# Backend Directory
+# Board Game Score Tracker - Backend
 
-This directory contains all backend-related components for the Board Game Dashboard application.
+This directory contains all backend-related files for the Board Game Score Tracker application.
 
-## Structure
+## Directory Structure
 
-- `api/` - API endpoints and routes
-- `services/` - Business logic and data services
-- `models/` - Data models and schemas
-- `utils/` - Utility functions and helpers
-- `database/` - Database-related files and migrations
-- `config/` - Configuration files
+```
+backend/
+├── database/           # Database schema and scripts
+│   ├── schema.sql      # Complete database schema
+│   ├── sample_data.sql # Sample data for testing
+│   ├── queries.sql     # Common SQL queries
+│   └── init_db.sh      # Database initialization script
+├── api/               # API endpoints and routes
+├── config/            # Configuration files
+├── models/            # Data models and ORM definitions
+├── services/          # Business logic services
+└── utils/             # Utility functions and helpers
+```
 
-## Database Structure
+## Database
 
-The application uses a relational database structure as defined in `../database-structure.md`. Key entities include:
+The application uses SQLite as the primary database. The database structure is designed to handle:
 
-- Players
-- Games
-- Game Sessions
-- Session Players
-- Game Expansions
-- Game Characters
+- **Players** - User profiles and statistics
+- **Games** - Board game information with BGG integration
+- **Sessions** - Game session records and scoring
+- **Characters** - Game character/role definitions
+- **Expansions** - Game expansion tracking
 
-## Integration
+### Quick Start
 
-This backend is designed to work with the React frontend located in the `../src` directory.
+To initialize the database:
+
+```bash
+cd backend/database
+./init_db.sh
+```
+
+This will create `boardgame.db` with the complete schema and sample data.
+
+## Key Features
+
+### Data Persistence
+- SQLite database for reliable data storage
+- Automatic statistics calculation via triggers
+- Referential integrity with foreign keys
+
+### BGG Integration
+- BoardGameGeek API integration support
+- Automatic game data population
+- Expansion and character data from BGG
+
+### Statistics Tracking
+- Player performance metrics
+- Game popularity analytics
+- Session history and trends
+
+### Character System
+- Support for games with character/role selection
+- Character abilities stored as JSON
+- Session tracking includes character usage
+
+## Current Status
+
+✅ Database schema complete
+✅ Sample data available
+✅ Common queries documented
+🔄 API endpoints (planned)
+🔄 Service layer (planned)
+🔄 BGG integration (planned)
