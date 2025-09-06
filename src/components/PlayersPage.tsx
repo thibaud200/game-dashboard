@@ -32,6 +32,7 @@ interface Player {
   total_score: number
   average_score: number
   created_at: Date
+  updated_at?: Date
   favorite_game: string
   email: string
 }
@@ -86,11 +87,19 @@ export default function PlayersPage({
 
   const handleAddPlayer = () => {
     if (formData.player_name.trim()) {
+      // Automatically set timestamps - these are not in the form
+      const now = new Date()
       onAddPlayer({
         player_name: formData.player_name,
         avatar: formData.avatar || `https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=100&h=100&fit=crop&crop=face`,
         favorite_game: formData.favorite_game || 'None',
-        email: formData.email
+        email: formData.email,
+        // Database fields not in form but required
+        games_played: 0,
+        wins: 0,
+        total_score: 0,
+        average_score: 0,
+        created_at: now
       })
       resetForm()
       setIsAddDialogOpen(false)
@@ -114,9 +123,12 @@ export default function PlayersPage({
   const handleUpdatePlayer = () => {
     if (editingPlayer && formData.player_name.trim()) {
       const averageScore = formData.games_played > 0 ? formData.total_score / formData.games_played : 0
+      // Automatically set updated_at timestamp
+      const now = new Date()
       onUpdatePlayer(editingPlayer.player_id, {
         ...formData,
-        average_score: averageScore
+        average_score: averageScore,
+        updated_at: now
       })
       resetForm()
       setEditingPlayer(null)

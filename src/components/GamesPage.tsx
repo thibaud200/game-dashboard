@@ -75,6 +75,8 @@ interface Game {
   supports_competitive: boolean
   supports_campaign: boolean
   bgg_id?: number
+  created_at: Date
+  updated_at?: Date
 }
 
 interface GamesPageProps {
@@ -192,6 +194,8 @@ export default function GamesPage({
 
   const handleAddGame = () => {
     if (formData.name.trim()) {
+      // Automatically set timestamps - these are not in the form
+      const now = new Date()
       onAddGame({
         name: formData.name,
         image: formData.image || 'https://images.unsplash.com/photo-1606092195730-5d7b9af1efc5?w=150&h=150&fit=crop',
@@ -215,7 +219,8 @@ export default function GamesPage({
         supports_cooperative: formData.supports_cooperative,
         supports_competitive: formData.supports_competitive,
         supports_campaign: formData.supports_campaign,
-        bgg_id: formData.bgg_id
+        bgg_id: formData.bgg_id,
+        created_at: now
       })
       resetForm()
       setIsAddDialogOpen(false)
@@ -254,7 +259,12 @@ export default function GamesPage({
 
   const handleUpdateGame = () => {
     if (editingGame && formData.name.trim()) {
-      onUpdateGame(editingGame.game_id, formData)
+      // Automatically set updated_at timestamp
+      const now = new Date()
+      onUpdateGame(editingGame.game_id, {
+        ...formData,
+        updated_at: now
+      })
       resetForm()
       setEditingGame(null)
       setIsEditDialogOpen(false)

@@ -427,13 +427,13 @@ export default function ModernDashboard() {
           player_name: playerData.player_name,
           email: playerData.email || '',
           avatar: playerData.avatar || `https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=100&h=100&fit=crop&crop=face`,
-          games_played: 0,
-          wins: 0,
-          total_score: 0,
-          average_score: 0,
+          games_played: playerData.games_played || 0,
+          wins: playerData.wins || 0,
+          total_score: playerData.total_score || 0,
+          average_score: playerData.average_score || 0,
           favorite_game: playerData.favorite_game || '',
-          created_at: new Date(),
-          stats: '0 pts'
+          created_at: playerData.created_at || new Date(),
+          stats: `${playerData.total_score || 0} pts`
         }
         setPlayers((currentPlayers) => [...(currentPlayers || []), player])
         return player
@@ -502,7 +502,7 @@ export default function ModernDashboard() {
           supports_campaign: gameData.supports_campaign || false,
           has_expansion: gameData.has_expansion || false,
           has_characters: gameData.has_characters || false,
-          created_at: new Date(),
+          created_at: gameData.created_at || new Date(),
           expansions: gameData.expansions || [],
           characters: gameData.characters || [],
           players: `${gameData.min_players}-${gameData.max_players}`
