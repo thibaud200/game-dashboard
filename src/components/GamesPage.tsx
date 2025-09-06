@@ -25,6 +25,17 @@ import { Input } from '@/components/ui/input'
 import { Card, CardContent } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog'
+import { 
+  AlertDialog, 
+  AlertDialogAction, 
+  AlertDialogCancel, 
+  AlertDialogContent, 
+  AlertDialogDescription, 
+  AlertDialogFooter, 
+  AlertDialogHeader, 
+  AlertDialogTitle, 
+  AlertDialogTrigger 
+} from '@/components/ui/alert-dialog'
 import { Label } from '@/components/ui/label'
 import { Textarea } from '@/components/ui/textarea'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
@@ -1046,12 +1057,32 @@ export default function GamesPage({
                         >
                           <Edit className="w-4 h-4" />
                         </button>
-                        <button
-                          onClick={() => onDeleteGame(game.game_id)}
-                          className="p-2 hover:bg-red-500/20 rounded-lg transition-colors text-red-400"
-                        >
-                          <Trash2 className="w-4 h-4" />
-                        </button>
+                        <AlertDialog>
+                          <AlertDialogTrigger asChild>
+                            <button className="p-2 hover:bg-red-500/20 rounded-lg transition-colors text-red-400">
+                              <Trash2 className="w-4 h-4" />
+                            </button>
+                          </AlertDialogTrigger>
+                          <AlertDialogContent className="bg-slate-800 border-slate-700 text-white">
+                            <AlertDialogHeader>
+                              <AlertDialogTitle>Delete Game</AlertDialogTitle>
+                              <AlertDialogDescription className="text-white/70">
+                                Are you sure you want to delete "{game.name}"? This action cannot be undone and will also remove all associated expansions and characters.
+                              </AlertDialogDescription>
+                            </AlertDialogHeader>
+                            <AlertDialogFooter>
+                              <AlertDialogCancel className="bg-slate-700 border-slate-600 text-white hover:bg-slate-600">
+                                Cancel
+                              </AlertDialogCancel>
+                              <AlertDialogAction 
+                                onClick={() => onDeleteGame(game.game_id)}
+                                className="bg-red-600 hover:bg-red-700 text-white"
+                              >
+                                Delete
+                              </AlertDialogAction>
+                            </AlertDialogFooter>
+                          </AlertDialogContent>
+                        </AlertDialog>
                       </div>
                     </div>
                   </div>
