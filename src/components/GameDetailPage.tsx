@@ -128,29 +128,35 @@ export default function GameDetailPage({
                     <Gamepad2 className="w-4 h-4 mr-2" />
                     Vue générale
                   </DropdownMenuItem>
-                  {game.has_expansion && (
-                    <DropdownMenuItem 
-                      onClick={() => setActiveTab('expansions')}
-                      className="hover:bg-slate-700 focus:bg-slate-700"
-                    >
-                      <Crown className="w-4 h-4 mr-2" />
-                      Extensions ({game.expansions?.length || 0})
-                    </DropdownMenuItem>
-                  )}
-                  {game.has_characters && (
-                    <DropdownMenuItem 
-                      onClick={() => setActiveTab('characters')}
-                      className="hover:bg-slate-700 focus:bg-slate-700"
-                    >
-                      <UserCircle className="w-4 h-4 mr-2" />
-                      Personnages ({game.characters?.length || 0})
-                    </DropdownMenuItem>
-                  )}
-                  {(!game.has_expansion && !game.has_characters) && (
-                    <DropdownMenuItem disabled className="text-slate-400">
-                      Aucune section disponible
-                    </DropdownMenuItem>
-                  )}
+                  <DropdownMenuItem 
+                    onClick={() => setActiveTab('expansions')}
+                    className="hover:bg-slate-700 focus:bg-slate-700"
+                  >
+                    <Crown className="w-4 h-4 mr-2" />
+                    Extensions ({game.expansions?.length || 0})
+                  </DropdownMenuItem>
+                  <DropdownMenuItem 
+                    onClick={() => setActiveTab('characters')}
+                    className="hover:bg-slate-700 focus:bg-slate-700"
+                  >
+                    <UserCircle className="w-4 h-4 mr-2" />
+                    Personnages ({game.characters?.length || 0})
+                  </DropdownMenuItem>
+                  <DropdownMenuSeparator className="bg-slate-600" />
+                  <DropdownMenuItem 
+                    onClick={() => onNavigation('game-expansions', game.game_id)}
+                    className="hover:bg-slate-700 focus:bg-slate-700"
+                  >
+                    <Crown className="w-4 h-4 mr-2" />
+                    Gérer les extensions
+                  </DropdownMenuItem>
+                  <DropdownMenuItem 
+                    onClick={() => onNavigation('game-characters', game.game_id)}
+                    className="hover:bg-slate-700 focus:bg-slate-700"
+                  >
+                    <UserCircle className="w-4 h-4 mr-2" />
+                    Gérer les personnages
+                  </DropdownMenuItem>
                 </DropdownMenuContent>
               </DropdownMenu>
             </div>
@@ -172,14 +178,12 @@ export default function GameDetailPage({
               <TabsTrigger 
                 value="expansions" 
                 className="data-[state=active]:bg-primary data-[state=active]:text-primary-foreground text-white"
-                disabled={!game.has_expansion}
               >
                 Extensions ({game.expansions?.length || 0})
               </TabsTrigger>
               <TabsTrigger 
                 value="characters" 
                 className="data-[state=active]:bg-primary data-[state=active]:text-primary-foreground text-white"
-                disabled={!game.has_characters}
               >
                 Personnages ({game.characters?.length || 0})
               </TabsTrigger>
@@ -388,15 +392,25 @@ export default function GameDetailPage({
         {/* Quick Overview of Extensions and Characters - Desktop Only */}
         <div className="hidden md:grid grid-cols-1 lg:grid-cols-2 gap-6">
           {/* Extensions Preview */}
-          {game.has_expansion && game.expansions && game.expansions.length > 0 && (
-            <Card className="bg-slate-800/50 border-slate-700/50">
-              <CardHeader>
+          <Card className="bg-slate-800/50 border-slate-700/50">
+            <CardHeader>
+              <div className="flex items-center justify-between">
                 <CardTitle className="text-white flex items-center gap-2">
                   <Crown className="w-5 h-5 text-primary" />
-                  Extensions ({game.expansions.length})
+                  Extensions ({game.expansions?.length || 0})
                 </CardTitle>
-              </CardHeader>
-              <CardContent>
+                <Button
+                  size="sm"
+                  variant="outline"
+                  onClick={() => onNavigation('game-expansions', game.game_id)}
+                  className="border-slate-600 text-slate-300 hover:bg-slate-700/50 text-xs"
+                >
+                  Gérer
+                </Button>
+              </div>
+            </CardHeader>
+            <CardContent>
+              {game.expansions && game.expansions.length > 0 ? (
                 <div className="space-y-3">
                   {game.expansions.slice(0, 3).map((expansion) => (
                     <div key={expansion.expansion_id} className="flex items-center justify-between p-3 bg-slate-700/30 rounded-lg">
@@ -414,20 +428,32 @@ export default function GameDetailPage({
                     </p>
                   )}
                 </div>
-              </CardContent>
-            </Card>
-          )}
+              ) : (
+                <p className="text-slate-400 text-sm">Aucune extension ajoutée.</p>
+              )}
+            </CardContent>
+          </Card>
 
           {/* Characters Preview */}
-          {game.has_characters && game.characters && game.characters.length > 0 && (
-            <Card className="bg-slate-800/50 border-slate-700/50">
-              <CardHeader>
+          <Card className="bg-slate-800/50 border-slate-700/50">
+            <CardHeader>
+              <div className="flex items-center justify-between">
                 <CardTitle className="text-white flex items-center gap-2">
                   <UserCircle className="w-5 h-5 text-primary" />
-                  Personnages ({game.characters.length})
+                  Personnages ({game.characters?.length || 0})
                 </CardTitle>
-              </CardHeader>
-              <CardContent>
+                <Button
+                  size="sm"
+                  variant="outline"
+                  onClick={() => onNavigation('game-characters', game.game_id)}
+                  className="border-slate-600 text-slate-300 hover:bg-slate-700/50 text-xs"
+                >
+                  Gérer
+                </Button>
+              </div>
+            </CardHeader>
+            <CardContent>
+              {game.characters && game.characters.length > 0 ? (
                 <div className="space-y-3">
                   {game.characters.slice(0, 3).map((character) => (
                     <div key={character.character_id} className="flex items-center gap-3 p-3 bg-slate-700/30 rounded-lg">
@@ -456,9 +482,11 @@ export default function GameDetailPage({
                     </p>
                   )}
                 </div>
-              </CardContent>
-            </Card>
-          )}
+              ) : (
+                <p className="text-slate-400 text-sm">Aucun personnage ajouté.</p>
+              )}
+            </CardContent>
+          </Card>
         </div>
       </>
     )

@@ -6,7 +6,7 @@ import { Label } from '@/components/ui/label'
 import { Textarea } from '@/components/ui/textarea'
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog'
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from '@/components/ui/alert-dialog'
-import { ArrowLeft, Plus, Edit, Trash, Calendar } from '@phosphor-icons/react'
+import { ArrowLeft, Plus, Edit, Trash, Calendar, Users, Gamepad2, TrendingUp, Settings } from '@phosphor-icons/react'
 import { toast } from 'sonner'
 
 interface GameExpansion {
@@ -218,27 +218,28 @@ export default function GameExpansionsPage({
       {/* Header - Only show when not embedded */}
       {!embedded && (
         <div className="bg-slate-800/50 backdrop-blur-sm border-b border-slate-700/50 sticky top-0 z-10">
-          <div className="max-w-7xl mx-auto px-6 py-4">
-            <div className="flex items-center justify-between">
-              <div className="flex items-center gap-4">
-                <Button
-                  variant="ghost"
-                  size="sm"
-                  onClick={() => onNavigation('game-detail', game.game_id)}
-                  className="text-white/80 hover:text-white hover:bg-white/10"
-                >
-                  <ArrowLeft className="w-4 h-4 mr-2" />
-                  Retour au jeu
-                </Button>
-                <div className="h-6 w-px bg-slate-600"></div>
-                <h1 className="text-xl font-semibold text-white">Extensions - {game.name}</h1>
-              </div>
+          <div className="max-w-7xl mx-auto px-4 md:px-6 py-3 md:py-4">
+            <div className="flex items-center gap-3 md:gap-4">
+              <Button
+                variant="ghost"
+                size="sm"
+                onClick={() => onNavigation('game-detail', game.game_id)}
+                className="text-white/80 hover:text-white hover:bg-white/10 p-2"
+              >
+                <ArrowLeft className="w-4 h-4 md:mr-2" />
+                <span className="hidden md:inline">Retour au jeu</span>
+              </Button>
+              <div className="h-6 w-px bg-slate-600 hidden md:block"></div>
+              <h1 className="text-lg md:text-xl font-semibold text-white flex-1 truncate">
+                Extensions - {game.name}
+              </h1>
               
               <Dialog open={isAddDialogOpen} onOpenChange={setIsAddDialogOpen}>
                 <DialogTrigger asChild>
-                  <Button className="bg-primary hover:bg-primary/90 text-primary-foreground">
-                    <Plus className="w-4 h-4 mr-2" />
-                    Ajouter une extension
+                  <Button className="bg-primary hover:bg-primary/90 text-primary-foreground text-sm md:text-base">
+                    <Plus className="w-4 h-4 md:mr-2" />
+                    <span className="hidden md:inline">Ajouter une extension</span>
+                    <span className="md:hidden">Ajouter</span>
                   </Button>
                 </DialogTrigger>
                 <DialogContent className="bg-slate-800 border-slate-700 max-w-md mx-4">
@@ -254,7 +255,7 @@ export default function GameExpansionsPage({
       )}
 
       {/* Content */}
-      <div className={embedded ? "" : "max-w-7xl mx-auto px-6 py-8"}>
+      <div className={embedded ? "" : "max-w-7xl mx-auto px-4 md:px-6 py-4 md:py-8 pb-20 md:pb-8"}>
         {/* Embedded Header with Add Button */}
         {embedded && (
           <div className="flex items-center justify-between mb-4 md:mb-6">
@@ -379,6 +380,42 @@ export default function GameExpansionsPage({
         </DialogContent>
       </Dialog>
       </div>
+
+      {/* Bottom Navigation - Mobile Only - Only show when not embedded */}
+      {!embedded && (
+        <div className="fixed bottom-0 left-0 right-0 bg-slate-800/90 backdrop-blur-md border-t border-white/10 md:hidden">
+          <div className="flex justify-around items-center py-2">
+            <button
+              onClick={() => onNavigation('dashboard')}
+              className="flex flex-col items-center p-3 transition-colors text-white/60 hover:text-white"
+            >
+              <TrendingUp className="w-6 h-6 mb-1" />
+              <span className="text-xs">Dashboard</span>
+            </button>
+            <button
+              onClick={() => onNavigation('players')}
+              className="flex flex-col items-center p-3 transition-colors text-white/60 hover:text-white"
+            >
+              <Users className="w-6 h-6 mb-1" />
+              <span className="text-xs">Players</span>
+            </button>
+            <button
+              onClick={() => onNavigation('games')}
+              className="flex flex-col items-center p-3 transition-colors text-primary"
+            >
+              <Gamepad2 className="w-6 h-6 mb-1" />
+              <span className="text-xs">Games</span>
+            </button>
+            <button
+              onClick={() => onNavigation('settings')}
+              className="flex flex-col items-center p-3 transition-colors text-white/60 hover:text-white"
+            >
+              <Settings className="w-6 h-6 mb-1" />
+              <span className="text-xs">Settings</span>
+            </button>
+          </div>
+        </div>
+      )}
     </div>
   )
 }
