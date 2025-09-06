@@ -1098,6 +1098,20 @@ export default function GamesPage({
                           <Tooltip>
                             <TooltipTrigger asChild>
                               <button 
+                                onClick={() => onNavigation('game-stats', game.game_id)}
+                                className="p-2 hover:bg-teal-500/20 rounded-lg transition-colors text-teal-400 hover:text-teal-300"
+                                aria-label="View game stats"
+                              >
+                                <BarChart3 className="w-4 h-4" />
+                              </button>
+                            </TooltipTrigger>
+                            <TooltipContent>
+                              <p>View Game Stats</p>
+                            </TooltipContent>
+                          </Tooltip>
+                          <Tooltip>
+                            <TooltipTrigger asChild>
+                              <button 
                                 onClick={() => handleEditGame(game)}
                                 className="p-2 hover:bg-white/10 rounded-lg transition-colors text-white/60 hover:text-white"
                                 aria-label="Edit game"
@@ -1165,6 +1179,13 @@ export default function GamesPage({
                               >
                                 <Eye className="w-4 h-4 mr-2" />
                                 View Details
+                              </DropdownMenuItem>
+                              <DropdownMenuItem 
+                                onClick={() => onNavigation('game-stats', game.game_id)}
+                                className="hover:bg-teal-500/20 cursor-pointer text-teal-400"
+                              >
+                                <BarChart3 className="w-4 h-4 mr-2" />
+                                View Stats
                               </DropdownMenuItem>
                               <DropdownMenuItem 
                                 onClick={() => handleEditGame(game)}

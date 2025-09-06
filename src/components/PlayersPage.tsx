@@ -337,6 +337,13 @@ export default function PlayersPage({
                     </DropdownMenuTrigger>
                     <DropdownMenuContent className="bg-slate-800 border-slate-600 text-white">
                       <DropdownMenuItem 
+                        onClick={() => onNavigation('player-stats', player.player_id)}
+                        className="hover:bg-teal-500/20 focus:bg-teal-500/20"
+                      >
+                        <BarChart3 className="w-4 h-4 mr-2" />
+                        View Stats
+                      </DropdownMenuItem>
+                      <DropdownMenuItem 
                         onClick={() => handleEditPlayer(player)}
                         className="hover:bg-blue-500/20 focus:bg-blue-500/20"
                       >
@@ -377,6 +384,19 @@ export default function PlayersPage({
                   </DropdownMenu>
                 ) : (
                   <div className="flex space-x-2">
+                    <Tooltip>
+                      <TooltipTrigger asChild>
+                        <button
+                          onClick={() => onNavigation('player-stats', player.player_id)}
+                          className="p-2 hover:bg-teal-500/20 rounded-lg transition-colors text-teal-400"
+                        >
+                          <BarChart3 className="w-4 h-4" />
+                        </button>
+                      </TooltipTrigger>
+                      <TooltipContent>
+                        <p>View Player Stats</p>
+                      </TooltipContent>
+                    </Tooltip>
                     <Tooltip>
                       <TooltipTrigger asChild>
                         <button

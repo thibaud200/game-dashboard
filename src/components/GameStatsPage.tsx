@@ -48,6 +48,7 @@ interface GameStatsPageProps {
   players: Player[]
   onNavigation: (view: string) => void
   currentView: string
+  selectedGameId?: number
 }
 
 interface GameSession {
@@ -70,9 +71,21 @@ const mockGameSessions: GameSession[] = [
   { session_id: 5, game_id: 2, date: new Date('2024-02-10'), duration_minutes: 65, winner_player_id: 2, session_type: 'competitive', player_count: 4, average_score: 82 }
 ]
 
-export default function GameStatsPage({ games, players, onNavigation, currentView }: GameStatsPageProps) {
+export default function GameStatsPage({ games, players, onNavigation, currentView, selectedGameId }: GameStatsPageProps) {
   const [selectedPeriod, setSelectedPeriod] = useState<'week' | 'month' | 'year' | 'all'>('month')
-  const [selectedGame, setSelectedGame] = useState<Game | null>(games[0] || null)
+  
+  // Use selectedGameId if provided, otherwise default to first game
+  const [selectedGame, setSelectedGame] = useState<Game | null>(() => {
+    if (selectedGameId) {
+      return games.find(g => g.game_id === selectedGameId) || games[0] || null
+    }
+    return games[0] || null
+  })
+
+  // If selectedGameId is provided, filter to show only that game's stats
+  const displayGames = selectedGameId 
+    ? games.filter(g => g.game_id === selectedGameId)
+    : games
 
   // Calculate comprehensive game stats
   const gameStats = useMemo(() => {
@@ -177,27 +190,31 @@ export default function GameStatsPage({ games, players, onNavigation, currentVie
           >
             <ArrowLeft className="w-6 h-6" />
           </button>
-          <h1 className="text-2xl font-bold">Game Stats</h1>
+          <h1 className="text-2xl font-bold">
+            {selectedGameId && selectedGame ? `${selectedGame.name} Stats` : 'Game Statistics'}
+          </h1>
           <div className="w-10" />
         </div>
 
-        {/* Game Selector */}
-        <div className="mb-6">
-          <select
-            value={selectedGame.game_id}
-            onChange={(e) => {
-              const game = games.find(g => g.game_id === parseInt(e.target.value))
-              setSelectedGame(game || null)
-            }}
-            className="w-full bg-white/10 border border-white/20 rounded-xl px-4 py-3 text-white focus:outline-none focus:ring-2 focus:ring-primary"
-          >
-            {games.map(game => (
-              <option key={game.game_id} value={game.game_id} className="bg-slate-800 text-white">
-                {game.name}
-              </option>
-            ))}
-          </select>
-        </div>
+        {/* Game Selector - Only show when not viewing specific game stats */}
+        {!selectedGameId && (
+          <div className="mb-6">
+            <select
+              value={selectedGame?.game_id || ''}
+              onChange={(e) => {
+                const game = games.find(g => g.game_id === parseInt(e.target.value))
+                setSelectedGame(game || null)
+              }}
+              className="w-full bg-white/10 border border-white/20 rounded-xl px-4 py-3 text-white focus:outline-none focus:ring-2 focus:ring-primary"
+            >
+              {games.map(game => (
+                <option key={game.game_id} value={game.game_id} className="bg-slate-800 text-white">
+                  {game.name}
+                </option>
+              ))}
+            </select>
+          </div>
+        )}
 
         {/* Period Selector */}
         <div className="flex space-x-2 mb-6">

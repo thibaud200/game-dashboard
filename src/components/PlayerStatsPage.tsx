@@ -40,6 +40,7 @@ interface PlayerStatsPageProps {
   games: Game[]
   onNavigation: (view: string) => void
   currentView: string
+  selectedPlayerId?: number
 }
 
 interface GameSession {
@@ -57,14 +58,28 @@ const mockSessions: GameSession[] = [
   { game_id: 2, game_name: 'Battle Arena', player_id: 1, score: 120, is_winner: true },
 ]
 
-export default function PlayerStatsPage({ players, games, onNavigation, currentView }: PlayerStatsPageProps) {
+export default function PlayerStatsPage({ players, games, onNavigation, currentView, selectedPlayerId }: PlayerStatsPageProps) {
   const [selectedPeriod, setSelectedPeriod] = useState('all')
 
+  // If selectedPlayerId is provided, filter to show only that player's stats
+  const displayPlayers = selectedPlayerId 
+    ? players.filter(p => p.player_id === selectedPlayerId)
+    : players
+
+  // Filter sessions for selected player if specified
+  const displaySessions = selectedPlayerId
+    ? mockSessions.filter(session => session.player_id === selectedPlayerId)
+    : mockSessions
+
+  const selectedPlayer = selectedPlayerId 
+    ? players.find(p => p.player_id === selectedPlayerId)
+    : null
+
   const stats = useMemo(() => {
-    const totalPlayers = players.length
+    const totalPlayers = displayPlayers.length
     const totalGames = games.length
-    const totalSessions = mockSessions.length
-    const avgScore = players.reduce((sum, p) => sum + p.average_score, 0) / players.length || 0
+    const totalSessions = displaySessions.length
+    const avgScore = displayPlayers.reduce((sum, p) => sum + p.average_score, 0) / displayPlayers.length || 0
 
     return {
       totalPlayers,
@@ -72,16 +87,16 @@ export default function PlayerStatsPage({ players, games, onNavigation, currentV
       totalSessions,
       avgScore: Math.round(avgScore * 10) / 10
     }
-  }, [players, games])
+  }, [displayPlayers, games, displaySessions])
 
   const topPlayers = useMemo(() => {
-    return [...players]
+    return [...displayPlayers]
       .sort((a, b) => b.total_score - a.total_score)
       .slice(0, 5)
-  }, [players])
+  }, [displayPlayers])
 
   const recentActivity = useMemo(() => {
-    return mockSessions
+    return displaySessions
       .map(session => {
         const player = players.find(p => p.player_id === session.player_id)
         return {
@@ -90,7 +105,7 @@ export default function PlayerStatsPage({ players, games, onNavigation, currentV
         }
       })
       .slice(0, 5)
-  }, [players])
+  }, [displaySessions, players])
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-900 to-slate-800 text-white">
@@ -103,7 +118,9 @@ export default function PlayerStatsPage({ players, games, onNavigation, currentV
           >
             <ArrowLeft className="w-6 h-6" />
           </button>
-          <h1 className="text-2xl font-bold">Player Statistics</h1>
+          <h1 className="text-2xl font-bold">
+            {selectedPlayer ? `${selectedPlayer.player_name} Stats` : 'Player Statistics'}
+          </h1>
           <div className="w-10" /> {/* Spacer */}
         </div>
       </div>

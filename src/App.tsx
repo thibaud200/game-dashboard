@@ -353,6 +353,7 @@ export default function ModernDashboard() {
   const [recentGames, setRecentGames] = useState<Game[]>([])
   const [currentView, setCurrentView] = useState('dashboard')
   const [currentGameId, setCurrentGameId] = useState<number | null>(null)
+  const [currentPlayerId, setCurrentPlayerId] = useState<number | null>(null)
   const [navigationSource, setNavigationSource] = useState<string>('games') // Track where user came from
   const [apiConnected, setApiConnected] = useState(false)
   
@@ -416,7 +417,11 @@ export default function ModernDashboard() {
   const handleNavigation = (view: string, gameId?: number, source?: string) => {
     setCurrentView(view)
     if (gameId !== undefined) {
-      setCurrentGameId(gameId)
+      if (view === 'player-stats') {
+        setCurrentPlayerId(gameId) // gameId parameter used for both game and player IDs
+      } else {
+        setCurrentGameId(gameId)
+      }
     }
     
     // Track navigation source for contextual back navigation
@@ -796,6 +801,7 @@ export default function ModernDashboard() {
         games={apiConnected ? (games || []) : (games || [])}
         onNavigation={handleNavigation}
         currentView={currentView}
+        selectedPlayerId={currentPlayerId || undefined}
       />
     )
   }
@@ -826,6 +832,7 @@ export default function ModernDashboard() {
         players={apiConnected ? recentPlayers : (players || [])}
         onNavigation={handleNavigation}
         currentView={currentView}
+        selectedGameId={currentGameId || undefined}
       />
     )
   }
