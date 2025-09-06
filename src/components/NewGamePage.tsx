@@ -2,8 +2,8 @@ import React, { useState } from 'react'
 import { Input } from "@/components/ui/input"
 import BottomNavigation from './BottomNavigation'
 
-interface Player {
-  player_id: number
+  games_played: nu
+  total_score: numb
   player_name: string
   avatar?: string
   games_played: number
@@ -12,30 +12,24 @@ interface Player {
   average_score: number
   favorite_game?: string
   created_at: Date
-  updated_at?: Date
-  stats?: string
-}
-
-interface Game {
-  game_id: number
   bgg_id?: number
+  stats?: string
+} description?: string
+
+interface Game {umber
+  game_id: number
+  duration?: string
   name: string
   description?: string
   image?: string
-  min_players: number
+  publisher?: string
   max_players: number
   duration?: string
   difficulty?: string
-  category?: string
+  age_min?: number
   year_published?: number
   publisher?: string
   designer?: string
-  bgg_rating?: number
-  weight?: number
-  age_min?: number
-  supports_cooperative: boolean
-  supports_competitive: boolean
-  supports_campaign: boolean
   supports_hybrid: boolean
   has_expansion: boolean
   has_characters: boolean
@@ -102,6 +96,8 @@ export default function NewGamePage({
         
         // Clear winner if this player was the winner
         if (winnerId === playerId.toString()) {
+          setWinnerId('')
+        }
         return newPlayers
       } else {
         return [...prev, playerId]
