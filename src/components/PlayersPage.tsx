@@ -10,8 +10,7 @@ import {
   Medal,
   Trash2,
   Settings,
-  Edit,
-  Mail
+  Edit
 } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
@@ -34,7 +33,6 @@ interface Player {
   created_at: Date
   updated_at?: Date
   favorite_game: string
-  email: string
 }
 
 interface PlayersPageProps {
@@ -62,15 +60,13 @@ export default function PlayersPage({
     player_name: '',
     avatar: '',
     favorite_game: '',
-    email: '',
     total_score: 0,
     games_played: 0,
     wins: 0
   })
 
   const filteredPlayers = players.filter(player =>
-    player.player_name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-    player.email.toLowerCase().includes(searchQuery.toLowerCase())
+    player.player_name.toLowerCase().includes(searchQuery.toLowerCase())
   )
 
   const resetForm = () => {
@@ -78,7 +74,6 @@ export default function PlayersPage({
       player_name: '',
       avatar: '',
       favorite_game: '',
-      email: '',
       total_score: 0,
       games_played: 0,
       wins: 0
@@ -93,7 +88,6 @@ export default function PlayersPage({
         player_name: formData.player_name,
         avatar: formData.avatar || `https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=100&h=100&fit=crop&crop=face`,
         favorite_game: formData.favorite_game || 'None',
-        email: formData.email,
         // Database fields not in form but required
         games_played: 0,
         wins: 0,
@@ -112,7 +106,6 @@ export default function PlayersPage({
       player_name: player.player_name,
       avatar: player.avatar,
       favorite_game: player.favorite_game,
-      email: player.email,
       total_score: player.total_score,
       games_played: player.games_played,
       wins: player.wins
@@ -167,17 +160,6 @@ export default function PlayersPage({
                     onChange={(e) => setFormData(prev => ({ ...prev, player_name: e.target.value }))}
                     className="bg-slate-700 border-slate-600 text-white"
                     placeholder="Enter player name"
-                  />
-                </div>
-                <div>
-                  <Label htmlFor="email">Email</Label>
-                  <Input
-                    id="email"
-                    type="email"
-                    value={formData.email}
-                    onChange={(e) => setFormData(prev => ({ ...prev, email: e.target.value }))}
-                    className="bg-slate-700 border-slate-600 text-white"
-                    placeholder="player@example.com"
                   />
                 </div>
                 <div>
@@ -272,12 +254,6 @@ export default function PlayersPage({
                     <Badge variant="secondary" className="bg-white/10 text-white text-xs">
                       {player.favorite_game}
                     </Badge>
-                    {player.email && (
-                      <span className="flex items-center space-x-1 text-xs text-white/60">
-                        <Mail className="w-3 h-3" />
-                        <span>{player.email}</span>
-                      </span>
-                    )}
                   </div>
                   <div className="mt-1">
                     <span className="text-xs text-white/40">
@@ -328,17 +304,6 @@ export default function PlayersPage({
                 onChange={(e) => setFormData(prev => ({ ...prev, player_name: e.target.value }))}
                 className="bg-slate-700 border-slate-600 text-white"
                 placeholder="Enter player name"
-              />
-            </div>
-            <div>
-              <Label htmlFor="edit-email">Email</Label>
-              <Input
-                id="edit-email"
-                type="email"
-                value={formData.email}
-                onChange={(e) => setFormData(prev => ({ ...prev, email: e.target.value }))}
-                className="bg-slate-700 border-slate-600 text-white"
-                placeholder="player@example.com"
               />
             </div>
             <div>

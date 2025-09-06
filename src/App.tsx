@@ -10,7 +10,6 @@ import ApiService from '@/services/ApiService'
 interface Player {
   player_id: number
   player_name: string
-  email?: string
   avatar?: string
   games_played: number
   wins: number
@@ -104,7 +103,6 @@ const mockData = {
     {
       player_id: 1,
       player_name: 'Jane',
-      email: 'jane@example.com',
       avatar: 'https://images.unsplash.com/photo-1494790108755-2616b612b786?w=100&h=100&fit=crop&crop=face',
       games_played: 45,
       wins: 28,
@@ -117,7 +115,6 @@ const mockData = {
     {
       player_id: 2,
       player_name: 'Nexus',
-      email: 'nexus@example.com',
       avatar: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=100&h=100&fit=crop&crop=face',
       games_played: 38,
       wins: 19,
@@ -130,7 +127,6 @@ const mockData = {
     {
       player_id: 3,
       player_name: 'Maya',
-      email: 'maya@example.com',
       avatar: 'https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=100&h=100&fit=crop&crop=face',
       games_played: 32,
       wins: 15,
@@ -143,7 +139,6 @@ const mockData = {
     {
       player_id: 4,
       player_name: 'Alex',
-      email: 'alex@example.com',
       avatar: 'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=100&h=100&fit=crop&crop=face',
       games_played: 28,
       wins: 12,
@@ -425,7 +420,6 @@ export default function ModernDashboard() {
         const player: Player = {
           player_id: Date.now(),
           player_name: playerData.player_name,
-          email: playerData.email || '',
           avatar: playerData.avatar || `https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=100&h=100&fit=crop&crop=face`,
           games_played: playerData.games_played || 0,
           wins: playerData.wins || 0,
