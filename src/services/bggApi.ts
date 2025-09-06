@@ -27,14 +27,17 @@ export interface BGGGame {
 }
 
 export interface BGGExpansion {
-  id: number
+  expansion_id?: number
+  bgg_expansion_id: number
   name: string
   year_published: number
   rank?: number
+  description?: string
 }
 
 export interface BGGCharacter {
-  id: string
+  character_id?: string
+  character_key: string
   name: string
   description: string
   abilities: string[]
@@ -242,7 +245,7 @@ class BGGApiService {
         
         if (id && name) {
           expansions.push({
-            id,
+            bgg_expansion_id: id,
             name,
             year_published: 0 // Would need separate API call for each expansion
           })
@@ -263,13 +266,13 @@ class BGGApiService {
     if (categories.some(cat => cat.toLowerCase().includes('fantasy') || cat.toLowerCase().includes('adventure'))) {
       characters.push(
         {
-          id: 'warrior',
+          character_key: 'warrior',
           name: 'Warrior',
           description: 'A brave fighter skilled in combat',
           abilities: ['Melee Combat', 'Heavy Armor', 'Battle Cry']
         },
         {
-          id: 'mage',
+          character_key: 'mage',
           name: 'Mage',
           description: 'A wielder of arcane magic',
           abilities: ['Spell Casting', 'Elemental Magic', 'Mystic Shield']
@@ -280,13 +283,13 @@ class BGGApiService {
     if (categories.some(cat => cat.toLowerCase().includes('sci-fi') || cat.toLowerCase().includes('space'))) {
       characters.push(
         {
-          id: 'pilot',
+          character_key: 'pilot',
           name: 'Pilot',
           description: 'Expert spacecraft operator',
           abilities: ['Ship Navigation', 'Evasive Maneuvers', 'Technical Repair']
         },
         {
-          id: 'engineer',
+          character_key: 'engineer',
           name: 'Engineer',
           description: 'Technology specialist',
           abilities: ['Equipment Repair', 'System Hacking', 'Shield Boost']
@@ -297,7 +300,7 @@ class BGGApiService {
     if (categories.some(cat => cat.toLowerCase().includes('economic') || cat.toLowerCase().includes('trading'))) {
       characters.push(
         {
-          id: 'merchant',
+          character_key: 'merchant',
           name: 'Merchant',
           description: 'Expert trader and negotiator',
           abilities: ['Resource Trading', 'Market Analysis', 'Profit Boost']

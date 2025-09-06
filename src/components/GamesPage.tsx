@@ -33,7 +33,8 @@ import BGGSearch from '@/components/BGGSearch'
 import { BGGGame } from '@/services/bggApi'
 
 interface Character {
-  id: string
+  character_id?: number
+  character_key: string
   name: string
   description: string
   abilities: string[]
@@ -41,7 +42,8 @@ interface Character {
 }
 
 interface Expansion {
-  id: number
+  expansion_id?: number
+  bgg_expansion_id?: number
   name: string
   year_published: number
   rank?: number
@@ -304,7 +306,7 @@ export default function GamesPage({
       characters: [
         ...prev.characters,
         {
-          id: `character-${Date.now()}`,
+          character_key: `character-${Date.now()}`,
           name: '',
           description: '',
           abilities: ['']
@@ -601,7 +603,7 @@ export default function GamesPage({
                       <Textarea
                         value={formData.expansions
                           .map(expansion => 
-                            `${expansion.name}${expansion.year_published > 0 ? ` (${expansion.year_published})` : ''}`
+                            `${expansion.name}${expansion.year_published && expansion.year_published > 0 ? ` (${expansion.year_published})` : ''}`
                           ).join(', ')}
                         onChange={(e) => {
                           // Parse the textarea content back to expansions array
@@ -610,13 +612,13 @@ export default function GamesPage({
                             const match = text.match(/^(.+?)\s*\((\d{4})\)$/);
                             if (match) {
                               return {
-                                id: index,
+                                expansion_id: index,
                                 name: match[1].trim(),
                                 year_published: parseInt(match[2])
                               };
                             } else {
                               return {
-                                id: index,
+                                expansion_id: index,
                                 name: text,
                                 year_published: 0
                               };
@@ -910,7 +912,7 @@ export default function GamesPage({
                                 <h4 className="text-sm font-medium text-orange-300 mb-1">Characters/Roles</h4>
                                 <div className="space-y-1">
                                   {game.characters.map((character) => (
-                                    <div key={character.id} className="text-xs text-white/70 bg-white/5 rounded p-2">
+                                    <div key={character.character_key} className="text-xs text-white/70 bg-white/5 rounded p-2">
                                       <div className="font-medium">{character.name}</div>
                                       {character.description && (
                                         <div className="text-white/50 mb-1">{character.description}</div>
