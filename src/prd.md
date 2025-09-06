@@ -9,6 +9,7 @@
 - Data persists between sessions using local storage
 - Interface feels modern and responsive
 - Navigation between different sections is seamless
+- Support for multiple game modes (competitive, cooperative, campaign, hybrid)
 
 **Experience Qualities**: Modern, Intuitive, Elegant
 
@@ -18,9 +19,23 @@
 
 **Primary User Activity**: Creating and Managing (adding players/games, tracking statistics)
 
+## Recent Updates & Schema Changes
+
+**Database Schema Alignment**: Updated to match the latest database structure:
+- **Removed**: `game_type` field from Games table
+- **Added**: `supports_hybrid` boolean field to Games table  
+- **Enhanced**: Game mode detection now supports multiple concurrent modes
+- **Improved**: BGG API integration now properly detects and sets all four game mode flags
+
+**Game Mode Support**: Games can now support multiple modes simultaneously:
+- `supports_competitive`: Traditional player-vs-player gameplay
+- `supports_cooperative`: Players work together against the game
+- `supports_campaign`: Story-driven, multi-session gameplay  
+- `supports_hybrid`: Mixed cooperative/competitive or special mechanics
+
 ## Thought Process for Feature Selection
 
-**Core Problem Analysis**: Board game enthusiasts need a way to track their players, game collection, and statistics in an organized, visually appealing manner.
+**Core Problem Analysis**: Board game enthusiasts need a way to track their players, game collection, and statistics in an organized, visually appealing manner, with proper support for diverse game types.
 
 **User Context**: Used during game nights or when organizing board game sessions to manage players and game information.
 
@@ -30,6 +45,7 @@
 1. First impression on dashboard with circular stats
 2. Adding new players/games through modal dialogs
 3. Browsing and searching through collections
+4. Viewing game mode badges to understand supported play styles
 
 ## Essential Features
 

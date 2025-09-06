@@ -20,7 +20,10 @@ export interface BGGGame {
   weight: number
   expansions: BGGExpansion[]
   characters: BGGCharacter[]
-  game_type: 'competitive' | 'cooperative' | 'campaign' | 'hybrid'
+  supports_cooperative: boolean
+  supports_competitive: boolean
+  supports_campaign: boolean
+  supports_hybrid: boolean
   is_expansion: boolean
   base_game_id?: number
 }
@@ -184,8 +187,8 @@ class BGGApiService {
       const average = parseFloat(ratings?.getElementsByTagName('average')[0]?.getAttribute('value') || '0')
       const averageweight = parseFloat(ratings?.getElementsByTagName('averageweight')[0]?.getAttribute('value') || '0')
 
-      // Determine game type based on categories and mechanics
-      const gameType = this.determineGameType(categories, mechanics)
+      // Determine game modes based on categories and mechanics
+      const gameModes = this.determineGameModes(categories, mechanics)
       
       // Get expansions
       const expansions = this.parseExpansions(xmlText)
@@ -214,7 +217,10 @@ class BGGApiService {
         weight: averageweight,
         expansions,
         characters,
-        game_type: gameType,
+        supports_cooperative: gameModes.cooperative,
+        supports_competitive: gameModes.competitive,
+        supports_campaign: gameModes.campaign,
+        supports_hybrid: gameModes.hybrid,
         is_expansion: this.getLinkValues(item, 'boardgameexpansion').length > 0,
         base_game_id: this.getBaseGameId(item)
       }
@@ -307,23 +313,58 @@ class BGGApiService {
     return characters
   }
 
-  private determineGameType(categories: string[], mechanics: string[]): 'competitive' | 'cooperative' | 'campaign' | 'hybrid' {
+  private determineGameModes(categories: string[], mechanics: string[]): {
+    cooperative: boolean,
+    competitive: boolean,
+    campaign: boolean,
+    hybrid: boolean
+  } {
     const categoryStr = categories.join(' ').toLowerCase()
     const mechanicStr = mechanics.join(' ').toLowerCase()
     
-    if (mechanicStr.includes('cooperative') || categoryStr.includes('cooperative')) {
-      return 'cooperative'
+    const modes = {
+      cooperative: false,
+      competitive: true, // Default to competitive for most games
+      campaign: false,
+    hybrid: false
     }
     
-    if (mechanicStr.includes('campaign') || categoryStr.includes('campaign') || categoryStr.includes('legacy')) {
-      return 'campaign'
+    // Check for cooperative elements
+    if (mechanicStr.includes('cooperative') || 
+        mechanicStr.includes('co-op') ||
+        categoryStr.includes('cooperative')) {
+      modes.cooperative = true
     }
     
-    if (mechanicStr.includes('semi-cooperative') || mechanicStr.includes('team') && mechanicStr.includes('competitive')) {
-      return 'hybrid'
+    // Check for campaign/legacy elements
+    if (mechanicStr.includes('campaign') || 
+        mechanicStr.includes('legacy') ||
+        categoryStr.includes('campaign') || 
+        categoryStr.includes('legacy') ||
+        mechanicStr.includes('story') ||
+        mechanicStr.includes('narrative')) {
+      modes.campaign = true
     }
     
-    return 'competitive'
+    // Check for hybrid elements (semi-cooperative, team vs team, etc.)
+    if (mechanicStr.includes('semi-cooperative') || 
+        mechanicStr.includes('semi cooperative') ||
+        mechanicStr.includes('team') ||
+        mechanicStr.includes('traitor') ||
+        mechanicStr.includes('hidden role') ||
+        (modes.cooperative && modes.competitive)) {
+      modes.hybrid = true
+    }
+    
+    // If cooperative but no competitive elements, turn off competitive
+    if (modes.cooperative && !mechanicStr.includes('competitive') && !mechanicStr.includes('versus')) {
+      // Keep competitive true unless clearly only cooperative
+      if (mechanicStr.includes('fully cooperative') || categoryStr.includes('fully cooperative')) {
+        modes.competitive = false
+      }
+    }
+    
+    return modes
   }
 
   private getNodeValue(item: Element, tagName: string): string | null {

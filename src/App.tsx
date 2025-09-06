@@ -39,11 +39,11 @@ interface Game {
   bgg_rating?: number
   weight?: number
   age_min?: number
-  game_type: 'competitive' | 'cooperative' | 'campaign' | 'hybrid'
   supports_cooperative: boolean
   supports_competitive: boolean
   supports_campaign: boolean
-  has_expansion: boolean // Fixed: This field was missing from table Games
+  supports_hybrid: boolean // New field to replace game_type
+  has_expansion: boolean
   has_characters: boolean
   created_at: Date
   updated_at?: Date
@@ -79,7 +79,7 @@ interface GameSession {
   session_date: Date
   duration_minutes?: number
   winner_player_id?: number
-  session_type: 'competitive' | 'cooperative' | 'campaign'
+  session_type: 'competitive' | 'cooperative' | 'campaign' | 'hybrid'
   notes?: string
   created_at: Date
 }
@@ -167,10 +167,10 @@ const mockData = {
       bgg_rating: 7.8,
       weight: 3.5,
       age_min: 14,
-      game_type: 'competitive' as const,
       supports_cooperative: false,
       supports_competitive: true,
       supports_campaign: true,
+      supports_hybrid: false,
       has_expansion: false,
       has_characters: true,
       created_at: new Date('2024-01-01'),
@@ -205,10 +205,10 @@ const mockData = {
       bgg_rating: 7.2,
       weight: 2.8,
       age_min: 12,
-      game_type: 'competitive' as const,
       supports_cooperative: false,
       supports_competitive: true,
       supports_campaign: true,
+      supports_hybrid: false,
       has_expansion: true,
       has_characters: true,
       created_at: new Date('2024-01-15'),
@@ -260,10 +260,10 @@ const mockData = {
       bgg_rating: 6.9,
       weight: 1.5,
       age_min: 10,
-      game_type: 'competitive' as const,
       supports_cooperative: false,
       supports_competitive: true,
       supports_campaign: false,
+      supports_hybrid: false,
       has_expansion: false,
       has_characters: false,
       created_at: new Date('2024-02-01'),
@@ -288,10 +288,10 @@ const mockData = {
       bgg_rating: 8.1,
       weight: 4.2,
       age_min: 16,
-      game_type: 'competitive' as const,
       supports_cooperative: false,
       supports_competitive: true,
       supports_campaign: true,
+      supports_hybrid: false,
       has_expansion: true,
       has_characters: true,
       created_at: new Date('2024-01-20'),
@@ -490,10 +490,10 @@ export default function ModernDashboard() {
           bgg_rating: gameData.bgg_rating,
           weight: gameData.weight,
           age_min: gameData.age_min,
-          game_type: gameData.game_type || 'competitive',
           supports_cooperative: gameData.supports_cooperative || false,
           supports_competitive: gameData.supports_competitive || false,
           supports_campaign: gameData.supports_campaign || false,
+          supports_hybrid: gameData.supports_hybrid || false,
           has_expansion: gameData.has_expansion || false,
           has_characters: gameData.has_characters || false,
           created_at: gameData.created_at || new Date(),

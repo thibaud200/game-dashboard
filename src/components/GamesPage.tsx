@@ -65,7 +65,6 @@ interface Game {
   weight: number
   age_min: number
   players: string
-  game_type: 'competitive' | 'cooperative' | 'campaign' | 'hybrid'
   expansions: Expansion[]
   characters: Character[]
   has_expansion: boolean
@@ -73,6 +72,7 @@ interface Game {
   supports_cooperative: boolean
   supports_competitive: boolean
   supports_campaign: boolean
+  supports_hybrid: boolean
   bgg_id?: number
   created_at: Date
   updated_at?: Date
@@ -128,7 +128,6 @@ export default function GamesPage({
     bgg_rating: 0,
     weight: 0,
     age_min: 8,
-    game_type: 'competitive' as 'competitive' | 'cooperative' | 'campaign' | 'hybrid',
     expansions: [] as Expansion[],
     characters: [] as Character[],
     has_expansion: false,
@@ -136,6 +135,7 @@ export default function GamesPage({
     supports_cooperative: false,
     supports_competitive: true,
     supports_campaign: false,
+    supports_hybrid: false,
     bgg_id: undefined as number | undefined
   })
 
@@ -162,7 +162,6 @@ export default function GamesPage({
       bgg_rating: 0,
       weight: 0,
       age_min: 8,
-      game_type: 'competitive',
       expansions: [],
       characters: [],
       has_expansion: false,
@@ -170,6 +169,7 @@ export default function GamesPage({
       supports_cooperative: false,
       supports_competitive: true,
       supports_campaign: false,
+      supports_hybrid: false,
       bgg_id: undefined
     })
   }
@@ -190,14 +190,14 @@ export default function GamesPage({
       bgg_rating: bggGame.rating,
       weight: bggGame.weight,
       age_min: bggGame.min_age,
-      game_type: bggGame.game_type,
       expansions: bggGame.expansions,
       characters: bggGame.characters,
       has_expansion: bggGame.expansions.length > 0,
       has_characters: bggGame.characters.length > 0,
-      supports_cooperative: false,
-      supports_competitive: true,
-      supports_campaign: false,
+      supports_cooperative: bggGame.supports_cooperative,
+      supports_competitive: bggGame.supports_competitive,
+      supports_campaign: bggGame.supports_campaign,
+      supports_hybrid: bggGame.supports_hybrid,
       bgg_id: bggGame.id
     })
     setIsBGGSearchOpen(false)
@@ -222,7 +222,6 @@ export default function GamesPage({
         bgg_rating: formData.bgg_rating,
         weight: formData.weight,
         age_min: formData.age_min,
-        game_type: formData.game_type,
         expansions: formData.expansions,
         characters: formData.characters,
         has_expansion: formData.has_expansion,
@@ -230,6 +229,7 @@ export default function GamesPage({
         supports_cooperative: formData.supports_cooperative,
         supports_competitive: formData.supports_competitive,
         supports_campaign: formData.supports_campaign,
+        supports_hybrid: formData.supports_hybrid,
         bgg_id: formData.bgg_id,
         created_at: now
       })
@@ -255,7 +255,6 @@ export default function GamesPage({
       bgg_rating: game.bgg_rating,
       weight: game.weight,
       age_min: game.age_min,
-      game_type: game.game_type,
       expansions: game.expansions || [],
       characters: game.characters || [],
       has_expansion: game.has_expansion || false,
@@ -263,6 +262,7 @@ export default function GamesPage({
       supports_cooperative: game.supports_cooperative || false,
       supports_competitive: game.supports_competitive || true,
       supports_campaign: game.supports_campaign || false,
+      supports_hybrid: game.supports_hybrid || false,
       bgg_id: game.bgg_id
     })
     setIsEditDialogOpen(true)
@@ -291,24 +291,46 @@ export default function GamesPage({
     }
   }
 
-  const getGameTypeColor = (type: string) => {
-    switch (type) {
-      case 'cooperative': return 'text-blue-400'
-      case 'competitive': return 'text-red-400'
-      case 'campaign': return 'text-purple-400'
-      case 'hybrid': return 'text-orange-400'
-      default: return 'text-white/60'
+  const getGameModesBadges = (game: Game) => {
+    const modes = []
+    
+    if (game.supports_competitive) {
+      modes.push(
+        <Badge key="competitive" variant="outline" className="border-red-400/30 text-red-400 text-xs">
+          <Swords className="w-3 h-3 mr-1" />
+          Compétitif
+        </Badge>
+      )
     }
-  }
-
-  const getGameTypeIcon = (type: string) => {
-    switch (type) {
-      case 'cooperative': return <Shield className="w-3 h-3" />
-      case 'competitive': return <Swords className="w-3 h-3" />
-      case 'campaign': return <Crown className="w-3 h-3" />
-      case 'hybrid': return <Target className="w-3 h-3" />
-      default: return <Target className="w-3 h-3" />
+    
+    if (game.supports_cooperative) {
+      modes.push(
+        <Badge key="cooperative" variant="outline" className="border-blue-400/30 text-blue-400 text-xs">
+          <Shield className="w-3 h-3 mr-1" />
+          Coopératif
+        </Badge>
+      )
     }
+    
+    if (game.supports_campaign) {
+      modes.push(
+        <Badge key="campaign" variant="outline" className="border-purple-400/30 text-purple-400 text-xs">
+          <Crown className="w-3 h-3 mr-1" />
+          Campagne
+        </Badge>
+      )
+    }
+    
+    if (game.supports_hybrid) {
+      modes.push(
+        <Badge key="hybrid" variant="outline" className="border-orange-400/30 text-orange-400 text-xs">
+          <Target className="w-3 h-3 mr-1" />
+          Hybride
+        </Badge>
+      )
+    }
+    
+    return modes
   }
 
   const getWeightStars = (weight: number) => {
@@ -510,18 +532,57 @@ export default function GamesPage({
                     </Select>
                   </div>
                   <div>
-                    <Label htmlFor="game-type">Game Type</Label>
-                    <Select value={formData.game_type} onValueChange={(value: any) => setFormData(prev => ({ ...prev, game_type: value }))}>
-                      <SelectTrigger className="bg-slate-700 border-slate-600 text-white">
-                        <SelectValue />
-                      </SelectTrigger>
-                      <SelectContent className="bg-slate-700 border-slate-600">
-                        <SelectItem value="competitive">Competitive</SelectItem>
-                        <SelectItem value="cooperative">Cooperative</SelectItem>
-                        <SelectItem value="campaign">Campaign</SelectItem>
-                        <SelectItem value="hybrid">Hybrid</SelectItem>
-                      </SelectContent>
-                    </Select>
+                    <Label>Game Modes</Label>
+                    <div className="grid grid-cols-2 gap-2 mt-2">
+                      <div className="flex items-center space-x-2">
+                        <Checkbox 
+                          id="supports-competitive"
+                          checked={formData.supports_competitive}
+                          onCheckedChange={(checked) => setFormData(prev => ({ ...prev, supports_competitive: checked as boolean }))}
+                          className="border-slate-600"
+                        />
+                        <Label htmlFor="supports-competitive" className="text-sm flex items-center">
+                          <Swords className="w-3 h-3 mr-1 text-red-400" />
+                          Compétitif
+                        </Label>
+                      </div>
+                      <div className="flex items-center space-x-2">
+                        <Checkbox 
+                          id="supports-cooperative"
+                          checked={formData.supports_cooperative}
+                          onCheckedChange={(checked) => setFormData(prev => ({ ...prev, supports_cooperative: checked as boolean }))}
+                          className="border-slate-600"
+                        />
+                        <Label htmlFor="supports-cooperative" className="text-sm flex items-center">
+                          <Shield className="w-3 h-3 mr-1 text-blue-400" />
+                          Coopératif
+                        </Label>
+                      </div>
+                      <div className="flex items-center space-x-2">
+                        <Checkbox 
+                          id="supports-campaign"
+                          checked={formData.supports_campaign}
+                          onCheckedChange={(checked) => setFormData(prev => ({ ...prev, supports_campaign: checked as boolean }))}
+                          className="border-slate-600"
+                        />
+                        <Label htmlFor="supports-campaign" className="text-sm flex items-center">
+                          <Crown className="w-3 h-3 mr-1 text-purple-400" />
+                          Campagne
+                        </Label>
+                      </div>
+                      <div className="flex items-center space-x-2">
+                        <Checkbox 
+                          id="supports-hybrid"
+                          checked={formData.supports_hybrid}
+                          onCheckedChange={(checked) => setFormData(prev => ({ ...prev, supports_hybrid: checked as boolean }))}
+                          className="border-slate-600"
+                        />
+                        <Label htmlFor="supports-hybrid" className="text-sm flex items-center">
+                          <Target className="w-3 h-3 mr-1 text-orange-400" />
+                          Hybride
+                        </Label>
+                      </div>
+                    </div>
                   </div>
                 </div>
                 <div>
@@ -809,13 +870,11 @@ export default function GamesPage({
                           <Badge variant="secondary" className="bg-teal-600/20 text-teal-300 text-xs">
                             {game.category}
                           </Badge>
-                          <Badge 
-                            variant="outline" 
-                            className={`border-white/20 text-xs ${getGameTypeColor(game.game_type)}`}
-                          >
-                            {getGameTypeIcon(game.game_type)}
-                            <span className="ml-1 capitalize">{game.game_type}</span>
-                          </Badge>
+                          {getGameModesBadges(game).map((badge, index) => (
+                            <React.Fragment key={index}>
+                              {badge}
+                            </React.Fragment>
+                          ))}
                           <Badge variant="outline" className="border-white/20 text-white/60 text-xs">
                             {game.min_players === game.max_players ? `${game.min_players}` : `${game.min_players}-${game.max_players}`} players
                           </Badge>
@@ -1093,18 +1152,57 @@ export default function GamesPage({
                 </Select>
               </div>
               <div>
-                <Label htmlFor="edit-game-type">Game Type</Label>
-                <Select value={formData.game_type} onValueChange={(value: any) => setFormData(prev => ({ ...prev, game_type: value }))}>
-                  <SelectTrigger className="bg-slate-700 border-slate-600 text-white">
-                    <SelectValue />
-                  </SelectTrigger>
-                  <SelectContent className="bg-slate-700 border-slate-600">
-                    <SelectItem value="competitive">Competitive</SelectItem>
-                    <SelectItem value="cooperative">Cooperative</SelectItem>
-                    <SelectItem value="campaign">Campaign</SelectItem>
-                    <SelectItem value="hybrid">Hybrid</SelectItem>
-                  </SelectContent>
-                </Select>
+                <Label>Game Modes</Label>
+                <div className="grid grid-cols-2 gap-2 mt-2">
+                  <div className="flex items-center space-x-2">
+                    <Checkbox 
+                      id="edit-supports-competitive"
+                      checked={formData.supports_competitive}
+                      onCheckedChange={(checked) => setFormData(prev => ({ ...prev, supports_competitive: checked as boolean }))}
+                      className="border-slate-600"
+                    />
+                    <Label htmlFor="edit-supports-competitive" className="text-sm flex items-center">
+                      <Swords className="w-3 h-3 mr-1 text-red-400" />
+                      Compétitif
+                    </Label>
+                  </div>
+                  <div className="flex items-center space-x-2">
+                    <Checkbox 
+                      id="edit-supports-cooperative"
+                      checked={formData.supports_cooperative}
+                      onCheckedChange={(checked) => setFormData(prev => ({ ...prev, supports_cooperative: checked as boolean }))}
+                      className="border-slate-600"
+                    />
+                    <Label htmlFor="edit-supports-cooperative" className="text-sm flex items-center">
+                      <Shield className="w-3 h-3 mr-1 text-blue-400" />
+                      Coopératif
+                    </Label>
+                  </div>
+                  <div className="flex items-center space-x-2">
+                    <Checkbox 
+                      id="edit-supports-campaign"
+                      checked={formData.supports_campaign}
+                      onCheckedChange={(checked) => setFormData(prev => ({ ...prev, supports_campaign: checked as boolean }))}
+                      className="border-slate-600"
+                    />
+                    <Label htmlFor="edit-supports-campaign" className="text-sm flex items-center">
+                      <Crown className="w-3 h-3 mr-1 text-purple-400" />
+                      Campagne
+                    </Label>
+                  </div>
+                  <div className="flex items-center space-x-2">
+                    <Checkbox 
+                      id="edit-supports-hybrid"
+                      checked={formData.supports_hybrid}
+                      onCheckedChange={(checked) => setFormData(prev => ({ ...prev, supports_hybrid: checked as boolean }))}
+                      className="border-slate-600"
+                    />
+                    <Label htmlFor="edit-supports-hybrid" className="text-sm flex items-center">
+                      <Target className="w-3 h-3 mr-1 text-orange-400" />
+                      Hybride
+                    </Label>
+                  </div>
+                </div>
               </div>
             </div>
             <div>
