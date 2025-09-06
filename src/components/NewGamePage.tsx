@@ -1,12 +1,12 @@
 import React, { useState } from 'react'
 import { ArrowLeft, Play, Plus, Users, Timer, Trophy } from 'lucide-react'
-import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Checkbox } from "@/components/ui/checkbox"
 import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { Textarea } from "@/components/ui/textarea"
+import { Button } from "@/components/ui/button"
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import BottomNavigation from './BottomNavigation'
 
 interface Player {
@@ -64,23 +64,12 @@ interface GameSession {
   created_at?: Date
 }
 
-interface SessionPlayer {
-  session_player_id?: number
-  session_id?: number
-  player_id: number
-  character_id?: number
-  score: number
-  placement?: number
-  is_winner: boolean
-  notes?: string
-}
-
 interface NewGamePageProps {
   games: Game[]
   players: Player[]
   onNavigation: (view: string) => void
   currentView: string
-  onCreateSession?: (sessionData: GameSession) => Promise<void>
+  onCreateSession?: (sessionData: any) => Promise<void>
 }
 
 export default function NewGamePage({ 
@@ -105,10 +94,9 @@ export default function NewGamePage({
   const handlePlayerToggle = (playerId: number) => {
     setSelectedPlayers(prev => {
       if (prev.includes(playerId)) {
-        // Remove selected player
         const newPlayers = prev.filter(id => id !== playerId)
         
-        // Clean up scores and placements
+        // Clean up scores and placements for removed player
         const newScores = { ...playerScores }
         const newPlacements = { ...playerPlacements }
         delete newScores[playerId]
@@ -116,7 +104,7 @@ export default function NewGamePage({
         setPlayerScores(newScores)
         setPlayerPlacements(newPlacements)
         
-        // Clear winner if it was this player
+        // Clear winner if this player was the winner
         if (winnerId === playerId.toString()) {
           setWinnerId('')
         }
@@ -143,16 +131,15 @@ export default function NewGamePage({
   }
 
   const canSubmit = () => {
-    if (!selectedGameId || selectedPlayers.length === 0) return false
-    if (!selectedGame) return false
+    if (!selectedGame || selectedPlayers.length === 0) return false
     
     // Check minimum players requirement
     if (selectedPlayers.length < selectedGame.min_players) return false
     
     // For competitive games, need scores or placements
     if (sessionType === 'competitive') {
-      const hasScores = selectedPlayers.some(id => playerScores[id] && playerScores[id] > 0)
-      const hasPlacements = selectedPlayers.some(id => playerPlacements[id] && playerPlacements[id] > 0)
+      const hasScores = selectedPlayers.some(playerId => (playerScores[playerId] || 0) > 0)
+      const hasPlacements = selectedPlayers.some(playerId => (playerPlacements[playerId] || 0) > 0)
       if (!hasScores && !hasPlacements) return false
     }
     
@@ -173,20 +160,20 @@ export default function NewGamePage({
         notes: ''
       }))
 
-      const sessionData: GameSession = {
+      const sessionData = {
         game_id: selectedGame.game_id,
         session_date: new Date(),
         duration_minutes: duration ? parseInt(duration) : undefined,
         winner_player_id: winnerId ? parseInt(winnerId) : undefined,
         session_type: sessionType,
-        notes
+        notes: notes,
+        players: sessionPlayers
       }
 
       await onCreateSession(sessionData)
       
       // Reset form
       setSelectedGameId('')
-      setSessionType('competitive')
       setSelectedPlayers([])
       setPlayerScores({})
       setPlayerPlacements({})
@@ -206,20 +193,18 @@ export default function NewGamePage({
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-900 to-slate-800 text-white">
-      <div className="container mx-auto px-4 py-6 space-y-6 pb-24">
+      <div className="container mx-auto px-4 py-6 space-y-6">
         {/* Header */}
-        <div className="flex items-center justify-between">
+        <div className="flex items-center gap-4">
           <Button
             onClick={() => onNavigation('dashboard')}
             variant="ghost"
             size="sm"
-            className="text-white/60 hover:text-white hover:bg-white/10"
+            className="text-white hover:bg-white/10"
           >
-            <ArrowLeft className="w-4 h-4 mr-2" />
-            Back
+            <ArrowLeft className="w-4 h-4" />
           </Button>
           <h1 className="text-2xl font-bold text-white">New Game Session</h1>
-          <div className="w-20" /> {/* Spacer for centering */}
         </div>
 
         {/* Game Selection */}
@@ -227,7 +212,7 @@ export default function NewGamePage({
           <CardHeader>
             <CardTitle className="flex items-center gap-2 text-white">
               <Play className="w-5 h-5" />
-              Choose Game
+              Select Game
             </CardTitle>
           </CardHeader>
           <CardContent className="space-y-4">
