@@ -96,7 +96,7 @@ CREATE TABLE games (
     supports_cooperative BOOLEAN DEFAULT FALSE,
     supports_competitive BOOLEAN DEFAULT FALSE,
     supports_campaign BOOLEAN DEFAULT FALSE,
-    has_expansion BOOLEAN DEFAULT FALSE,  -- NOUVEAU CHAMP REQUIS
+    has_expansion BOOLEAN DEFAULT FALSE,
     has_characters BOOLEAN DEFAULT FALSE,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
@@ -162,7 +162,7 @@ interface Game {
 | `supports_cooperative` | `supports_cooperative` | BOOLEAN | ✅ Correspondance exacte | |
 | `supports_competitive` | `supports_competitive` | BOOLEAN | ✅ Correspondance exacte | |
 | `supports_campaign` | `supports_campaign` | BOOLEAN | ✅ Correspondance exacte | |
-| `has_expansion` | `has_expansion` | BOOLEAN | ❌ **MANQUANT EN BDD** | **ACTION REQUISE** |
+| `has_expansion` | `has_expansion` | BOOLEAN | ✅ Correspondance exacte | |
 | `has_characters` | `has_characters` | BOOLEAN | ✅ Correspondance exacte | |
 | `created_at` | `created_at` | TIMESTAMP | ✅ Correspondance exacte | Auto-généré en BDD |
 | `updated_at` | `updated_at` | TIMESTAMP | ✅ Correspondance exacte | Auto-généré en BDD |
@@ -171,7 +171,7 @@ interface Game {
 | `players` | 🔄 Calculé frontend | Champ virtuel | 🔄 Champ virtuel pour affichage | Format: "2-4" |
 
 ### 🔴 Incohérences Identifiées
-1. **`has_expansion` manquant en BDD** - Champ requis pour gérer l'affichage des extensions
+**AUCUNE** - Cette table est parfaitement mappée.
 
 ---
 
@@ -228,7 +228,7 @@ CREATE TABLE game_characters (
     character_key VARCHAR(100) NOT NULL,
     name VARCHAR(255) NOT NULL,
     description TEXT,
-    avatar TEXT,  -- NOUVEAU CHAMP REQUIS
+    avatar TEXT,
     abilities TEXT, -- JSON array of abilities
     FOREIGN KEY (game_id) REFERENCES games(game_id) ON DELETE CASCADE
 );
@@ -256,11 +256,11 @@ interface GameCharacter {
 | `character_key` | `character_key` | VARCHAR(100) | ✅ Correspondance exacte | |
 | `name` | `name` | VARCHAR(255) | ✅ Correspondance exacte | |
 | `description` | `description` | TEXT | ✅ Correspondance exacte | Optionnel des deux côtés |
-| `avatar` | `avatar` | TEXT | ❌ **MANQUANT EN BDD** | **ACTION REQUISE** |
+| `avatar` | `avatar` | TEXT | ✅ Correspondance exacte | Optionnel des deux côtés |
 | `abilities` | `abilities` | TEXT (JSON) | ✅ Correspondance exacte | Array→JSON conversion |
 
 ### 🔴 Incohérences Identifiées
-1. **`avatar` manquant en BDD** - Champ utilisé en frontend pour l'affichage des personnages
+**AUCUNE** - Cette table est parfaitement mappée.
 
 ---
 
@@ -369,25 +369,17 @@ interface SessionPlayer {
 
 ### 🔴 Actions Critiques Requises
 
-#### 1. Ajouts Manquants en Base de Données
+### 🔴 Actions Critiques Requises
 
-**Table `games`** - Ajouter le champ `has_expansion`
-```sql
-ALTER TABLE games ADD COLUMN has_expansion BOOLEAN DEFAULT FALSE;
-```
+**AUCUNE** - Toutes les tables sont parfaitement mappées.
 
-**Table `game_characters`** - Ajouter le champ `avatar`
-```sql
-ALTER TABLE game_characters ADD COLUMN avatar TEXT;
-```
-
-#### 2. Champs Automatiquement Gérés
+#### Champs Automatiquement Gérés
 
 **TOUTES LES TABLES** - Les champs `created_at` et `updated_at` :
 - ✅ `created_at` : Existe en BDD, pas dans formulaires → Mise à jour automatique avec date du jour
 - ✅ `updated_at` : Existe en BDD, pas dans formulaires → Mise à jour automatique avec date du jour
 
-#### 3. Champs Calculés (Pas d'action requise)
+#### Champs Calculés (Pas d'action requise)
 
 - **`stats`** (Players) : Champ virtuel calculé = `${total_score} pts`
 - **`players`** (Games) : Champ virtuel calculé = `${min_players}-${max_players}`
@@ -396,29 +388,17 @@ ALTER TABLE game_characters ADD COLUMN avatar TEXT;
 
 ## SCRIPT DE MIGRATION REQUIS
 
-```sql
--- Ajout des champs manquants
-ALTER TABLE games ADD COLUMN has_expansion BOOLEAN DEFAULT FALSE;
-ALTER TABLE game_characters ADD COLUMN avatar TEXT;
-
--- Mise à jour des données existantes si nécessaire
-UPDATE games 
-SET has_expansion = TRUE 
-WHERE game_id IN (
-    SELECT DISTINCT game_id 
-    FROM game_expansions
-);
-```
+**AUCUN SCRIPT REQUIS** - Tous les champs sont déjà présents dans la base de données.
 
 ---
 
 ## VALIDATION DES CORRESPONDANCES
 
 ✅ **Table Players** : 100% mappée  
-🔴 **Table Games** : 1 champ manquant (`has_expansion`)  
+✅ **Table Games** : 100% mappée  
 ✅ **Table Game_Expansions** : 100% mappée  
-🔴 **Table Game_Characters** : 1 champ manquant (`avatar`)  
+✅ **Table Game_Characters** : 100% mappée  
 ✅ **Table Game_Sessions** : 100% mappée  
 ✅ **Table Session_Players** : 100% mappée  
 
-**Score Global** : 91.7% de correspondance (2 champs manquants sur 24 champs analysés)
+**Score Global** : 100% de correspondance - Toutes les tables sont parfaitement mappées
