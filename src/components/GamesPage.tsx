@@ -245,7 +245,6 @@ export default function GamesPage({
       supports_cooperative: game.supports_cooperative || false,
       supports_competitive: game.supports_competitive || true,
       supports_campaign: game.supports_campaign || false,
-      manualExpansions: '',
       bgg_id: game.bgg_id
     })
     setIsEditDialogOpen(true)
@@ -598,21 +597,38 @@ export default function GamesPage({
                   {/* Expansions Display - show if checkbox is checked */}
                   {formData.has_expansion && (
                     <div className="space-y-2">
-                      {formData.expansions.length > 0 && (
-                        <>
-                          <Label>Expansions from BGG</Label>
-                          <div className="space-y-1">
-                            {formData.expansions.map((expansion, index) => (
-                              <div key={index} className="p-2 bg-slate-700 rounded border border-slate-600 text-sm">
-                                <div className="font-medium">{expansion.name}</div>
-                                {expansion.year_published > 0 && (
-                                  <div className="text-white/60 text-xs">{expansion.year_published}</div>
-                                )}
-                              </div>
-                            ))}
-                          </div>
-                        </>
-                      )}
+                      <Label>Expansions</Label>
+                      <Textarea
+                        value={formData.expansions
+                          .map(expansion => 
+                            `${expansion.name}${expansion.year_published > 0 ? ` (${expansion.year_published})` : ''}`
+                          ).join(', ')}
+                        onChange={(e) => {
+                          // Parse the textarea content back to expansions array
+                          const expansionTexts = e.target.value.split(',').map(text => text.trim()).filter(text => text);
+                          const parsedExpansions = expansionTexts.map((text, index) => {
+                            const match = text.match(/^(.+?)\s*\((\d{4})\)$/);
+                            if (match) {
+                              return {
+                                id: index,
+                                name: match[1].trim(),
+                                year_published: parseInt(match[2])
+                              };
+                            } else {
+                              return {
+                                id: index,
+                                name: text,
+                                year_published: 0
+                              };
+                            }
+                          });
+                          
+                          setFormData(prev => ({ ...prev, expansions: parsedExpansions }));
+                        }}
+                        placeholder="Extension 1 (2023), Extension 2 (2024), ..."
+                        className="bg-slate-700 border-slate-600 text-white"
+                        rows={3}
+                      />
                     </div>
                   )}
                 </div>
