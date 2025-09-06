@@ -284,7 +284,7 @@ export default function Dashboard({
           <Tooltip>
             <TooltipTrigger asChild>
               <button
-                onClick={() => onNavigation('current-game')}
+                onClick={() => onNavigation('new-game')}
                 className="bg-gradient-to-r from-teal-500 to-teal-600 rounded-2xl p-4 flex flex-col items-center justify-center hover:from-teal-600 hover:to-teal-700 transition-all duration-200 shadow-lg hover:shadow-xl hover:scale-105"
               >
                 <Play className="w-8 h-8 mb-2" />
@@ -298,7 +298,7 @@ export default function Dashboard({
           <Tooltip>
             <TooltipTrigger asChild>
               <button
-                onClick={() => onNavigation('create-player')}
+                onClick={() => onNavigation('players')}
                 className="bg-gradient-to-r from-emerald-500 to-emerald-600 rounded-2xl p-4 flex flex-col items-center justify-center hover:from-emerald-600 hover:to-emerald-700 transition-all duration-200 shadow-lg hover:shadow-xl hover:scale-105"
               >
                 <Plus className="w-8 h-8 mb-2" />
@@ -306,7 +306,7 @@ export default function Dashboard({
               </button>
             </TooltipTrigger>
             <TooltipContent>
-              <p>Create a New Player</p>
+              <p>Go to Players Page</p>
             </TooltipContent>
           </Tooltip>
         </div>

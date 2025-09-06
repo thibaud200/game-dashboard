@@ -177,6 +177,31 @@ class ApiService {
     });
   }
 
+  // Game Sessions
+  async createSession(sessionData: any) {
+    return this.request<any>('/sessions', 'POST', sessionData);
+  }
+
+  async getSessionsByGame(gameId: number) {
+    return this.request<any[]>(`/sessions/game/${gameId}`);
+  }
+
+  async getSessionsByPlayer(playerId: number) {
+    return this.request<any[]>(`/sessions/player/${playerId}`);
+  }
+
+  async getAllSessions() {
+    return this.request<any[]>('/sessions');
+  }
+
+  async updateSession(sessionId: number, sessionData: any) {
+    return this.request<any>(`/sessions/${sessionId}`, 'PUT', sessionData);
+  }
+
+  async deleteSession(sessionId: number) {
+    return this.request<void>(`/sessions/${sessionId}`, 'DELETE');
+  }
+
   // Statistics
   async getPlayerStats() {
     return this.request<any>('/stats/players');

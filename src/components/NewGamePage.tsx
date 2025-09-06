@@ -1,0 +1,441 @@
+import React, { useState } from 'react'
+import { ArrowLeft, Play, Plus, Users, Timer, Trophy } from 'lucide-react'
+import { Button } from "@/components/ui/button"
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
+import { Input } from "@/components/ui/input"
+import { Label } from "@/components/ui/label"
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
+import { Checkbox } from "@/components/ui/checkbox"
+import { Textarea } from "@/components/ui/textarea"
+import BottomNavigation from './BottomNavigation'
+import { toast } from 'sonner'
+
+interface Player {
+  player_id: number
+  player_name: string
+  avatar?: string
+  games_played: number
+  wins: number
+  total_score: number
+  average_score: number
+  favorite_game?: string
+  created_at: Date
+  updated_at?: Date
+  stats?: string
+}
+
+interface Game {
+  game_id: number
+  bgg_id?: number
+  name: string
+  description?: string
+  image?: string
+  min_players: number
+  max_players: number
+  duration?: string
+  difficulty?: string
+  category?: string
+  year_published?: number
+  publisher?: string
+  designer?: string
+  bgg_rating?: number
+  weight?: number
+  age_min?: number
+  supports_cooperative: boolean
+  supports_competitive: boolean
+  supports_campaign: boolean
+  supports_hybrid: boolean
+  has_expansion: boolean
+  has_characters: boolean
+  created_at: Date
+  updated_at?: Date
+  expansions: any[]
+  characters: any[]
+  players?: string
+}
+
+interface GameSession {
+  game_id: number
+  session_date: Date
+  duration_minutes?: number
+  winner_player_id?: number
+  session_type: 'competitive' | 'cooperative' | 'campaign' | 'hybrid'
+  notes?: string
+  players: Array<{
+    player_id: number
+    character_id?: number
+    score: number
+    placement?: number
+    is_winner: boolean
+    notes?: string
+  }>
+}
+
+interface NewGamePageProps {
+  games: Game[]
+  players: Player[]
+  onNavigation: (view: string) => void
+  currentView: string
+  onCreateSession?: (sessionData: GameSession) => Promise<void>
+}
+
+export default function NewGamePage({ 
+  games, 
+  players, 
+  onNavigation, 
+  currentView,
+  onCreateSession 
+}: NewGamePageProps) {
+  const [selectedGameId, setSelectedGameId] = useState<string>('')
+  const [sessionType, setSessionType] = useState<'competitive' | 'cooperative' | 'campaign' | 'hybrid'>('competitive')
+  const [selectedPlayers, setSelectedPlayers] = useState<number[]>([])
+  const [playerScores, setPlayerScores] = useState<{[key: number]: number}>({})
+  const [playerPlacements, setPlayerPlacements] = useState<{[key: number]: number}>({})
+  const [winnerId, setWinnerId] = useState<string>('')
+  const [duration, setDuration] = useState<string>('')
+  const [notes, setNotes] = useState<string>('')
+  const [isSubmitting, setIsSubmitting] = useState(false)
+
+  const selectedGame = games.find(g => g.game_id === parseInt(selectedGameId))
+
+  const handlePlayerToggle = (playerId: number) => {
+    setSelectedPlayers(prev => {
+      if (prev.includes(playerId)) {
+        const newPlayers = prev.filter(id => id !== playerId)
+        // Remove scores and placements for unselected player
+        const newScores = { ...playerScores }
+        const newPlacements = { ...playerPlacements }
+        delete newScores[playerId]
+        delete newPlacements[playerId]
+        setPlayerScores(newScores)
+        setPlayerPlacements(newPlacements)
+        
+        // Clear winner if it was this player
+        if (winnerId === playerId.toString()) {
+          setWinnerId('')
+        }
+        
+        return newPlayers
+      } else {
+        return [...prev, playerId]
+      }
+    })
+  }
+
+  const handleScoreChange = (playerId: number, score: string) => {
+    setPlayerScores(prev => ({
+      ...prev,
+      [playerId]: parseInt(score) || 0
+    }))
+  }
+
+  const handlePlacementChange = (playerId: number, placement: string) => {
+    setPlayerPlacements(prev => ({
+      ...prev,
+      [playerId]: parseInt(placement) || 0
+    }))
+  }
+
+  const canSubmit = () => {
+    if (!selectedGameId || selectedPlayers.length === 0) return false
+    if (!selectedGame) return false
+    
+    // Check minimum players requirement
+    if (selectedPlayers.length < selectedGame.min_players) return false
+    
+    // For competitive games, need scores or placements
+    if (sessionType === 'competitive') {
+      const hasScores = selectedPlayers.some(id => playerScores[id] && playerScores[id] > 0)
+      const hasPlacements = selectedPlayers.some(id => playerPlacements[id] && playerPlacements[id] > 0)
+      if (!hasScores && !hasPlacements) return false
+    }
+    
+    return true
+  }
+
+  const handleSubmit = async () => {
+    if (!canSubmit() || !selectedGame || !onCreateSession) return
+
+    setIsSubmitting(true)
+
+    try {
+      const sessionPlayers = selectedPlayers.map(playerId => ({
+        player_id: playerId,
+        score: playerScores[playerId] || 0,
+        placement: playerPlacements[playerId] || 0,
+        is_winner: winnerId === playerId.toString(),
+        notes: ''
+      }))
+
+      const sessionData: GameSession = {
+        game_id: selectedGame.game_id,
+        session_date: new Date(),
+        duration_minutes: duration ? parseInt(duration) : undefined,
+        winner_player_id: winnerId ? parseInt(winnerId) : undefined,
+        session_type: sessionType,
+        notes,
+        players: sessionPlayers
+      }
+
+      await onCreateSession(sessionData)
+      toast.success('Game session created successfully!')
+      
+      // Reset form
+      setSelectedGameId('')
+      setSelectedPlayers([])
+      setPlayerScores({})
+      setPlayerPlacements({})
+      setWinnerId('')
+      setDuration('')
+      setNotes('')
+      
+      // Navigate back to dashboard
+      onNavigation('dashboard')
+      
+    } catch (error) {
+      console.error('Error creating game session:', error)
+      toast.error('Failed to create game session')
+    } finally {
+      setIsSubmitting(false)
+    }
+  }
+
+  return (
+    <div className="min-h-screen bg-gradient-to-br from-slate-900 to-slate-800 text-white">
+      {/* Header */}
+      <div className="px-4 pt-8 pb-6">
+        <div className="flex items-center justify-between mb-6">
+          <button
+            onClick={() => onNavigation('dashboard')}
+            className="p-2 hover:bg-white/10 rounded-lg transition-colors"
+          >
+            <ArrowLeft className="w-6 h-6" />
+          </button>
+          <h1 className="text-2xl font-bold">New Game Session</h1>
+          <div className="w-10 h-10" /> {/* Spacer */}
+        </div>
+      </div>
+
+      <div className="px-4 space-y-6 pb-24">
+        {/* Game Selection */}
+        <Card className="bg-white/10 backdrop-blur-md border-white/20">
+          <CardHeader>
+            <CardTitle className="flex items-center gap-2 text-white">
+              <Play className="w-5 h-5" />
+              Select Game
+            </CardTitle>
+          </CardHeader>
+          <CardContent className="space-y-4">
+            <div>
+              <Label htmlFor="game-select" className="text-white/80">Game</Label>
+              <Select value={selectedGameId} onValueChange={setSelectedGameId}>
+                <SelectTrigger className="bg-white/5 border-white/20 text-white">
+                  <SelectValue placeholder="Choose a game..." />
+                </SelectTrigger>
+                <SelectContent className="bg-slate-800 border-white/20">
+                  {games.map(game => (
+                    <SelectItem key={game.game_id} value={game.game_id.toString()}>
+                      <div className="flex items-center gap-2">
+                        <span>{game.name}</span>
+                        <span className="text-white/60 text-sm">({game.min_players}-{game.max_players} players)</span>
+                      </div>
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            </div>
+
+            {selectedGame && (
+              <div className="grid grid-cols-2 gap-4">
+                <div>
+                  <Label className="text-white/80">Session Type</Label>
+                  <Select value={sessionType} onValueChange={(value: any) => setSessionType(value)}>
+                    <SelectTrigger className="bg-white/5 border-white/20 text-white">
+                      <SelectValue />
+                    </SelectTrigger>
+                    <SelectContent className="bg-slate-800 border-white/20">
+                      {selectedGame.supports_competitive && <SelectItem value="competitive">Competitive</SelectItem>}
+                      {selectedGame.supports_cooperative && <SelectItem value="cooperative">Cooperative</SelectItem>}
+                      {selectedGame.supports_campaign && <SelectItem value="campaign">Campaign</SelectItem>}
+                      {selectedGame.supports_hybrid && <SelectItem value="hybrid">Hybrid</SelectItem>}
+                    </SelectContent>
+                  </Select>
+                </div>
+
+                <div>
+                  <Label htmlFor="duration" className="text-white/80">Duration (minutes)</Label>
+                  <Input 
+                    id="duration"
+                    type="number"
+                    value={duration}
+                    onChange={(e) => setDuration(e.target.value)}
+                    placeholder="90"
+                    className="bg-white/5 border-white/20 text-white placeholder:text-white/50"
+                  />
+                </div>
+              </div>
+            )}
+          </CardContent>
+        </Card>
+
+        {/* Player Selection */}
+        {selectedGame && (
+          <Card className="bg-white/10 backdrop-blur-md border-white/20">
+            <CardHeader>
+              <CardTitle className="flex items-center gap-2 text-white">
+                <Users className="w-5 h-5" />
+                Select Players
+                <span className="text-sm font-normal text-white/60">
+                  ({selectedPlayers.length}/{selectedGame.max_players} selected, min: {selectedGame.min_players})
+                </span>
+              </CardTitle>
+            </CardHeader>
+            <CardContent className="space-y-4">
+              <div className="grid grid-cols-1 gap-3">
+                {players.map(player => (
+                  <div key={player.player_id} className="flex items-center space-x-3 p-3 bg-white/5 rounded-xl">
+                    <Checkbox
+                      checked={selectedPlayers.includes(player.player_id)}
+                      onCheckedChange={() => handlePlayerToggle(player.player_id)}
+                      disabled={!selectedPlayers.includes(player.player_id) && selectedPlayers.length >= selectedGame.max_players}
+                    />
+                    <img
+                      src={player.avatar}
+                      alt={player.player_name}
+                      className="w-8 h-8 rounded-full object-cover"
+                    />
+                    <div className="flex-1">
+                      <div className="font-medium text-white">{player.player_name}</div>
+                      <div className="text-sm text-white/60">{player.stats}</div>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </CardContent>
+          </Card>
+        )}
+
+        {/* Player Scores and Results */}
+        {selectedPlayers.length > 0 && (
+          <Card className="bg-white/10 backdrop-blur-md border-white/20">
+            <CardHeader>
+              <CardTitle className="flex items-center gap-2 text-white">
+                <Trophy className="w-5 h-5" />
+                Game Results
+              </CardTitle>
+            </CardHeader>
+            <CardContent className="space-y-4">
+              {sessionType === 'competitive' && (
+                <div>
+                  <Label className="text-white/80">Winner (optional)</Label>
+                  <Select value={winnerId} onValueChange={setWinnerId}>
+                    <SelectTrigger className="bg-white/5 border-white/20 text-white">
+                      <SelectValue placeholder="Select winner..." />
+                    </SelectTrigger>
+                    <SelectContent className="bg-slate-800 border-white/20">
+                      {selectedPlayers.map(playerId => {
+                        const player = players.find(p => p.player_id === playerId)
+                        return (
+                          <SelectItem key={playerId} value={playerId.toString()}>
+                            {player?.player_name}
+                          </SelectItem>
+                        )
+                      })}
+                    </SelectContent>
+                  </Select>
+                </div>
+              )}
+
+              <div className="space-y-3">
+                {selectedPlayers.map(playerId => {
+                  const player = players.find(p => p.player_id === playerId)
+                  if (!player) return null
+
+                  return (
+                    <div key={playerId} className="flex items-center gap-3 p-3 bg-white/5 rounded-xl">
+                      <img
+                        src={player.avatar}
+                        alt={player.player_name}
+                        className="w-8 h-8 rounded-full object-cover"
+                      />
+                      <div className="flex-1 font-medium text-white">{player.player_name}</div>
+                      
+                      {sessionType === 'competitive' && (
+                        <>
+                          <div className="flex items-center gap-2">
+                            <Label className="text-white/80 text-sm">Score:</Label>
+                            <Input
+                              type="number"
+                              value={playerScores[playerId] || ''}
+                              onChange={(e) => handleScoreChange(playerId, e.target.value)}
+                              placeholder="0"
+                              className="w-20 bg-white/5 border-white/20 text-white text-center"
+                            />
+                          </div>
+                          <div className="flex items-center gap-2">
+                            <Label className="text-white/80 text-sm">Place:</Label>
+                            <Input
+                              type="number"
+                              value={playerPlacements[playerId] || ''}
+                              onChange={(e) => handlePlacementChange(playerId, e.target.value)}
+                              placeholder="1"
+                              min="1"
+                              max={selectedPlayers.length}
+                              className="w-16 bg-white/5 border-white/20 text-white text-center"
+                            />
+                          </div>
+                        </>
+                      )}
+                    </div>
+                  )
+                })}
+              </div>
+            </CardContent>
+          </Card>
+        )}
+
+        {/* Notes */}
+        {selectedPlayers.length > 0 && (
+          <Card className="bg-white/10 backdrop-blur-md border-white/20">
+            <CardHeader>
+              <CardTitle className="text-white">Session Notes</CardTitle>
+            </CardHeader>
+            <CardContent>
+              <Textarea
+                value={notes}
+                onChange={(e) => setNotes(e.target.value)}
+                placeholder="Add any notes about this game session..."
+                className="bg-white/5 border-white/20 text-white placeholder:text-white/50 resize-none"
+                rows={3}
+              />
+            </CardContent>
+          </Card>
+        )}
+
+        {/* Submit Button */}
+        <div className="flex justify-end">
+          <Button
+            onClick={handleSubmit}
+            disabled={!canSubmit() || isSubmitting}
+            className="bg-gradient-to-r from-teal-500 to-teal-600 hover:from-teal-600 hover:to-teal-700 text-white px-8 py-3 rounded-xl font-medium disabled:opacity-50"
+          >
+            {isSubmitting ? (
+              <div className="flex items-center gap-2">
+                <div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" />
+                Creating...
+              </div>
+            ) : (
+              <div className="flex items-center gap-2">
+                <Play className="w-4 h-4" />
+                Start Game Session
+              </div>
+            )}
+          </Button>
+        </div>
+      </div>
+
+      {/* Bottom Navigation */}
+      <BottomNavigation currentView={currentView} onNavigation={onNavigation} />
+    </div>
+  )
+}

@@ -8,6 +8,7 @@ import GameExpansionsPage from '@/components/GameExpansionsPage'
 import GameCharactersPage from '@/components/GameCharactersPage'
 import PlayerStatsPage from '@/components/PlayerStatsPage'
 import GameStatsPage from '@/components/GameStatsPage'
+import NewGamePage from '@/components/NewGamePage'
 import SettingsPage from '@/components/SettingsPage'
 import ApiService from '@/services/ApiService'
 
@@ -838,6 +839,30 @@ export default function ModernDashboard() {
         onNavigation={handleNavigation}
         currentView={currentView}
         selectedGameId={currentGameId || undefined}
+      />
+    )
+  }
+
+  if (currentView === 'new-game') {
+    return (
+      <NewGamePage 
+        games={apiConnected ? (games || []) : (games || [])}
+        players={apiConnected ? recentPlayers : (players || [])}
+        onNavigation={handleNavigation}
+        currentView={currentView}
+        onCreateSession={async (sessionData) => {
+          try {
+            if (apiConnected) {
+              await ApiService.createSession(sessionData)
+            } else {
+              // For local storage, we could save sessions to useKV but it's not implemented yet
+              console.log('Session saved locally:', sessionData)
+            }
+          } catch (error) {
+            console.error('Error creating session:', error)
+            throw error
+          }
+        }}
       />
     )
   }
