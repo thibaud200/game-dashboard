@@ -419,7 +419,13 @@ export default function GamesPage({
             <ArrowLeft className="w-6 h-6" />
           </button>
           <h1 className="text-2xl font-bold">Games</h1>
-          <Dialog open={isAddDialogOpen} onOpenChange={setIsAddDialogOpen}>
+          <Dialog open={isAddDialogOpen} onOpenChange={(open) => {
+            setIsAddDialogOpen(open)
+            if (!open) {
+              resetForm()
+              setIsBGGSearchOpen(false)
+            }
+          }}>
             <DialogTrigger asChild>
               <button className="p-2 hover:bg-white/10 rounded-lg transition-colors">
                 <Plus className="w-6 h-6" />
@@ -1064,7 +1070,13 @@ export default function GamesPage({
       </div>
 
       {/* Edit Game Dialog */}
-      <Dialog open={isEditDialogOpen} onOpenChange={setIsEditDialogOpen}>
+      <Dialog open={isEditDialogOpen} onOpenChange={(open) => {
+        setIsEditDialogOpen(open)
+        if (!open) {
+          resetForm()
+          setEditingGame(null)
+        }
+      }}>
         <DialogContent className="bg-slate-800 border-slate-700 text-white max-w-2xl max-h-[90vh] overflow-y-auto">
           <DialogHeader>
             <DialogTitle>Edit Game</DialogTitle>
