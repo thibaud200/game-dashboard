@@ -856,16 +856,36 @@ export default function GamesPage({
                             {game.expansions && game.expansions.length > 0 && (
                               <div>
                                 <h4 className="text-sm font-medium text-purple-300 mb-1">Expansions</h4>
-                                <div className="space-y-1">
-                                  {game.expansions.map((expansion) => (
-                                    <div key={expansion.id} className="text-xs text-white/70 bg-white/5 rounded p-2">
-                                      <div className="font-medium">{expansion.name}</div>
-                                      {expansion.year_published > 0 && (
-                                        <div className="text-white/50">({expansion.year_published})</div>
-                                      )}
-                                    </div>
-                                  ))}
-                                </div>
+                                <Textarea
+                                  value={game.expansions.map(exp => 
+                                    `${exp.name}${exp.year_published > 0 ? ` (${exp.year_published})` : ''}`
+                                  ).join(', ')}
+                                  onChange={(e) => {
+                                    // Parse the textarea content back to expansions array
+                                    const expansionTexts = e.target.value.split(',').map(text => text.trim()).filter(text => text);
+                                    const parsedExpansions = expansionTexts.map((text, index) => {
+                                      const match = text.match(/^(.+?)\s*\((\d{4})\)$/);
+                                      if (match) {
+                                        return {
+                                          id: `exp_${index}`,
+                                          name: match[1].trim(),
+                                          year_published: parseInt(match[2])
+                                        };
+                                      } else {
+                                        return {
+                                          id: `exp_${index}`,
+                                          name: text,
+                                          year_published: 0
+                                        };
+                                      }
+                                    });
+                                    
+                                    // Update the game with new expansions
+                                    onUpdateGame(game.game_id, { ...game, expansions: parsedExpansions });
+                                  }}
+                                  placeholder="Format: Extension 1 (2023), Extension 2 (2024), ..."
+                                  className="min-h-[60px] bg-white/5 border-white/10 text-white text-xs resize-none"
+                                />
                               </div>
                             )}
                             
