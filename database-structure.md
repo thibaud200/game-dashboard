@@ -12,7 +12,6 @@ Stores information about individual players in the system.
 CREATE TABLE players (
     player_id INTEGER PRIMARY KEY AUTOINCREMENT,
     player_name VARCHAR(100) NOT NULL,
-    email VARCHAR(255) UNIQUE,
     avatar TEXT, -- URL to avatar image
     games_played INTEGER DEFAULT 0,
     wins INTEGER DEFAULT 0,
@@ -81,6 +80,7 @@ CREATE TABLE game_characters (
     character_key VARCHAR(100) NOT NULL, -- unique identifier for the character
     name VARCHAR(255) NOT NULL,
     description TEXT,
+    avatar TEXT, -- URL to character avatar image
     abilities TEXT, -- JSON array of abilities
     FOREIGN KEY (game_id) REFERENCES games(game_id) ON DELETE CASCADE
 );
@@ -131,7 +131,6 @@ CREATE VIEW player_statistics AS
 SELECT 
     p.player_id,
     p.player_name,
-    p.email,
     p.avatar,
     COUNT(DISTINCT sp.session_id) as games_played,
     COUNT(CASE WHEN sp.is_winner = TRUE THEN 1 END) as wins,
@@ -143,7 +142,7 @@ SELECT
     p.created_at
 FROM players p
 LEFT JOIN session_players sp ON p.player_id = sp.player_id
-GROUP BY p.player_id, p.player_name, p.email, p.avatar, p.favorite_game, p.created_at;
+GROUP BY p.player_id, p.player_name, p.avatar, p.favorite_game, p.created_at;
 ```
 
 ### 8. Game Statistics View
@@ -177,7 +176,6 @@ GROUP BY g.game_id, g.name, g.image, g.min_players, g.max_players,
 
 ```sql
 -- Performance indexes
-CREATE INDEX idx_players_email ON players(email);
 CREATE INDEX idx_games_bgg_id ON games(bgg_id);
 CREATE INDEX idx_sessions_date ON game_sessions(session_date);
 CREATE INDEX idx_sessions_game ON game_sessions(game_id);
@@ -194,7 +192,6 @@ CREATE INDEX idx_characters_game ON game_characters(game_id);
 {
   "player_id": 1,
   "player_name": "Jane",
-  "email": "jane@example.com",
   "avatar": "https://example.com/avatar.jpg",
   "games_played": 45,
   "wins": 28,

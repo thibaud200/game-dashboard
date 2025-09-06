@@ -5,13 +5,13 @@
 -- SAMPLE PLAYERS
 -- =====================================================
 
-INSERT INTO players (player_name, email, avatar, favorite_game, created_at) VALUES
-('Jane', 'jane@example.com', 'https://images.unsplash.com/photo-1494790108755-2616b612b786?w=100&h=100&fit=crop&crop=face', 'Strategy Pro', '2024-01-15 10:00:00'),
-('Nexus', 'nexus@example.com', 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=100&h=100&fit=crop&crop=face', 'Battle Arena', '2024-02-02 14:30:00'),
-('Maya', 'maya@example.com', 'https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=100&h=100&fit=crop&crop=face', 'Mind Games', '2024-01-28 09:15:00'),
-('Alex', 'alex@example.com', 'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=100&h=100&fit=crop&crop=face', 'Strategy Pro', '2024-02-10 16:45:00'),
-('Sam', 'sam@example.com', 'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=100&h=100&fit=crop&crop=face', 'Cosmic Empire', '2024-02-15 11:20:00'),
-('Riley', 'riley@example.com', 'https://images.unsplash.com/photo-1494790108755-2616b612b786?w=100&h=100&fit=crop&crop=face', 'Battle Arena', '2024-01-20 13:00:00');
+INSERT INTO players (player_name, avatar, favorite_game, created_at) VALUES
+('Jane', 'https://images.unsplash.com/photo-1494790108755-2616b612b786?w=100&h=100&fit=crop&crop=face', 'Strategy Pro', '2024-01-15 10:00:00'),
+('Nexus', 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=100&h=100&fit=crop&crop=face', 'Battle Arena', '2024-02-02 14:30:00'),
+('Maya', 'https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=100&h=100&fit=crop&crop=face', 'Mind Games', '2024-01-28 09:15:00'),
+('Alex', 'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=100&h=100&fit=crop&crop=face', 'Strategy Pro', '2024-02-10 16:45:00'),
+('Sam', 'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=100&h=100&fit=crop&crop=face', 'Cosmic Empire', '2024-02-15 11:20:00'),
+('Riley', 'https://images.unsplash.com/photo-1494790108755-2616b612b786?w=100&h=100&fit=crop&crop=face', 'Battle Arena', '2024-01-20 13:00:00');
 
 -- =====================================================
 -- SAMPLE GAMES

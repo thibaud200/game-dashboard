@@ -117,7 +117,6 @@ The database enforces referential integrity through:
 ## Performance
 
 Indexes are created on frequently queried columns:
-- Player email (unique)
 - Game BGG ID (unique)
 - Session dates
 - Foreign key relationships

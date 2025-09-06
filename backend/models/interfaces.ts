@@ -4,7 +4,6 @@
 export interface Player {
   player_id: number;
   player_name: string;
-  email?: string;
   avatar?: string;
   games_played: number;
   wins: number;
@@ -93,14 +92,12 @@ export interface SessionPlayer {
 // API Request/Response types
 export interface CreatePlayerRequest {
   player_name: string;
-  email?: string;
   avatar?: string;
   favorite_game?: string;
 }
 
 export interface UpdatePlayerRequest {
   player_name?: string;
-  email?: string;
   avatar?: string;
   games_played?: number;
   wins?: number;

@@ -9,7 +9,6 @@
 SELECT 
     player_id,
     player_name,
-    email,
     games_played,
     wins,
     total_score,

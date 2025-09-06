@@ -5,7 +5,6 @@
 CREATE TABLE players (
     player_id INTEGER PRIMARY KEY AUTOINCREMENT,
     player_name TEXT NOT NULL,
-    email TEXT UNIQUE,
     avatar TEXT,
     games_played INTEGER DEFAULT 0,
     wins INTEGER DEFAULT 0,
@@ -97,7 +96,6 @@ CREATE TABLE session_players (
 );
 
 -- Indexes for better performance
-CREATE INDEX idx_players_email ON players(email);
 CREATE INDEX idx_games_bgg_id ON games(bgg_id);
 CREATE INDEX idx_game_expansions_game_id ON game_expansions(game_id);
 CREATE INDEX idx_game_characters_game_id ON game_characters(game_id);
@@ -120,11 +118,11 @@ CREATE TRIGGER update_games_timestamp
     END;
 
 -- Sample data insertion
-INSERT INTO players (player_name, email, avatar, games_played, wins, total_score, average_score, favorite_game) VALUES
-('Jane', 'jane@example.com', 'https://images.unsplash.com/photo-1494790108755-2616b612b786?w=100&h=100&fit=crop&crop=face', 45, 28, 2100, 46.7, 'Strategy Pro'),
-('Nexus', 'nexus@example.com', 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=100&h=100&fit=crop&crop=face', 38, 19, 1850, 48.7, 'Battle Arena'),
-('Maya', 'maya@example.com', 'https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=100&h=100&fit=crop&crop=face', 32, 15, 1620, 50.6, 'Mind Games'),
-('Alex', 'alex@example.com', 'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=100&h=100&fit=crop&crop=face', 28, 12, 1420, 50.7, 'Strategy Pro');
+INSERT INTO players (player_name, avatar, games_played, wins, total_score, average_score, favorite_game) VALUES
+('Jane', 'https://images.unsplash.com/photo-1494790108755-2616b612b786?w=100&h=100&fit=crop&crop=face', 45, 28, 2100, 46.7, 'Strategy Pro'),
+('Nexus', 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=100&h=100&fit=crop&crop=face', 38, 19, 1850, 48.7, 'Battle Arena'),
+('Maya', 'https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=100&h=100&fit=crop&crop=face', 32, 15, 1620, 50.6, 'Mind Games'),
+('Alex', 'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=100&h=100&fit=crop&crop=face', 28, 12, 1420, 50.7, 'Strategy Pro');
 
 INSERT INTO games (bgg_id, name, description, image, min_players, max_players, duration, difficulty, category, year_published, publisher, designer, bgg_rating, weight, age_min, game_type, supports_cooperative, supports_competitive, supports_campaign, has_expansion, has_characters) VALUES
 (12345, 'Strategy Pro', 'A complex strategy game that challenges your tactical thinking.', 'https://images.unsplash.com/photo-1606092195730-5d7b9af1efc5?w=150&h=150&fit=crop', 2, 4, '60-90 min', 'Expert', 'Strategy', 2022, 'Strategy Games Inc.', 'John Designer', 7.8, 3.5, 14, 'competitive', FALSE, TRUE, TRUE, FALSE, TRUE),

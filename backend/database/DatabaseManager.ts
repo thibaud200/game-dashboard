@@ -46,12 +46,11 @@ class DatabaseManager {
 
   createPlayer(playerData: any) {
     const stmt = this.db.prepare(`
-      INSERT INTO players (player_name, email, avatar, favorite_game)
-      VALUES (?, ?, ?, ?)
+      INSERT INTO players (player_name, avatar, favorite_game)
+      VALUES (?, ?, ?)
     `);
     const result = stmt.run(
       playerData.player_name,
-      playerData.email || null,
       playerData.avatar || null,
       playerData.favorite_game || null
     );
@@ -61,14 +60,13 @@ class DatabaseManager {
   updatePlayer(playerId: number, playerData: any) {
     const stmt = this.db.prepare(`
       UPDATE players 
-      SET player_name = ?, email = ?, avatar = ?, favorite_game = ?, 
+      SET player_name = ?, avatar = ?, favorite_game = ?, 
           games_played = ?, wins = ?, total_score = ?, average_score = ?,
           updated_at = CURRENT_TIMESTAMP
       WHERE player_id = ?
     `);
     stmt.run(
       playerData.player_name,
-      playerData.email || null,
       playerData.avatar || null,
       playerData.favorite_game || null,
       playerData.games_played || 0,
@@ -167,8 +165,8 @@ class DatabaseManager {
       // Insert characters if any
       if (gameData.characters && gameData.characters.length > 0) {
         const characterStmt = this.db.prepare(`
-          INSERT INTO game_characters (game_id, character_key, name, description, abilities)
-          VALUES (?, ?, ?, ?, ?)
+          INSERT INTO game_characters (game_id, character_key, name, description, avatar, abilities)
+          VALUES (?, ?, ?, ?, ?, ?)
         `);
         
         gameData.characters.forEach((character: any) => {
@@ -177,6 +175,7 @@ class DatabaseManager {
             character.character_key,
             character.name,
             character.description || null,
+            character.avatar || null,
             JSON.stringify(character.abilities || [])
           );
         });
@@ -252,8 +251,8 @@ class DatabaseManager {
       // Insert new characters
       if (gameData.characters && gameData.characters.length > 0) {
         const characterStmt = this.db.prepare(`
-          INSERT INTO game_characters (game_id, character_key, name, description, abilities)
-          VALUES (?, ?, ?, ?, ?)
+          INSERT INTO game_characters (game_id, character_key, name, description, avatar, abilities)
+          VALUES (?, ?, ?, ?, ?, ?)
         `);
         
         gameData.characters.forEach((character: any) => {
@@ -262,6 +261,7 @@ class DatabaseManager {
             character.character_key,
             character.name,
             character.description || null,
+            character.avatar || null,
             JSON.stringify(character.abilities || [])
           );
         });
