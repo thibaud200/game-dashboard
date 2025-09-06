@@ -5,7 +5,7 @@ import { Checkbox } from "@/components/ui/checkbox"
 import { Textarea } from "@/components/ui/textarea"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
-import { ArrowLeft } from "@phosphor-icons/react"
+import { ArrowLeft, Play } from "@phosphor-icons/react"
 import BottomNavigation from './BottomNavigation'
 
 interface Player {
