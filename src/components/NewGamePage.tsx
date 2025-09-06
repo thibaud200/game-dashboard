@@ -68,7 +68,6 @@ export default function NewGamePage({
   const [sessionType, setSessionType] = useState<'competitive' | 'cooperative' | 'campaign' | 'hybrid'>('competitive')
   const [selectedPlayers, setSelectedPlayers] = useState<number[]>([])
   const [playerScores, setPlayerScores] = useState<{[key: number]: number}>({})
-  const [playerPlacements, setPlayerPlacements] = useState<{[key: number]: number}>({})
   const [winnerId, setWinnerId] = useState<string>('')
   const [duration, setDuration] = useState<string>('')
   const [notes, setNotes] = useState<string>('')
@@ -93,13 +92,6 @@ export default function NewGamePage({
     }))
   }
 
-  const handlePlacementChange = (playerId: number, value: string) => {
-    setPlayerPlacements(prev => ({
-      ...prev,
-      [playerId]: parseInt(value) || 1
-    }))
-  }
-
   const canSubmit = () => {
     return selectedGameId && 
            selectedPlayers.length >= (selectedGame?.min_players || 1) &&
@@ -121,7 +113,6 @@ export default function NewGamePage({
         players: selectedPlayers.map(playerId => ({
           player_id: playerId,
           score: playerScores[playerId] || 0,
-          placement: playerPlacements[playerId] || null,
           is_winner: winnerId === playerId.toString()
         }))
       }
@@ -158,53 +149,55 @@ export default function NewGamePage({
           <CardHeader>
             <CardTitle className="flex items-center gap-2 text-white">
               <Play className="w-5 h-5" />
-              Select Game
+              Game Setup
             </CardTitle>
           </CardHeader>
           <CardContent className="space-y-4">
-            <div>
-              <Label className="text-white/80">Game</Label>
-              <Select value={selectedGameId} onValueChange={setSelectedGameId}>
-                <SelectTrigger className="bg-white/5 border-white/20 text-white">
-                  <SelectValue placeholder="Choose a game..." />
-                </SelectTrigger>
-                <SelectContent className="bg-slate-800 border-white/20">
-                  {games.map(game => (
-                    <SelectItem key={game.game_id} value={game.game_id.toString()}>
-                      <div className="flex items-center gap-2">
-                        <span>{game.name}</span>
-                        <span className="text-white/60 text-sm">({game.min_players}-{game.max_players} players)</span>
-                      </div>
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-            </div>
-
-            {selectedGame && (
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div>
-                <Label className="text-white/80">Session Type</Label>
-                <Select value={sessionType} onValueChange={(value: any) => setSessionType(value)}>
+                <Label className="text-white/80">Game</Label>
+                <Select value={selectedGameId} onValueChange={setSelectedGameId}>
                   <SelectTrigger className="bg-white/5 border-white/20 text-white">
-                    <SelectValue />
+                    <SelectValue placeholder="Choose a game..." />
                   </SelectTrigger>
                   <SelectContent className="bg-slate-800 border-white/20">
-                    {selectedGame.supports_competitive && (
-                      <SelectItem value="competitive">Competitive</SelectItem>
-                    )}
-                    {selectedGame.supports_cooperative && (
-                      <SelectItem value="cooperative">Cooperative</SelectItem>
-                    )}
-                    {selectedGame.supports_campaign && (
-                      <SelectItem value="campaign">Campaign</SelectItem>
-                    )}
-                    {selectedGame.supports_hybrid && (
-                      <SelectItem value="hybrid">Hybrid</SelectItem>
-                    )}
+                    {games.map(game => (
+                      <SelectItem key={game.game_id} value={game.game_id.toString()}>
+                        <div className="flex items-center gap-2">
+                          <span>{game.name}</span>
+                          <span className="text-white/60 text-sm">({game.min_players}-{game.max_players} players)</span>
+                        </div>
+                      </SelectItem>
+                    ))}
                   </SelectContent>
                 </Select>
               </div>
-            )}
+
+              {selectedGame && (
+                <div>
+                  <Label className="text-white/80">Session Type</Label>
+                  <Select value={sessionType} onValueChange={(value: any) => setSessionType(value)}>
+                    <SelectTrigger className="bg-white/5 border-white/20 text-white">
+                      <SelectValue />
+                    </SelectTrigger>
+                    <SelectContent className="bg-slate-800 border-white/20">
+                      {selectedGame.supports_competitive && (
+                        <SelectItem value="competitive">Competitive</SelectItem>
+                      )}
+                      {selectedGame.supports_cooperative && (
+                        <SelectItem value="cooperative">Cooperative</SelectItem>
+                      )}
+                      {selectedGame.supports_campaign && (
+                        <SelectItem value="campaign">Campaign</SelectItem>
+                      )}
+                      {selectedGame.supports_hybrid && (
+                        <SelectItem value="hybrid">Hybrid</SelectItem>
+                      )}
+                    </SelectContent>
+                  </Select>
+                </div>
+              )}
+            </div>
           </CardContent>
         </Card>
 
@@ -221,7 +214,7 @@ export default function NewGamePage({
               <div className="text-white/60 text-sm">
                 Minimum: {selectedGame.min_players} players
               </div>
-              <div className="grid grid-cols-1 gap-3">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
                 {players.map(player => (
                   <div key={player.player_id} className="flex items-center justify-between p-3 bg-white/5 rounded-xl">
                     <div className="flex items-center gap-3">
@@ -280,29 +273,15 @@ export default function NewGamePage({
                         <span className="ml-2 text-white/60 text-sm">Winner</span>
                       </div>
                     </div>
-                    <div className="grid grid-cols-2 gap-3">
-                      <div>
-                        <Label className="text-white/60 text-sm">Score</Label>
-                        <Input
-                          type="number"
-                          placeholder="0"
-                          value={playerScores[playerId] || ''}
-                          onChange={(e) => handleScoreChange(playerId, e.target.value)}
-                          className="bg-white/5 border-white/20 text-white"
-                        />
-                      </div>
-                      <div>
-                        <Label className="text-white/60 text-sm">Placement</Label>
-                        <Input
-                          type="number"
-                          placeholder="1"
-                          min="1"
-                          max={selectedPlayers.length}
-                          value={playerPlacements[playerId] || ''}
-                          onChange={(e) => handlePlacementChange(playerId, e.target.value)}
-                          className="bg-white/5 border-white/20 text-white"
-                        />
-                      </div>
+                    <div>
+                      <Label className="text-white/60 text-sm">Score</Label>
+                      <Input
+                        type="number"
+                        placeholder="0"
+                        value={playerScores[playerId] || ''}
+                        onChange={(e) => handleScoreChange(playerId, e.target.value)}
+                        className="bg-white/5 border-white/20 text-white"
+                      />
                     </div>
                   </div>
                 )
