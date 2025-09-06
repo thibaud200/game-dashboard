@@ -1,9 +1,17 @@
 import React, { useState } from 'react'
+import { Button } from "@/components/ui/button"
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
+import { Label } from "@/components/ui/label"
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
+import { Checkbox } from "@/components/ui/checkbox"
+import { Textarea } from "@/components/ui/textarea"
+import { ArrowLeft, Play, Users, Trophy, Timer } from "@phosphor-icons/react"
+import { toast } from 'sonner'
 import BottomNavigation from './BottomNavigation'
 
-  games_played: nu
-  total_score: numb
+interface Player {
+  player_id: number
   player_name: string
   avatar?: string
   games_played: number
@@ -12,24 +20,30 @@ import BottomNavigation from './BottomNavigation'
   average_score: number
   favorite_game?: string
   created_at: Date
-  bgg_id?: number
+  updated_at?: Date
   stats?: string
-} description?: string
+}
 
-interface Game {umber
+interface Game {
   game_id: number
-  duration?: string
+  bgg_id?: number
   name: string
   description?: string
   image?: string
-  publisher?: string
+  min_players: number
   max_players: number
   duration?: string
   difficulty?: string
-  age_min?: number
+  category?: string
   year_published?: number
   publisher?: string
   designer?: string
+  bgg_rating?: number
+  weight?: number
+  age_min?: number
+  supports_cooperative: boolean
+  supports_competitive: boolean
+  supports_campaign: boolean
   supports_hybrid: boolean
   has_expansion: boolean
   has_characters: boolean
@@ -40,18 +54,12 @@ interface Game {umber
   players?: string
 }
 
-interface GameSession {
-  session_id?: number
-  game_id: number
-  session_date: Date
-  duration_minutes?: number
-  winner_player_id?: number
-  session_type: 'competitive' | 'cooperative' | 'campaign' | 'hybrid'
-  duration_minutes?: number
-  winner_player_id?: number
-  session_type: 'competitive' | 'cooperative' | 'campaign' | 'hybrid'
+interface SessionPlayer {
+  player_id: number
+  score: number
+  placement?: number
+  is_winner: boolean
   notes?: string
-  created_at?: Date
 }
 
 interface NewGamePageProps {
@@ -141,7 +149,7 @@ export default function NewGamePage({
     setIsSubmitting(true)
 
     try {
-      const sessionPlayers = selectedPlayers.map(playerId => ({
+      const sessionPlayers: SessionPlayer[] = selectedPlayers.map(playerId => ({
         player_id: playerId,
         score: playerScores[playerId] || 0,
         placement: playerPlacements[playerId] || 0,
@@ -161,6 +169,8 @@ export default function NewGamePage({
 
       await onCreateSession(sessionData)
       
+      toast.success('Game session created successfully!')
+      
       // Reset form
       setSelectedGameId('')
       setSelectedPlayers([])
@@ -175,6 +185,7 @@ export default function NewGamePage({
       
     } catch (error) {
       console.error('Error creating game session:', error)
+      toast.error('Failed to create game session')
     } finally {
       setIsSubmitting(false)
     }
