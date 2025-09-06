@@ -251,7 +251,7 @@ export default function GameStatsPage({ games, players, onNavigation, currentVie
       </div>
 
       {/* Content */}
-      <div className="px-4 space-y-6 pb-24">
+      <div className="px-4 space-y-6 pb-32">
         {/* Game Overview */}
         <div className="bg-white/10 backdrop-blur-md rounded-2xl p-6 border border-white/20 shadow-xl">
           <div className="flex items-center space-x-4 mb-6">

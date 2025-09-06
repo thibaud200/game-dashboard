@@ -241,7 +241,7 @@ export default function GameDetailPage({
         </div>
 
         {/* Mobile Layout - Show current tab content */}
-        <div className="md:hidden pb-20">
+        <div className="md:hidden pb-32">
           {activeTab === 'overview' && renderGameOverview()}
           {activeTab === 'expansions' && onAddExpansion && onUpdateExpansion && onDeleteExpansion && (
             <GameExpansionsPage

@@ -288,7 +288,7 @@ export default function PlayersPage({
       </div>
 
       {/* Players List */}
-      <div className="px-4 space-y-4 pb-24">
+      <div className="px-4 space-y-4 pb-32">
         {filteredPlayers.map((player) => (
           <Card key={player.player_id} className="bg-white/10 backdrop-blur-md border-white/20">
             <CardContent className="p-4">

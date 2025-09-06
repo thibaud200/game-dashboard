@@ -907,7 +907,7 @@ export default function GamesPage({
       </div>
 
       {/* Games Grid */}
-      <div className="px-4 pb-24">
+      <div className="px-4 pb-32">
         <div className="grid grid-cols-1 gap-4">
           {filteredGames.map((game) => (
             <Card key={game.game_id} className="bg-white/10 backdrop-blur-md border-white/20">

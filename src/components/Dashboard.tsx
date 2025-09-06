@@ -134,7 +134,7 @@ export default function Dashboard({
       </div>
 
       {/* Contenu principal */}
-      <div className="px-4 space-y-6 pb-24">
+      <div className="px-4 space-y-6 pb-32">
         {/* Section Joueurs */}
         <div className="bg-white/10 backdrop-blur-md rounded-2xl p-4 border border-white/20 shadow-xl">
           <div className="flex items-center justify-between mb-4">

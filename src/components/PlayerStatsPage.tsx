@@ -126,7 +126,7 @@ export default function PlayerStatsPage({ players, games, onNavigation, currentV
       </div>
 
       {/* Content */}
-      <div className="px-4 space-y-6 pb-24">
+      <div className="px-4 space-y-6 pb-32">
         {/* Overview Stats */}
         <div className="grid grid-cols-2 gap-4">
           <div className="bg-white/10 backdrop-blur-md rounded-2xl p-4 border border-white/20 shadow-xl">

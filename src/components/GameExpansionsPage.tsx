@@ -281,7 +281,7 @@ export default function GameExpansionsPage({
       )}
 
       {/* Content */}
-      <div className={embedded ? "" : "max-w-7xl mx-auto px-4 md:px-6 py-4 md:py-8 pb-20 md:pb-8"}>
+      <div className={embedded ? "" : "max-w-7xl mx-auto px-4 md:px-6 py-4 md:py-8 pb-32 md:pb-8"}>
         {/* Embedded Header with Add Button */}
         {embedded && (
           <div className="flex items-center justify-between mb-4 md:mb-6">
