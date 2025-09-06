@@ -1,44 +1,35 @@
 import React, { useState } from 'react'
 import { ArrowLeft, Play, Plus, Users, Timer, Trophy } from 'lucide-react'
-import { Button } from "@/components/ui/button"
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Input } from "@/components/ui/input"
-import { Label } from "@/components/ui/label"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
-import { Checkbox } from "@/components/ui/checkbox"
 import { Textarea } from "@/components/ui/textarea"
 import BottomNavigation from './BottomNavigation'
 
 interface Player {
   player_id: number
   player_name: string
-  avatar?: string
-  games_played: number
+  total_score: num
+  player_id: number
   wins: number
-  total_score: number
+  avatar?: string
   average_score: number
-  favorite_game?: string
-  created_at: Date
-  updated_at?: Date
-  stats?: string
+  duration?: s
+  category?: string
+  publisher?: string
+  bgg_rating?: number
 }
 
 interface Game {
   game_id: number
   bgg_id?: number
-  name: string
-  description?: string
-  image?: string
-  min_players: number
-  max_players: number
   duration?: string
-  difficulty?: string
+}: string
   category?: string
   year_published?: number
-  publisher?: string
-  designer?: string
-  bgg_rating?: number
-  weight?: number
+  winner_player_id?: n
+  notes?: string
+    player_id: number
+    score: number
   age_min?: number
   supports_cooperative: boolean
   supports_competitive: boolean
@@ -54,25 +45,25 @@ interface Game {
 }
 
 interface GameSession {
-  session_id?: number
-  game_id: number
-  session_date: Date
-  duration_minutes?: number
-  winner_player_id?: number
-  session_type: 'competitive' | 'cooperative' | 'campaign' | 'hybrid'
-  notes?: string
-  created_at?: Date
-  players: {
+  const selectedGa
+  const handlePlaye
+      if (prev.incl
+        // Remove s
+        const newP
+ 
+
+        // Clear winner
+          setWinn
+        
+      } else {
+      }
+  }
+  const handleSc
+      ...prev,
     player_id: number
     character_id?: number
     score: number
     placement?: number
-    is_winner: boolean
-    notes?: string
-  }[]
-}
-
-interface NewGamePageProps {
   games: Game[]
   players: Player[]
   onNavigation: (view: string) => void
@@ -94,29 +85,10 @@ export default function NewGamePage({
   const [playerPlacements, setPlayerPlacements] = useState<{[key: number]: number}>({})
   const [winnerId, setWinnerId] = useState<string>('')
   const [duration, setDuration] = useState<string>('')
-  const [notes, setNotes] = useState<string>('')
-  const [isSubmitting, setIsSubmitting] = useState(false)
 
-  const selectedGame = games.find(g => g.game_id === parseInt(selectedGameId))
-
-  const handlePlayerToggle = (playerId: number) => {
     setSelectedPlayers(prev => {
       if (prev.includes(playerId)) {
         const newPlayers = prev.filter(id => id !== playerId)
-        // Remove scores and placements for unselected player
-        const newScores = { ...playerScores }
-        const newPlacements = { ...playerPlacements }
-        delete newScores[playerId]
-        delete newPlacements[playerId]
-        setPlayerScores(newScores)
-        setPlayerPlacements(newPlacements)
-        
-        // Clear winner if it was this player
-        if (winnerId === playerId.toString()) {
-          setWinnerId('')
-        }
-        
-        return newPlayers
       } else {
         return [...prev, playerId]
       }
@@ -124,30 +96,30 @@ export default function NewGamePage({
   }
 
   const handleScoreChange = (playerId: number, score: string) => {
-    setPlayerScores(prev => ({
-      ...prev,
+  const handlePlayerToggle = (playerId: number) => {
+    setSelectedPlayers(prev => {
       [playerId]: parseInt(score) || 0
     }))
   }
 
   const handlePlacementChange = (playerId: number, placement: string) => {
-    setPlayerPlacements(prev => ({
+        delete newScores[playerId]
       ...prev,
-      [playerId]: parseInt(placement) || 0
+        setPlayerScores(newScores)
     }))
-  }
-
-  const canSubmit = () => {
-    if (!selectedGameId || selectedPlayers.length === 0) return false
-    if (!selectedGame) return false
-    
+        
+        // Clear winner if it was this player
+        if (winnerId === playerId.toString()) {
+          setWinnerId('')
+        }
+        
     // Check minimum players requirement
     if (selectedPlayers.length < selectedGame.min_players) return false
-    
+        return [...prev, playerId]
     // For competitive games, need scores or placements
-    if (sessionType === 'competitive') {
-      const hasScores = selectedPlayers.some(id => playerScores[id] && playerScores[id] > 0)
-      const hasPlacements = selectedPlayers.some(id => playerPlacements[id] && playerPlacements[id] > 0)
+    })
+  }rs.some(id => playerScores[id] && playerScores[id] > 0)
+sPlacements = selectedPlayers.some(id => playerPlacements[id] && playerPlacements[id] > 0)
       if (!hasScores && !hasPlacements) return false
     }
     
@@ -163,7 +135,32 @@ export default function NewGamePage({
       const sessionPlayers = selectedPlayers.map(playerId => ({
         player_id: playerId,
         score: playerScores[playerId] || 0,
-        placement: playerPlacements[playerId] || 0,
+    if (!selectedGameId || selectedPlayers.length === 0) return false
+    if (!selectedGame) return falseyerId.toString(),
+    
+    // Check minimum players requirement
+    if (selectedPlayers.length < selectedGame.min_players) return false
+    sionData: GameSession = {
+        game_id: selectedGame.game_id,
+        session_date: new Date(),
+      const hasScores = selectedPlayers.some(id => playerScores[id] && playerScores[id] > 0)
+        winner_player_id: winnerId ? parseInt(winnerId) : undefined,
+      if (!hasScores && !hasPlacements) return false
+     
+    onPlayers
+      }
+  }
+ateSession(sessionData)
+      
+      // Reset form
+
+    setIsSubmitting(true)
+      setSelectedPlayers([])
+      setPlayerScores({})
+      setPlayerPlacements({})
+      setWinnerId('')
+      setDuration('')
+      setNotes('')
         is_winner: winnerId === playerId.toString(),
         notes: ''
       }))
@@ -175,59 +172,34 @@ export default function NewGamePage({
         winner_player_id: winnerId ? parseInt(winnerId) : undefined,
         session_type: sessionType,
         notes,
-        players: sessionPlayers
+                <div>
       }
 
       await onCreateSession(sessionData)
+                    onChange={(e) => setDuration(e.target
       
-      // Reset form
+                  /
       setSelectedGameId('')
-      setSessionType('competitive')
-      setSelectedPlayers([])
+            )}
       setPlayerScores({})
-      setPlayerPlacements({})
+
       setWinnerId('')
-      setDuration('')
+          <Card class
       setNotes('')
       
       // Navigate back to dashboard
-      onNavigation('dashboard')
+                  ({selectedPla
       
     } catch (error) {
       console.error('Error creating game session:', error)
+                {players.map(player => (
     } finally {
       setIsSubmitting(false)
     }
-  }
+   
 
-  return (
+          
     <div className="min-h-screen bg-gradient-to-br from-slate-900 to-slate-800 text-white">
-      {/* Header */}
-      <div className="px-4 pt-8 pb-6">
-        <div className="flex items-center justify-between mb-6">
-          <button
-            onClick={() => onNavigation('dashboard')}
-            className="p-2 hover:bg-white/10 rounded-lg transition-colors"
-          >
-            <ArrowLeft className="w-6 h-6" />
-          </button>
-          <h1 className="text-2xl font-bold">New Game Session</h1>
-          <div className="w-10 h-10" /> {/* Spacer */}
-        </div>
-      </div>
-
-      <div className="px-4 space-y-6 pb-24">
-        {/* Game Selection */}
-        <Card className="bg-white/10 backdrop-blur-md border-white/20">
-          <CardHeader>
-            <CardTitle className="flex items-center gap-2 text-white">
-              <Play className="w-5 h-5" />
-              Select Game
-            </CardTitle>
-          </CardHeader>
-          <CardContent className="space-y-4">
-            <div>
-              <Label htmlFor="game-select" className="text-white/80">Game</Label>
               <Select value={selectedGameId} onValueChange={setSelectedGameId}>
                 <SelectTrigger className="bg-white/5 border-white/20 text-white">
                   <SelectValue placeholder="Choose a game..." />
