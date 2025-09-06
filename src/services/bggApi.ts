@@ -18,7 +18,6 @@ export interface BGGGame {
   mechanics: string[]
   rating: number
   weight: number
-  rank: number
   expansions: BGGExpansion[]
   characters: BGGCharacter[]
   game_type: 'competitive' | 'cooperative' | 'campaign' | 'hybrid'
@@ -31,7 +30,6 @@ export interface BGGExpansion {
   bgg_expansion_id: number
   name: string
   year_published: number
-  rank?: number
   description?: string
 }
 
@@ -185,7 +183,6 @@ class BGGApiService {
       const ratings = statistics?.getElementsByTagName('ratings')[0]
       const average = parseFloat(ratings?.getElementsByTagName('average')[0]?.getAttribute('value') || '0')
       const averageweight = parseFloat(ratings?.getElementsByTagName('averageweight')[0]?.getAttribute('value') || '0')
-      const rank = parseInt(ratings?.getElementsByTagName('rank')[0]?.getAttribute('value') || '0')
 
       // Determine game type based on categories and mechanics
       const gameType = this.determineGameType(categories, mechanics)
@@ -215,7 +212,6 @@ class BGGApiService {
         mechanics,
         rating: average,
         weight: averageweight,
-        rank,
         expansions,
         characters,
         game_type: gameType,

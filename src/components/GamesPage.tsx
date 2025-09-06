@@ -46,7 +46,6 @@ interface Expansion {
   bgg_expansion_id?: number
   name: string
   year_published: number
-  rank?: number
 }
 
 interface Game {
