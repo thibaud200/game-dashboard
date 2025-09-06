@@ -1,0 +1,29 @@
+{
+  "name": "board-game-backend",
+  "version": "1.0.0",
+  "description": "Backend API for Board Game Score Tracker",
+  "main": "server.js",
+  "scripts": {
+    "dev": "nodemon --exec ts-node server.ts",
+    "build": "tsc",
+    "start": "node dist/server.js",
+    "init-db": "ts-node scripts/init-database.ts"
+  },
+  "dependencies": {
+    "express": "^4.18.2",
+    "cors": "^2.8.5",
+    "better-sqlite3": "^8.7.0"
+  },
+  "devDependencies": {
+    "@types/express": "^4.17.20",
+    "@types/cors": "^2.8.15",
+    "@types/better-sqlite3": "^7.6.6",
+    "@types/node": "^20.8.6",
+    "typescript": "^5.2.2",
+    "nodemon": "^3.0.1",
+    "ts-node": "^10.9.1"
+  },
+  "keywords": ["board-games", "api", "sqlite", "express"],
+  "author": "",
+  "license": "MIT"
+}

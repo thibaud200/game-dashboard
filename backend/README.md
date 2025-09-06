@@ -1,71 +1,75 @@
-# Board Game Score Tracker - Backend
+# Board Game Score Backend
 
-This directory contains all backend-related files for the Board Game Score Tracker application.
+This is the backend API for the Board Game Score tracking application.
 
-## Directory Structure
+## Setup
 
+1. Install dependencies:
+```bash
+cd backend
+npm install
 ```
-backend/
-├── database/           # Database schema and scripts
-│   ├── schema.sql      # Complete database schema
-│   ├── sample_data.sql # Sample data for testing
-│   ├── queries.sql     # Common SQL queries
-│   └── init_db.sh      # Database initialization script
-├── api/               # API endpoints and routes
-├── config/            # Configuration files
-├── models/            # Data models and ORM definitions
-├── services/          # Business logic services
-└── utils/             # Utility functions and helpers
+
+2. Initialize the database:
+```bash
+npm run init-db
 ```
+
+3. Start the development server:
+```bash
+npm run dev
+```
+
+The server will run on `http://localhost:3001`
+
+## API Endpoints
+
+### Players
+- `GET /api/players` - Get all players
+- `GET /api/players/:id` - Get player by ID
+- `POST /api/players` - Create new player
+- `PUT /api/players/:id` - Update player
+- `DELETE /api/players/:id` - Delete player
+
+### Games
+- `GET /api/games` - Get all games
+- `GET /api/games/:id` - Get game by ID
+- `POST /api/games` - Create new game
+- `PUT /api/games/:id` - Update game
+- `DELETE /api/games/:id` - Delete game
+
+### Sessions
+- `GET /api/sessions` - Get all sessions (optional ?game_id filter)
+- `POST /api/sessions` - Create new game session
+
+### Statistics
+- `GET /api/stats/players` - Get player statistics
+- `GET /api/stats/games` - Get game statistics
+
+### Health
+- `GET /api/health` - Health check endpoint
 
 ## Database
 
-The application uses SQLite as the primary database. The database structure is designed to handle:
+The backend uses SQLite with the `better-sqlite3` library. The database file is created automatically when the server starts.
 
-- **Players** - User profiles and statistics
-- **Games** - Board game information with BGG integration
-- **Sessions** - Game session records and scoring
-- **Characters** - Game character/role definitions
-- **Expansions** - Game expansion tracking
+### Schema
 
-### Quick Start
+The database includes tables for:
+- `players` - Player information
+- `games` - Game information
+- `game_expansions` - Game expansions
+- `game_characters` - Game characters/roles
+- `game_sessions` - Game session records
+- `session_players` - Players in each session
 
-To initialize the database:
+## Environment Variables
 
-```bash
-cd backend/database
-./init_db.sh
-```
+- `PORT` - Server port (default: 3001)
+- `NODE_ENV` - Environment (development/production)
 
-This will create `boardgame.db` with the complete schema and sample data.
+## Development
 
-## Key Features
-
-### Data Persistence
-- SQLite database for reliable data storage
-- Automatic statistics calculation via triggers
-- Referential integrity with foreign keys
-
-### BGG Integration
-- BoardGameGeek API integration support
-- Automatic game data population
-- Expansion and character data from BGG
-
-### Statistics Tracking
-- Player performance metrics
-- Game popularity analytics
-- Session history and trends
-
-### Character System
-- Support for games with character/role selection
-- Character abilities stored as JSON
-- Session tracking includes character usage
-
-## Current Status
-
-✅ Database schema complete
-✅ Sample data available
-✅ Common queries documented
-🔄 API endpoints (planned)
-🔄 Service layer (planned)
-🔄 BGG integration (planned)
+- `npm run dev` - Start development server with auto-reload
+- `npm run build` - Build TypeScript to JavaScript
+- `npm start` - Start production server

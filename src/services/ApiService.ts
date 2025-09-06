@@ -1,0 +1,124 @@
+// API service to connect frontend with backend database
+const API_BASE_URL = process.env.NODE_ENV === 'production' 
+  ? 'https://your-api-domain.com/api' 
+  : 'http://localhost:3001/api';
+
+class ApiService {
+  private async request<T>(endpoint: string, options: RequestInit = {}): Promise<T> {
+    const url = `${API_BASE_URL}${endpoint}`;
+    
+    const config: RequestInit = {
+      headers: {
+        'Content-Type': 'application/json',
+        ...options.headers,
+      },
+      ...options,
+    };
+
+    try {
+      const response = await fetch(url, config);
+      
+      if (!response.ok) {
+        const errorData = await response.json().catch(() => ({ error: 'Unknown error' }));
+        throw new Error(errorData.error || `HTTP ${response.status}: ${response.statusText}`);
+      }
+      
+      // Handle 204 No Content responses
+      if (response.status === 204) {
+        return {} as T;
+      }
+      
+      return await response.json();
+    } catch (error) {
+      console.error(`API request failed for ${endpoint}:`, error);
+      throw error;
+    }
+  }
+
+  // Player operations
+  async getAllPlayers() {
+    return this.request<any[]>('/players');
+  }
+
+  async getPlayerById(playerId: number) {
+    return this.request<any>(`/players/${playerId}`);
+  }
+
+  async createPlayer(playerData: any) {
+    return this.request<any>('/players', {
+      method: 'POST',
+      body: JSON.stringify(playerData),
+    });
+  }
+
+  async updatePlayer(playerId: number, playerData: any) {
+    return this.request<any>(`/players/${playerId}`, {
+      method: 'PUT',
+      body: JSON.stringify(playerData),
+    });
+  }
+
+  async deletePlayer(playerId: number) {
+    return this.request<void>(`/players/${playerId}`, {
+      method: 'DELETE',
+    });
+  }
+
+  // Game operations
+  async getAllGames() {
+    return this.request<any[]>('/games');
+  }
+
+  async getGameById(gameId: number) {
+    return this.request<any>(`/games/${gameId}`);
+  }
+
+  async createGame(gameData: any) {
+    return this.request<any>('/games', {
+      method: 'POST',
+      body: JSON.stringify(gameData),
+    });
+  }
+
+  async updateGame(gameId: number, gameData: any) {
+    return this.request<any>(`/games/${gameId}`, {
+      method: 'PUT',
+      body: JSON.stringify(gameData),
+    });
+  }
+
+  async deleteGame(gameId: number) {
+    return this.request<void>(`/games/${gameId}`, {
+      method: 'DELETE',
+    });
+  }
+
+  // Session operations
+  async getAllSessions(gameId?: number) {
+    const query = gameId ? `?game_id=${gameId}` : '';
+    return this.request<any[]>(`/sessions${query}`);
+  }
+
+  async createSession(sessionData: any) {
+    return this.request<any>('/sessions', {
+      method: 'POST',
+      body: JSON.stringify(sessionData),
+    });
+  }
+
+  // Statistics
+  async getPlayerStats() {
+    return this.request<any>('/stats/players');
+  }
+
+  async getGameStats() {
+    return this.request<any>('/stats/games');
+  }
+
+  // Health check
+  async healthCheck() {
+    return this.request<{ status: string; timestamp: string }>('/health');
+  }
+}
+
+export default new ApiService();

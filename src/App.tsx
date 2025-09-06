@@ -3,6 +3,7 @@ import { useKV } from '@github/spark/hooks'
 import Dashboard from '@/components/Dashboard'
 import PlayersPage from '@/components/PlayersPage'
 import GamesPage from '@/components/GamesPage'
+import ApiService from '@/services/ApiService'
 
 // Database-aligned interfaces
 
@@ -344,22 +345,54 @@ export default function ModernDashboard() {
   const [recentPlayers, setRecentPlayers] = useState<Player[]>([])
   const [recentGames, setRecentGames] = useState<Game[]>([])
   const [currentView, setCurrentView] = useState('dashboard')
+  const [apiConnected, setApiConnected] = useState(false)
   
-  // Persistent data using useKV
+  // Persistent data using useKV as fallback
   const [players, setPlayers] = useKV<Player[]>('board-game-players', [])
   const [games, setGames] = useKV<Game[]>('board-game-games', [])
 
   useEffect(() => {
-    // Initialize with mock data if empty
-    if (players && players.length === 0) {
-      setPlayers(mockData.recentPlayers)
-    }
-    if (games && games.length === 0) {
-      setGames(mockData.recentGames)
-    }
-    
-    // Simulate loading data
-    setTimeout(() => {
+    loadDataFromApi()
+  }, [])
+
+  const loadDataFromApi = async () => {
+    try {
+      // Try to connect to API first
+      await ApiService.healthCheck()
+      setApiConnected(true)
+      
+      // Load data from API
+      const [apiPlayers, apiGames] = await Promise.all([
+        ApiService.getAllPlayers(),
+        ApiService.getAllGames()
+      ])
+      
+      setStats({
+        playersCount: apiPlayers.length,
+        gamesCount: apiGames.length,
+        loading: false,
+        error: null
+      })
+      
+      setRecentPlayers(apiPlayers.slice(0, 3))
+      setRecentGames(apiGames.slice(0, 3))
+      
+      // Update local storage as backup
+      setPlayers(apiPlayers)
+      setGames(apiGames)
+      
+    } catch (error) {
+      console.warn('API not available, using local storage:', error)
+      setApiConnected(false)
+      
+      // Fall back to local storage
+      if (players && players.length === 0) {
+        setPlayers(mockData.recentPlayers)
+      }
+      if (games && games.length === 0) {
+        setGames(mockData.recentGames)
+      }
+      
       setStats({
         playersCount: players?.length || 0,
         gamesCount: games?.length || 0,
@@ -368,106 +401,183 @@ export default function ModernDashboard() {
       })
       setRecentPlayers(players?.slice(0, 3) || [])
       setRecentGames(games?.slice(0, 3) || [])
-    }, 1000)
-  }, [players, games, setPlayers, setGames])
+    }
+  }
 
   const handleNavigation = (view) => {
     setCurrentView(view)
   }
 
-  const addPlayer = (playerData: any) => {
-    const player: Player = {
-      player_id: Date.now(),
-      player_name: playerData.player_name,
-      email: playerData.email || '',
-      avatar: playerData.avatar || `https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=100&h=100&fit=crop&crop=face`,
-      games_played: 0,
-      wins: 0,
-      total_score: 0,
-      average_score: 0,
-      favorite_game: playerData.favorite_game || '',
-      created_at: new Date(),
-      stats: '0 pts'
+  const addPlayer = async (playerData: any) => {
+    try {
+      if (apiConnected) {
+        const newPlayer = await ApiService.createPlayer(playerData)
+        await loadDataFromApi() // Refresh data
+        return newPlayer
+      } else {
+        // Fallback to local storage
+        const player: Player = {
+          player_id: Date.now(),
+          player_name: playerData.player_name,
+          email: playerData.email || '',
+          avatar: playerData.avatar || `https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=100&h=100&fit=crop&crop=face`,
+          games_played: 0,
+          wins: 0,
+          total_score: 0,
+          average_score: 0,
+          favorite_game: playerData.favorite_game || '',
+          created_at: new Date(),
+          stats: '0 pts'
+        }
+        setPlayers((currentPlayers) => [...(currentPlayers || []), player])
+        return player
+      }
+    } catch (error) {
+      console.error('Error adding player:', error)
+      throw error
     }
-    setPlayers((currentPlayers) => [...(currentPlayers || []), player])
   }
 
-  const updatePlayer = (playerId: number, playerData: any) => {
-    setPlayers((currentPlayers) => 
-      (currentPlayers || []).map(p => 
-        p.player_id === playerId 
-          ? { 
-              ...p, 
-              ...playerData, 
-              updated_at: new Date(),
-              stats: `${playerData.total_score || p.total_score} pts` 
-            }
-          : p
-      )
-    )
-  }
-
-  const addGame = (gameData: any) => {
-    const game: Game = {
-      game_id: Date.now(),
-      bgg_id: gameData.bgg_id,
-      name: gameData.name,
-      description: gameData.description || '',
-      image: gameData.image || '',
-      min_players: gameData.min_players,
-      max_players: gameData.max_players,
-      duration: gameData.duration || '',
-      difficulty: gameData.difficulty || '',
-      category: gameData.category || '',
-      year_published: gameData.year_published,
-      publisher: gameData.publisher || '',
-      designer: gameData.designer || '',
-      bgg_rating: gameData.bgg_rating,
-      weight: gameData.weight,
-      age_min: gameData.age_min,
-      game_type: gameData.game_type || 'competitive',
-      supports_cooperative: gameData.supports_cooperative || false,
-      supports_competitive: gameData.supports_competitive || false,
-      supports_campaign: gameData.supports_campaign || false,
-      has_expansion: gameData.has_expansion || false,
-      has_characters: gameData.has_characters || false,
-      created_at: new Date(),
-      expansions: gameData.expansions || [],
-      characters: gameData.characters || [],
-      players: `${gameData.min_players}-${gameData.max_players}`
+  const updatePlayer = async (playerId: number, playerData: any) => {
+    try {
+      if (apiConnected) {
+        const updatedPlayer = await ApiService.updatePlayer(playerId, playerData)
+        await loadDataFromApi() // Refresh data
+        return updatedPlayer
+      } else {
+        // Fallback to local storage
+        setPlayers((currentPlayers) => 
+          (currentPlayers || []).map(p => 
+            p.player_id === playerId 
+              ? { 
+                  ...p, 
+                  ...playerData, 
+                  updated_at: new Date(),
+                  stats: `${playerData.total_score || p.total_score} pts` 
+                }
+              : p
+          )
+        )
+      }
+    } catch (error) {
+      console.error('Error updating player:', error)
+      throw error
     }
-    setGames((currentGames) => [...(currentGames || []), game])
   }
 
-  const updateGame = (gameId: number, gameData: any) => {
-    setGames((currentGames) => 
-      (currentGames || []).map(g => 
-        g.game_id === gameId 
-          ? { 
-              ...g, 
-              ...gameData, 
-              updated_at: new Date(),
-              players: `${gameData.min_players || g.min_players}-${gameData.max_players || g.max_players}`,
-              expansions: gameData.expansions || g.expansions || [],
-              characters: gameData.characters || g.characters || []
-            }
-          : g
-      )
-    )
+  const addGame = async (gameData: any) => {
+    try {
+      if (apiConnected) {
+        const newGame = await ApiService.createGame(gameData)
+        await loadDataFromApi() // Refresh data
+        return newGame
+      } else {
+        // Fallback to local storage
+        const game: Game = {
+          game_id: Date.now(),
+          bgg_id: gameData.bgg_id,
+          name: gameData.name,
+          description: gameData.description || '',
+          image: gameData.image || '',
+          min_players: gameData.min_players,
+          max_players: gameData.max_players,
+          duration: gameData.duration || '',
+          difficulty: gameData.difficulty || '',
+          category: gameData.category || '',
+          year_published: gameData.year_published,
+          publisher: gameData.publisher || '',
+          designer: gameData.designer || '',
+          bgg_rating: gameData.bgg_rating,
+          weight: gameData.weight,
+          age_min: gameData.age_min,
+          game_type: gameData.game_type || 'competitive',
+          supports_cooperative: gameData.supports_cooperative || false,
+          supports_competitive: gameData.supports_competitive || false,
+          supports_campaign: gameData.supports_campaign || false,
+          has_expansion: gameData.has_expansion || false,
+          has_characters: gameData.has_characters || false,
+          created_at: new Date(),
+          expansions: gameData.expansions || [],
+          characters: gameData.characters || [],
+          players: `${gameData.min_players}-${gameData.max_players}`
+        }
+        setGames((currentGames) => [...(currentGames || []), game])
+        return game
+      }
+    } catch (error) {
+      console.error('Error adding game:', error)
+      throw error
+    }
   }
 
-  const deletePlayer = (playerId: number) => {
-    setPlayers((currentPlayers) => (currentPlayers || []).filter(p => p.player_id !== playerId))
+  const updateGame = async (gameId: number, gameData: any) => {
+    try {
+      if (apiConnected) {
+        const updatedGame = await ApiService.updateGame(gameId, gameData)
+        await loadDataFromApi() // Refresh data
+        return updatedGame
+      } else {
+        // Fallback to local storage
+        setGames((currentGames) => 
+          (currentGames || []).map(g => 
+            g.game_id === gameId 
+              ? { 
+                  ...g, 
+                  ...gameData, 
+                  updated_at: new Date(),
+                  players: `${gameData.min_players || g.min_players}-${gameData.max_players || g.max_players}`,
+                  expansions: gameData.expansions || g.expansions || [],
+                  characters: gameData.characters || g.characters || []
+                }
+              : g
+          )
+        )
+      }
+    } catch (error) {
+      console.error('Error updating game:', error)
+      throw error
+    }
   }
 
-  const deleteGame = (gameId: number) => {
-    setGames((currentGames) => (currentGames || []).filter(g => g.game_id !== gameId))
+  const deletePlayer = async (playerId: number) => {
+    try {
+      if (apiConnected) {
+        await ApiService.deletePlayer(playerId)
+        await loadDataFromApi() // Refresh data
+      } else {
+        // Fallback to local storage
+        setPlayers((currentPlayers) => (currentPlayers || []).filter(p => p.player_id !== playerId))
+      }
+    } catch (error) {
+      console.error('Error deleting player:', error)
+      throw error
+    }
+  }
+
+  const deleteGame = async (gameId: number) => {
+    try {
+      if (apiConnected) {
+        await ApiService.deleteGame(gameId)
+        await loadDataFromApi() // Refresh data
+      } else {
+        // Fallback to local storage
+        setGames((currentGames) => (currentGames || []).filter(g => g.game_id !== gameId))
+      }
+    } catch (error) {
+      console.error('Error deleting game:', error)
+      throw error
+    }
   }
 
   if (stats.loading) {
     return (
       <div className="min-h-screen bg-gradient-to-br from-slate-900 to-slate-800 flex items-center justify-center">
-        <div className="text-white text-lg">Chargement du dashboard...</div>
+        <div className="text-center">
+          <div className="text-white text-lg mb-2">Chargement du dashboard...</div>
+          {!apiConnected && (
+            <div className="text-white/60 text-sm">Mode hors-ligne activé</div>
+          )}
+        </div>
       </div>
     )
   }
@@ -476,7 +586,7 @@ export default function ModernDashboard() {
   if (currentView === 'players') {
     return (
       <PlayersPage 
-        players={players || []}
+        players={apiConnected ? recentPlayers : (players || [])}
         onNavigation={handleNavigation}
         onAddPlayer={addPlayer}
         onUpdatePlayer={updatePlayer}
@@ -489,7 +599,7 @@ export default function ModernDashboard() {
   if (currentView === 'games') {
     return (
       <GamesPage 
-        games={games || []}
+        games={apiConnected ? recentGames : (games || [])}
         onNavigation={handleNavigation}
         onAddGame={addGame}
         onUpdateGame={updateGame}
