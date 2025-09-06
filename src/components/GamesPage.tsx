@@ -1142,22 +1142,39 @@ export default function GamesPage({
                 <Label htmlFor="edit-has_expansion">Has expansions</Label>
               </div>
               {/* Expansions Display - show if checkbox is checked */}
-              {formData.has_expansion && (
+              {formData.has_expansion && formData.expansions.length > 0 && (
                 <div className="space-y-2">
-                  {formData.expansions.length > 0 && (
-                    <>
-                      <Label>Expansions from BGG</Label>
-                      <div className="space-y-1">
-                        {formData.expansions.map((expansion, index) => (
-                          <div key={index} className="p-2 bg-slate-700 rounded border border-slate-600 text-sm">
-                            <div className="font-medium">{expansion.name}</div>
-                          </div>
-                        ))}
-                      </div>
-                    </>
-                  )}
+                    <Label>Expansions</Label>
+                    <Textarea
+                    id="edit-expansion"
+                    value={formData.expansions
+                        .map(
+                        (exp) =>
+                            `${exp.name} (${exp.year_published > 0 ? exp.year_published : "N/A"})`
+                        )
+                        .join(", ")}
+                    onChange={(e) =>
+                        setFormData((prev) => ({
+                        ...prev,
+                        expansions: e.target.value
+                            .split(",")
+                            .map((item, idx) => {
+                            const match = item.trim().match(/^(.*)\s+\((.*)\)$/);
+                            return {
+                                ...prev.expansions[idx], // garde l'id (et autres props si un jour tu en ajoutes)
+                                name: match ? match[1].trim() : item.trim(),
+                                year_published:
+                                match && match[2] !== "N/A" ? parseInt(match[2]) : 0,
+                            };
+                            }),
+                        }))
+                    }
+                    className="bg-slate-700 border-slate-600 text-white"
+                    placeholder="Brief game expansions"
+                    rows={3}
+                    />
                 </div>
-              )}
+                )}
             </div>
 
             {/* Characters Section */}
