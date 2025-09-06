@@ -43,7 +43,7 @@ interface Game {
   supports_cooperative: boolean
   supports_competitive: boolean
   supports_campaign: boolean
-  has_expansion: boolean
+  has_expansion: boolean // Fixed: This field was missing from table Games
   has_characters: boolean
   created_at: Date
   updated_at?: Date
@@ -69,7 +69,7 @@ interface GameCharacter {
   character_key: string
   name: string
   description?: string
-  avatar?: string
+  avatar?: string // Fixed: This field was missing from table Game_Characters
   abilities?: string[] // Will be stored as JSON in database
 }
 
@@ -569,6 +569,169 @@ export default function ModernDashboard() {
     }
   }
 
+  // Expansion management functions
+  const addExpansion = async (gameId: number, expansionData: any) => {
+    try {
+      if (apiConnected) {
+        const newExpansion = await ApiService.createExpansion({
+          ...expansionData,
+          game_id: gameId
+        })
+        await loadDataFromApi() // Refresh data
+        return newExpansion
+      } else {
+        // Fallback to local storage
+        const expansion: GameExpansion = {
+          expansion_id: Date.now(),
+          game_id: gameId,
+          name: expansionData.name,
+          year_published: expansionData.year_published,
+          description: expansionData.description,
+          bgg_expansion_id: expansionData.bgg_expansion_id
+        }
+        
+        setGames((currentGames) => 
+          (currentGames || []).map(g => 
+            g.game_id === gameId 
+              ? { ...g, expansions: [...(g.expansions || []), expansion] }
+              : g
+          )
+        )
+        return expansion
+      }
+    } catch (error) {
+      console.error('Error adding expansion:', error)
+      throw error
+    }
+  }
+
+  const updateExpansion = async (expansionId: number, expansionData: any) => {
+    try {
+      if (apiConnected) {
+        const updatedExpansion = await ApiService.updateExpansion(expansionId, expansionData)
+        await loadDataFromApi() // Refresh data
+        return updatedExpansion
+      } else {
+        // Fallback to local storage
+        setGames((currentGames) => 
+          (currentGames || []).map(g => ({
+            ...g,
+            expansions: (g.expansions || []).map(exp => 
+              exp.expansion_id === expansionId 
+                ? { ...exp, ...expansionData }
+                : exp
+            )
+          }))
+        )
+      }
+    } catch (error) {
+      console.error('Error updating expansion:', error)
+      throw error
+    }
+  }
+
+  const deleteExpansion = async (expansionId: number) => {
+    try {
+      if (apiConnected) {
+        await ApiService.deleteExpansion(expansionId)
+        await loadDataFromApi() // Refresh data
+      } else {
+        // Fallback to local storage
+        setGames((currentGames) => 
+          (currentGames || []).map(g => ({
+            ...g,
+            expansions: (g.expansions || []).filter(exp => exp.expansion_id !== expansionId)
+          }))
+        )
+      }
+    } catch (error) {
+      console.error('Error deleting expansion:', error)
+      throw error
+    }
+  }
+
+  // Character management functions
+  const addCharacter = async (gameId: number, characterData: any) => {
+    try {
+      if (apiConnected) {
+        const newCharacter = await ApiService.createCharacter({
+          ...characterData,
+          game_id: gameId
+        })
+        await loadDataFromApi() // Refresh data
+        return newCharacter
+      } else {
+        // Fallback to local storage
+        const character: GameCharacter = {
+          character_id: Date.now(),
+          game_id: gameId,
+          character_key: characterData.character_key,
+          name: characterData.name,
+          description: characterData.description,
+          avatar: characterData.avatar,
+          abilities: characterData.abilities || []
+        }
+        
+        setGames((currentGames) => 
+          (currentGames || []).map(g => 
+            g.game_id === gameId 
+              ? { ...g, characters: [...(g.characters || []), character] }
+              : g
+          )
+        )
+        return character
+      }
+    } catch (error) {
+      console.error('Error adding character:', error)
+      throw error
+    }
+  }
+
+  const updateCharacter = async (characterId: number, characterData: any) => {
+    try {
+      if (apiConnected) {
+        const updatedCharacter = await ApiService.updateCharacter(characterId, characterData)
+        await loadDataFromApi() // Refresh data
+        return updatedCharacter
+      } else {
+        // Fallback to local storage
+        setGames((currentGames) => 
+          (currentGames || []).map(g => ({
+            ...g,
+            characters: (g.characters || []).map(char => 
+              char.character_id === characterId 
+                ? { ...char, ...characterData }
+                : char
+            )
+          }))
+        )
+      }
+    } catch (error) {
+      console.error('Error updating character:', error)
+      throw error
+    }
+  }
+
+  const deleteCharacter = async (characterId: number) => {
+    try {
+      if (apiConnected) {
+        await ApiService.deleteCharacter(characterId)
+        await loadDataFromApi() // Refresh data
+      } else {
+        // Fallback to local storage
+        setGames((currentGames) => 
+          (currentGames || []).map(g => ({
+            ...g,
+            characters: (g.characters || []).filter(char => char.character_id !== characterId)
+          }))
+        )
+      }
+    } catch (error) {
+      console.error('Error deleting character:', error)
+      throw error
+    }
+  }
+
   if (stats.loading) {
     return (
       <div className="min-h-screen bg-gradient-to-br from-slate-900 to-slate-800 flex items-center justify-center">
@@ -604,6 +767,12 @@ export default function ModernDashboard() {
         onAddGame={addGame}
         onUpdateGame={updateGame}
         onDeleteGame={deleteGame}
+        onAddExpansion={addExpansion}
+        onUpdateExpansion={updateExpansion}
+        onDeleteExpansion={deleteExpansion}
+        onAddCharacter={addCharacter}
+        onUpdateCharacter={updateCharacter}
+        onDeleteCharacter={deleteCharacter}
         currentView={currentView}
       />
     )

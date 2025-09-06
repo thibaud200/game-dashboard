@@ -38,7 +38,7 @@ interface Character {
   name: string
   description: string
   abilities: string[]
-  avatar?: string
+  avatar?: string // Fixed: Added avatar field that was missing
 }
 
 interface Expansion {
@@ -84,6 +84,12 @@ interface GamesPageProps {
   onAddGame: (game: Omit<Game, 'game_id' | 'players'>) => void
   onUpdateGame: (gameId: number, game: Partial<Game>) => void
   onDeleteGame: (gameId: number) => void
+  onAddExpansion?: (gameId: number, expansion: any) => void
+  onUpdateExpansion?: (expansionId: number, expansion: any) => void
+  onDeleteExpansion?: (expansionId: number) => void
+  onAddCharacter?: (gameId: number, character: any) => void
+  onUpdateCharacter?: (characterId: number, character: any) => void
+  onDeleteCharacter?: (characterId: number) => void
   currentView?: string
 }
 
@@ -93,6 +99,12 @@ export default function GamesPage({
   onAddGame, 
   onUpdateGame,
   onDeleteGame,
+  onAddExpansion,
+  onUpdateExpansion,
+  onDeleteExpansion,
+  onAddCharacter,
+  onUpdateCharacter,
+  onDeleteCharacter,
   currentView = 'games'
 }: GamesPageProps) {
   const [searchQuery, setSearchQuery] = useState('')

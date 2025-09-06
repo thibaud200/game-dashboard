@@ -93,6 +93,77 @@ class ApiService {
     });
   }
 
+  // Game Expansion operations
+  async getAllExpansions(gameId?: number) {
+    const query = gameId ? `?game_id=${gameId}` : '';
+    return this.request<any[]>(`/expansions${query}`);
+  }
+
+  async getExpansionById(expansionId: number) {
+    return this.request<any>(`/expansions/${expansionId}`);
+  }
+
+  async createExpansion(expansionData: any) {
+    return this.request<any>('/expansions', {
+      method: 'POST',
+      body: JSON.stringify(expansionData),
+    });
+  }
+
+  async updateExpansion(expansionId: number, expansionData: any) {
+    return this.request<any>(`/expansions/${expansionId}`, {
+      method: 'PUT',
+      body: JSON.stringify(expansionData),
+    });
+  }
+
+  async deleteExpansion(expansionId: number) {
+    return this.request<void>(`/expansions/${expansionId}`, {
+      method: 'DELETE',
+    });
+  }
+
+  // Game Character operations
+  async getAllCharacters(gameId?: number) {
+    const query = gameId ? `?game_id=${gameId}` : '';
+    return this.request<any[]>(`/characters${query}`);
+  }
+
+  async getCharacterById(characterId: number) {
+    return this.request<any>(`/characters/${characterId}`);
+  }
+
+  async createCharacter(characterData: any) {
+    return this.request<any>('/characters', {
+      method: 'POST',
+      body: JSON.stringify(characterData),
+    });
+  }
+
+  async updateCharacter(characterId: number, characterData: any) {
+    return this.request<any>(`/characters/${characterId}`, {
+      method: 'PUT',
+      body: JSON.stringify(characterData),
+    });
+  }
+
+  async deleteCharacter(characterId: number) {
+    return this.request<void>(`/characters/${characterId}`, {
+      method: 'DELETE',
+    });
+  }
+  async getAllSessions(gameId?: number) {
+    const query = gameId ? `?game_id=${gameId}` : '';
+    return this.request<any[]>(`/sessions${query}`);
+  }
+
+  async createSession(sessionData: any) {
+    return this.request<any>('/sessions', {
+      method: 'POST',
+      body: JSON.stringify(sessionData),
+    });
+  }
+
   // Session operations
   async getAllSessions(gameId?: number) {
     const query = gameId ? `?game_id=${gameId}` : '';
