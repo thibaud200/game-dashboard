@@ -14,7 +14,6 @@ import {
   Target,
   Calendar,
   Star,
-  ExternalLink,
   Shield,
   Swords,
   Crown,
@@ -1042,21 +1041,6 @@ export default function GamesPage({
                                 </div>
                               </div>
                             )}
-
-                            {game.bgg_id && (
-                              <div className="pt-2">
-                                <a 
-                                  href={`https://boardgamegeek.com/boardgame/${game.bgg_id}`}
-                                  target="_blank"
-                                  rel="noopener noreferrer"
-                                  className="text-xs text-teal-400 hover:text-teal-300 flex items-center"
-                                  onClick={(e) => e.stopPropagation()}
-                                >
-                                  <ExternalLink className="w-3 h-3 mr-1" />
-                                  View on BoardGameGeek
-                                </a>
-                              </div>
-                            )}
                           </div>
                         )}
                       </div>
@@ -1087,15 +1071,13 @@ export default function GamesPage({
                               <Edit className="w-4 h-4 mr-2" />
                               Edit Game
                             </DropdownMenuItem>
-                            {(game.has_expansion || game.expansions?.length > 0) && (
-                              <DropdownMenuItem 
-                                onClick={() => onNavigation('game-expansions', game.game_id)}
-                                className="hover:bg-slate-700 cursor-pointer"
-                              >
-                                <Crown className="w-4 h-4 mr-2" />
-                                Manage Expansions
-                              </DropdownMenuItem>
-                            )}
+                            <DropdownMenuItem 
+                              onClick={() => onNavigation('game-expansions', game.game_id)}
+                              className="hover:bg-slate-700 cursor-pointer"
+                            >
+                              <Crown className="w-4 h-4 mr-2" />
+                              Manage Expansions
+                            </DropdownMenuItem>
                             {(game.has_characters || game.characters?.length > 0) && (
                               <DropdownMenuItem 
                                 onClick={() => onNavigation('game-characters', game.game_id)}
@@ -1104,22 +1086,6 @@ export default function GamesPage({
                                 <Users className="w-4 h-4 mr-2" />
                                 Manage Characters
                               </DropdownMenuItem>
-                            )}
-                            {game.bgg_id && (
-                              <>
-                                <DropdownMenuSeparator className="bg-slate-600" />
-                                <DropdownMenuItem asChild>
-                                  <a 
-                                    href={`https://boardgamegeek.com/boardgame/${game.bgg_id}`}
-                                    target="_blank"
-                                    rel="noopener noreferrer"
-                                    className="flex items-center hover:bg-slate-700 cursor-pointer"
-                                  >
-                                    <ExternalLink className="w-4 h-4 mr-2" />
-                                    View on BGG
-                                  </a>
-                                </DropdownMenuItem>
-                              </>
                             )}
                             <DropdownMenuSeparator className="bg-slate-600" />
                             <AlertDialog>
