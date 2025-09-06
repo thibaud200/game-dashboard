@@ -1,7 +1,7 @@
 import React, { useState, useMemo } from 'react'
-import {
-  ArrowLeft,
-  TrendingUp,
+  ArrowL
+  Trophy,
+  Clock,
   Trophy,
   Target,
   Clock,
@@ -14,54 +14,54 @@ import BottomNavigation from './BottomNavigation'
 
 interface Player {
   player_id: number
-  player_name: string
-  avatar?: string
-  games_played: number
-  wins: number
-  total_score: number
-  average_score: number
-  favorite_game?: string
-  created_at: Date
-  stats?: string
-}
-
-interface Game {
-  game_id: number
-  name: string
-  image?: string
-  min_players: number
   max_players: number
-  duration?: string
-  difficulty?: string
-  category?: string
-  year_published?: number
-  created_at: Date
-  players?: string
-}
+  difficulty?: st
+  year_published?: num
+  players?: st
 
-interface PlayerStatsPageProps {
   players: Player[]
-  games: Game[]
-  onNavigation: (view: string) => void
-  currentView: string
+  onNavigation: (view: s
 }
+interface GameSe
+ 
 
-interface GameSession {
-  game_id: number
-  game_name: string
-  date: Date
-  score: number
-  placement: number
-  is_winner: boolean
-  duration_minutes?: number
+  is_winner: boo
 }
+// Mock sessio
+  { game_id: 1, 
+  { game_id: 1, game_
+  { game_id: 2, game_
 
-// Mock session data for demonstration
-const mockSessions: GameSession[] = [
-  { game_id: 1, game_name: 'Strategy Pro', date: new Date('2024-02-15'), score: 95, placement: 1, is_winner: true, duration_minutes: 75 },
-  { game_id: 2, game_name: 'Battle Arena', date: new Date('2024-02-14'), score: 82, placement: 2, is_winner: false, duration_minutes: 60 },
-  { game_id: 1, game_name: 'Strategy Pro', date: new Date('2024-02-12'), score: 88, placement: 1, is_winner: true, duration_minutes: 80 },
-  { game_id: 3, game_name: 'Mind Games', date: new Date('2024-02-10'), score: 76, placement: 3, is_winner: false, duration_minutes: 45 },
+  const [selectedPeri
+
+  const playerStats = use
+
+    const totalGam
+ 
+
+
+    const gamesByCa
+      const cat
+      return acc
+
+ 
+
+    const gameFrequency
+      return acc
+
+      .sort(
+
+      totalGames,
+      winRate,
+      bestScore,
+ 
+
+    }
+
+    return (
+        <div className="px-4 pt-8 pb-6">
+            <button
+              className="p-2 hover:bg-white/10 rounded-lg transition-colors"
   { game_id: 2, game_name: 'Battle Arena', date: new Date('2024-02-08'), score: 91, placement: 1, is_winner: true, duration_minutes: 65 }
 ]
 
@@ -126,103 +126,87 @@ export default function PlayerStatsPage({ players, games, onNavigation, currentV
               onClick={() => onNavigation('players')}
               className="p-2 hover:bg-white/10 rounded-lg transition-colors"
             >
-              <ArrowLeft className="w-6 h-6" />
+        {/* Stats Type Switcher */}
             </button>
             <h1 className="text-2xl font-bold">Player Stats</h1>
             <div className="w-10" />
           </div>
           <div className="text-center text-white/60">
-            No player data available
+            onClick={() => onNavigat
           </div>
-        </div>
+            Ga
         <BottomNavigation currentView={currentView} onNavigation={onNavigation} />
       </div>
     )
   }
 
-  return (
+          
     <div className="min-h-screen bg-gradient-to-br from-slate-900 to-slate-800 text-white">
-      {/* Header */}
+              alt={s
       <div className="px-4 pt-8 pb-6">
         <div className="flex items-center justify-between mb-6">
           <button
             onClick={() => onNavigation('players')}
             className="p-2 hover:bg-white/10 rounded-lg transition-colors"
-          >
+          <
             <ArrowLeft className="w-6 h-6" />
-          </button>
+          <div clas
           <h1 className="text-2xl font-bold">Player Stats</h1>
-          <div className="w-10" />
+              <div className="text
         </div>
 
         {/* Player Selector */}
-        <div className="mb-6">
+              <div className="
           <select
-            value={selectedPlayer.player_id}
+              <BarChart3 className="w-8 h-8 
             onChange={(e) => {
-              const player = players.find(p => p.player_id === parseInt(e.target.value))
+            </div>
               setSelectedPlayer(player || null)
             }}
             className="w-full bg-white/10 border border-white/20 rounded-xl px-4 py-3 text-white focus:outline-none focus:ring-2 focus:ring-primary"
-          >
+          <
             {players.map(player => (
               <option key={player.player_id} value={player.player_id} className="bg-slate-800 text-white">
                 {player.player_name}
-              </option>
+            <h3 classNa
             ))}
-          </select>
+          <div clas
         </div>
 
         {/* Period Selector */}
         <div className="flex space-x-2 mb-6">
           {['week', 'month', 'year', 'all'].map(period => (
-            <button
+                />
               key={period}
               onClick={() => setSelectedPeriod(period as any)}
               className={`px-4 py-2 rounded-lg transition-colors capitalize ${
-                selectedPeriod === period
+
                   ? 'bg-primary text-primary-foreground'
                   : 'bg-white/10 text-white/80 hover:bg-white/20'
               }`}
-            >
+          </d
               {period}
             </button>
           ))}
-        </div>
-
-        {/* Stats Type Switcher */}
-        <div className="flex space-x-2 mb-6">
-          <button
-            onClick={() => onNavigation('player-stats')}
-            className="flex-1 px-4 py-2 rounded-lg transition-colors bg-primary text-primary-foreground"
-          >
-            Player Stats
-          </button>
-          <button
-            onClick={() => onNavigation('game-stats')}
-            className="flex-1 px-4 py-2 rounded-lg transition-colors bg-white/10 text-white/80 hover:bg-white/20"
-          >
-            Game Stats
-          </button>
-        </div>
+              
       </div>
 
       {/* Content */}
-      <div className="px-4 space-y-6 pb-24">
+                      className="bg-gradient
         {/* Player Overview */}
         <div className="bg-white/10 backdrop-blur-md rounded-2xl p-6 border border-white/20 shadow-xl">
           <div className="flex items-center space-x-4 mb-6">
-            <img
+            })}
               src={selectedPlayer.avatar || 'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=100&h=100&fit=crop&crop=face'}
               alt={selectedPlayer.player_name}
               className="w-16 h-16 rounded-full object-cover"
-            />
+          <div
             <div>
               <h2 className="text-2xl font-bold">{selectedPlayer.player_name}</h2>
               <p className="text-white/60">
                 Member since {selectedPlayer.created_at.toLocaleDateString()}
               </p>
-            </div>
+          </div>
           </div>
 
           {/* Key Stats Grid */}
@@ -248,7 +232,7 @@ export default function PlayerStatsPage({ players, games, onNavigation, currentV
               <div className="text-white/60 text-sm">Play Time</div>
             </div>
           </div>
-        </div>
+      <BottomN
 
         {/* Performance Chart */}
         <div className="bg-white/10 backdrop-blur-md rounded-2xl p-6 border border-white/20 shadow-xl">
@@ -256,21 +240,21 @@ export default function PlayerStatsPage({ players, games, onNavigation, currentV
             <h3 className="text-lg font-semibold">Performance Trend</h3>
             <TrendingUp className="w-5 h-5 text-primary" />
           </div>
-          <div className="h-32 flex items-end space-x-2">
+
             {playerStats.performanceTrend.map((score, index) => {
               const height = (score / playerStats.bestScore) * 100
               return (
-                <div
+
                   key={index}
                   className="flex-1 bg-gradient-to-t from-primary/50 to-primary rounded-t-lg transition-all duration-300 hover:from-primary hover:to-primary/80"
                   style={{ height: `${height}%`, minHeight: '8px' }}
-                  title={`Score: ${score}`}
+
                 />
-              )
+
             })}
           </div>
           <div className="text-center text-white/60 text-sm mt-2">Last 10 Games</div>
-        </div>
+
 
         {/* Games by Category */}
         <div className="bg-white/10 backdrop-blur-md rounded-2xl p-6 border border-white/20 shadow-xl">
@@ -288,7 +272,7 @@ export default function PlayerStatsPage({ players, games, onNavigation, currentV
                     <span>{count} games ({percentage.toFixed(0)}%)</span>
                   </div>
                   <div className="w-full bg-white/10 rounded-full h-2">
-                    <div
+
                       className="bg-gradient-to-r from-secondary to-accent h-2 rounded-full transition-all duration-300"
                       style={{ width: `${percentage}%` }}
                     />
@@ -296,7 +280,7 @@ export default function PlayerStatsPage({ players, games, onNavigation, currentV
                 </div>
               )
             })}
-          </div>
+
         </div>
 
         {/* Favorite Games */}
@@ -310,17 +294,17 @@ export default function PlayerStatsPage({ players, games, onNavigation, currentV
               <div key={gameName} className="flex items-center space-x-3">
                 <div className="w-8 h-8 bg-primary/20 rounded-full flex items-center justify-center text-sm font-bold">
                   {index + 1}
-                </div>
+
                 <div className="flex-1">
-                  <div className="font-medium">{gameName}</div>
+
                   <div className="text-white/60 text-sm">{playCount} times played</div>
                 </div>
               </div>
-            ))}
-          </div>
-        </div>
 
-        {/* Recent Games */}
+          </div>
+
+
+
         <div className="bg-white/10 backdrop-blur-md rounded-2xl p-6 border border-white/20 shadow-xl">
           <div className="flex items-center justify-between mb-4">
             <h3 className="text-lg font-semibold">Recent Games</h3>
@@ -334,22 +318,21 @@ export default function PlayerStatsPage({ players, games, onNavigation, currentV
                   <div className="font-medium">{session.game_name}</div>
                   <div className="text-white/60 text-sm">
                     {session.date.toLocaleDateString()} • Score: {session.score}
-                  </div>
+
                 </div>
                 <div className="text-right">
                   {session.is_winner ? (
-                    <Trophy className="w-4 h-4 text-yellow-400" />
+
                   ) : (
                     <div className="text-white/60 text-sm">#{session.placement}</div>
                   )}
                 </div>
               </div>
-            ))}
+
           </div>
         </div>
       </div>
 
       <BottomNavigation currentView={currentView} onNavigation={onNavigation} />
-    </div>
+
   )
-}
