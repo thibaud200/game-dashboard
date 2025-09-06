@@ -1046,81 +1046,131 @@ export default function GamesPage({
                         )}
                       </div>
                       
-                      {/* Actions Menu */}
+                      {/* Actions - Desktop buttons / Mobile contextual menu */}
                       <div className="ml-2 flex-shrink-0">
-                        <DropdownMenu>
-                          <DropdownMenuTrigger asChild>
-                            <button 
-                              className="p-2 hover:bg-white/10 rounded-lg transition-colors text-white hover:text-white min-w-[44px] min-h-[44px] flex items-center justify-center bg-white/10 border border-white/20 shadow-lg"
-                              aria-label="Game options menu"
-                            >
-                              <DotsThreeVertical className="w-5 h-5" />
-                            </button>
-                          </DropdownMenuTrigger>
-                          <DropdownMenuContent align="end" className="bg-slate-800 border-slate-700 text-white">
-                            <DropdownMenuItem 
-                              onClick={() => onNavigation('game-detail', game.game_id, 'games')}
-                              className="hover:bg-slate-700 cursor-pointer"
-                            >
-                              <Eye className="w-4 h-4 mr-2" />
-                              View Details
-                            </DropdownMenuItem>
-                            <DropdownMenuItem 
-                              onClick={() => handleEditGame(game)}
-                              className="hover:bg-slate-700 cursor-pointer"
-                            >
-                              <Edit className="w-4 h-4 mr-2" />
-                              Edit Game
-                            </DropdownMenuItem>
-                            <DropdownMenuItem 
-                              onClick={() => onNavigation('game-expansions', game.game_id, 'games')}
-                              className="hover:bg-slate-700 cursor-pointer"
-                            >
-                              <Crown className="w-4 h-4 mr-2" />
-                              Manage Expansions
-                            </DropdownMenuItem>
-                            {(game.has_characters || game.characters?.length > 0) && (
+                        {/* Desktop Actions - Direct buttons */}
+                        <div className="hidden sm:flex items-center space-x-1">
+                          <button 
+                            onClick={() => onNavigation('game-detail', game.game_id, 'games')}
+                            className="p-2 hover:bg-white/10 rounded-lg transition-colors text-white/60 hover:text-white"
+                            aria-label="View game details"
+                          >
+                            <Eye className="w-4 h-4" />
+                          </button>
+                          <button 
+                            onClick={() => handleEditGame(game)}
+                            className="p-2 hover:bg-white/10 rounded-lg transition-colors text-white/60 hover:text-white"
+                            aria-label="Edit game"
+                          >
+                            <Edit className="w-4 h-4" />
+                          </button>
+                          <AlertDialog>
+                            <AlertDialogTrigger asChild>
+                              <button 
+                                className="p-2 hover:bg-red-500/20 rounded-lg transition-colors text-red-400 hover:text-red-300"
+                                aria-label="Delete game"
+                              >
+                                <Trash2 className="w-4 h-4" />
+                              </button>
+                            </AlertDialogTrigger>
+                            <AlertDialogContent className="bg-slate-800 border-slate-700 text-white">
+                              <AlertDialogHeader>
+                                <AlertDialogTitle>Delete Game</AlertDialogTitle>
+                                <AlertDialogDescription className="text-white/70">
+                                  Are you sure you want to delete "{game.name}"? This action cannot be undone and will also remove all associated expansions and characters.
+                                </AlertDialogDescription>
+                              </AlertDialogHeader>
+                              <AlertDialogFooter>
+                                <AlertDialogCancel className="bg-slate-700 border-slate-600 text-white hover:bg-slate-600">
+                                  Cancel
+                                </AlertDialogCancel>
+                                <AlertDialogAction 
+                                  onClick={() => onDeleteGame(game.game_id)}
+                                  className="bg-red-600 hover:bg-red-700 text-white"
+                                >
+                                  Delete
+                                </AlertDialogAction>
+                              </AlertDialogFooter>
+                            </AlertDialogContent>
+                          </AlertDialog>
+                        </div>
+
+                        {/* Mobile Actions - Contextual menu */}
+                        <div className="sm:hidden">
+                          <DropdownMenu>
+                            <DropdownMenuTrigger asChild>
+                              <button 
+                                className="p-2 hover:bg-white/10 rounded-lg transition-colors text-white hover:text-white min-w-[44px] min-h-[44px] flex items-center justify-center bg-white/10 border border-white/20 shadow-lg"
+                                aria-label="Game options menu"
+                              >
+                                <DotsThreeVertical className="w-5 h-5" />
+                              </button>
+                            </DropdownMenuTrigger>
+                            <DropdownMenuContent align="end" className="bg-slate-800 border-slate-700 text-white">
                               <DropdownMenuItem 
-                                onClick={() => onNavigation('game-characters', game.game_id, 'games')}
+                                onClick={() => onNavigation('game-detail', game.game_id, 'games')}
                                 className="hover:bg-slate-700 cursor-pointer"
                               >
-                                <Users className="w-4 h-4 mr-2" />
-                                Manage Characters
+                                <Eye className="w-4 h-4 mr-2" />
+                                View Details
                               </DropdownMenuItem>
-                            )}
-                            <DropdownMenuSeparator className="bg-slate-600" />
-                            <AlertDialog>
-                              <AlertDialogTrigger asChild>
+                              <DropdownMenuItem 
+                                onClick={() => handleEditGame(game)}
+                                className="hover:bg-slate-700 cursor-pointer"
+                              >
+                                <Edit className="w-4 h-4 mr-2" />
+                                Edit Game
+                              </DropdownMenuItem>
+                              <DropdownMenuItem 
+                                onClick={() => onNavigation('game-expansions', game.game_id, 'games')}
+                                className="hover:bg-slate-700 cursor-pointer"
+                              >
+                                <Crown className="w-4 h-4 mr-2" />
+                                Manage Expansions
+                              </DropdownMenuItem>
+                              {(game.has_characters || game.characters?.length > 0) && (
                                 <DropdownMenuItem 
-                                  onSelect={(e) => e.preventDefault()}
-                                  className="hover:bg-red-500/20 cursor-pointer text-red-400"
+                                  onClick={() => onNavigation('game-characters', game.game_id, 'games')}
+                                  className="hover:bg-slate-700 cursor-pointer"
                                 >
-                                  <Trash2 className="w-4 h-4 mr-2" />
-                                  Delete Game
+                                  <Users className="w-4 h-4 mr-2" />
+                                  Manage Characters
                                 </DropdownMenuItem>
-                              </AlertDialogTrigger>
-                              <AlertDialogContent className="bg-slate-800 border-slate-700 text-white">
-                                <AlertDialogHeader>
-                                  <AlertDialogTitle>Delete Game</AlertDialogTitle>
-                                  <AlertDialogDescription className="text-white/70">
-                                    Are you sure you want to delete "{game.name}"? This action cannot be undone and will also remove all associated expansions and characters.
-                                  </AlertDialogDescription>
-                                </AlertDialogHeader>
-                                <AlertDialogFooter>
-                                  <AlertDialogCancel className="bg-slate-700 border-slate-600 text-white hover:bg-slate-600">
-                                    Cancel
-                                  </AlertDialogCancel>
-                                  <AlertDialogAction 
-                                    onClick={() => onDeleteGame(game.game_id)}
-                                    className="bg-red-600 hover:bg-red-700 text-white"
+                              )}
+                              <DropdownMenuSeparator className="bg-slate-600" />
+                              <AlertDialog>
+                                <AlertDialogTrigger asChild>
+                                  <DropdownMenuItem 
+                                    onSelect={(e) => e.preventDefault()}
+                                    className="hover:bg-red-500/20 cursor-pointer text-red-400"
                                   >
-                                    Delete
-                                  </AlertDialogAction>
-                                </AlertDialogFooter>
-                              </AlertDialogContent>
-                            </AlertDialog>
-                          </DropdownMenuContent>
-                        </DropdownMenu>
+                                    <Trash2 className="w-4 h-4 mr-2" />
+                                    Delete Game
+                                  </DropdownMenuItem>
+                                </AlertDialogTrigger>
+                                <AlertDialogContent className="bg-slate-800 border-slate-700 text-white">
+                                  <AlertDialogHeader>
+                                    <AlertDialogTitle>Delete Game</AlertDialogTitle>
+                                    <AlertDialogDescription className="text-white/70">
+                                      Are you sure you want to delete "{game.name}"? This action cannot be undone and will also remove all associated expansions and characters.
+                                    </AlertDialogDescription>
+                                  </AlertDialogHeader>
+                                  <AlertDialogFooter>
+                                    <AlertDialogCancel className="bg-slate-700 border-slate-600 text-white hover:bg-slate-600">
+                                      Cancel
+                                    </AlertDialogCancel>
+                                    <AlertDialogAction 
+                                      onClick={() => onDeleteGame(game.game_id)}
+                                      className="bg-red-600 hover:bg-red-700 text-white"
+                                    >
+                                      Delete
+                                    </AlertDialogAction>
+                                  </AlertDialogFooter>
+                                </AlertDialogContent>
+                              </AlertDialog>
+                            </DropdownMenuContent>
+                          </DropdownMenu>
+                        </div>
                       </div>
                     </div>
                   </div>
