@@ -1,14 +1,9 @@
 import React, { useState } from 'react'
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
-import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
-import { Checkbox } from "@/components/ui/checkbox"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
+import { ArrowLeft, Play, Users, Trophy, Timer, Question } from '@phosphor-icons/react'
 import { Textarea } from "@/components/ui/textarea"
-import { ArrowLeft, Play, Users, Trophy, Timer } from '@phosphor-icons/react'
-import BottomNavigation from './BottomNavigation'
-import { toast } from 'sonner'
 
 interface Player {
   player_id: number
