@@ -415,18 +415,24 @@ export default function ModernDashboard() {
     if (gameId !== undefined) {
       setCurrentGameId(gameId)
     }
+    
     // Track navigation source for contextual back navigation
     if (source) {
+      // Explicit source provided - use it
       setNavigationSource(source)
     } else if (view === 'game-detail') {
-      setNavigationSource('games') // Default source when viewing game detail
+      // Default source when viewing game detail is games
+      setNavigationSource('games')
     } else if (view === 'game-expansions' || view === 'game-characters') {
-      // Check if we're coming from game detail (mobile contextual navigation)
+      // For expansion/character pages, default to games unless coming from game-detail
       if (currentView === 'game-detail') {
         setNavigationSource('game-detail')
       } else {
         setNavigationSource('games')
       }
+    } else {
+      // For any other view, don't change navigation source
+      // This preserves the current navigation context
     }
   }
 

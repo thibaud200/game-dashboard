@@ -200,6 +200,7 @@ export default function GameDetailPage({
                 <GameExpansionsPage
                   game={game}
                   onNavigation={onNavigation}
+                  navigationSource={navigationSource}
                   onAddExpansion={onAddExpansion}
                   onUpdateExpansion={onUpdateExpansion}
                   onDeleteExpansion={onDeleteExpansion}
@@ -213,6 +214,7 @@ export default function GameDetailPage({
                 <GameCharactersPage
                   game={game}
                   onNavigation={onNavigation}
+                  navigationSource={navigationSource}
                   onAddCharacter={onAddCharacter}
                   onUpdateCharacter={onUpdateCharacter}
                   onDeleteCharacter={onDeleteCharacter}
@@ -230,6 +232,7 @@ export default function GameDetailPage({
             <GameExpansionsPage
               game={game}
               onNavigation={onNavigation}
+              navigationSource={navigationSource}
               onAddExpansion={onAddExpansion}
               onUpdateExpansion={onUpdateExpansion}
               onDeleteExpansion={onDeleteExpansion}
@@ -240,6 +243,7 @@ export default function GameDetailPage({
             <GameCharactersPage
               game={game}
               onNavigation={onNavigation}
+              navigationSource={navigationSource}
               onAddCharacter={onAddCharacter}
               onUpdateCharacter={onUpdateCharacter}
               onDeleteCharacter={onDeleteCharacter}
