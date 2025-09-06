@@ -1,13 +1,13 @@
 # Navigation Context Implementation
 
-## Overview
-Implemented contextual navigation for mobile view that remembers the user's navigation source to provide the correct back navigation behavior.
 
-## Key Changes
 
-### 1. App.tsx
-- Added `navigationSource` state to track where the user came from
-- Updated `handleNavigation` function to accept optional `source` parameter
+
+- Added logic 
+
+- Updated mobi
+
+- Added `navigationSource` prop
 - Added logic to automatically set navigation source based on current view and destination
 
 ### 2. GameDetailPage.tsx
@@ -18,17 +18,17 @@ Implemented contextual navigation for mobile view that remembers the user's navi
 ### 3. GameExpansionsPage.tsx & GameCharactersPage.tsx
 - Added `navigationSource` prop
 - Updated back button logic to navigate contextually:
-  - If source is `'game-detail'`: Navigate back to game detail page
+## Navigation Flow Examples
   - If source is `'games'`: Navigate back to games list
 - Updated header text to reflect correct back destination
 
-### 4. GamesPage.tsx
-- Updated navigation calls to pass `'games'` as source when navigating to:
-  - Game detail view
-  - Game expansions management
-  - Game characters management
 
-## Navigation Flow Examples
+- Updated navigation calls to pass `'games'` as source when navigating to:
+2. Game Detail → Ext
+  - Game expansions management
+#### Scenario 2: Direct Access
+
+
 
 ### Desktop Behavior (unchanged)
 1. Games List → Game Detail → (Tabs for Extensions/Characters)
@@ -36,42 +36,41 @@ Implemented contextual navigation for mobile view that remembers the user's navi
 ### Mobile Behavior
 
 #### Scenario 1: From Games List
-1. Games List → Game Detail (via context menu)
-2. Game Detail → Extensions (via context menu) → **Back to Game Detail**
-3. Game Detail → Characters (via context menu) → **Back to Game Detail**
-
-#### Scenario 2: Direct Access
-1. Games List → Extensions (via card context menu) → **Back to Games List**
-2. Games List → Characters (via card context menu) → **Back to Games List**
-
-## Technical Implementation
-
-### Navigation Source Tracking
-```typescript
-const [navigationSource, setNavigationSource] = useState<string>('games')
-
-const handleNavigation = (view: string, gameId?: number, source?: string) => {
-  // Automatic source detection
-  if (view === 'game-expansions' || view === 'game-characters') {
-    if (currentView === 'game-detail') {
-      setNavigationSource('game-detail')
     } else {
-      setNavigationSource('games')
-    }
-  }
-}
-```
+2. Game Detail → Extensions (via context menu) → **Back to Game Detail**
 
-### Contextual Back Navigation
-```typescript
-// In GameExpansionsPage & GameCharactersPage
-onClick={() => {
-  if (navigationSource === 'game-detail') {
-    onNavigation('game-detail', game.game_id)
-  } else {
-    onNavigation('games')
-  }
-}}
-```
 
-This ensures users always get the expected navigation behavior regardless of how they accessed the current page.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
