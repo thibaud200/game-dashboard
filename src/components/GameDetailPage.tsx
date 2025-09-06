@@ -2,6 +2,7 @@ import React, { useState } from 'react'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -9,7 +10,9 @@ import {
   DropdownMenuTrigger,
   DropdownMenuSeparator
 } from '@/components/ui/dropdown-menu'
-import { ArrowLeft, Users, Clock, Star, Weight, Calendar, Factory, User, Plus, Gamepad2, UserCircle, DotsThreeVertical } from '@phosphor-icons/react'
+import { ArrowLeft, Users, Clock, Star, Weight, Calendar, Factory, User, Plus, Gamepad2, UserCircle, DotsThreeVertical, Crown } from '@phosphor-icons/react'
+import GameExpansionsPage from '@/components/GameExpansionsPage'
+import GameCharactersPage from '@/components/GameCharactersPage'
 
 interface Game {
   game_id: number
@@ -64,9 +67,25 @@ interface GameDetailPageProps {
   game: Game
   onNavigation: (view: string, gameId?: number) => void
   currentView: string
+  onAddExpansion?: (gameId: number, expansionData: any) => Promise<any>
+  onUpdateExpansion?: (expansionId: number, expansionData: any) => Promise<any>
+  onDeleteExpansion?: (expansionId: number) => Promise<void>
+  onAddCharacter?: (gameId: number, characterData: any) => Promise<any>
+  onUpdateCharacter?: (characterId: number, characterData: any) => Promise<any>
+  onDeleteCharacter?: (characterId: number) => Promise<void>
 }
 
-export default function GameDetailPage({ game, onNavigation, currentView }: GameDetailPageProps) {
+export default function GameDetailPage({ 
+  game, 
+  onNavigation, 
+  currentView,
+  onAddExpansion,
+  onUpdateExpansion,
+  onDeleteExpansion,
+  onAddCharacter,
+  onUpdateCharacter,
+  onDeleteCharacter
+}: GameDetailPageProps) {
   const [activeTab, setActiveTab] = useState('overview')
 
   const gameTypes = []
@@ -102,18 +121,25 @@ export default function GameDetailPage({ game, onNavigation, currentView }: Game
                   </Button>
                 </DropdownMenuTrigger>
                 <DropdownMenuContent align="end" className="bg-slate-800 border-slate-700 text-white">
+                  <DropdownMenuItem 
+                    onClick={() => setActiveTab('overview')}
+                    className="hover:bg-slate-700 focus:bg-slate-700"
+                  >
+                    <Gamepad2 className="w-4 h-4 mr-2" />
+                    Vue générale
+                  </DropdownMenuItem>
                   {game.has_expansion && (
                     <DropdownMenuItem 
-                      onClick={() => onNavigation('game-expansions', game.game_id)}
+                      onClick={() => setActiveTab('expansions')}
                       className="hover:bg-slate-700 focus:bg-slate-700"
                     >
-                      <Plus className="w-4 h-4 mr-2" />
+                      <Crown className="w-4 h-4 mr-2" />
                       Extensions ({game.expansions?.length || 0})
                     </DropdownMenuItem>
                   )}
                   {game.has_characters && (
                     <DropdownMenuItem 
-                      onClick={() => onNavigation('game-characters', game.game_id)}
+                      onClick={() => setActiveTab('characters')}
                       className="hover:bg-slate-700 focus:bg-slate-700"
                     >
                       <UserCircle className="w-4 h-4 mr-2" />
@@ -122,7 +148,7 @@ export default function GameDetailPage({ game, onNavigation, currentView }: Game
                   )}
                   {(!game.has_expansion && !game.has_characters) && (
                     <DropdownMenuItem disabled className="text-slate-400">
-                      Aucune action disponible
+                      Aucune section disponible
                     </DropdownMenuItem>
                   )}
                 </DropdownMenuContent>
@@ -133,6 +159,95 @@ export default function GameDetailPage({ game, onNavigation, currentView }: Game
       </div>
 
       <div className="max-w-7xl mx-auto px-6 py-8">
+        {/* Desktop Layout with Tabs */}
+        <div className="hidden md:block">
+          <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
+            <TabsList className="grid w-full grid-cols-3 bg-slate-800/50 border-slate-700/50">
+              <TabsTrigger 
+                value="overview" 
+                className="data-[state=active]:bg-primary data-[state=active]:text-primary-foreground text-white"
+              >
+                Vue générale
+              </TabsTrigger>
+              <TabsTrigger 
+                value="expansions" 
+                className="data-[state=active]:bg-primary data-[state=active]:text-primary-foreground text-white"
+                disabled={!game.has_expansion}
+              >
+                Extensions ({game.expansions?.length || 0})
+              </TabsTrigger>
+              <TabsTrigger 
+                value="characters" 
+                className="data-[state=active]:bg-primary data-[state=active]:text-primary-foreground text-white"
+                disabled={!game.has_characters}
+              >
+                Personnages ({game.characters?.length || 0})
+              </TabsTrigger>
+            </TabsList>
+
+            <TabsContent value="overview" className="mt-6">
+              {renderGameOverview()}
+            </TabsContent>
+
+            <TabsContent value="expansions" className="mt-6">
+              {onAddExpansion && onUpdateExpansion && onDeleteExpansion && (
+                <GameExpansionsPage
+                  game={game}
+                  onNavigation={onNavigation}
+                  onAddExpansion={onAddExpansion}
+                  onUpdateExpansion={onUpdateExpansion}
+                  onDeleteExpansion={onDeleteExpansion}
+                  embedded={true}
+                />
+              )}
+            </TabsContent>
+
+            <TabsContent value="characters" className="mt-6">
+              {onAddCharacter && onUpdateCharacter && onDeleteCharacter && (
+                <GameCharactersPage
+                  game={game}
+                  onNavigation={onNavigation}
+                  onAddCharacter={onAddCharacter}
+                  onUpdateCharacter={onUpdateCharacter}
+                  onDeleteCharacter={onDeleteCharacter}
+                  embedded={true}
+                />
+              )}
+            </TabsContent>
+          </Tabs>
+        </div>
+
+        {/* Mobile Layout - Show current tab content */}
+        <div className="md:hidden">
+          {activeTab === 'overview' && renderGameOverview()}
+          {activeTab === 'expansions' && onAddExpansion && onUpdateExpansion && onDeleteExpansion && (
+            <GameExpansionsPage
+              game={game}
+              onNavigation={onNavigation}
+              onAddExpansion={onAddExpansion}
+              onUpdateExpansion={onUpdateExpansion}
+              onDeleteExpansion={onDeleteExpansion}
+              embedded={true}
+            />
+          )}
+          {activeTab === 'characters' && onAddCharacter && onUpdateCharacter && onDeleteCharacter && (
+            <GameCharactersPage
+              game={game}
+              onNavigation={onNavigation}
+              onAddCharacter={onAddCharacter}
+              onUpdateCharacter={onUpdateCharacter}
+              onDeleteCharacter={onDeleteCharacter}
+              embedded={true}
+            />
+          )}
+        </div>
+      </div>
+    </div>
+  )
+
+  function renderGameOverview() {
+    return (
+      <>
         {/* Game Overview Card */}
         <Card className="bg-slate-800/50 border-slate-700/50 mb-8">
           <CardContent className="p-6">
@@ -236,35 +351,14 @@ export default function GameDetailPage({ game, onNavigation, currentView }: Game
           </CardContent>
         </Card>
 
-        {/* Action Buttons - Desktop Only */}
-        <div className="hidden md:flex gap-4 mb-8">
-          <Button 
-            onClick={() => onNavigation('game-expansions', game.game_id)}
-            className="bg-primary hover:bg-primary/90 text-primary-foreground"
-            disabled={!game.has_expansion}
-          >
-            <Plus className="w-4 h-4 mr-2" />
-            Gérer les Extensions ({game.expansions?.length || 0})
-          </Button>
-          <Button 
-            onClick={() => onNavigation('game-characters', game.game_id)}
-            variant="outline"
-            className="border-slate-600 text-slate-300 hover:bg-slate-700/50"
-            disabled={!game.has_characters}
-          >
-            <UserCircle className="w-4 h-4 mr-2" />
-            Gérer les Personnages ({game.characters?.length || 0})
-          </Button>
-        </div>
-
-        {/* Quick Overview of Extensions and Characters */}
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        {/* Quick Overview of Extensions and Characters - Desktop Only */}
+        <div className="hidden md:grid grid-cols-1 lg:grid-cols-2 gap-6">
           {/* Extensions Preview */}
           {game.has_expansion && game.expansions && game.expansions.length > 0 && (
             <Card className="bg-slate-800/50 border-slate-700/50">
               <CardHeader>
                 <CardTitle className="text-white flex items-center gap-2">
-                  <Plus className="w-5 h-5 text-primary" />
+                  <Crown className="w-5 h-5 text-primary" />
                   Extensions ({game.expansions.length})
                 </CardTitle>
               </CardHeader>
@@ -332,7 +426,7 @@ export default function GameDetailPage({ game, onNavigation, currentView }: Game
             </Card>
           )}
         </div>
-      </div>
-    </div>
-  )
+      </>
+    )
+  }
 }

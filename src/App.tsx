@@ -800,6 +800,12 @@ export default function ModernDashboard() {
         game={currentGame}
         onNavigation={handleNavigation}
         currentView={currentView}
+        onAddExpansion={addExpansion}
+        onUpdateExpansion={updateExpansion}
+        onDeleteExpansion={deleteExpansion}
+        onAddCharacter={addCharacter}
+        onUpdateCharacter={updateCharacter}
+        onDeleteCharacter={deleteCharacter}
       />
     )
   }

@@ -30,6 +30,7 @@ interface GameExpansionsPageProps {
   onAddExpansion: (gameId: number, expansionData: any) => Promise<GameExpansion>
   onUpdateExpansion: (expansionId: number, expansionData: any) => Promise<void>
   onDeleteExpansion: (expansionId: number) => Promise<void>
+  embedded?: boolean
 }
 
 export default function GameExpansionsPage({ 
@@ -37,7 +38,8 @@ export default function GameExpansionsPage({
   onNavigation, 
   onAddExpansion, 
   onUpdateExpansion, 
-  onDeleteExpansion 
+  onDeleteExpansion,
+  embedded = false
 }: GameExpansionsPageProps) {
   const [isAddDialogOpen, setIsAddDialogOpen] = useState(false)
   const [editingExpansion, setEditingExpansion] = useState<GameExpansion | null>(null)
@@ -212,30 +214,56 @@ export default function GameExpansionsPage({
   )
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-900 to-slate-800">
-      {/* Header */}
-      <div className="bg-slate-800/50 backdrop-blur-sm border-b border-slate-700/50 sticky top-0 z-10">
-        <div className="max-w-7xl mx-auto px-6 py-4">
-          <div className="flex items-center justify-between">
-            <div className="flex items-center gap-4">
-              <Button
-                variant="ghost"
-                size="sm"
-                onClick={() => onNavigation('game-detail', game.game_id)}
-                className="text-white/80 hover:text-white hover:bg-white/10"
-              >
-                <ArrowLeft className="w-4 h-4 mr-2" />
-                Retour au jeu
-              </Button>
-              <div className="h-6 w-px bg-slate-600"></div>
-              <h1 className="text-xl font-semibold text-white">Extensions - {game.name}</h1>
+    <div className={embedded ? "" : "min-h-screen bg-gradient-to-br from-slate-900 to-slate-800"}>
+      {/* Header - Only show when not embedded */}
+      {!embedded && (
+        <div className="bg-slate-800/50 backdrop-blur-sm border-b border-slate-700/50 sticky top-0 z-10">
+          <div className="max-w-7xl mx-auto px-6 py-4">
+            <div className="flex items-center justify-between">
+              <div className="flex items-center gap-4">
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  onClick={() => onNavigation('game-detail', game.game_id)}
+                  className="text-white/80 hover:text-white hover:bg-white/10"
+                >
+                  <ArrowLeft className="w-4 h-4 mr-2" />
+                  Retour au jeu
+                </Button>
+                <div className="h-6 w-px bg-slate-600"></div>
+                <h1 className="text-xl font-semibold text-white">Extensions - {game.name}</h1>
+              </div>
+              
+              <Dialog open={isAddDialogOpen} onOpenChange={setIsAddDialogOpen}>
+                <DialogTrigger asChild>
+                  <Button className="bg-primary hover:bg-primary/90 text-primary-foreground">
+                    <Plus className="w-4 h-4 mr-2" />
+                    Ajouter une extension
+                  </Button>
+                </DialogTrigger>
+                <DialogContent className="bg-slate-800 border-slate-700 max-w-md">
+                  <DialogHeader>
+                    <DialogTitle className="text-white">Ajouter une extension</DialogTitle>
+                  </DialogHeader>
+                  <ExpansionForm onSubmit={handleAddExpansion} submitText="Ajouter" />
+                </DialogContent>
+              </Dialog>
             </div>
-            
+          </div>
+        </div>
+      )}
+
+      {/* Content */}
+      <div className={embedded ? "" : "max-w-7xl mx-auto px-6 py-8"}>
+        {/* Embedded Header with Add Button */}
+        {embedded && (
+          <div className="flex items-center justify-between mb-6">
+            <h2 className="text-2xl font-bold text-white">Extensions ({game.expansions?.length || 0})</h2>
             <Dialog open={isAddDialogOpen} onOpenChange={setIsAddDialogOpen}>
               <DialogTrigger asChild>
                 <Button className="bg-primary hover:bg-primary/90 text-primary-foreground">
                   <Plus className="w-4 h-4 mr-2" />
-                  Ajouter une extension
+                  Ajouter
                 </Button>
               </DialogTrigger>
               <DialogContent className="bg-slate-800 border-slate-700 max-w-md">
@@ -246,6 +274,7 @@ export default function GameExpansionsPage({
               </DialogContent>
             </Dialog>
           </div>
+        )}
         </div>
       </div>
 
@@ -300,12 +329,11 @@ export default function GameExpansionsPage({
                             Supprimer l'extension
                           </AlertDialogTitle>
                           <AlertDialogDescription className="text-slate-300">
-                            Êtes-vous sûr de vouloir supprimer l'extension "{expansion.name}" ? 
-                            Cette action est irréversible.
+                            Êtes-vous sûr de vouloir supprimer l'extension "{expansion.name}" ? Cette action est irréversible.
                           </AlertDialogDescription>
                         </AlertDialogHeader>
                         <AlertDialogFooter>
-                          <AlertDialogCancel className="border-slate-600 text-slate-300 hover:bg-slate-700/50">
+                          <AlertDialogCancel className="bg-slate-700 border-slate-600 text-white hover:bg-slate-600">
                             Annuler
                           </AlertDialogCancel>
                           <AlertDialogAction
@@ -324,12 +352,8 @@ export default function GameExpansionsPage({
           </div>
         ) : (
           <Card className="bg-slate-800/50 border-slate-700/50">
-            <CardContent className="p-12 text-center">
-              <Plus className="w-16 h-16 text-slate-600 mx-auto mb-4" />
-              <h3 className="text-xl font-semibold text-white mb-2">Aucune extension</h3>
-              <p className="text-slate-400 mb-6">
-                Ce jeu n'a pas encore d'extensions enregistrées.
-              </p>
+            <CardContent className="text-center py-12">
+              <p className="text-slate-400 mb-4">Aucune extension ajoutée pour ce jeu.</p>
               <Dialog open={isAddDialogOpen} onOpenChange={setIsAddDialogOpen}>
                 <DialogTrigger asChild>
                   <Button className="bg-primary hover:bg-primary/90 text-primary-foreground">
@@ -347,7 +371,6 @@ export default function GameExpansionsPage({
             </CardContent>
           </Card>
         )}
-      </div>
 
       {/* Edit Dialog */}
       <Dialog open={!!editingExpansion} onOpenChange={(open) => !open && closeEditDialog()}>
@@ -358,6 +381,7 @@ export default function GameExpansionsPage({
           <ExpansionForm onSubmit={handleEditExpansion} submitText="Modifier" />
         </DialogContent>
       </Dialog>
+      </div>
     </div>
   )
 }
