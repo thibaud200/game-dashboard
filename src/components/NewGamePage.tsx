@@ -1,19 +1,19 @@
 import React, { useState } from 'react'
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
-import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { Textarea } from "@/components/ui/textarea"
-import { Checkbox } from "@/components/ui/checkbox"
 import { ArrowLeft, Play, Users, Trophy, Timer } from '@phosphor-icons/react'
 import { toast } from 'sonner'
 import BottomNavigation from './BottomNavigation'
-
 interface Player {
   player_id: number
   player_name: string
-  avatar: string
+  avatar?: string
+  games_played: number
+  wins: number
+  total_score: number
+  average_score: number
+  favorite_game?: string
   created_at: Date
   updated_at?: Date
   stats?: string
@@ -163,116 +163,61 @@ export default function NewGamePage({
                   <SelectContent className="bg-slate-800 border-white/20">
                     {games.map(game => (
                       <SelectItem key={game.game_id} value={game.game_id.toString()}>
-                        <div className="flex items-center gap-2">
-                          <span>{game.name}</span>
-                          <span className="text-white/60 text-sm">({game.min_players}-{game.max_players} players)</span>
-                        </div>
-                      </SelectItem>
-                    ))}
+                        <div c
+                          <span className="text-white/60 text-sm">({gam
+                      
                   </SelectContent>
-                </Select>
               </div>
-
-              {selectedGame && (
-                <div>
-                  <Label className="text-white/80">Session Type</Label>
-                  <Select value={sessionType} onValueChange={(value: any) => setSessionType(value)}>
-                    <SelectTrigger className="bg-white/5 border-white/20 text-white">
-                      <SelectValue />
+              {selectedG
+                  <Label
+                    <Se
                     </SelectTrigger>
-                    <SelectContent className="bg-slate-800 border-white/20">
                       {selectedGame.supports_competitive && (
-                        <SelectItem value="competitive">Competitive</SelectItem>
-                      )}
-                      {selectedGame.supports_cooperative && (
-                        <SelectItem value="cooperative">Cooperative</SelectItem>
-                      )}
+                   
+                        <SelectItem value="cooperative">Coope
                       {selectedGame.supports_campaign && (
-                        <SelectItem value="campaign">Campaign</SelectItem>
                       )}
-                      {selectedGame.supports_hybrid && (
-                        <SelectItem value="hybrid">Hybrid</SelectItem>
-                      )}
-                    </SelectContent>
-                  </Select>
+                        <SelectItem value="hybrid">Hybrid</SelectI
+                    </SelectConten
                 </div>
-              )}
             </div>
-          </CardContent>
         </Card>
-
         {/* Player Selection */}
-        {selectedGame && (
-          <Card className="bg-white/10 backdrop-blur-md border-white/20">
-            <CardHeader>
+          <Card className="bg-white/10 backdrop-bl
               <CardTitle className="flex items-center gap-2 text-white">
-                <Users className="w-5 h-5" />
-                Select Players ({selectedPlayers.length}/{selectedGame.max_players})
-              </CardTitle>
+                Select Players
             </CardHeader>
-            <CardContent className="space-y-4">
-              <div className="text-white/60 text-sm">
-                Minimum: {selectedGame.min_players} players
+              <div clas
               </div>
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
-                {players.map(player => (
-                  <div key={player.player_id} className="flex items-center justify-between p-3 bg-white/5 rounded-xl">
-                    <div className="flex items-center gap-3">
-                      <Checkbox
-                        checked={selectedPlayers.includes(player.player_id)}
-                        onCheckedChange={() => handlePlayerToggle(player.player_id)}
-                        disabled={
-                          !selectedPlayers.includes(player.player_id) && 
-                          selectedPlayers.length >= selectedGame.max_players
-                        }
-                      />
-                      <img
-                        src={player.avatar}
-                        alt={player.player_name}
-                        className="w-8 h-8 rounded-full object-cover"
-                      />
-                      <span className="text-white font-medium">{player.player_name}</span>
-                    </div>
-                  </div>
-                ))}
-              </div>
-            </CardContent>
-          </Card>
-        )}
+                {players.
+                    
 
-        {/* Scores & Results */}
-        {selectedPlayers.length > 0 && sessionType === 'competitive' && (
-          <Card className="bg-white/10 backdrop-blur-md border-white/20">
-            <CardHeader>
-              <CardTitle className="flex items-center gap-2 text-white">
-                <Trophy className="w-5 h-5" />
-                Scores & Results
-              </CardTitle>
-            </CardHeader>
-            <CardContent className="space-y-4">
-              {selectedPlayers.map(playerId => {
-                const player = players.find(p => p.player_id === playerId)
-                if (!player) return null
-                
-                return (
-                  <div key={playerId} className="p-3 bg-white/5 rounded-xl">
-                    <div className="flex items-center gap-3 mb-3">
-                      <img
-                        src={player.avatar}
-                        alt={player.player_name}
-                        className="w-8 h-8 rounded-full object-cover"
+                        disabled
+                     
                       />
-                      <span className="text-white font-medium">{player.player_name}</span>
-                      <div className="ml-auto flex items-center">
-                        <Checkbox
-                          checked={winnerId === playerId.toString()}
-                          onCheckedChange={(checked) => 
-                            setWinnerId(checked ? playerId.toString() : '')
-                          }
-                        />
-                        <span className="ml-2 text-white/60 text-sm">Winner</span>
-                      </div>
-                    </div>
+                        src={player.avatar}
+                        className="w-8 h-8 rounded-full object-cover"
+                      <span className
+                  </div>
+              </div>
+          </Card>
+
+        {selectedPlayers
+            <CardHeader>
+                <Trophy className="w-5 h-5" />
+              </CardTitl
+            <CardContent className="space-y-4">
+                const player = players.find(p => p.player_id === playerId)
+                
+                  <div key={playerId} className="p-3 bg-
+                      <img
+                        
+                      />
+                      <div 
+                      
+                
+                  
+                      </
                     <div>
                       <Label className="text-white/60 text-sm">Score</Label>
                       <Input
