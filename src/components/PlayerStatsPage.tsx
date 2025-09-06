@@ -5,10 +5,10 @@ import {
   Clock,
   Target,
   Star,
-  BarChart3,
-  PieChart,
+  ChartBar,
+  ChartPie,
   Calendar
-} from 'lucide-react'
+} from '@phosphor-icons/react'
 import BottomNavigation from './BottomNavigation'
 
 interface Player {
@@ -212,11 +212,11 @@ export default function PlayerStatsPage({ players, games, onNavigation, currentV
         {/* Performance Charts Placeholder */}
         <div className="bg-white/10 backdrop-blur-md rounded-2xl p-4 border border-white/20 shadow-xl">
           <h2 className="text-lg font-semibold mb-4 flex items-center">
-            <BarChart3 className="w-5 h-5 mr-2 text-purple-400" />
+            <ChartBar className="w-5 h-5 mr-2 text-purple-400" />
             Performance Overview
           </h2>
           <div className="text-center py-8 text-white/60">
-            <PieChart className="w-16 h-16 mx-auto mb-4 opacity-50" />
+            <ChartPie className="w-16 h-16 mx-auto mb-4 opacity-50" />
             <p>Detailed charts coming soon...</p>
           </div>
         </div>

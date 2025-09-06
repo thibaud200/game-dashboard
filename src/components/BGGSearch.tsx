@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react'
-import { Search, Loader2, ExternalLink } from 'lucide-react'
+import { Search, CircleNotch, ExternalLink } from '@phosphor-icons/react'
 import { Input } from '@/components/ui/input'
 import { Button } from '@/components/ui/button'
 import { Card, CardContent } from '@/components/ui/card'
@@ -80,7 +80,7 @@ export default function BGGSearch({ onGameSelect, onClose }: BGGSearchProps) {
           className="bg-teal-600 hover:bg-teal-700"
         >
           {isSearching ? (
-            <Loader2 className="w-4 h-4 animate-spin" />
+            <CircleNotch className="w-4 h-4 animate-spin" />
           ) : (
             <Search className="w-4 h-4" />
           )}
@@ -95,7 +95,7 @@ export default function BGGSearch({ onGameSelect, onClose }: BGGSearchProps) {
 
       {isLoadingDetails && (
         <div className="flex items-center justify-center py-8">
-          <Loader2 className="w-6 h-6 animate-spin text-teal-400" />
+          <CircleNotch className="w-6 h-6 animate-spin text-teal-400" />
           <span className="ml-2 text-white/60">Loading game details...</span>
         </div>
       )}

@@ -5,12 +5,12 @@ import {
   Users,
   Clock,
   Star,
-  BarChart3,
-  PieChart,
+  ChartBar,
+  ChartPie,
   Calendar,
   Trophy,
   Target
-} from 'lucide-react'
+} from '@phosphor-icons/react'
 import BottomNavigation from './BottomNavigation'
 
 interface Game {
@@ -326,7 +326,7 @@ export default function GameStatsPage({ games, players, onNavigation, currentVie
         <div className="bg-white/10 backdrop-blur-md rounded-2xl p-6 border border-white/20 shadow-xl">
           <div className="flex items-center justify-between mb-4">
             <h3 className="text-lg font-semibold">Session Types</h3>
-            <PieChart className="w-5 h-5 text-secondary" />
+            <ChartPie className="w-5 h-5 text-secondary" />
           </div>
           <div className="space-y-3">
             {Object.entries(gameStats.sessionTypes).map(([type, count]) => {
@@ -359,7 +359,7 @@ export default function GameStatsPage({ games, players, onNavigation, currentVie
         <div className="bg-white/10 backdrop-blur-md rounded-2xl p-6 border border-white/20 shadow-xl">
           <div className="flex items-center justify-between mb-4">
             <h3 className="text-lg font-semibold">Player Count Distribution</h3>
-            <BarChart3 className="w-5 h-5 text-accent" />
+            <ChartBar className="w-5 h-5 text-accent" />
           </div>
           <div className="space-y-3">
             {Object.entries(gameStats.playerCountDistribution)

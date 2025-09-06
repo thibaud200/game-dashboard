@@ -9,8 +9,8 @@ import {
   Palette,
   Download,
   Upload,
-  Trash2
-} from 'lucide-react'
+  Trash
+} from '@phosphor-icons/react'
 import BottomNavigation from './BottomNavigation'
 
 interface SettingsPageProps {
@@ -140,7 +140,7 @@ export default function SettingsPage({ onNavigation, currentView }: SettingsPage
         {/* Danger Zone */}
         <div className="bg-red-500/10 backdrop-blur-md rounded-2xl p-6 border border-red-500/20 shadow-xl">
           <div className="flex items-center space-x-3 mb-4">
-            <Trash2 className="w-6 h-6 text-red-400" />
+            <Trash className="w-6 h-6 text-red-400" />
             <h2 className="text-lg font-semibold text-red-400">Danger Zone</h2>
           </div>
           <div className="space-y-4">

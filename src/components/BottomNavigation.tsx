@@ -4,8 +4,8 @@ import {
   Users,
   Gamepad2,
   Settings,
-  BarChart3
-} from 'lucide-react'
+  ChartBar
+} from '@phosphor-icons/react'
 
 interface BottomNavigationProps {
   currentView: string
@@ -35,7 +35,7 @@ export default function BottomNavigation({ currentView, onNavigation, showStats 
   if (showStats) {
     navItems.push({
       id: 'stats',
-      icon: BarChart3,
+      icon: ChartBar,
       label: 'Stats'
     })
   }

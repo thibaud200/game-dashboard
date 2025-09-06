@@ -7,7 +7,7 @@ import {
   Plus,
   Play,
   ArrowLeft
-} from 'lucide-react'
+} from '@phosphor-icons/react'
 import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip'
 import BottomNavigation from './BottomNavigation'
 

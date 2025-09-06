@@ -4,7 +4,7 @@ import {
   Plus,
   ArrowLeft,
   Search,
-  Trash2,
+  Trash,
   Users,
   TrendingUp,
   Settings,
@@ -17,13 +17,13 @@ import {
   Shield,
   Swords,
   Crown,
-  ChevronDown,
-  ChevronUp,
+  CaretDown,
+  CaretUp,
   MoreVertical,
   ExternalLink,
-  BarChart3
-} from 'lucide-react'
-import { DotsThreeVertical } from '@phosphor-icons/react'
+  ChartBar,
+  DotsThreeVertical
+} from '@phosphor-icons/react'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Card, CardContent } from '@/components/ui/card'
@@ -457,7 +457,7 @@ export default function GamesPage({
                   onClick={() => onNavigation('game-stats')}
                   className="p-2 hover:bg-white/10 rounded-lg transition-colors"
                 >
-                  <BarChart3 className="w-6 h-6" />
+                  <ChartBar className="w-6 h-6" />
                 </button>
               </TooltipTrigger>
               <TooltipContent>
@@ -816,7 +816,7 @@ export default function GamesPage({
                           variant="outline"
                           className="border-red-500 text-red-400 hover:bg-red-500/20"
                         >
-                          <Trash2 className="w-3 h-3" />
+                          <Trash className="w-3 h-3" />
                         </Button>
                       </div>
                       <Input
@@ -855,7 +855,7 @@ export default function GamesPage({
                               variant="outline"
                               className="border-red-500 text-red-400 hover:bg-red-500/20 h-8 w-8 p-0"
                             >
-                              <Trash2 className="w-2 h-2" />
+                              <Trash className="w-2 h-2" />
                             </Button>
                           </div>
                         ))}
@@ -998,9 +998,9 @@ export default function GamesPage({
                               className="text-white/60 hover:text-white transition-colors"
                             >
                               {expandedGame === game.game_id ? (
-                                <ChevronUp className="w-4 h-4" />
+                                <CaretUp className="w-4 h-4" />
                               ) : (
-                                <ChevronDown className="w-4 h-4" />
+                                <CaretDown className="w-4 h-4" />
                               )}
                             </button>
                           </div>
@@ -1102,7 +1102,7 @@ export default function GamesPage({
                                 className="p-2 hover:bg-teal-500/20 rounded-lg transition-colors text-teal-400 hover:text-teal-300"
                                 aria-label="View game stats"
                               >
-                                <BarChart3 className="w-4 h-4" />
+                                <ChartBar className="w-4 h-4" />
                               </button>
                             </TooltipTrigger>
                             <TooltipContent>
@@ -1131,7 +1131,7 @@ export default function GamesPage({
                                     className="p-2 hover:bg-red-500/20 rounded-lg transition-colors text-red-400 hover:text-red-300"
                                     aria-label="Delete game"
                                   >
-                                    <Trash2 className="w-4 h-4" />
+                                    <Trash className="w-4 h-4" />
                                   </button>
                                 </AlertDialogTrigger>
                               </TooltipTrigger>
@@ -1184,7 +1184,7 @@ export default function GamesPage({
                                 onClick={() => onNavigation('game-stats', game.game_id)}
                                 className="hover:bg-teal-500/20 cursor-pointer text-teal-400"
                               >
-                                <BarChart3 className="w-4 h-4 mr-2" />
+                                <ChartBar className="w-4 h-4 mr-2" />
                                 View Stats
                               </DropdownMenuItem>
                               <DropdownMenuItem 
@@ -1217,7 +1217,7 @@ export default function GamesPage({
                                     onSelect={(e) => e.preventDefault()}
                                     className="hover:bg-red-500/20 cursor-pointer text-red-400"
                                   >
-                                    <Trash2 className="w-4 h-4 mr-2" />
+                                    <Trash className="w-4 h-4 mr-2" />
                                     Delete Game
                                   </DropdownMenuItem>
                                 </AlertDialogTrigger>
@@ -1579,7 +1579,7 @@ export default function GamesPage({
                           variant="outline"
                           className="border-red-500 text-red-400 hover:bg-red-500/20"
                         >
-                          <Trash2 className="w-3 h-3" />
+                          <Trash className="w-3 h-3" />
                         </Button>
                       </div>
                       <Input
@@ -1618,7 +1618,7 @@ export default function GamesPage({
                               variant="outline"
                               className="border-red-500 text-red-400 hover:bg-red-500/20 h-8 w-8 p-0"
                             >
-                              <Trash2 className="w-2 h-2" />
+                              <Trash className="w-2 h-2" />
                             </Button>
                           </div>
                         ))}

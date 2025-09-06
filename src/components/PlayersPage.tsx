@@ -8,12 +8,12 @@ import {
   Trophy,
   Gamepad2,
   Medal,
-  Trash2,
+  Trash,
   Settings,
   Edit,
   MoreVertical,
-  BarChart3
-} from 'lucide-react'
+  ChartBar
+} from '@phosphor-icons/react'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import { Card, CardContent } from '@/components/ui/card'
@@ -187,7 +187,7 @@ export default function PlayersPage({
                   onClick={() => onNavigation('player-stats')}
                   className="p-2 hover:bg-white/10 rounded-lg transition-colors"
                 >
-                  <BarChart3 className="w-6 h-6" />
+                  <ChartBar className="w-6 h-6" />
                 </button>
               </TooltipTrigger>
               <TooltipContent>
@@ -340,7 +340,7 @@ export default function PlayersPage({
                         onClick={() => onNavigation('player-stats', player.player_id)}
                         className="hover:bg-teal-500/20 focus:bg-teal-500/20"
                       >
-                        <BarChart3 className="w-4 h-4 mr-2" />
+                        <ChartBar className="w-4 h-4 mr-2" />
                         View Stats
                       </DropdownMenuItem>
                       <DropdownMenuItem 
@@ -356,7 +356,7 @@ export default function PlayersPage({
                             onSelect={(e) => e.preventDefault()}
                             className="hover:bg-red-500/20 focus:bg-red-500/20 text-red-400"
                           >
-                            <Trash2 className="w-4 h-4 mr-2" />
+                            <Trash className="w-4 h-4 mr-2" />
                             Delete Player
                           </DropdownMenuItem>
                         </AlertDialogTrigger>
@@ -390,7 +390,7 @@ export default function PlayersPage({
                           onClick={() => onNavigation('player-stats', player.player_id)}
                           className="p-2 hover:bg-teal-500/20 rounded-lg transition-colors text-teal-400"
                         >
-                          <BarChart3 className="w-4 h-4" />
+                          <ChartBar className="w-4 h-4" />
                         </button>
                       </TooltipTrigger>
                       <TooltipContent>
@@ -415,7 +415,7 @@ export default function PlayersPage({
                         <TooltipTrigger asChild>
                           <AlertDialogTrigger asChild>
                             <button className="p-2 hover:bg-red-500/20 rounded-lg transition-colors text-red-400">
-                              <Trash2 className="w-4 h-4" />
+                              <Trash className="w-4 h-4" />
                             </button>
                           </AlertDialogTrigger>
                         </TooltipTrigger>
