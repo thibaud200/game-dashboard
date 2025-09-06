@@ -155,27 +155,39 @@ export default function Dashboard({
             </Tooltip>
           </div>
           <div className="grid grid-cols-3 gap-3">
-            {recentPlayers.map((player) => (
-              <button
-                key={player.player_id}
-                onClick={() => onNavigation('player-stats', player.player_id)}
-                className="group w-full"
-              >
-                <div className="bg-white/5 rounded-xl p-3 hover:bg-white/10 transition-all duration-200 border border-white/10 hover:border-white/20 hover:shadow-lg hover:scale-105">
-                  <img
-                    src={player.avatar}
-                    alt={player.player_name}
-                    className="w-8 h-8 rounded-full mb-2 mx-auto object-cover"
-                  />
-                  <div className="text-center">
-                    <div className="text-sm font-medium text-white truncate">
-                      {player.player_name}
+            {recentPlayers.length > 0 ? (
+              recentPlayers.map((player) => (
+                <button
+                  key={player.player_id}
+                  onClick={() => onNavigation('player-stats', player.player_id)}
+                  className="group w-full"
+                >
+                  <div className="bg-white/5 rounded-xl p-3 hover:bg-white/10 transition-all duration-200 border border-white/10 hover:border-white/20 hover:shadow-lg hover:scale-105">
+                    <img
+                      src={player.avatar}
+                      alt={player.player_name}
+                      className="w-8 h-8 rounded-full mb-2 mx-auto object-cover"
+                    />
+                    <div className="text-center">
+                      <div className="text-sm font-medium text-white truncate">
+                        {player.player_name}
+                      </div>
+                      <div className="text-xs text-white/60">{player.stats}</div>
                     </div>
-                    <div className="text-xs text-white/60">{player.stats}</div>
                   </div>
-                </div>
-              </button>
-            ))}
+                </button>
+              ))
+            ) : (
+              <div className="col-span-3 text-center py-4">
+                <div className="text-white/60 text-sm">No players yet</div>
+                <button
+                  onClick={() => onNavigation('players')}
+                  className="text-teal-400 hover:text-teal-300 text-sm mt-1 transition-colors"
+                >
+                  Add your first player
+                </button>
+              </div>
+            )}
           </div>
         </div>
 
@@ -198,29 +210,41 @@ export default function Dashboard({
             </Tooltip>
           </div>
           <div className="grid grid-cols-3 gap-3">
-            {recentGames.map((game) => (
-              <button
-                key={game.game_id}
-                onClick={() => onNavigation('game-stats', game.game_id)}
-                className="group w-full"
-              >
-                <div className="bg-white/5 rounded-xl overflow-hidden hover:bg-white/10 transition-all duration-200 border border-white/10 hover:border-white/20 hover:shadow-lg hover:scale-105">
-                  <img
-                    src={game.image}
-                    alt={game.name}
-                    className="w-full h-16 object-cover"
-                  />
-                  <div className="p-2">
-                    <div className="text-sm font-medium text-white truncate">
-                      {game.name}
-                    </div>
-                    <div className="text-xs text-white/60">
-                      {game.players} players
+            {recentGames.length > 0 ? (
+              recentGames.map((game) => (
+                <button
+                  key={game.game_id}
+                  onClick={() => onNavigation('game-stats', game.game_id)}
+                  className="group w-full"
+                >
+                  <div className="bg-white/5 rounded-xl overflow-hidden hover:bg-white/10 transition-all duration-200 border border-white/10 hover:border-white/20 hover:shadow-lg hover:scale-105">
+                    <img
+                      src={game.image}
+                      alt={game.name}
+                      className="w-full h-16 object-cover"
+                    />
+                    <div className="p-2">
+                      <div className="text-sm font-medium text-white truncate">
+                        {game.name}
+                      </div>
+                      <div className="text-xs text-white/60">
+                        {game.players} players
+                      </div>
                     </div>
                   </div>
-                </div>
-              </button>
-            ))}
+                </button>
+              ))
+            ) : (
+              <div className="col-span-3 text-center py-4">
+                <div className="text-white/60 text-sm">No games yet</div>
+                <button
+                  onClick={() => onNavigation('games')}
+                  className="text-teal-400 hover:text-teal-300 text-sm mt-1 transition-colors"
+                >
+                  Add your first game
+                </button>
+              </div>
+            )}
           </div>
         </div>
 

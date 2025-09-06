@@ -395,22 +395,27 @@ export default function ModernDashboard() {
       console.warn('API not available, using local storage:', error)
       setApiConnected(false)
       
-      // Fall back to local storage
-      if (players && players.length === 0) {
-        setPlayers(mockData.recentPlayers)
+      // Fall back to local storage or mock data
+      let currentPlayers = players || []
+      let currentGames = games || []
+      
+      if (currentPlayers.length === 0) {
+        currentPlayers = mockData.recentPlayers
+        setPlayers(currentPlayers)
       }
-      if (games && games.length === 0) {
-        setGames(mockData.recentGames)
+      if (currentGames.length === 0) {
+        currentGames = mockData.recentGames
+        setGames(currentGames)
       }
       
       setStats({
-        playersCount: players?.length || 0,
-        gamesCount: games?.length || 0,
+        playersCount: currentPlayers.length,
+        gamesCount: currentGames.length,
         loading: false,
         error: null
       })
-      setRecentPlayers(players?.slice(0, 3) || [])
-      setRecentGames(games?.slice(0, 3) || [])
+      setRecentPlayers(currentPlayers.slice(0, 3))
+      setRecentGames(currentGames.slice(0, 3))
     }
   }
 
