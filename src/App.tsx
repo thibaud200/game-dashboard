@@ -3,6 +3,9 @@ import { useKV } from '@github/spark/hooks'
 import Dashboard from '@/components/Dashboard'
 import PlayersPage from '@/components/PlayersPage'
 import GamesPage from '@/components/GamesPage'
+import GameDetailPage from '@/components/GameDetailPage'
+import GameExpansionsPage from '@/components/GameExpansionsPage'
+import GameCharactersPage from '@/components/GameCharactersPage'
 import ApiService from '@/services/ApiService'
 
 // Database-aligned interfaces
@@ -346,6 +349,7 @@ export default function ModernDashboard() {
   const [recentPlayers, setRecentPlayers] = useState<Player[]>([])
   const [recentGames, setRecentGames] = useState<Game[]>([])
   const [currentView, setCurrentView] = useState('dashboard')
+  const [currentGameId, setCurrentGameId] = useState<number | null>(null)
   const [apiConnected, setApiConnected] = useState(false)
   
   // Persistent data using useKV as fallback
@@ -405,8 +409,11 @@ export default function ModernDashboard() {
     }
   }
 
-  const handleNavigation = (view) => {
+  const handleNavigation = (view: string, gameId?: number) => {
     setCurrentView(view)
+    if (gameId !== undefined) {
+      setCurrentGameId(gameId)
+    }
   }
 
   const addPlayer = async (playerData: any) => {
@@ -762,7 +769,7 @@ export default function ModernDashboard() {
   if (currentView === 'games') {
     return (
       <GamesPage 
-        games={apiConnected ? recentGames : (games || [])}
+        games={apiConnected ? (games || []) : (games || [])}
         onNavigation={handleNavigation}
         onAddGame={addGame}
         onUpdateGame={updateGame}
@@ -774,6 +781,67 @@ export default function ModernDashboard() {
         onUpdateCharacter={updateCharacter}
         onDeleteCharacter={deleteCharacter}
         currentView={currentView}
+      />
+    )
+  }
+
+  // Game Detail Page
+  if (currentView === 'game-detail' && currentGameId) {
+    const allGames = games || []
+    const currentGame = allGames.find(g => g.game_id === currentGameId)
+    if (!currentGame) {
+      // Game not found, redirect to games page
+      setCurrentView('games')
+      return null
+    }
+    
+    return (
+      <GameDetailPage 
+        game={currentGame}
+        onNavigation={handleNavigation}
+        currentView={currentView}
+      />
+    )
+  }
+
+  // Game Expansions Page
+  if (currentView === 'game-expansions' && currentGameId) {
+    const allGames = games || []
+    const currentGame = allGames.find(g => g.game_id === currentGameId)
+    if (!currentGame) {
+      // Game not found, redirect to games page
+      setCurrentView('games')
+      return null
+    }
+    
+    return (
+      <GameExpansionsPage 
+        game={currentGame}
+        onNavigation={handleNavigation}
+        onAddExpansion={addExpansion}
+        onUpdateExpansion={updateExpansion}
+        onDeleteExpansion={deleteExpansion}
+      />
+    )
+  }
+
+  // Game Characters Page
+  if (currentView === 'game-characters' && currentGameId) {
+    const allGames = games || []
+    const currentGame = allGames.find(g => g.game_id === currentGameId)
+    if (!currentGame) {
+      // Game not found, redirect to games page
+      setCurrentView('games')
+      return null
+    }
+    
+    return (
+      <GameCharactersPage 
+        game={currentGame}
+        onNavigation={handleNavigation}
+        onAddCharacter={addCharacter}
+        onUpdateCharacter={updateCharacter}
+        onDeleteCharacter={deleteCharacter}
       />
     )
   }

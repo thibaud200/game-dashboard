@@ -9,6 +9,7 @@ import {
   TrendingUp,
   Settings,
   Edit,
+  Eye,
   Clock,
   Target,
   Calendar,
@@ -1051,6 +1052,12 @@ export default function GamesPage({
                         )}
                       </div>
                       <div className="flex space-x-2 ml-4">
+                        <button
+                          onClick={() => onNavigation('game-detail', game.game_id)}
+                          className="p-2 hover:bg-primary/20 rounded-lg transition-colors text-primary"
+                        >
+                          <Eye className="w-4 h-4" />
+                        </button>
                         <button
                           onClick={() => handleEditGame(game)}
                           className="p-2 hover:bg-blue-500/20 rounded-lg transition-colors text-blue-400"
