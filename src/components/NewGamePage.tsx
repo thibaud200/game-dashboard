@@ -135,7 +135,7 @@ export default function NewGamePage({
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-900 to-slate-800 text-white">
-      <div className="container mx-auto px-4 py-6 space-y-6">
+      <div className="container mx-auto px-4 py-6 pb-24 space-y-6">
         {/* Header */}
         <div className="flex items-center gap-4">
           <Button
