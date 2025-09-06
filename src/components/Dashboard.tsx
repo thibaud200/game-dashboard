@@ -7,7 +7,7 @@ import {
   Plus,
   Play,
   ArrowLeft,
-  BarChart3
+
 } from 'lucide-react'
 import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip'
 import BottomNavigation from './BottomNavigation'
@@ -70,19 +70,6 @@ export default function Dashboard({
           </Tooltip>
           <h1 className="text-2xl font-bold">Dashboard</h1>
           <div className="flex space-x-2">
-            <Tooltip>
-              <TooltipTrigger asChild>
-                <button
-                  onClick={() => onNavigation('player-stats')}
-                  className="p-2 hover:bg-white/10 rounded-lg transition-colors"
-                >
-                  <BarChart3 className="w-6 h-6" />
-                </button>
-              </TooltipTrigger>
-              <TooltipContent>
-                <p>View Stats</p>
-              </TooltipContent>
-            </Tooltip>
             <Tooltip>
               <TooltipTrigger asChild>
                 <button
