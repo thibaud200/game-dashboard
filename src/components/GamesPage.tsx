@@ -1150,7 +1150,18 @@ export default function GamesPage({
                       <div className="space-y-1">
                         {formData.expansions.map((expansion, index) => (
                           <div key={index} className="p-2 bg-slate-700 rounded border border-slate-600 text-sm">
-                            <div className="font-medium">{expansion.name}</div>
+                            <div className="font-medium">
+                               <Textarea id="edit-expansion"
+                value={formData.expansion}(expansion.year_published > 0 ? expansion.year_published : 'N/A')
+                onChange={(e) => setFormData(prev => ({ ...prev, expansion: e.target.value }))}
+                className="bg-slate-700 border-slate-600 text-white"
+                placeholder="Brief game expansion"
+                rows={3}
+              />
+                            
+                            
+                            
+                            {expansion.name}</div>
                             {expansion.year_published > 0 && (
                               <div className="text-white/60 text-xs">{expansion.year_published}</div>
                             )}
