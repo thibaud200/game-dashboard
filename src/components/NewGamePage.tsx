@@ -1,10 +1,14 @@
 import React, { useState } from 'react'
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
+import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Textarea } from "@/components/ui/textarea"
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import { ArrowLeft, Play, Users, Trophy, Timer } from '@phosphor-icons/react'
 import { toast } from 'sonner'
 import BottomNavigation from './BottomNavigation'
+
 interface Player {
   player_id: number
   player_name: string
@@ -163,70 +167,124 @@ export default function NewGamePage({
                   <SelectContent className="bg-slate-800 border-white/20">
                     {games.map(game => (
                       <SelectItem key={game.game_id} value={game.game_id.toString()}>
-                        <div c
-                          <span className="text-white/60 text-sm">({gam
-                      
+                        <div className="flex flex-col">
+                          <span className="text-white">{game.name}</span>
+                          <span className="text-white/60 text-sm">({game.min_players}-{game.max_players} players)</span>
+                        </div>
+                      </SelectItem>
+                    ))}
                   </SelectContent>
+                </Select>
               </div>
-              {selectedG
-                  <Label
-                    <Se
+              {selectedGame && (
+                <div>
+                  <Label className="text-white/80">Session Type</Label>
+                  <Select value={sessionType} onValueChange={(value: any) => setSessionType(value)}>
+                    <SelectTrigger className="bg-white/5 border-white/20 text-white">
+                      <SelectValue />
                     </SelectTrigger>
+                    <SelectContent className="bg-slate-800 border-white/20">
                       {selectedGame.supports_competitive && (
-                   
-                        <SelectItem value="cooperative">Coope
-                      {selectedGame.supports_campaign && (
+                        <SelectItem value="competitive">Competitive</SelectItem>
                       )}
-                        <SelectItem value="hybrid">Hybrid</SelectI
-                    </SelectConten
+                      {selectedGame.supports_cooperative && (
+                        <SelectItem value="cooperative">Cooperative</SelectItem>
+                      )}
+                      {selectedGame.supports_campaign && (
+                        <SelectItem value="campaign">Campaign</SelectItem>
+                      )}
+                      {selectedGame.supports_hybrid && (
+                        <SelectItem value="hybrid">Hybrid</SelectItem>
+                      )}
+                    </SelectContent>
+                  </Select>
                 </div>
+              )}
             </div>
+          </CardContent>
         </Card>
+
         {/* Player Selection */}
-          <Card className="bg-white/10 backdrop-bl
-              <CardTitle className="flex items-center gap-2 text-white">
-                Select Players
-            </CardHeader>
-              <div clas
-              </div>
-                {players.
-                    
-
-                        disabled
-                     
-                      />
-                        src={player.avatar}
-                        className="w-8 h-8 rounded-full object-cover"
-                      <span className
-                  </div>
-              </div>
-          </Card>
-
-        {selectedPlayers
+        {selectedGame && (
+          <Card className="bg-white/10 backdrop-blur-md border-white/20">
             <CardHeader>
-                <Trophy className="w-5 h-5" />
-              </CardTitl
-            <CardContent className="space-y-4">
-                const player = players.find(p => p.player_id === playerId)
-                
-                  <div key={playerId} className="p-3 bg-
+              <CardTitle className="flex items-center gap-2 text-white">
+                <Users className="w-5 h-5" />
+                Select Players
+              </CardTitle>
+            </CardHeader>
+            <CardContent>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+                {players.map(player => (
+                  <div
+                    key={player.player_id}
+                    className={`p-3 rounded-lg border cursor-pointer transition-colors ${
+                      selectedPlayers.includes(player.player_id)
+                        ? 'bg-teal-500/20 border-teal-400'
+                        : 'bg-white/5 border-white/20 hover:bg-white/10'
+                    }`}
+                    onClick={() => handlePlayerToggle(player.player_id)}
+                  >
+                    <div className="flex items-center gap-3">
+                      <input
+                        type="checkbox"
+                        checked={selectedPlayers.includes(player.player_id)}
+                        onChange={() => handlePlayerToggle(player.player_id)}
+                        className="w-4 h-4 text-teal-500 bg-white/10 border-white/20 rounded"
+                        disabled={
+                          !selectedPlayers.includes(player.player_id) &&
+                          selectedPlayers.length >= (selectedGame?.max_players || 8)
+                        }
+                      />
                       <img
-                        
+                        src={player.avatar}
+                        alt={player.player_name}
+                        className="w-8 h-8 rounded-full object-cover"
                       />
-                      <div 
-                      
-                
-                  
-                      </
-                    <div>
-                      <Label className="text-white/60 text-sm">Score</Label>
-                      <Input
-                        type="number"
-                        placeholder="0"
-                        value={playerScores[playerId] || ''}
-                        onChange={(e) => handleScoreChange(playerId, e.target.value)}
-                        className="bg-white/5 border-white/20 text-white"
+                      <span className="text-white">{player.player_name}</span>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </CardContent>
+          </Card>
+        )}
+
+        {/* Scores */}
+        {selectedPlayers.length > 0 && (
+          <Card className="bg-white/10 backdrop-blur-md border-white/20">
+            <CardHeader>
+              <CardTitle className="flex items-center gap-2 text-white">
+                <Trophy className="w-5 h-5" />
+                Player Scores
+              </CardTitle>
+            </CardHeader>
+            <CardContent className="space-y-4">
+              {selectedPlayers.map(playerId => {
+                const player = players.find(p => p.player_id === playerId)
+                if (!player) return null
+
+                return (
+                  <div key={playerId} className="p-3 bg-white/5 rounded-lg border border-white/20">
+                    <div className="flex items-center gap-3">
+                      <img
+                        src={player.avatar}
+                        alt={player.player_name}
+                        className="w-8 h-8 rounded-full object-cover"
                       />
+                      <div className="flex-1">
+                        <span className="text-white font-medium">{player.player_name}</span>
+                      </div>
+                      <div>
+                        <Label className="text-white/60 text-sm">Score</Label>
+                        <Input
+                          type="number"
+                          placeholder="0"
+                          value={playerScores[playerId] || ''}
+                          onChange={(e) => handleScoreChange(playerId, e.target.value)}
+                          className="bg-white/5 border-white/20 text-white"
+                        />
+                      </div>
                     </div>
                   </div>
                 )
