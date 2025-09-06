@@ -1162,7 +1162,7 @@ export default function GamesPage({
                 <Label htmlFor="edit-has_expansion">Has expansions</Label>
               </div>
               {/* Expansions Display - show if checkbox is checked */}
-              {formData.has_expansion && formData.expansions.length > 0 && (
+              {formData.has_expansion && (
                 <div className="space-y-2">
                     <Label>Expansions</Label>
                     <Textarea
@@ -1181,7 +1181,7 @@ export default function GamesPage({
                             .map((item, idx) => {
                             const match = item.trim().match(/^(.*)\s+\((.*)\)$/);
                             return {
-                                ...prev.expansions[idx], // garde l'id (et autres props si un jour tu en ajoutes)
+                                id: prev.expansions[idx]?.id || Date.now() + idx,
                                 name: match ? match[1].trim() : item.trim(),
                                 year_published:
                                 match && match[2] !== "N/A" ? parseInt(match[2]) : 0,
@@ -1190,7 +1190,7 @@ export default function GamesPage({
                         }))
                     }
                     className="bg-slate-700 border-slate-600 text-white"
-                    placeholder="Brief game expansions"
+                    placeholder="Extension 1 (2023), Extension 2 (2024), etc..."
                     rows={3}
                     />
                 </div>
