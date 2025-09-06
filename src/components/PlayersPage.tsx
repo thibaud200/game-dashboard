@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import {
   Users,
   TrendingUp,
@@ -10,7 +10,8 @@ import {
   Medal,
   Trash2,
   Settings,
-  Edit
+  Edit,
+  MoreVertical
 } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
@@ -32,6 +33,12 @@ import {
 import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip'
 import { Label } from '@/components/ui/label'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuTrigger,
+} from '@/components/ui/dropdown-menu'
 
 interface Player {
   player_id: number
@@ -68,6 +75,7 @@ export default function PlayersPage({
   const [editingPlayer, setEditingPlayer] = useState<Player | null>(null)
   const [isAddDialogOpen, setIsAddDialogOpen] = useState(false)
   const [isEditDialogOpen, setIsEditDialogOpen] = useState(false)
+  const [isMobile, setIsMobile] = useState(false)
   const [formData, setFormData] = useState({
     player_name: '',
     avatar: '',
@@ -76,6 +84,16 @@ export default function PlayersPage({
     games_played: 0,
     wins: 0
   })
+
+  useEffect(() => {
+    const checkMobile = () => {
+      setIsMobile(window.innerWidth < 768)
+    }
+    
+    checkMobile()
+    window.addEventListener('resize', checkMobile)
+    return () => window.removeEventListener('resize', checkMobile)
+  }, [])
 
   const filteredPlayers = players.filter(player =>
     player.player_name.toLowerCase().includes(searchQuery.toLowerCase())
@@ -293,54 +311,104 @@ export default function PlayersPage({
                     </span>
                   </div>
                 </div>
-                <div className="flex space-x-2">
-                  <Tooltip>
-                    <TooltipTrigger asChild>
-                      <button
-                        onClick={() => handleEditPlayer(player)}
-                        className="p-2 hover:bg-blue-500/20 rounded-lg transition-colors text-blue-400"
-                      >
-                        <Edit className="w-4 h-4" />
+                {/* Action Buttons */}
+                {isMobile ? (
+                  <DropdownMenu>
+                    <DropdownMenuTrigger asChild>
+                      <button className="p-2 hover:bg-white/10 rounded-lg transition-colors text-white/60">
+                        <MoreVertical className="w-5 h-5" />
                       </button>
-                    </TooltipTrigger>
-                    <TooltipContent>
-                      <p>Edit Player</p>
-                    </TooltipContent>
-                  </Tooltip>
-                  <AlertDialog>
+                    </DropdownMenuTrigger>
+                    <DropdownMenuContent className="bg-slate-800 border-slate-600 text-white">
+                      <DropdownMenuItem 
+                        onClick={() => handleEditPlayer(player)}
+                        className="hover:bg-blue-500/20 focus:bg-blue-500/20"
+                      >
+                        <Edit className="w-4 h-4 mr-2" />
+                        Edit Player
+                      </DropdownMenuItem>
+                      <AlertDialog>
+                        <AlertDialogTrigger asChild>
+                          <DropdownMenuItem
+                            onSelect={(e) => e.preventDefault()}
+                            className="hover:bg-red-500/20 focus:bg-red-500/20 text-red-400"
+                          >
+                            <Trash2 className="w-4 h-4 mr-2" />
+                            Delete Player
+                          </DropdownMenuItem>
+                        </AlertDialogTrigger>
+                        <AlertDialogContent className="bg-slate-800 border-slate-700 text-white">
+                          <AlertDialogHeader>
+                            <AlertDialogTitle>Delete Player</AlertDialogTitle>
+                            <AlertDialogDescription className="text-white/70">
+                              Are you sure you want to delete "{player.player_name}"? This action cannot be undone.
+                            </AlertDialogDescription>
+                          </AlertDialogHeader>
+                          <AlertDialogFooter>
+                            <AlertDialogCancel className="bg-slate-700 border-slate-600 text-white hover:bg-slate-600">
+                              Cancel
+                            </AlertDialogCancel>
+                            <AlertDialogAction 
+                              onClick={() => onDeletePlayer(player.player_id)}
+                              className="bg-red-600 hover:bg-red-700 text-white"
+                            >
+                              Delete
+                            </AlertDialogAction>
+                          </AlertDialogFooter>
+                        </AlertDialogContent>
+                      </AlertDialog>
+                    </DropdownMenuContent>
+                  </DropdownMenu>
+                ) : (
+                  <div className="flex space-x-2">
                     <Tooltip>
                       <TooltipTrigger asChild>
-                        <AlertDialogTrigger asChild>
-                          <button className="p-2 hover:bg-red-500/20 rounded-lg transition-colors text-red-400">
-                            <Trash2 className="w-4 h-4" />
-                          </button>
-                        </AlertDialogTrigger>
+                        <button
+                          onClick={() => handleEditPlayer(player)}
+                          className="p-2 hover:bg-blue-500/20 rounded-lg transition-colors text-blue-400"
+                        >
+                          <Edit className="w-4 h-4" />
+                        </button>
                       </TooltipTrigger>
                       <TooltipContent>
-                        <p>Delete Player</p>
+                        <p>Edit Player</p>
                       </TooltipContent>
                     </Tooltip>
-                    <AlertDialogContent className="bg-slate-800 border-slate-700 text-white">
-                      <AlertDialogHeader>
-                        <AlertDialogTitle>Delete Player</AlertDialogTitle>
-                        <AlertDialogDescription className="text-white/70">
-                          Are you sure you want to delete "{player.player_name}"? This action cannot be undone.
-                        </AlertDialogDescription>
-                      </AlertDialogHeader>
-                      <AlertDialogFooter>
-                        <AlertDialogCancel className="bg-slate-700 border-slate-600 text-white hover:bg-slate-600">
-                          Cancel
-                        </AlertDialogCancel>
-                        <AlertDialogAction 
-                          onClick={() => onDeletePlayer(player.player_id)}
-                          className="bg-red-600 hover:bg-red-700 text-white"
-                        >
-                          Delete
-                        </AlertDialogAction>
-                      </AlertDialogFooter>
-                    </AlertDialogContent>
-                  </AlertDialog>
-                </div>
+                    <AlertDialog>
+                      <Tooltip>
+                        <TooltipTrigger asChild>
+                          <AlertDialogTrigger asChild>
+                            <button className="p-2 hover:bg-red-500/20 rounded-lg transition-colors text-red-400">
+                              <Trash2 className="w-4 h-4" />
+                            </button>
+                          </AlertDialogTrigger>
+                        </TooltipTrigger>
+                        <TooltipContent>
+                          <p>Delete Player</p>
+                        </TooltipContent>
+                      </Tooltip>
+                      <AlertDialogContent className="bg-slate-800 border-slate-700 text-white">
+                        <AlertDialogHeader>
+                          <AlertDialogTitle>Delete Player</AlertDialogTitle>
+                          <AlertDialogDescription className="text-white/70">
+                            Are you sure you want to delete "{player.player_name}"? This action cannot be undone.
+                          </AlertDialogDescription>
+                        </AlertDialogHeader>
+                        <AlertDialogFooter>
+                          <AlertDialogCancel className="bg-slate-700 border-slate-600 text-white hover:bg-slate-600">
+                            Cancel
+                          </AlertDialogCancel>
+                          <AlertDialogAction 
+                            onClick={() => onDeletePlayer(player.player_id)}
+                            className="bg-red-600 hover:bg-red-700 text-white"
+                          >
+                            Delete
+                          </AlertDialogAction>
+                        </AlertDialogFooter>
+                      </AlertDialogContent>
+                    </AlertDialog>
+                  </div>
+                )}
               </div>
             </CardContent>
           </Card>
