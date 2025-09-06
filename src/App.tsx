@@ -70,6 +70,7 @@ interface GameCharacter {
   character_key: string
   name: string
   description?: string
+  avatar?: string
   abilities?: string[] // Will be stored as JSON in database
 }
 
@@ -186,6 +187,7 @@ const mockData = {
           character_key: 'commander',
           name: 'Commander',
           description: 'Strategic military leader',
+          avatar: 'https://images.unsplash.com/photo-1578632292335-fac9311c1dd4?w=100&h=100&fit=crop&crop=face',
           abilities: ['Battle Tactics', 'Resource Management', 'Unit Command']
         }
       ],
@@ -231,6 +233,7 @@ const mockData = {
           character_key: 'warrior',
           name: 'Warrior',
           description: 'Fierce melee fighter',
+          avatar: 'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=100&h=100&fit=crop&crop=face',
           abilities: ['Heavy Attack', 'Shield Block', 'Intimidate']
         },
         {
@@ -239,6 +242,7 @@ const mockData = {
           character_key: 'archer',
           name: 'Archer',
           description: 'Precise ranged combatant',
+          avatar: 'https://images.unsplash.com/photo-1494790108755-2616b612b786?w=100&h=100&fit=crop&crop=face',
           abilities: ['Long Shot', 'Multi-Shot', 'Eagle Eye']
         }
       ],
@@ -319,6 +323,7 @@ const mockData = {
           character_key: 'explorer',
           name: 'Explorer',
           description: 'Galactic scout and pioneer',
+          avatar: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=100&h=100&fit=crop&crop=face',
           abilities: ['System Discovery', 'Resource Scanning', 'Jump Drive']
         },
         {
@@ -327,6 +332,7 @@ const mockData = {
           character_key: 'diplomat',
           name: 'Diplomat',
           description: 'Inter-species negotiator',
+          avatar: 'https://images.unsplash.com/photo-1494790108755-2616b612b786?w=100&h=100&fit=crop&crop=face',
           abilities: ['Trade Agreements', 'Alliance Formation', 'Cultural Exchange']
         }
       ],

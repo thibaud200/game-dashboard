@@ -88,38 +88,38 @@ INSERT INTO game_expansions (game_id, bgg_expansion_id, name, year_published, de
 -- SAMPLE GAME CHARACTERS
 -- =====================================================
 
-INSERT INTO game_characters (game_id, character_key, name, description, abilities) VALUES
+INSERT INTO game_characters (game_id, character_key, name, description, avatar, abilities) VALUES
 -- Strategy Pro characters
-(1, 'commander', 'Commander', 'Strategic military leader', '["Battle Tactics", "Resource Management", "Unit Command"]'),
-(1, 'diplomat', 'Diplomat', 'Skilled negotiator and alliance builder', '["Trade Negotiations", "Alliance Formation", "Information Gathering"]'),
+(1, 'commander', 'Commander', 'Strategic military leader', 'https://images.unsplash.com/photo-1578632292335-fac9311c1dd4?w=100&h=100&fit=crop&crop=face', '["Battle Tactics", "Resource Management", "Unit Command"]'),
+(1, 'diplomat', 'Diplomat', 'Skilled negotiator and alliance builder', 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=100&h=100&fit=crop&crop=face', '["Trade Negotiations", "Alliance Formation", "Information Gathering"]'),
 
 -- Battle Arena characters
-(2, 'warrior', 'Warrior', 'Fierce melee fighter', '["Heavy Attack", "Shield Block", "Intimidate"]'),
-(2, 'archer', 'Archer', 'Precise ranged combatant', '["Long Shot", "Multi-Shot", "Eagle Eye"]'),
-(2, 'mage', 'Mage', 'Master of magical arts', '["Fireball", "Heal", "Teleport"]'),
-(2, 'rogue', 'Rogue', 'Stealthy assassin', '["Stealth Attack", "Poison Blade", "Evasion"]'),
+(2, 'warrior', 'Warrior', 'Fierce melee fighter', 'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=100&h=100&fit=crop&crop=face', '["Heavy Attack", "Shield Block", "Intimidate"]'),
+(2, 'archer', 'Archer', 'Precise ranged combatant', 'https://images.unsplash.com/photo-1494790108755-2616b612b786?w=100&h=100&fit=crop&crop=face', '["Long Shot", "Multi-Shot", "Eagle Eye"]'),
+(2, 'mage', 'Mage', 'Master of magical arts', 'https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=100&h=100&fit=crop&crop=face', '["Fireball", "Heal", "Teleport"]'),
+(2, 'rogue', 'Rogue', 'Stealthy assassin', 'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=100&h=100&fit=crop&crop=face', '["Stealth Attack", "Poison Blade", "Evasion"]'),
 
 -- Cosmic Empire characters
-(4, 'explorer', 'Explorer', 'Galactic scout and pioneer', '["System Discovery", "Resource Scanning", "Jump Drive"]'),
-(4, 'diplomat', 'Diplomat', 'Inter-species negotiator', '["Trade Agreements", "Alliance Formation", "Cultural Exchange"]'),
-(4, 'admiral', 'Admiral', 'Fleet commander', '["Fleet Command", "Battle Tactics", "Ship Design"]'),
+(4, 'explorer', 'Explorer', 'Galactic scout and pioneer', 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=100&h=100&fit=crop&crop=face', '["System Discovery", "Resource Scanning", "Jump Drive"]'),
+(4, 'diplomat', 'Diplomat', 'Inter-species negotiator', 'https://images.unsplash.com/photo-1494790108755-2616b612b786?w=100&h=100&fit=crop&crop=face', '["Trade Agreements", "Alliance Formation", "Cultural Exchange"]'),
+(4, 'admiral', 'Admiral', 'Fleet commander', 'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=100&h=100&fit=crop&crop=face', '["Fleet Command", "Battle Tactics", "Ship Design"]'),
 
 -- Mystic Quest characters
-(5, 'wizard', 'Wizard', 'Master of arcane magic', '["Arcane Missile", "Teleport", "Summon Familiar"]'),
-(5, 'ranger', 'Ranger', 'Nature guardian and tracker', '["Track Monster", "Animal Companion", "Bow Mastery"]'),
-(5, 'cleric', 'Cleric', 'Divine healer and protector', '["Heal Wounds", "Divine Shield", "Turn Undead"]'),
-(5, 'rogue', 'Rogue', 'Master thief and scout', '["Lockpicking", "Stealth", "Backstab"]'),
+(5, 'wizard', 'Wizard', 'Master of arcane magic', 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=100&h=100&fit=crop&crop=face', '["Arcane Missile", "Teleport", "Summon Familiar"]'),
+(5, 'ranger', 'Ranger', 'Nature guardian and tracker', 'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=100&h=100&fit=crop&crop=face', '["Track Monster", "Animal Companion", "Bow Mastery"]'),
+(5, 'cleric', 'Cleric', 'Divine healer and protector', 'https://images.unsplash.com/photo-1494790108755-2616b612b786?w=100&h=100&fit=crop&crop=face', '["Heal Wounds", "Divine Shield", "Turn Undead"]'),
+(5, 'rogue', 'Rogue', 'Master thief and scout', 'https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=100&h=100&fit=crop&crop=face', '["Lockpicking", "Stealth", "Backstab"]'),
 
 -- Kingdom Builder characters
-(7, 'king', 'King', 'Ruler of the realm', '["Royal Decree", "Tax Collection", "Military Command"]'),
-(7, 'merchant', 'Merchant', 'Master of trade and commerce', '["Trade Routes", "Market Influence", "Resource Trading"]'),
-(7, 'general', 'General', 'Military strategist', '["Battle Planning", "Troop Training", "Siege Warfare"]'),
+(7, 'king', 'King', 'Ruler of the realm', 'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=100&h=100&fit=crop&crop=face', '["Royal Decree", "Tax Collection", "Military Command"]'),
+(7, 'merchant', 'Merchant', 'Master of trade and commerce', 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=100&h=100&fit=crop&crop=face', '["Trade Routes", "Market Influence", "Resource Trading"]'),
+(7, 'general', 'General', 'Military strategist', 'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=100&h=100&fit=crop&crop=face', '["Battle Planning", "Troop Training", "Siege Warfare"]'),
 
 -- Space Explorers characters
-(8, 'captain', 'Captain', 'Ship commander and leader', '["Leadership", "Navigation", "Crisis Management"]'),
-(8, 'scientist', 'Scientist', 'Research specialist', '["Research", "Analysis", "Technology Development"]'),
-(8, 'engineer', 'Engineer', 'Technical expert', '["Repair", "Modify Equipment", "System Override"]'),
-(8, 'pilot', 'Pilot', 'Expert spacecraft operator', '["Precision Flying", "Evasive Maneuvers", "System Knowledge"]');
+(8, 'captain', 'Captain', 'Ship commander and leader', 'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=100&h=100&fit=crop&crop=face', '["Leadership", "Navigation", "Crisis Management"]'),
+(8, 'scientist', 'Scientist', 'Research specialist', 'https://images.unsplash.com/photo-1494790108755-2616b612b786?w=100&h=100&fit=crop&crop=face', '["Research", "Analysis", "Technology Development"]'),
+(8, 'engineer', 'Engineer', 'Technical expert', 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=100&h=100&fit=crop&crop=face', '["Repair", "Modify Equipment", "System Override"]'),
+(8, 'pilot', 'Pilot', 'Expert spacecraft operator', 'https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=100&h=100&fit=crop&crop=face', '["Precision Flying", "Evasive Maneuvers", "System Knowledge"]');
 
 -- =====================================================
 -- SAMPLE GAME SESSIONS

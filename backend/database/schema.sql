@@ -62,6 +62,7 @@ CREATE TABLE game_characters (
     character_key TEXT NOT NULL,
     name TEXT NOT NULL,
     description TEXT,
+    avatar TEXT,
     abilities TEXT, -- JSON string of abilities array
     FOREIGN KEY (game_id) REFERENCES games(game_id) ON DELETE CASCADE
 );
@@ -138,9 +139,9 @@ INSERT INTO game_expansions (game_id, bgg_expansion_id, name, year_published) VA
 (4, 45679, 'Cosmic Empire: Deep Space', 2022);
 
 -- Insert game characters
-INSERT INTO game_characters (game_id, character_key, name, description, abilities) VALUES
-(1, 'commander', 'Commander', 'Strategic military leader', '["Battle Tactics", "Resource Management", "Unit Command"]'),
-(2, 'warrior', 'Warrior', 'Fierce melee fighter', '["Heavy Attack", "Shield Block", "Intimidate"]'),
-(2, 'archer', 'Archer', 'Precise ranged combatant', '["Long Shot", "Multi-Shot", "Eagle Eye"]'),
-(4, 'explorer', 'Explorer', 'Galactic scout and pioneer', '["System Discovery", "Resource Scanning", "Jump Drive"]'),
-(4, 'diplomat', 'Diplomat', 'Inter-species negotiator', '["Trade Agreements", "Alliance Formation", "Cultural Exchange"]');
+INSERT INTO game_characters (game_id, character_key, name, description, avatar, abilities) VALUES
+(1, 'commander', 'Commander', 'Strategic military leader', 'https://images.unsplash.com/photo-1578632292335-fac9311c1dd4?w=100&h=100&fit=crop&crop=face', '["Battle Tactics", "Resource Management", "Unit Command"]'),
+(2, 'warrior', 'Warrior', 'Fierce melee fighter', 'https://images.unsplash.com/photo-1578632292335-fac9311c1dd4?w=100&h=100&fit=crop&crop=face', '["Heavy Attack", "Shield Block", "Intimidate"]'),
+(2, 'archer', 'Archer', 'Precise ranged combatant', 'https://images.unsplash.com/photo-1578632292335-fac9311c1dd4?w=100&h=100&fit=crop&crop=face', '["Long Shot", "Multi-Shot", "Eagle Eye"]'),
+(4, 'explorer', 'Explorer', 'Galactic scout and pioneer', 'https://images.unsplash.com/photo-1578632292335-fac9311c1dd4?w=100&h=100&fit=crop&crop=face', '["System Discovery", "Resource Scanning", "Jump Drive"]'),
+(4, 'diplomat', 'Diplomat', 'Inter-species negotiator', 'https://images.unsplash.com/photo-1578632292335-fac9311c1dd4?w=100&h=100&fit=crop&crop=face', '["Trade Agreements", "Alliance Formation", "Cultural Exchange"]');
