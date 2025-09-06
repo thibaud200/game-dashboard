@@ -10,7 +10,7 @@ import {
   DropdownMenuTrigger,
   DropdownMenuSeparator
 } from '@/components/ui/dropdown-menu'
-import { ArrowLeft, Users, Clock, Star, Weight, Calendar, Factory, User, Plus, Gamepad2, UserCircle, DotsThreeVertical, Crown } from '@phosphor-icons/react'
+import { ArrowLeft, Users, Clock, Star, Weight, Calendar, Factory, User, Plus, Gamepad2, UserCircle, DotsThreeVertical, Crown, TrendingUp, Settings } from '@phosphor-icons/react'
 import GameExpansionsPage from '@/components/GameExpansionsPage'
 import GameCharactersPage from '@/components/GameCharactersPage'
 
@@ -98,29 +98,29 @@ export default function GameDetailPage({
     <div className="min-h-screen bg-gradient-to-br from-slate-900 to-slate-800">
       {/* Header */}
       <div className="bg-slate-800/50 backdrop-blur-sm border-b border-slate-700/50 sticky top-0 z-10">
-        <div className="max-w-7xl mx-auto px-6 py-4">
-          <div className="flex items-center gap-4">
+        <div className="max-w-7xl mx-auto px-4 md:px-6 py-3 md:py-4">
+          <div className="flex items-center gap-3 md:gap-4">
             <Button
               variant="ghost"
               size="sm"
               onClick={() => onNavigation('games')}
-              className="text-white/80 hover:text-white hover:bg-white/10"
+              className="text-white/80 hover:text-white hover:bg-white/10 p-2"
             >
-              <ArrowLeft className="w-4 h-4 mr-2" />
-              Retour aux jeux
+              <ArrowLeft className="w-4 h-4 md:mr-2" />
+              <span className="hidden md:inline">Retour aux jeux</span>
             </Button>
-            <div className="h-6 w-px bg-slate-600"></div>
-            <h1 className="text-xl font-semibold text-white flex-1">{game.name}</h1>
+            <div className="h-6 w-px bg-slate-600 hidden md:block"></div>
+            <h1 className="text-lg md:text-xl font-semibold text-white flex-1 truncate">{game.name}</h1>
             
             {/* Mobile Context Menu */}
             <div className="md:hidden">
               <DropdownMenu>
                 <DropdownMenuTrigger asChild>
-                  <Button variant="ghost" size="sm" className="text-white/80 hover:text-white hover:bg-white/10">
+                  <Button variant="ghost" size="sm" className="text-white/80 hover:text-white hover:bg-white/10 p-2">
                     <DotsThreeVertical className="w-5 h-5" />
                   </Button>
                 </DropdownMenuTrigger>
-                <DropdownMenuContent align="end" className="bg-slate-800 border-slate-700 text-white">
+                <DropdownMenuContent align="end" className="bg-slate-800 border-slate-700 text-white w-56">
                   <DropdownMenuItem 
                     onClick={() => setActiveTab('overview')}
                     className="hover:bg-slate-700 focus:bg-slate-700"
@@ -158,7 +158,7 @@ export default function GameDetailPage({
         </div>
       </div>
 
-      <div className="max-w-7xl mx-auto px-6 py-8">
+      <div className="max-w-7xl mx-auto px-4 md:px-6 py-4 md:py-8">
         {/* Desktop Layout with Tabs */}
         <div className="hidden md:block">
           <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
@@ -218,7 +218,7 @@ export default function GameDetailPage({
         </div>
 
         {/* Mobile Layout - Show current tab content */}
-        <div className="md:hidden">
+        <div className="md:hidden pb-20">
           {activeTab === 'overview' && renderGameOverview()}
           {activeTab === 'expansions' && onAddExpansion && onUpdateExpansion && onDeleteExpansion && (
             <GameExpansionsPage
@@ -242,6 +242,40 @@ export default function GameDetailPage({
           )}
         </div>
       </div>
+
+      {/* Bottom Navigation - Mobile Only */}
+      <div className="fixed bottom-0 left-0 right-0 bg-slate-800/90 backdrop-blur-md border-t border-white/10 md:hidden">
+        <div className="flex justify-around items-center py-2">
+          <button
+            onClick={() => onNavigation('dashboard')}
+            className="flex flex-col items-center p-3 transition-colors text-white/60 hover:text-white"
+          >
+            <TrendingUp className="w-6 h-6 mb-1" />
+            <span className="text-xs">Dashboard</span>
+          </button>
+          <button
+            onClick={() => onNavigation('players')}
+            className="flex flex-col items-center p-3 transition-colors text-white/60 hover:text-white"
+          >
+            <Users className="w-6 h-6 mb-1" />
+            <span className="text-xs">Players</span>
+          </button>
+          <button
+            onClick={() => onNavigation('games')}
+            className="flex flex-col items-center p-3 transition-colors text-primary"
+          >
+            <Gamepad2 className="w-6 h-6 mb-1" />
+            <span className="text-xs">Games</span>
+          </button>
+          <button
+            onClick={() => onNavigation('settings')}
+            className="flex flex-col items-center p-3 transition-colors text-white/60 hover:text-white"
+          >
+            <Settings className="w-6 h-6 mb-1" />
+            <span className="text-xs">Settings</span>
+          </button>
+        </div>
+      </div>
     </div>
   )
 
@@ -249,43 +283,43 @@ export default function GameDetailPage({
     return (
       <>
         {/* Game Overview Card */}
-        <Card className="bg-slate-800/50 border-slate-700/50 mb-8">
-          <CardContent className="p-6">
-            <div className="flex gap-6">
+        <Card className="bg-slate-800/50 border-slate-700/50 mb-6 md:mb-8">
+          <CardContent className="p-4 md:p-6">
+            <div className="flex flex-col md:flex-row gap-4 md:gap-6">
               {/* Game Image */}
-              <div className="flex-shrink-0">
+              <div className="flex-shrink-0 self-center md:self-start">
                 {game.image ? (
                   <img 
                     src={game.image} 
                     alt={game.name}
-                    className="w-32 h-32 object-cover rounded-lg border border-slate-600"
+                    className="w-24 h-24 md:w-32 md:h-32 object-cover rounded-lg border border-slate-600"
                   />
                 ) : (
-                  <div className="w-32 h-32 bg-slate-700/50 rounded-lg border border-slate-600 flex items-center justify-center">
-                    <Gamepad2 className="w-12 h-12 text-slate-400" />
+                  <div className="w-24 h-24 md:w-32 md:h-32 bg-slate-700/50 rounded-lg border border-slate-600 flex items-center justify-center">
+                    <Gamepad2 className="w-8 h-8 md:w-12 md:h-12 text-slate-400" />
                   </div>
                 )}
               </div>
 
               {/* Game Info */}
               <div className="flex-1">
-                <div className="flex items-start justify-between mb-4">
-                  <div>
-                    <h2 className="text-2xl font-bold text-white mb-2">{game.name}</h2>
+                <div className="flex flex-col md:flex-row md:items-start md:justify-between mb-4">
+                  <div className="mb-4 md:mb-0">
+                    <h2 className="text-xl md:text-2xl font-bold text-white mb-2">{game.name}</h2>
                     {game.description && (
-                      <p className="text-slate-300 mb-4 max-w-2xl">{game.description}</p>
+                      <p className="text-slate-300 mb-4 text-sm md:text-base max-w-2xl">{game.description}</p>
                     )}
                   </div>
                   {game.bgg_rating && (
-                    <div className="flex items-center gap-1 bg-amber-500/20 text-amber-400 px-3 py-1 rounded-full">
-                      <Star className="w-4 h-4 fill-current" />
-                      <span className="font-medium">{game.bgg_rating}/10</span>
+                    <div className="flex items-center gap-1 bg-amber-500/20 text-amber-400 px-3 py-1 rounded-full self-start">
+                      <Star className="w-3 h-3 md:w-4 md:h-4 fill-current" />
+                      <span className="font-medium text-sm">{game.bgg_rating}/10</span>
                     </div>
                   )}
                 </div>
 
                 {/* Game Stats */}
-                <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-4">
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 md:gap-4 mb-4">
                   <div className="flex items-center gap-2 text-slate-300">
                     <Users className="w-4 h-4 text-primary" />
                     <span className="text-sm">{game.min_players}-{game.max_players} joueurs</span>
@@ -311,7 +345,7 @@ export default function GameDetailPage({
                 </div>
 
                 {/* Additional Info */}
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-3 md:gap-4 mb-4">
                   {game.publisher && (
                     <div className="flex items-center gap-2 text-slate-300">
                       <Factory className="w-4 h-4 text-primary" />
@@ -330,17 +364,17 @@ export default function GameDetailPage({
                 {gameTypes.length > 0 && (
                   <div className="flex gap-2 flex-wrap">
                     {gameTypes.map((type) => (
-                      <Badge key={type} variant="secondary" className="bg-primary/20 text-primary">
+                      <Badge key={type} variant="secondary" className="bg-primary/20 text-primary text-xs">
                         {type}
                       </Badge>
                     ))}
                     {game.category && (
-                      <Badge variant="outline" className="border-slate-600 text-slate-300">
+                      <Badge variant="outline" className="border-slate-600 text-slate-300 text-xs">
                         {game.category}
                       </Badge>
                     )}
                     {game.difficulty && (
-                      <Badge variant="outline" className="border-slate-600 text-slate-300">
+                      <Badge variant="outline" className="border-slate-600 text-slate-300 text-xs">
                         {game.difficulty}
                       </Badge>
                     )}

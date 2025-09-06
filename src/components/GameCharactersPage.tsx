@@ -267,7 +267,7 @@ export default function GameCharactersPage({
                     Ajouter un personnage
                   </Button>
                 </DialogTrigger>
-                <DialogContent className="bg-slate-800 border-slate-700 max-w-md">
+                <DialogContent className="bg-slate-800 border-slate-700 max-w-md mx-4">
                   <DialogHeader>
                     <DialogTitle className="text-white">Ajouter un personnage</DialogTitle>
                   </DialogHeader>
@@ -283,16 +283,16 @@ export default function GameCharactersPage({
       <div className={embedded ? "" : "max-w-7xl mx-auto px-6 py-8"}>
         {/* Embedded Header with Add Button */}
         {embedded && (
-          <div className="flex items-center justify-between mb-6">
-            <h2 className="text-2xl font-bold text-white">Personnages ({game.characters?.length || 0})</h2>
+          <div className="flex items-center justify-between mb-4 md:mb-6">
+            <h2 className="text-xl md:text-2xl font-bold text-white">Personnages ({game.characters?.length || 0})</h2>
             <Dialog open={isAddDialogOpen} onOpenChange={setIsAddDialogOpen}>
               <DialogTrigger asChild>
-                <Button className="bg-primary hover:bg-primary/90 text-primary-foreground">
-                  <Plus className="w-4 h-4 mr-2" />
-                  Ajouter
+                <Button className="bg-primary hover:bg-primary/90 text-primary-foreground text-sm">
+                  <Plus className="w-4 h-4 md:mr-2" />
+                  <span className="hidden md:inline">Ajouter</span>
                 </Button>
               </DialogTrigger>
-              <DialogContent className="bg-slate-800 border-slate-700 max-w-md">
+              <DialogContent className="bg-slate-800 border-slate-700 max-w-md mx-4">
                 <DialogHeader>
                   <DialogTitle className="text-white">Ajouter un personnage</DialogTitle>
                 </DialogHeader>
@@ -302,29 +302,29 @@ export default function GameCharactersPage({
           </div>
         )}
         {game.characters && game.characters.length > 0 ? (
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6">
             {game.characters.map((character) => (
               <Card key={character.character_id} className="bg-slate-800/50 border-slate-700/50">
-                <CardHeader>
+                <CardHeader className="pb-3 md:pb-6">
                   <div className="flex items-center gap-3">
                     {character.avatar ? (
                       <img 
                         src={character.avatar} 
                         alt={character.name}
-                        className="w-12 h-12 rounded-full object-cover border border-slate-600"
+                        className="w-10 h-10 md:w-12 md:h-12 rounded-full object-cover border border-slate-600"
                       />
                     ) : (
-                      <div className="w-12 h-12 bg-slate-600 rounded-full flex items-center justify-center">
-                        <UserCircle className="w-8 h-8 text-slate-400" />
+                      <div className="w-10 h-10 md:w-12 md:h-12 bg-slate-600 rounded-full flex items-center justify-center">
+                        <UserCircle className="w-6 h-6 md:w-8 md:h-8 text-slate-400" />
                       </div>
                     )}
                     <div>
-                      <CardTitle className="text-white text-lg">{character.name}</CardTitle>
-                      <p className="text-slate-400 text-sm">{character.character_key}</p>
+                      <CardTitle className="text-white text-base md:text-lg">{character.name}</CardTitle>
+                      <p className="text-slate-400 text-xs md:text-sm">{character.character_key}</p>
                     </div>
                   </div>
                 </CardHeader>
-                <CardContent className="space-y-4">
+                <CardContent className="space-y-3 md:space-y-4">
                   {character.description && (
                     <p className="text-slate-300 text-sm">{character.description}</p>
                   )}
@@ -348,15 +348,15 @@ export default function GameCharactersPage({
                     </div>
                   )}
 
-                  <div className="flex gap-2 pt-4">
+                  <div className="flex gap-2 pt-2 md:pt-4">
                     <Button
                       variant="outline"
                       size="sm"
                       onClick={() => openEditDialog(character)}
                       className="border-slate-600 text-slate-300 hover:bg-slate-700/50 flex-1"
                     >
-                      <Edit className="w-4 h-4 mr-2" />
-                      Modifier
+                      <Edit className="w-4 h-4 md:mr-2" />
+                      <span className="hidden md:inline">Modifier</span>
                     </Button>
                     
                     <AlertDialog>
@@ -369,7 +369,7 @@ export default function GameCharactersPage({
                           <Trash className="w-4 h-4" />
                         </Button>
                       </AlertDialogTrigger>
-                      <AlertDialogContent className="bg-slate-800 border-slate-700">
+                      <AlertDialogContent className="bg-slate-800 border-slate-700 mx-4">
                         <AlertDialogHeader>
                           <AlertDialogTitle className="text-white">
                             Supprimer le personnage
@@ -412,7 +412,7 @@ export default function GameCharactersPage({
                     Ajouter le premier personnage
                   </Button>
                 </DialogTrigger>
-                <DialogContent className="bg-slate-800 border-slate-700 max-w-md">
+                <DialogContent className="bg-slate-800 border-slate-700 max-w-md mx-4">
                   <DialogHeader>
                     <DialogTitle className="text-white">Ajouter un personnage</DialogTitle>
                   </DialogHeader>
@@ -426,7 +426,7 @@ export default function GameCharactersPage({
 
       {/* Edit Dialog */}
       <Dialog open={!!editingCharacter} onOpenChange={(open) => !open && closeEditDialog()}>
-        <DialogContent className="bg-slate-800 border-slate-700 max-w-md">
+        <DialogContent className="bg-slate-800 border-slate-700 max-w-md mx-4">
           <DialogHeader>
             <DialogTitle className="text-white">Modifier le personnage</DialogTitle>
           </DialogHeader>
