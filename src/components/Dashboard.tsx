@@ -1,4 +1,4 @@
-import React from 'react'
+import React from 'react';
 import {
   Users,
   Gamepad2,
@@ -7,9 +7,9 @@ import {
   Plus,
   Play,
   ArrowLeft
-} from '@phosphor-icons/react'
-import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip'
-import BottomNavigation from './BottomNavigation'
+} from '@phosphor-icons/react';
+import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip';
+import BottomNavigation from './BottomNavigation';
 
 interface DashboardProps {
   stats: {
@@ -314,5 +314,5 @@ export default function Dashboard({
       {/* Bottom Navigation */}
       <BottomNavigation currentView={currentView} onNavigation={onNavigation} />
     </div>
-  )
+  );
 }

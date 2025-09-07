@@ -1,4 +1,4 @@
-import React from 'react'
+import React from 'react';
 import {
   ArrowLeft,
   Settings,
@@ -10,8 +10,8 @@ import {
   Download,
   Upload,
   Trash
-} from '@phosphor-icons/react'
-import BottomNavigation from './BottomNavigation'
+} from '@phosphor-icons/react';
+import BottomNavigation from './BottomNavigation';
 
 interface SettingsPageProps {
   onNavigation: (view: string) => void
@@ -171,5 +171,5 @@ export default function SettingsPage({ onNavigation, currentView }: SettingsPage
 
       <BottomNavigation currentView={currentView} onNavigation={onNavigation} />
     </div>
-  )
+  );
 }

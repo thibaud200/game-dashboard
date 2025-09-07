@@ -2,6 +2,17 @@ import { Request, Response } from 'express';
 import { GameCharacterService } from '../services/GameCharacterService';
 import { Database } from 'sqlite3';
 
+//pour le logging
+const winston = require('winston');
+// Logger setup
+const logger = winston.createLogger({
+  level: 'info',
+  transports: [
+    new winston.transports.Console(),
+    new winston.transports.File({ filename: 'backend/app-backend.log' })
+  ]
+});
+
 export class GameCharacterController {
   private characterService: GameCharacterService;
 
@@ -21,7 +32,7 @@ export class GameCharacterController {
       const characters = await this.characterService.getCharactersByGameId(gameId);
       res.json(characters);
     } catch (error) {
-      console.error('Error fetching characters:', error);
+      logger.error('Error fetching characters:', error);
       res.status(500).json({ error: 'Failed to fetch characters' });
     }
   }
@@ -38,7 +49,7 @@ export class GameCharacterController {
       const character = await this.characterService.getCharacterById(characterId);
       res.json(character);
     } catch (error) {
-      console.error('Error fetching character:', error);
+      logger.error('Error fetching character:', error);
       if (error.message === 'Character not found') {
         res.status(404).json({ error: 'Character not found' });
       } else {
@@ -75,7 +86,7 @@ export class GameCharacterController {
       const newCharacter = await this.characterService.createCharacter(characterData);
       res.status(201).json(newCharacter);
     } catch (error) {
-      console.error('Error creating character:', error);
+      logger.error('Error creating character:', error);
       res.status(500).json({ error: 'Failed to create character' });
     }
   }
@@ -99,7 +110,7 @@ export class GameCharacterController {
       const updatedCharacter = await this.characterService.updateCharacter(characterId, updates);
       res.json(updatedCharacter);
     } catch (error) {
-      console.error('Error updating character:', error);
+      logger.error('Error updating character:', error);
       if (error.message === 'Character not found') {
         res.status(404).json({ error: 'Character not found' });
       } else if (error.message === 'No fields to update') {
@@ -122,7 +133,7 @@ export class GameCharacterController {
       await this.characterService.deleteCharacter(characterId);
       res.status(204).send();
     } catch (error) {
-      console.error('Error deleting character:', error);
+      logger.error('Error deleting character:', error);
       res.status(500).json({ error: 'Failed to delete character' });
     }
   }
@@ -160,7 +171,7 @@ export class GameCharacterController {
 
       res.status(201).json(createdCharacters);
     } catch (error) {
-      console.error('Error creating multiple characters:', error);
+      logger.error('Error creating multiple characters:', error);
       res.status(500).json({ error: 'Failed to create characters' });
     }
   }

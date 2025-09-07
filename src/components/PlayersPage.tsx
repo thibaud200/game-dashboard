@@ -1,7 +1,6 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState, useEffect } from 'react';
 import {
   Users,
-  TrendingUp,
   Plus,
   ArrowLeft,
   Search,
@@ -9,17 +8,16 @@ import {
   Gamepad2,
   Medal,
   Trash,
-  Settings,
   Edit,
   MoreVertical,
   ChartBar
-} from '@phosphor-icons/react'
-import { Button } from '@/components/ui/button'
-import { Input } from '@/components/ui/input'
-import { Card, CardContent } from '@/components/ui/card'
-import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
-import { Badge } from '@/components/ui/badge'
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog'
+} from '@phosphor-icons/react';
+import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
+import { Card, CardContent } from '@/components/ui/card';
+import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar';
+import { Badge } from '@/components/ui/badge';
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
 import { 
   AlertDialog, 
   AlertDialogAction, 
@@ -30,17 +28,16 @@ import {
   AlertDialogHeader, 
   AlertDialogTitle, 
   AlertDialogTrigger 
-} from '@/components/ui/alert-dialog'
-import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip'
-import { Label } from '@/components/ui/label'
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
+} from '@/components/ui/alert-dialog';
+import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip';
+import { Label } from '@/components/ui/label';
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuTrigger,
-} from '@/components/ui/dropdown-menu'
-import BottomNavigation from './BottomNavigation'
+} from '@/components/ui/dropdown-menu';
+import BottomNavigation from './BottomNavigation';
 
 interface Player {
   player_id: number
@@ -73,11 +70,11 @@ export default function PlayersPage({
   onDeletePlayer,
   currentView = 'players'
 }: PlayersPageProps) {
-  const [searchQuery, setSearchQuery] = useState('')
-  const [editingPlayer, setEditingPlayer] = useState<Player | null>(null)
-  const [isAddDialogOpen, setIsAddDialogOpen] = useState(false)
-  const [isEditDialogOpen, setIsEditDialogOpen] = useState(false)
-  const [isMobile, setIsMobile] = useState(false)
+  const [searchQuery, setSearchQuery] = useState('');
+  const [editingPlayer, setEditingPlayer] = useState<Player | null>(null);
+  const [isAddDialogOpen, setIsAddDialogOpen] = useState(false);
+  const [isEditDialogOpen, setIsEditDialogOpen] = useState(false);
+  const [isMobile, setIsMobile] = useState(false);
   const [formData, setFormData] = useState({
     player_name: '',
     avatar: '',
@@ -85,21 +82,21 @@ export default function PlayersPage({
     total_score: 0,
     games_played: 0,
     wins: 0
-  })
+  });
 
   useEffect(() => {
     const checkMobile = () => {
-      setIsMobile(window.innerWidth < 768)
-    }
+      setIsMobile(window.innerWidth < 768);
+    };
     
-    checkMobile()
-    window.addEventListener('resize', checkMobile)
-    return () => window.removeEventListener('resize', checkMobile)
-  }, [])
+    checkMobile();
+    window.addEventListener('resize', checkMobile);
+    return () => window.removeEventListener('resize', checkMobile);
+  }, []);
 
   const filteredPlayers = players.filter(player =>
     player.player_name.toLowerCase().includes(searchQuery.toLowerCase())
-  )
+  );
 
   const resetForm = () => {
     setFormData({
@@ -109,13 +106,13 @@ export default function PlayersPage({
       total_score: 0,
       games_played: 0,
       wins: 0
-    })
-  }
+    });
+  };
 
   const handleAddPlayer = () => {
     if (formData.player_name.trim()) {
       // Automatically set timestamps - these are not in the form
-      const now = new Date()
+      const now = new Date();
       onAddPlayer({
         player_name: formData.player_name,
         avatar: formData.avatar || `https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=100&h=100&fit=crop&crop=face`,
@@ -126,14 +123,14 @@ export default function PlayersPage({
         total_score: 0,
         average_score: 0,
         created_at: now
-      })
-      resetForm()
-      setIsAddDialogOpen(false)
+      });
+      resetForm();
+      setIsAddDialogOpen(false);
     }
-  }
+  };
 
   const handleEditPlayer = (player: Player) => {
-    setEditingPlayer(player)
+    setEditingPlayer(player);
     setFormData({
       player_name: player.player_name,
       avatar: player.avatar,
@@ -141,25 +138,25 @@ export default function PlayersPage({
       total_score: player.total_score,
       games_played: player.games_played,
       wins: player.wins
-    })
-    setIsEditDialogOpen(true)
-  }
+    });
+    setIsEditDialogOpen(true);
+  };
 
   const handleUpdatePlayer = () => {
     if (editingPlayer && formData.player_name.trim()) {
-      const averageScore = formData.games_played > 0 ? formData.total_score / formData.games_played : 0
+      const averageScore = formData.games_played > 0 ? formData.total_score / formData.games_played : 0;
       // Automatically set updated_at timestamp
-      const now = new Date()
+      const now = new Date();
       onUpdatePlayer(editingPlayer.player_id, {
         ...formData,
         average_score: averageScore,
         updated_at: now
-      })
-      resetForm()
-      setEditingPlayer(null)
-      setIsEditDialogOpen(false)
+      });
+      resetForm();
+      setEditingPlayer(null);
+      setIsEditDialogOpen(false);
     }
-  }
+  };
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-900 to-slate-800 text-white">
@@ -195,9 +192,9 @@ export default function PlayersPage({
               </TooltipContent>
             </Tooltip>
             <Dialog open={isAddDialogOpen} onOpenChange={(open) => {
-              setIsAddDialogOpen(open)
+              setIsAddDialogOpen(open);
               if (!open) {
-                resetForm()
+                resetForm();
               }
             }}>
               <Tooltip>
@@ -461,10 +458,10 @@ export default function PlayersPage({
 
       {/* Edit Player Dialog */}
       <Dialog open={isEditDialogOpen} onOpenChange={(open) => {
-        setIsEditDialogOpen(open)
+        setIsEditDialogOpen(open);
         if (!open) {
-          resetForm()
-          setEditingPlayer(null)
+          resetForm();
+          setEditingPlayer(null);
         }
       }}>
         <DialogContent className="bg-slate-800 border-slate-700 text-white max-w-md max-h-[90vh] overflow-y-auto">
@@ -544,5 +541,5 @@ export default function PlayersPage({
       {/* Bottom Navigation */}
       <BottomNavigation currentView={currentView} onNavigation={onNavigation} />
     </div>
-  )
+  );
 }

@@ -1,14 +1,15 @@
-import React, { useState } from 'react'
-import { Button } from '@/components/ui/button'
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
-import { Input } from '@/components/ui/input'
-import { Label } from '@/components/ui/label'
-import { Textarea } from '@/components/ui/textarea'
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog'
-import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from '@/components/ui/alert-dialog'
-import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip'
-import { ArrowLeft, Plus, Edit, Trash, UserCircle, Zap, Users, Gamepad2, TrendingUp, Settings } from '@phosphor-icons/react'
-import { toast } from 'sonner'
+import React, { useState } from 'react';
+import { Button } from '@/components/ui/button';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
+import { Textarea } from '@/components/ui/textarea';
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
+import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from '@/components/ui/alert-dialog';
+import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip';
+import { ArrowLeft, Plus, Edit, Trash, UserCircle, Zap, Users, Gamepad2, TrendingUp, Settings } from '@phosphor-icons/react';
+import { toast } from 'sonner';
+import log from "loglevel";
 
 interface GameCharacter {
   character_id?: number
@@ -45,15 +46,15 @@ export default function GameCharactersPage({
   onDeleteCharacter,
   embedded = false
 }: GameCharactersPageProps) {
-  const [isAddDialogOpen, setIsAddDialogOpen] = useState(false)
-  const [editingCharacter, setEditingCharacter] = useState<GameCharacter | null>(null)
+  const [isAddDialogOpen, setIsAddDialogOpen] = useState(false);
+  const [editingCharacter, setEditingCharacter] = useState<GameCharacter | null>(null);
   const [formData, setFormData] = useState({
     character_key: '',
     name: '',
     description: '',
     avatar: '',
     abilities: ''
-  })
+  });
 
   const resetForm = () => {
     setFormData({
@@ -62,25 +63,25 @@ export default function GameCharactersPage({
       description: '',
       avatar: '',
       abilities: ''
-    })
-  }
+    });
+  };
 
   const parseAbilities = (abilitiesString: string): string[] => {
-    if (!abilitiesString.trim()) return []
-    return abilitiesString.split(',').map(ability => ability.trim()).filter(ability => ability.length > 0)
-  }
+    if (!abilitiesString.trim()) return [];
+    return abilitiesString.split(',').map(ability => ability.trim()).filter(ability => ability.length > 0);
+  };
 
   const formatAbilities = (abilities: string[] | undefined): string => {
-    if (!abilities || abilities.length === 0) return ''
-    return abilities.join(', ')
-  }
+    if (!abilities || abilities.length === 0) return '';
+    return abilities.join(', ');
+  };
 
   const handleAddCharacter = async (e: React.FormEvent) => {
-    e.preventDefault()
+    e.preventDefault();
     
     if (!formData.name.trim() || !formData.character_key.trim()) {
-      toast.error('Le nom et la clé du personnage sont requis')
-      return
+      toast.error('Le nom et la clé du personnage sont requis');
+      return;
     }
 
     try {
@@ -90,24 +91,24 @@ export default function GameCharactersPage({
         description: formData.description.trim() || undefined,
         avatar: formData.avatar.trim() || undefined,
         abilities: parseAbilities(formData.abilities)
-      }
+      };
 
-      await onAddCharacter(game.game_id, characterData)
-      toast.success('Personnage ajouté avec succès')
-      setIsAddDialogOpen(false)
-      resetForm()
+      await onAddCharacter(game.game_id, characterData);
+      toast.success('Personnage ajouté avec succès');
+      setIsAddDialogOpen(false);
+      resetForm();
     } catch (error) {
-      console.error('Error adding character:', error)
-      toast.error('Erreur lors de l\'ajout du personnage')
+      log.error('Error adding character:', error);
+      toast.error('Erreur lors de l\'ajout du personnage');
     }
-  }
+  };
 
   const handleEditCharacter = async (e: React.FormEvent) => {
-    e.preventDefault()
+    e.preventDefault();
     
     if (!editingCharacter || !formData.name.trim() || !formData.character_key.trim()) {
-      toast.error('Le nom et la clé du personnage sont requis')
-      return
+      toast.error('Le nom et la clé du personnage sont requis');
+      return;
     }
 
     try {
@@ -117,52 +118,52 @@ export default function GameCharactersPage({
         description: formData.description.trim() || undefined,
         avatar: formData.avatar.trim() || undefined,
         abilities: parseAbilities(formData.abilities)
-      }
+      };
 
-      await onUpdateCharacter(editingCharacter.character_id!, characterData)
-      toast.success('Personnage modifié avec succès')
-      setEditingCharacter(null)
-      resetForm()
+      await onUpdateCharacter(editingCharacter.character_id!, characterData);
+      toast.success('Personnage modifié avec succès');
+      setEditingCharacter(null);
+      resetForm();
     } catch (error) {
-      console.error('Error updating character:', error)
-      toast.error('Erreur lors de la modification du personnage')
+      log.error('Error updating character:', error);
+      toast.error('Erreur lors de la modification du personnage');
     }
-  }
+  };
 
   const handleDeleteCharacter = async (characterId: number, characterName: string) => {
     try {
-      await onDeleteCharacter(characterId)
-      toast.success(`Personnage "${characterName}" supprimé avec succès`)
+      await onDeleteCharacter(characterId);
+      toast.success(`Personnage "${characterName}" supprimé avec succès`);
     } catch (error) {
-      console.error('Error deleting character:', error)
-      toast.error('Erreur lors de la suppression du personnage')
+      log.error('Error deleting character:', error);
+      toast.error('Erreur lors de la suppression du personnage');
     }
-  }
+  };
 
   const openEditDialog = (character: GameCharacter) => {
-    setEditingCharacter(character)
+    setEditingCharacter(character);
     setFormData({
       character_key: character.character_key,
       name: character.name,
       description: character.description || '',
       avatar: character.avatar || '',
       abilities: formatAbilities(character.abilities)
-    })
-  }
+    });
+  };
 
   const closeEditDialog = () => {
-    setEditingCharacter(null)
-    resetForm()
-  }
+    setEditingCharacter(null);
+    resetForm();
+  };
 
   // Close dialogs and reset form when component unmounts or navigation changes
   React.useEffect(() => {
     return () => {
-      setIsAddDialogOpen(false)
-      setEditingCharacter(null)
-      resetForm()
-    }
-  }, [])
+      setIsAddDialogOpen(false);
+      setEditingCharacter(null);
+      resetForm();
+    };
+  }, []);
 
   const CharacterForm = ({ onSubmit, submitText }: { onSubmit: (e: React.FormEvent) => void, submitText: string }) => (
     <form onSubmit={onSubmit} className="space-y-4">
@@ -240,7 +241,7 @@ export default function GameCharactersPage({
         </Button>
       </div>
     </form>
-  )
+  );
 
   return (
     <div className={embedded ? "" : "min-h-screen bg-gradient-to-br from-slate-900 to-slate-800"}>
@@ -257,9 +258,9 @@ export default function GameCharactersPage({
                     onClick={() => {
                       // Contextual navigation based on source
                       if (navigationSource === 'game-detail') {
-                        onNavigation('game-detail', game.game_id)
+                        onNavigation('game-detail', game.game_id);
                       } else {
-                        onNavigation('games')
+                        onNavigation('games');
                       }
                     }}
                     className="text-white/80 hover:text-white hover:bg-white/10 p-2"
@@ -511,5 +512,5 @@ export default function GameCharactersPage({
         </div>
       )}
     </div>
-  )
+  );
 }

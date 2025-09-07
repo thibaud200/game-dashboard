@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useState } from 'react';
 import {
   Gamepad2,
   Plus,
@@ -6,8 +6,6 @@ import {
   Search,
   Trash,
   Users,
-  TrendingUp,
-  Settings,
   Edit,
   Eye,
   Clock,
@@ -19,16 +17,15 @@ import {
   Crown,
   CaretDown,
   CaretUp,
-  MoreVertical,
   ExternalLink,
   ChartBar,
   DotsThreeVertical
-} from '@phosphor-icons/react'
-import { Button } from '@/components/ui/button'
-import { Input } from '@/components/ui/input'
-import { Card, CardContent } from '@/components/ui/card'
-import { Badge } from '@/components/ui/badge'
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog'
+} from '@phosphor-icons/react';
+import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
+import { Card, CardContent } from '@/components/ui/card';
+import { Badge } from '@/components/ui/badge';
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
 import { 
   AlertDialog, 
   AlertDialogAction, 
@@ -39,22 +36,22 @@ import {
   AlertDialogHeader, 
   AlertDialogTitle, 
   AlertDialogTrigger 
-} from '@/components/ui/alert-dialog'
+} from '@/components/ui/alert-dialog';
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuTrigger,
   DropdownMenuSeparator
-} from '@/components/ui/dropdown-menu'
-import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip'
-import { Label } from '@/components/ui/label'
-import { Textarea } from '@/components/ui/textarea'
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
-import { Checkbox } from '@/components/ui/checkbox'
-import BGGSearch from '@/components/BGGSearch'
-import { BGGGame } from '@/services/bggApi'
-import BottomNavigation from './BottomNavigation'
+} from '@/components/ui/dropdown-menu';
+import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip';
+import { Label } from '@/components/ui/label';
+import { Textarea } from '@/components/ui/textarea';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { Checkbox } from '@/components/ui/checkbox';
+import BGGSearch from '@/components/BGGSearch';
+import { BGGGame } from '@/services/bggApi';
+import BottomNavigation from './BottomNavigation';
 
 interface Character {
   character_id?: number
@@ -126,17 +123,14 @@ export default function GamesPage({
   onAddExpansion,
   onUpdateExpansion,
   onDeleteExpansion,
-  onAddCharacter,
-  onUpdateCharacter,
-  onDeleteCharacter,
   currentView = 'games'
 }: GamesPageProps) {
-  const [searchQuery, setSearchQuery] = useState('')
-  const [editingGame, setEditingGame] = useState<Game | null>(null)
-  const [isAddDialogOpen, setIsAddDialogOpen] = useState(false)
-  const [isEditDialogOpen, setIsEditDialogOpen] = useState(false)
-  const [isBGGSearchOpen, setIsBGGSearchOpen] = useState(false)
-  const [expandedGame, setExpandedGame] = useState<number | null>(null)
+  const [searchQuery, setSearchQuery] = useState('');
+  const [editingGame, setEditingGame] = useState<Game | null>(null);
+  const [isAddDialogOpen, setIsAddDialogOpen] = useState(false);
+  const [isEditDialogOpen, setIsEditDialogOpen] = useState(false);
+  const [isBGGSearchOpen, setIsBGGSearchOpen] = useState(false);
+  const [expandedGame, setExpandedGame] = useState<number | null>(null);
   const [formData, setFormData] = useState({
     name: '',
     image: '',
@@ -161,14 +155,14 @@ export default function GamesPage({
     supports_campaign: false,
     supports_hybrid: false,
     bgg_id: undefined as number | undefined
-  })
+  });
 
   const filteredGames = games.filter(game =>
     game.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
     game.category.toLowerCase().includes(searchQuery.toLowerCase()) ||
     game.designer.toLowerCase().includes(searchQuery.toLowerCase()) ||
     game.publisher.toLowerCase().includes(searchQuery.toLowerCase())
-  )
+  );
 
   const resetForm = () => {
     setFormData({
@@ -195,8 +189,8 @@ export default function GamesPage({
       supports_campaign: false,
       supports_hybrid: false,
       bgg_id: undefined
-    })
-  }
+    });
+  };
 
   const handleBGGGameSelect = (bggGame: BGGGame) => {
     setFormData({
@@ -223,14 +217,14 @@ export default function GamesPage({
       supports_campaign: bggGame.supports_campaign,
       supports_hybrid: bggGame.supports_hybrid,
       bgg_id: bggGame.id
-    })
-    setIsBGGSearchOpen(false)
-  }
+    });
+    setIsBGGSearchOpen(false);
+  };
 
   const handleAddGame = () => {
     if (formData.name.trim()) {
       // Automatically set timestamps - these are not in the form
-      const now = new Date()
+      const now = new Date();
       onAddGame({
         name: formData.name,
         image: formData.image || 'https://images.unsplash.com/photo-1606092195730-5d7b9af1efc5?w=150&h=150&fit=crop',
@@ -256,14 +250,14 @@ export default function GamesPage({
         supports_hybrid: formData.supports_hybrid,
         bgg_id: formData.bgg_id,
         created_at: now
-      })
-      resetForm()
-      setIsAddDialogOpen(false)
+      });
+      resetForm();
+      setIsAddDialogOpen(false);
     }
-  }
+  };
 
   const handleEditGame = (game: Game) => {
-    setEditingGame(game)
+    setEditingGame(game);
     setFormData({
       name: game.name,
       image: game.image,
@@ -288,35 +282,35 @@ export default function GamesPage({
       supports_campaign: game.supports_campaign || false,
       supports_hybrid: game.supports_hybrid || false,
       bgg_id: game.bgg_id
-    })
-    setIsEditDialogOpen(true)
-  }
+    });
+    setIsEditDialogOpen(true);
+  };
 
   const handleUpdateGame = () => {
     if (editingGame && formData.name.trim()) {
       // Automatically set updated_at timestamp
-      const now = new Date()
+      const now = new Date();
       onUpdateGame(editingGame.game_id, {
         ...formData,
         updated_at: now
-      })
-      resetForm()
-      setEditingGame(null)
-      setIsEditDialogOpen(false)
+      });
+      resetForm();
+      setEditingGame(null);
+      setIsEditDialogOpen(false);
     }
-  }
+  };
 
   const getDifficultyColor = (difficulty: string) => {
     switch (difficulty.toLowerCase()) {
-      case 'beginner': return 'text-green-400'
-      case 'intermediate': return 'text-yellow-400'
-      case 'expert': return 'text-red-400'
-      default: return 'text-white/60'
+      case 'beginner': return 'text-green-400';
+      case 'intermediate': return 'text-yellow-400';
+      case 'expert': return 'text-red-400';
+      default: return 'text-white/60';
     }
-  }
+  };
 
   const getGameModesBadges = (game: Game) => {
-    const modes = []
+    const modes = [];
     
     if (game.supports_competitive) {
       modes.push(
@@ -324,7 +318,7 @@ export default function GamesPage({
           <Swords className="w-3 h-3 mr-1" />
           Compétitif
         </Badge>
-      )
+      );
     }
     
     if (game.supports_cooperative) {
@@ -333,7 +327,7 @@ export default function GamesPage({
           <Shield className="w-3 h-3 mr-1" />
           Coopératif
         </Badge>
-      )
+      );
     }
     
     if (game.supports_campaign) {
@@ -342,7 +336,7 @@ export default function GamesPage({
           <Crown className="w-3 h-3 mr-1" />
           Campagne
         </Badge>
-      )
+      );
     }
     
     if (game.supports_hybrid) {
@@ -351,21 +345,21 @@ export default function GamesPage({
           <Target className="w-3 h-3 mr-1" />
           Hybride
         </Badge>
-      )
+      );
     }
     
-    return modes
-  }
+    return modes;
+  };
 
   const getWeightStars = (weight: number) => {
-    const stars = Math.round(weight)
+    const stars = Math.round(weight);
     return Array.from({ length: 5 }, (_, i) => (
       <Star 
         key={i} 
         className={`w-3 h-3 ${i < stars ? 'text-yellow-400 fill-current' : 'text-gray-400'}`} 
       />
-    ))
-  }
+    ));
+  };
 
   const addCharacter = () => {
     setFormData(prev => ({
@@ -379,8 +373,8 @@ export default function GamesPage({
           abilities: ['']
         }
       ]
-    }))
-  }
+    }));
+  };
 
   const updateCharacter = (index: number, field: keyof Character, value: string | string[]) => {
     setFormData(prev => ({
@@ -388,15 +382,15 @@ export default function GamesPage({
       characters: prev.characters.map((char, i) => 
         i === index ? { ...char, [field]: value } : char
       )
-    }))
-  }
+    }));
+  };
 
   const removeCharacter = (index: number) => {
     setFormData(prev => ({
       ...prev,
       characters: prev.characters.filter((_, i) => i !== index)
-    }))
-  }
+    }));
+  };
 
   const addAbility = (charIndex: number) => {
     setFormData(prev => ({
@@ -404,8 +398,8 @@ export default function GamesPage({
       characters: prev.characters.map((char, i) => 
         i === charIndex ? { ...char, abilities: [...char.abilities, ''] } : char
       )
-    }))
-  }
+    }));
+  };
 
   const updateAbility = (charIndex: number, abilityIndex: number, value: string) => {
     setFormData(prev => ({
@@ -416,8 +410,8 @@ export default function GamesPage({
           abilities: char.abilities.map((ability, j) => j === abilityIndex ? value : ability)
         } : char
       )
-    }))
-  }
+    }));
+  };
 
   const removeAbility = (charIndex: number, abilityIndex: number) => {
     setFormData(prev => ({
@@ -428,8 +422,8 @@ export default function GamesPage({
           abilities: char.abilities.filter((_, j) => j !== abilityIndex)
         } : char
       )
-    }))
-  }
+    }));
+  };
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-900 to-slate-800 text-white">
@@ -465,10 +459,10 @@ export default function GamesPage({
               </TooltipContent>
             </Tooltip>
             <Dialog open={isAddDialogOpen} onOpenChange={(open) => {
-              setIsAddDialogOpen(open)
+              setIsAddDialogOpen(open);
               if (!open) {
-                resetForm()
-                setIsBGGSearchOpen(false)
+                resetForm();
+                setIsBGGSearchOpen(false);
               }
             }}>
               <Tooltip>
@@ -992,8 +986,8 @@ export default function GamesPage({
                             )}
                             <button
                               onClick={(e) => {
-                                e.stopPropagation()
-                                setExpandedGame(expandedGame === game.game_id ? null : game.game_id)
+                                e.stopPropagation();
+                                setExpandedGame(expandedGame === game.game_id ? null : game.game_id);
                               }}
                               className="text-white/60 hover:text-white transition-colors"
                             >
@@ -1264,10 +1258,10 @@ export default function GamesPage({
 
       {/* Edit Game Dialog */}
       <Dialog open={isEditDialogOpen} onOpenChange={(open) => {
-        setIsEditDialogOpen(open)
+        setIsEditDialogOpen(open);
         if (!open) {
-          resetForm()
-          setEditingGame(null)
+          resetForm();
+          setEditingGame(null);
         }
       }}>
         <DialogContent className="bg-slate-800 border-slate-700 text-white max-w-2xl max-h-[90vh] overflow-y-auto">
@@ -1638,5 +1632,5 @@ export default function GamesPage({
       {/* Bottom Navigation */}
       <BottomNavigation currentView={currentView} onNavigation={onNavigation} />
     </div>
-  )
+  );
 }

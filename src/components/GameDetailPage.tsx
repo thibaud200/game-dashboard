@@ -1,19 +1,19 @@
-import React, { useState } from 'react'
-import { Button } from '@/components/ui/button'
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
-import { Badge } from '@/components/ui/badge'
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
-import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip'
+import React, { useState } from 'react';
+import { Button } from '@/components/ui/button';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Badge } from '@/components/ui/badge';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip';
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuTrigger,
   DropdownMenuSeparator
-} from '@/components/ui/dropdown-menu'
-import { ArrowLeft, Users, Clock, Star, Weight, Calendar, Factory, User, Plus, Gamepad2, UserCircle, DotsThreeVertical, Crown, TrendingUp, Settings } from '@phosphor-icons/react'
-import GameExpansionsPage from '@/components/GameExpansionsPage'
-import GameCharactersPage from '@/components/GameCharactersPage'
+} from '@/components/ui/dropdown-menu';
+import { ArrowLeft, Users, Clock, Star, Weight, Calendar, Factory, User, Gamepad2, UserCircle, DotsThreeVertical, Crown, TrendingUp, Settings } from '@phosphor-icons/react';
+import GameExpansionsPage from '@/components/GameExpansionsPage';
+import GameCharactersPage from '@/components/GameCharactersPage';
 
 interface Game {
   game_id: number
@@ -79,8 +79,7 @@ interface GameDetailPageProps {
 
 export default function GameDetailPage({ 
   game, 
-  onNavigation, 
-  currentView,
+  onNavigation,
   navigationSource = 'games',
   onAddExpansion,
   onUpdateExpansion,
@@ -89,13 +88,13 @@ export default function GameDetailPage({
   onUpdateCharacter,
   onDeleteCharacter
 }: GameDetailPageProps) {
-  const [activeTab, setActiveTab] = useState('overview')
+  const [activeTab, setActiveTab] = useState('overview');
 
-  const gameTypes = []
-  if (game.supports_competitive) gameTypes.push('Compétitif')
-  if (game.supports_cooperative) gameTypes.push('Coopératif')
-  if (game.supports_campaign) gameTypes.push('Campagne')
-  if (game.supports_hybrid) gameTypes.push('Hybride')
+  const gameTypes = [];
+  if (game.supports_competitive) gameTypes.push('Compétitif');
+  if (game.supports_cooperative) gameTypes.push('Coopératif');
+  if (game.supports_campaign) gameTypes.push('Campagne');
+  if (game.supports_hybrid) gameTypes.push('Hybride');
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-900 to-slate-800">
@@ -302,7 +301,7 @@ export default function GameDetailPage({
         </div>
       </div>
     </div>
-  )
+  );
 
   function renderGameOverview() {
     return (
@@ -510,6 +509,6 @@ export default function GameDetailPage({
           </Card>
         </div>
       </>
-    )
+    );
   }
 }

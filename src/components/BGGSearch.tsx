@@ -1,10 +1,11 @@
-import React, { useState, useEffect } from 'react'
-import { Search, CircleNotch, ExternalLink } from '@phosphor-icons/react'
-import { Input } from '@/components/ui/input'
-import { Button } from '@/components/ui/button'
-import { Card, CardContent } from '@/components/ui/card'
-import { Badge } from '@/components/ui/badge'
-import { bggApiService, BGGSearchResult, BGGGame } from '@/services/bggApi'
+import React, { useState, useEffect } from 'react';
+import { Search, CircleNotch, ExternalLink } from '@phosphor-icons/react';
+import { Input } from '@/components/ui/input';
+import { Button } from '@/components/ui/button';
+import { Card, CardContent } from '@/components/ui/card';
+import { Badge } from '@/components/ui/badge';
+import { bggApiService, BGGSearchResult, BGGGame } from '@/services/bggApi';
+import log from "loglevel";
 
 interface BGGSearchProps {
   onGameSelect: (game: BGGGame) => void
@@ -12,53 +13,53 @@ interface BGGSearchProps {
 }
 
 export default function BGGSearch({ onGameSelect, onClose }: BGGSearchProps) {
-  const [query, setQuery] = useState('')
-  const [searchResults, setSearchResults] = useState<BGGSearchResult[]>([])
-  const [isSearching, setIsSearching] = useState(false)
-  const [isLoadingDetails, setIsLoadingDetails] = useState(false)
-  const [searchError, setSearchError] = useState('')
+  const [query, setQuery] = useState('');
+  const [searchResults, setSearchResults] = useState<BGGSearchResult[]>([]);
+  const [isSearching, setIsSearching] = useState(false);
+  const [isLoadingDetails, setIsLoadingDetails] = useState(false);
+  const [searchError, setSearchError] = useState('');
 
   const handleSearch = async () => {
-    if (!query.trim()) return
+    if (!query.trim()) return;
 
-    setIsSearching(true)
-    setSearchError('')
+    setIsSearching(true);
+    setSearchError('');
     
     try {
-      const results = await bggApiService.searchGames(query.trim())
-      setSearchResults(results)
+      const results = await bggApiService.searchGames(query.trim());
+      setSearchResults(results);
     } catch (error) {
-      setSearchError('Failed to search BoardGameGeek. Please try again.')
-      console.error('BGG Search error:', error)
+      setSearchError('Failed to search BoardGameGeek. Please try again.');
+      log.error('BGG Search error:', error);
     } finally {
-      setIsSearching(false)
+      setIsSearching(false);
     }
-  }
+  };
 
   const handleGameSelect = async (result: BGGSearchResult) => {
-    setIsLoadingDetails(true)
+    setIsLoadingDetails(true);
     
     try {
-      const gameDetails = await bggApiService.getGameDetails(result.id)
+      const gameDetails = await bggApiService.getGameDetails(result.id);
       if (gameDetails) {
-        onGameSelect(gameDetails)
-        onClose()
+        onGameSelect(gameDetails);
+        onClose();
       } else {
-        setSearchError('Failed to load game details. Please try again.')
+        setSearchError('Failed to load game details. Please try again.');
       }
     } catch (error) {
-      setSearchError('Failed to load game details. Please try again.')
-      console.error('BGG Details error:', error)
+      setSearchError('Failed to load game details. Please try again.');
+      log.error('BGG Details error:', error);
     } finally {
-      setIsLoadingDetails(false)
+      setIsLoadingDetails(false);
     }
-  }
+  };
 
   const handleKeyPress = (e: React.KeyboardEvent) => {
     if (e.key === 'Enter') {
-      handleSearch()
+      handleSearch();
     }
-  }
+  };
 
   return (
     <div className="space-y-4">
@@ -139,5 +140,5 @@ export default function BGGSearch({ onGameSelect, onClose }: BGGSearchProps) {
         Data from BoardGameGeek.com
       </div>
     </div>
-  )
+  );
 }

@@ -1,19 +1,19 @@
-import React, { useState, useEffect } from 'react'
-import { useKV } from '@github/spark/hooks'
-import { TooltipProvider } from '@/components/ui/tooltip'
-import { Toaster } from '@/components/ui/sonner'
-import Dashboard from '@/components/Dashboard'
-import PlayersPage from '@/components/PlayersPage'
-import GamesPage from '@/components/GamesPage'
-import GameDetailPage from '@/components/GameDetailPage'
-import GameExpansionsPage from '@/components/GameExpansionsPage'
-import GameCharactersPage from '@/components/GameCharactersPage'
-import PlayerStatsPage from '@/components/PlayerStatsPage'
-import GameStatsPage from '@/components/GameStatsPage'
-import NewGamePage from '@/components/NewGamePage'
-import SettingsPage from '@/components/SettingsPage'
-import ApiService from '@/services/ApiService'
-
+import React, { useState, useEffect } from 'react';
+import { useKV } from '@github/spark/hooks';
+import { TooltipProvider } from '@/components/ui/tooltip';
+import { Toaster } from '@/components/ui/sonner';
+import Dashboard from '@/components/Dashboard';
+import PlayersPage from '@/components/PlayersPage';
+import GamesPage from '@/components/GamesPage';
+import GameDetailPage from '@/components/GameDetailPage';
+import GameExpansionsPage from '@/components/GameExpansionsPage';
+import GameCharactersPage from '@/components/GameCharactersPage';
+import PlayerStatsPage from '@/components/PlayerStatsPage';
+import GameStatsPage from '@/components/GameStatsPage';
+import NewGamePage from '@/components/NewGamePage';
+import SettingsPage from '@/components/SettingsPage';
+import ApiService from '@/services/ApiService';
+import log from 'loglevel';
 // Database-aligned interfaces
 
 interface Player {
@@ -343,7 +343,7 @@ const mockData = {
       players: '2-5'
     }
   ]
-}
+};
 
 export default function ModernDashboard() {
   const [stats, setStats] = useState({
@@ -351,64 +351,64 @@ export default function ModernDashboard() {
     gamesCount: 0,
     loading: true,
     error: null
-  })
-  const [recentPlayers, setRecentPlayers] = useState<Player[]>([])
-  const [recentGames, setRecentGames] = useState<Game[]>([])
-  const [currentView, setCurrentView] = useState('dashboard')
-  const [currentGameId, setCurrentGameId] = useState<number | null>(null)
-  const [currentPlayerId, setCurrentPlayerId] = useState<number | null>(null)
-  const [navigationSource, setNavigationSource] = useState<string>('games') // Track where user came from
-  const [apiConnected, setApiConnected] = useState(false)
+  });
+  const [recentPlayers, setRecentPlayers] = useState<Player[]>([]);
+  const [recentGames, setRecentGames] = useState<Game[]>([]);
+  const [currentView, setCurrentView] = useState('dashboard');
+  const [currentGameId, setCurrentGameId] = useState<number | null>(null);
+  const [currentPlayerId, setCurrentPlayerId] = useState<number | null>(null);
+  const [navigationSource, setNavigationSource] = useState<string>('games'); // Track where user came from
+  const [apiConnected, setApiConnected] = useState(false);
   
   // Persistent data using useKV as fallback
-  const [players, setPlayers] = useKV<Player[]>('board-game-players', [])
-  const [games, setGames] = useKV<Game[]>('board-game-games', [])
+  const [players, setPlayers] = useKV<Player[]>('board-game-players', []);
+  const [games, setGames] = useKV<Game[]>('board-game-games', []);
 
   useEffect(() => {
-    loadDataFromApi()
-  }, [])
+    loadDataFromApi();
+  }, []);
 
   const loadDataFromApi = async () => {
     try {
       // Try to connect to API first
-      await ApiService.healthCheck()
-      setApiConnected(true)
+      await ApiService.healthCheck();
+      setApiConnected(true);
       
       // Load data from API
       const [apiPlayers, apiGames] = await Promise.all([
         ApiService.getAllPlayers(),
         ApiService.getAllGames()
-      ])
+      ]);
       
       setStats({
         playersCount: apiPlayers.length,
         gamesCount: apiGames.length,
         loading: false,
         error: null
-      })
+      });
       
-      setRecentPlayers(apiPlayers.slice(0, 3))
-      setRecentGames(apiGames.slice(0, 3))
+      setRecentPlayers(apiPlayers.slice(0, 3));
+      setRecentGames(apiGames.slice(0, 3));
       
       // Update local storage as backup
-      setPlayers(apiPlayers)
-      setGames(apiGames)
+      setPlayers(apiPlayers);
+      setGames(apiGames);
       
     } catch (error) {
-      console.warn('API not available, using local storage:', error)
-      setApiConnected(false)
+      log.warn('API not available, using local storage:', error);
+      setApiConnected(false);
       
       // Fall back to local storage or mock data
-      let currentPlayers = players || []
-      let currentGames = games || []
+      let currentPlayers = players || [];
+      let currentGames = games || [];
       
       if (currentPlayers.length === 0) {
-        currentPlayers = mockData.recentPlayers
-        setPlayers(currentPlayers)
+        currentPlayers = mockData.recentPlayers;
+        setPlayers(currentPlayers);
       }
       if (currentGames.length === 0) {
-        currentGames = mockData.recentGames
-        setGames(currentGames)
+        currentGames = mockData.recentGames;
+        setGames(currentGames);
       }
       
       setStats({
@@ -416,48 +416,48 @@ export default function ModernDashboard() {
         gamesCount: currentGames.length,
         loading: false,
         error: null
-      })
-      setRecentPlayers(currentPlayers.slice(0, 3))
-      setRecentGames(currentGames.slice(0, 3))
+      });
+      setRecentPlayers(currentPlayers.slice(0, 3));
+      setRecentGames(currentGames.slice(0, 3));
     }
-  }
+  };
 
   const handleNavigation = (view: string, gameId?: number, source?: string) => {
-    setCurrentView(view)
+    setCurrentView(view);
     if (gameId !== undefined) {
       if (view === 'player-stats') {
-        setCurrentPlayerId(gameId) // gameId parameter used for both game and player IDs
+        setCurrentPlayerId(gameId); // gameId parameter used for both game and player IDs
       } else {
-        setCurrentGameId(gameId)
+        setCurrentGameId(gameId);
       }
     }
     
     // Track navigation source for contextual back navigation
     if (source) {
       // Explicit source provided - use it
-      setNavigationSource(source)
+      setNavigationSource(source);
     } else if (view === 'game-detail') {
       // Default source when viewing game detail is games
-      setNavigationSource('games')
+      setNavigationSource('games');
     } else if (view === 'game-expansions' || view === 'game-characters') {
       // For expansion/character pages, default to games unless coming from game-detail
       if (currentView === 'game-detail') {
-        setNavigationSource('game-detail')
+        setNavigationSource('game-detail');
       } else {
-        setNavigationSource('games')
+        setNavigationSource('games');
       }
     } else {
       // For any other view, don't change navigation source
       // This preserves the current navigation context
     }
-  }
+  };
 
   const addPlayer = async (playerData: any) => {
     try {
       if (apiConnected) {
-        const newPlayer = await ApiService.createPlayer(playerData)
-        await loadDataFromApi() // Refresh data
-        return newPlayer
+        const newPlayer = await ApiService.createPlayer(playerData);
+        await loadDataFromApi(); // Refresh data
+        return newPlayer;
       } else {
         // Fallback to local storage
         const player: Player = {
@@ -471,22 +471,22 @@ export default function ModernDashboard() {
           favorite_game: playerData.favorite_game || '',
           created_at: playerData.created_at || new Date(),
           stats: `${playerData.total_score || 0} pts`
-        }
-        setPlayers((currentPlayers) => [...(currentPlayers || []), player])
-        return player
+        };
+        setPlayers((currentPlayers) => [...(currentPlayers || []), player]);
+        return player;
       }
     } catch (error) {
-      console.error('Error adding player:', error)
-      throw error
+      log.error('Error adding player:', error);
+      throw error;
     }
-  }
+  };
 
   const updatePlayer = async (playerId: number, playerData: any) => {
     try {
       if (apiConnected) {
-        const updatedPlayer = await ApiService.updatePlayer(playerId, playerData)
-        await loadDataFromApi() // Refresh data
-        return updatedPlayer
+        const updatedPlayer = await ApiService.updatePlayer(playerId, playerData);
+        await loadDataFromApi(); // Refresh data
+        return updatedPlayer;
       } else {
         // Fallback to local storage
         setPlayers((currentPlayers) => 
@@ -500,20 +500,20 @@ export default function ModernDashboard() {
                 }
               : p
           )
-        )
+        );
       }
     } catch (error) {
-      console.error('Error updating player:', error)
-      throw error
+      log.error('Error updating player:', error);
+      throw error;
     }
-  }
+  };
 
   const addGame = async (gameData: any) => {
     try {
       if (apiConnected) {
-        const newGame = await ApiService.createGame(gameData)
-        await loadDataFromApi() // Refresh data
-        return newGame
+        const newGame = await ApiService.createGame(gameData);
+        await loadDataFromApi(); // Refresh data
+        return newGame;
       } else {
         // Fallback to local storage
         const game: Game = {
@@ -543,22 +543,22 @@ export default function ModernDashboard() {
           expansions: gameData.expansions || [],
           characters: gameData.characters || [],
           players: `${gameData.min_players}-${gameData.max_players}`
-        }
-        setGames((currentGames) => [...(currentGames || []), game])
-        return game
+        };
+        setGames((currentGames) => [...(currentGames || []), game]);
+        return game;
       }
     } catch (error) {
-      console.error('Error adding game:', error)
-      throw error
+      log.error('Error adding game:', error);
+      throw error;
     }
-  }
+  };
 
   const updateGame = async (gameId: number, gameData: any) => {
     try {
       if (apiConnected) {
-        const updatedGame = await ApiService.updateGame(gameId, gameData)
-        await loadDataFromApi() // Refresh data
-        return updatedGame
+        const updatedGame = await ApiService.updateGame(gameId, gameData);
+        await loadDataFromApi(); // Refresh data
+        return updatedGame;
       } else {
         // Fallback to local storage
         setGames((currentGames) => 
@@ -574,43 +574,43 @@ export default function ModernDashboard() {
                 }
               : g
           )
-        )
+        );
       }
     } catch (error) {
-      console.error('Error updating game:', error)
-      throw error
+      log.error('Error updating game:', error);
+      throw error;
     }
-  }
+  };
 
   const deletePlayer = async (playerId: number) => {
     try {
       if (apiConnected) {
-        await ApiService.deletePlayer(playerId)
-        await loadDataFromApi() // Refresh data
+        await ApiService.deletePlayer(playerId);
+        await loadDataFromApi(); // Refresh data
       } else {
         // Fallback to local storage
-        setPlayers((currentPlayers) => (currentPlayers || []).filter(p => p.player_id !== playerId))
+        setPlayers((currentPlayers) => (currentPlayers || []).filter(p => p.player_id !== playerId));
       }
     } catch (error) {
-      console.error('Error deleting player:', error)
-      throw error
+      log.error('Error deleting player:', error);
+      throw error;
     }
-  }
+  };
 
   const deleteGame = async (gameId: number) => {
     try {
       if (apiConnected) {
-        await ApiService.deleteGame(gameId)
-        await loadDataFromApi() // Refresh data
+        await ApiService.deleteGame(gameId);
+        await loadDataFromApi(); // Refresh data
       } else {
         // Fallback to local storage
-        setGames((currentGames) => (currentGames || []).filter(g => g.game_id !== gameId))
+        setGames((currentGames) => (currentGames || []).filter(g => g.game_id !== gameId));
       }
     } catch (error) {
-      console.error('Error deleting game:', error)
-      throw error
+      log.error('Error deleting game:', error);
+      throw error;
     }
-  }
+  };
 
   // Expansion management functions
   const addExpansion = async (gameId: number, expansionData: any) => {
@@ -619,9 +619,9 @@ export default function ModernDashboard() {
         const newExpansion = await ApiService.createExpansion({
           ...expansionData,
           game_id: gameId
-        })
-        await loadDataFromApi() // Refresh data
-        return newExpansion
+        });
+        await loadDataFromApi(); // Refresh data
+        return newExpansion;
       } else {
         // Fallback to local storage
         const expansion: GameExpansion = {
@@ -631,7 +631,7 @@ export default function ModernDashboard() {
           year_published: expansionData.year_published,
           description: expansionData.description,
           bgg_expansion_id: expansionData.bgg_expansion_id
-        }
+        };
         
         setGames((currentGames) => 
           (currentGames || []).map(g => 
@@ -639,21 +639,21 @@ export default function ModernDashboard() {
               ? { ...g, expansions: [...(g.expansions || []), expansion] }
               : g
           )
-        )
-        return expansion
+        );
+        return expansion;
       }
     } catch (error) {
-      console.error('Error adding expansion:', error)
-      throw error
+      log.error('Error adding expansion:', error);
+      throw error;
     }
-  }
+  };
 
   const updateExpansion = async (expansionId: number, expansionData: any) => {
     try {
       if (apiConnected) {
-        const updatedExpansion = await ApiService.updateExpansion(expansionId, expansionData)
-        await loadDataFromApi() // Refresh data
-        return updatedExpansion
+        const updatedExpansion = await ApiService.updateExpansion(expansionId, expansionData);
+        await loadDataFromApi(); // Refresh data
+        return updatedExpansion;
       } else {
         // Fallback to local storage
         setGames((currentGames) => 
@@ -665,19 +665,19 @@ export default function ModernDashboard() {
                 : exp
             )
           }))
-        )
+        );
       }
     } catch (error) {
-      console.error('Error updating expansion:', error)
-      throw error
+      log.error('Error updating expansion:', error);
+      throw error;
     }
-  }
+  };
 
   const deleteExpansion = async (expansionId: number) => {
     try {
       if (apiConnected) {
-        await ApiService.deleteExpansion(expansionId)
-        await loadDataFromApi() // Refresh data
+        await ApiService.deleteExpansion(expansionId);
+        await loadDataFromApi(); // Refresh data
       } else {
         // Fallback to local storage
         setGames((currentGames) => 
@@ -685,13 +685,13 @@ export default function ModernDashboard() {
             ...g,
             expansions: (g.expansions || []).filter(exp => exp.expansion_id !== expansionId)
           }))
-        )
+        );
       }
     } catch (error) {
-      console.error('Error deleting expansion:', error)
-      throw error
+      log.error('Error deleting expansion:', error);
+      throw error;
     }
-  }
+  };
 
   // Character management functions
   const addCharacter = async (gameId: number, characterData: any) => {
@@ -700,9 +700,9 @@ export default function ModernDashboard() {
         const newCharacter = await ApiService.createCharacter({
           ...characterData,
           game_id: gameId
-        })
-        await loadDataFromApi() // Refresh data
-        return newCharacter
+        });
+        await loadDataFromApi(); // Refresh data
+        return newCharacter;
       } else {
         // Fallback to local storage
         const character: GameCharacter = {
@@ -713,7 +713,7 @@ export default function ModernDashboard() {
           description: characterData.description,
           avatar: characterData.avatar,
           abilities: characterData.abilities || []
-        }
+        };
         
         setGames((currentGames) => 
           (currentGames || []).map(g => 
@@ -721,21 +721,21 @@ export default function ModernDashboard() {
               ? { ...g, characters: [...(g.characters || []), character] }
               : g
           )
-        )
-        return character
+        );
+        return character;
       }
     } catch (error) {
-      console.error('Error adding character:', error)
-      throw error
+      log.error('Error adding character:', error);
+      throw error;
     }
-  }
+  };
 
   const updateCharacter = async (characterId: number, characterData: any) => {
     try {
       if (apiConnected) {
-        const updatedCharacter = await ApiService.updateCharacter(characterId, characterData)
-        await loadDataFromApi() // Refresh data
-        return updatedCharacter
+        const updatedCharacter = await ApiService.updateCharacter(characterId, characterData);
+        await loadDataFromApi(); // Refresh data
+        return updatedCharacter;
       } else {
         // Fallback to local storage
         setGames((currentGames) => 
@@ -747,19 +747,19 @@ export default function ModernDashboard() {
                 : char
             )
           }))
-        )
+        );
       }
     } catch (error) {
-      console.error('Error updating character:', error)
-      throw error
+      log.error('Error updating character:', error);
+      throw error;
     }
-  }
+  };
 
   const deleteCharacter = async (characterId: number) => {
     try {
       if (apiConnected) {
-        await ApiService.deleteCharacter(characterId)
-        await loadDataFromApi() // Refresh data
+        await ApiService.deleteCharacter(characterId);
+        await loadDataFromApi(); // Refresh data
       } else {
         // Fallback to local storage
         setGames((currentGames) => 
@@ -767,13 +767,13 @@ export default function ModernDashboard() {
             ...g,
             characters: (g.characters || []).filter(char => char.character_id !== characterId)
           }))
-        )
+        );
       }
     } catch (error) {
-      console.error('Error deleting character:', error)
-      throw error
+      log.error('Error deleting character:', error);
+      throw error;
     }
-  }
+  };
 
   if (stats.loading) {
     return (
@@ -787,7 +787,7 @@ export default function ModernDashboard() {
           </div>
         </div>
       </TooltipProvider>
-    )
+    );
   }
 
   // Render different pages based on current view
@@ -804,7 +804,7 @@ export default function ModernDashboard() {
         />
         <Toaster />
       </TooltipProvider>
-    )
+    );
   }
 
   if (currentView === 'player-stats') {
@@ -818,7 +818,7 @@ export default function ModernDashboard() {
           selectedPlayerId={currentPlayerId || undefined}
         />
       </TooltipProvider>
-    )
+    );
   }
   
   if (currentView === 'games') {
@@ -840,7 +840,7 @@ export default function ModernDashboard() {
         />
         <Toaster />
       </TooltipProvider>
-    )
+    );
   }
 
   if (currentView === 'game-stats') {
@@ -854,7 +854,7 @@ export default function ModernDashboard() {
           selectedGameId={currentGameId || undefined}
         />
       </TooltipProvider>
-    )
+    );
   }
 
   if (currentView === 'new-game') {
@@ -868,19 +868,19 @@ export default function ModernDashboard() {
           onCreateSession={async (sessionData) => {
             try {
               if (apiConnected) {
-                await ApiService.createSession(sessionData)
+                await ApiService.createSession(sessionData);
               } else {
                 // For local storage, we could save sessions to useKV but it's not implemented yet
-                console.log('Session saved locally:', sessionData)
+                log.info('Session saved locally:', sessionData);
               }
             } catch (error) {
-              console.error('Error creating session:', error)
-              throw error
+              log.error('Error creating session:', error);
+              throw error;
             }
           }}
         />
       </TooltipProvider>
-    )
+    );
   }
 
   if (currentView === 'settings') {
@@ -891,17 +891,17 @@ export default function ModernDashboard() {
           currentView={currentView}
         />
       </TooltipProvider>
-    )
+    );
   }
 
   // Game Detail Page
   if (currentView === 'game-detail' && currentGameId) {
-    const allGames = games || []
-    const currentGame = allGames.find(g => g.game_id === currentGameId)
+    const allGames = games || [];
+    const currentGame = allGames.find(g => g.game_id === currentGameId);
     if (!currentGame) {
       // Game not found, redirect to games page
-      setCurrentView('games')
-      return null
+      setCurrentView('games');
+      return null;
     }
     
     return (
@@ -919,17 +919,17 @@ export default function ModernDashboard() {
           onDeleteCharacter={deleteCharacter}
         />
       </TooltipProvider>
-    )
+    );
   }
 
   // Game Expansions Page
   if (currentView === 'game-expansions' && currentGameId) {
-    const allGames = games || []
-    const currentGame = allGames.find(g => g.game_id === currentGameId)
+    const allGames = games || [];
+    const currentGame = allGames.find(g => g.game_id === currentGameId);
     if (!currentGame) {
       // Game not found, redirect to games page
-      setCurrentView('games')
-      return null
+      setCurrentView('games');
+      return null;
     }
     
     return (
@@ -944,17 +944,17 @@ export default function ModernDashboard() {
         />
         <Toaster />
       </TooltipProvider>
-    )
+    );
   }
 
   // Game Characters Page
   if (currentView === 'game-characters' && currentGameId) {
-    const allGames = games || []
-    const currentGame = allGames.find(g => g.game_id === currentGameId)
+    const allGames = games || [];
+    const currentGame = allGames.find(g => g.game_id === currentGameId);
     if (!currentGame) {
       // Game not found, redirect to games page
-      setCurrentView('games')
-      return null
+      setCurrentView('games');
+      return null;
     }
     
     return (
@@ -969,7 +969,7 @@ export default function ModernDashboard() {
         />
         <Toaster />
       </TooltipProvider>
-    )
+    );
   }
 
   // Dashboard (default view)
@@ -984,5 +984,5 @@ export default function ModernDashboard() {
       />
       <Toaster />
     </TooltipProvider>
-  )
+  );
 }

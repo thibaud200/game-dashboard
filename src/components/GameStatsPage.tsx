@@ -1,4 +1,4 @@
-import React, { useState, useMemo } from 'react'
+import React, { useState, useMemo } from 'react';
 import {
   ArrowLeft,
   TrendingUp,
@@ -10,8 +10,8 @@ import {
   Calendar,
   Trophy,
   Target
-} from '@phosphor-icons/react'
-import BottomNavigation from './BottomNavigation'
+} from '@phosphor-icons/react';
+import BottomNavigation from './BottomNavigation';
 
 interface Game {
   game_id: number
@@ -69,76 +69,76 @@ const mockGameSessions: GameSession[] = [
   { session_id: 3, game_id: 1, date: new Date('2024-02-08'), duration_minutes: 70, winner_player_id: 1, session_type: 'campaign', player_count: 4, average_score: 92 },
   { session_id: 4, game_id: 2, date: new Date('2024-02-14'), duration_minutes: 60, winner_player_id: 3, session_type: 'competitive', player_count: 5, average_score: 76 },
   { session_id: 5, game_id: 2, date: new Date('2024-02-10'), duration_minutes: 65, winner_player_id: 2, session_type: 'competitive', player_count: 4, average_score: 82 }
-]
+];
 
 export default function GameStatsPage({ games, players, onNavigation, currentView, selectedGameId }: GameStatsPageProps) {
-  const [selectedPeriod, setSelectedPeriod] = useState<'week' | 'month' | 'year' | 'all'>('month')
+  const [selectedPeriod, setSelectedPeriod] = useState<'week' | 'month' | 'year' | 'all'>('month');
   
   // Use selectedGameId if provided, otherwise default to first game
   const [selectedGame, setSelectedGame] = useState<Game | null>(() => {
     if (selectedGameId) {
-      return games.find(g => g.game_id === selectedGameId) || games[0] || null
+      return games.find(g => g.game_id === selectedGameId) || games[0] || null;
     }
-    return games[0] || null
-  })
+    return games[0] || null;
+  });
 
   // If selectedGameId is provided, filter to show only that game's stats
-  const displayGames = selectedGameId 
+  /*const displayGames = selectedGameId 
     ? games.filter(g => g.game_id === selectedGameId)
-    : games
+    : games;*/
 
   // Calculate comprehensive game stats
   const gameStats = useMemo(() => {
-    if (!selectedGame) return null
+    if (!selectedGame) return null;
 
-    const gameSessions = mockGameSessions.filter(s => s.game_id === selectedGame.game_id)
-    const totalSessions = gameSessions.length
-    const totalPlayers = gameSessions.reduce((sum, s) => sum + s.player_count, 0)
-    const averagePlayerCount = totalSessions > 0 ? totalPlayers / totalSessions : 0
-    const totalPlayTime = gameSessions.reduce((sum, s) => sum + (s.duration_minutes || 0), 0)
-    const averageSessionTime = totalSessions > 0 ? totalPlayTime / totalSessions : 0
-    const averageScore = totalSessions > 0 ? gameSessions.reduce((sum, s) => sum + s.average_score, 0) / totalSessions : 0
+    const gameSessions = mockGameSessions.filter(s => s.game_id === selectedGame.game_id);
+    const totalSessions = gameSessions.length;
+    const totalPlayers = gameSessions.reduce((sum, s) => sum + s.player_count, 0);
+    const averagePlayerCount = totalSessions > 0 ? totalPlayers / totalSessions : 0;
+    const totalPlayTime = gameSessions.reduce((sum, s) => sum + (s.duration_minutes || 0), 0);
+    const averageSessionTime = totalSessions > 0 ? totalPlayTime / totalSessions : 0;
+    const averageScore = totalSessions > 0 ? gameSessions.reduce((sum, s) => sum + s.average_score, 0) / totalSessions : 0;
 
     // Session types distribution
     const sessionTypes = gameSessions.reduce((acc, session) => {
-      acc[session.session_type] = (acc[session.session_type] || 0) + 1
-      return acc
-    }, {} as Record<string, number>)
+      acc[session.session_type] = (acc[session.session_type] || 0) + 1;
+      return acc;
+    }, {} as Record<string, number>);
 
     // Player count distribution
     const playerCountDistribution = gameSessions.reduce((acc, session) => {
-      const count = session.player_count.toString()
-      acc[count] = (acc[count] || 0) + 1
-      return acc
-    }, {} as Record<string, number>)
+      const count = session.player_count.toString();
+      acc[count] = (acc[count] || 0) + 1;
+      return acc;
+    }, {} as Record<string, number>);
 
     // Winner frequency
     const winnerFrequency = gameSessions.reduce((acc, session) => {
       if (session.winner_player_id) {
-        acc[session.winner_player_id] = (acc[session.winner_player_id] || 0) + 1
+        acc[session.winner_player_id] = (acc[session.winner_player_id] || 0) + 1;
       }
-      return acc
-    }, {} as Record<number, number>)
+      return acc;
+    }, {} as Record<number, number>);
 
     const topWinners = Object.entries(winnerFrequency)
       .map(([playerId, wins]) => {
-        const player = players.find(p => p.player_id === parseInt(playerId))
-        return { player, wins: wins as number }
+        const player = players.find(p => p.player_id === parseInt(playerId));
+        return { player, wins: wins as number };
       })
       .filter(w => w.player)
       .sort((a, b) => b.wins - a.wins)
-      .slice(0, 5)
+      .slice(0, 5);
 
     // Performance trend (last 10 sessions)
-    const recentSessions = gameSessions.slice(-10)
-    const performanceTrend = recentSessions.map(s => s.average_score)
+    const recentSessions = gameSessions.slice(-10);
+    const performanceTrend = recentSessions.map(s => s.average_score);
 
     // Play frequency over time
     const playFrequency = gameSessions.reduce((acc, session) => {
-      const month = session.date.toISOString().substring(0, 7) // YYYY-MM
-      acc[month] = (acc[month] || 0) + 1
-      return acc
-    }, {} as Record<string, number>)
+      const month = session.date.toISOString().substring(0, 7); // YYYY-MM
+      acc[month] = (acc[month] || 0) + 1;
+      return acc;
+    }, {} as Record<string, number>);
 
     return {
       totalSessions,
@@ -153,8 +153,8 @@ export default function GameStatsPage({ games, players, onNavigation, currentVie
       performanceTrend,
       playFrequency,
       recentSessions: gameSessions.slice(-5)
-    }
-  }, [selectedGame, players])
+    };
+  }, [selectedGame, players]);
 
   if (!selectedGame || !gameStats) {
     return (
@@ -176,7 +176,7 @@ export default function GameStatsPage({ games, players, onNavigation, currentVie
         </div>
         <BottomNavigation currentView={currentView} onNavigation={onNavigation} />
       </div>
-    )
+    );
   }
 
   return (
@@ -202,8 +202,8 @@ export default function GameStatsPage({ games, players, onNavigation, currentVie
             <select
               value={selectedGame?.game_id || ''}
               onChange={(e) => {
-                const game = games.find(g => g.game_id === parseInt(e.target.value))
-                setSelectedGame(game || null)
+                const game = games.find(g => g.game_id === parseInt(e.target.value));
+                setSelectedGame(game || null);
               }}
               className="w-full bg-white/10 border border-white/20 rounded-xl px-4 py-3 text-white focus:outline-none focus:ring-2 focus:ring-primary"
             >
@@ -307,8 +307,8 @@ export default function GameStatsPage({ games, players, onNavigation, currentVie
           </div>
           <div className="h-32 flex items-end space-x-2">
             {gameStats.performanceTrend.map((score, index) => {
-              const maxScore = Math.max(...gameStats.performanceTrend)
-              const height = maxScore > 0 ? (score / maxScore) * 100 : 0
+              const maxScore = Math.max(...gameStats.performanceTrend);
+              const height = maxScore > 0 ? (score / maxScore) * 100 : 0;
               return (
                 <div
                   key={index}
@@ -316,7 +316,7 @@ export default function GameStatsPage({ games, players, onNavigation, currentVie
                   style={{ height: `${height}%`, minHeight: '8px' }}
                   title={`Average Score: ${score}`}
                 />
-              )
+              );
             })}
           </div>
           <div className="text-center text-white/60 text-sm mt-2">Last 10 Sessions</div>
@@ -330,13 +330,13 @@ export default function GameStatsPage({ games, players, onNavigation, currentVie
           </div>
           <div className="space-y-3">
             {Object.entries(gameStats.sessionTypes).map(([type, count]) => {
-              const percentage = (count / gameStats.totalSessions) * 100
+              const percentage = (count / gameStats.totalSessions) * 100;
               const colors = {
                 competitive: 'from-red-400 to-red-600',
                 cooperative: 'from-blue-400 to-blue-600',
                 campaign: 'from-purple-400 to-purple-600',
                 hybrid: 'from-green-400 to-green-600'
-              }
+              };
               return (
                 <div key={type} className="space-y-1">
                   <div className="flex justify-between text-sm">
@@ -350,7 +350,7 @@ export default function GameStatsPage({ games, players, onNavigation, currentVie
                     />
                   </div>
                 </div>
-              )
+              );
             })}
           </div>
         </div>
@@ -365,7 +365,7 @@ export default function GameStatsPage({ games, players, onNavigation, currentVie
             {Object.entries(gameStats.playerCountDistribution)
               .sort((a, b) => parseInt(a[0]) - parseInt(b[0]))
               .map(([count, sessions]) => {
-              const percentage = (sessions / gameStats.totalSessions) * 100
+              const percentage = (sessions / gameStats.totalSessions) * 100;
               return (
                 <div key={count} className="space-y-1">
                   <div className="flex justify-between text-sm">
@@ -379,7 +379,7 @@ export default function GameStatsPage({ games, players, onNavigation, currentVie
                     />
                   </div>
                 </div>
-              )
+              );
             })}
           </div>
         </div>
@@ -423,7 +423,7 @@ export default function GameStatsPage({ games, players, onNavigation, currentVie
           </div>
           <div className="space-y-3">
             {gameStats.recentSessions.map((session, index) => {
-              const winner = players.find(p => p.player_id === session.winner_player_id)
+              const winner = players.find(p => p.player_id === session.winner_player_id);
               return (
                 <div key={index} className="flex items-center space-x-3 p-3 bg-white/5 rounded-xl">
                   <div className={`w-3 h-3 rounded-full bg-${session.session_type === 'competitive' ? 'red' : session.session_type === 'cooperative' ? 'blue' : session.session_type === 'campaign' ? 'purple' : 'green'}-400`} />
@@ -443,7 +443,7 @@ export default function GameStatsPage({ games, players, onNavigation, currentVie
                     <div className="text-white/60 text-xs">avg score</div>
                   </div>
                 </div>
-              )
+              );
             })}
           </div>
         </div>
@@ -451,5 +451,5 @@ export default function GameStatsPage({ games, players, onNavigation, currentVie
 
       <BottomNavigation currentView={currentView} onNavigation={onNavigation} />
     </div>
-  )
+  );
 }

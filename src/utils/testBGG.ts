@@ -1,22 +1,23 @@
-import { bggApiService } from '@/services/bggApi'
+import { bggApiService } from '@/services/bggApi';
+import log from "loglevel";
 
 // Simple test function for BGG API
 export const testBGGApi = async () => {
   try {
-    console.log('Testing BGG API...')
+    log.info('Testing BGG API...');
     
     // Test search
-    const searchResults = await bggApiService.searchGames('Wingspan')
-    console.log('Search results:', searchResults)
-    
+    const searchResults = await bggApiService.searchGames('Wingspan');
+    log.info('Search results:', searchResults);
+
     if (searchResults.length > 0) {
       // Test game details
-      const gameDetails = await bggApiService.getGameDetails(searchResults[0].id)
-      console.log('Game details:', gameDetails)
+      const gameDetails = await bggApiService.getGameDetails(searchResults[0].id);
+      log.info('Game details:', gameDetails);
     }
   } catch (error) {
-    console.error('BGG API test failed:', error)
+    log.error('BGG API test failed:', error);
   }
-}
+};
 
-export default testBGGApi
+export default testBGGApi;

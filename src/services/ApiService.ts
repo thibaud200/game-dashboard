@@ -1,3 +1,4 @@
+import log from "loglevel";
 // API service to connect frontend with backend database
 const API_BASE_URL = process.env.NODE_ENV === 'production' 
   ? 'https://your-api-domain.com/api' 
@@ -30,7 +31,7 @@ class ApiService {
       
       return await response.json();
     } catch (error) {
-      console.error(`API request failed for ${endpoint}:`, error);
+      log.error(`API request failed for ${endpoint}:`, error);
       throw error;
     }
   }
@@ -152,10 +153,6 @@ class ApiService {
       method: 'DELETE',
     });
   }
-  async getAllSessions(gameId?: number) {
-    const query = gameId ? `?game_id=${gameId}` : '';
-    return this.request<any[]>(`/sessions${query}`);
-  }
 
   async createSession(sessionData: any) {
     return this.request<any>('/sessions', {
@@ -170,28 +167,12 @@ class ApiService {
     return this.request<any[]>(`/sessions${query}`);
   }
 
-  async createSession(sessionData: any) {
-    return this.request<any>('/sessions', {
-      method: 'POST',
-      body: JSON.stringify(sessionData),
-    });
-  }
-
-  // Game Sessions
-  async createSession(sessionData: any) {
-    return this.request<any>('/sessions', 'POST', sessionData);
-  }
-
   async getSessionsByGame(gameId: number) {
     return this.request<any[]>(`/sessions/game/${gameId}`);
   }
 
   async getSessionsByPlayer(playerId: number) {
     return this.request<any[]>(`/sessions/player/${playerId}`);
-  }
-
-  async getAllSessions() {
-    return this.request<any[]>('/sessions');
   }
 
   async updateSession(sessionId: number, sessionData: any) {

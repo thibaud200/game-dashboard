@@ -1,4 +1,4 @@
-import React, { useState, useMemo } from 'react'
+import React, { useState, useMemo } from 'react';
 import {
   ArrowLeft,
   Trophy,
@@ -6,10 +6,9 @@ import {
   Target,
   Star,
   ChartBar,
-  ChartPie,
-  Calendar
-} from '@phosphor-icons/react'
-import BottomNavigation from './BottomNavigation'
+  ChartPie
+} from '@phosphor-icons/react';
+import BottomNavigation from './BottomNavigation';
 
 interface Player {
   player_id: number
@@ -56,56 +55,56 @@ const mockSessions: GameSession[] = [
   { game_id: 1, game_name: 'Strategy Pro', player_id: 1, score: 95, is_winner: true },
   { game_id: 1, game_name: 'Strategy Pro', player_id: 2, score: 78, is_winner: false },
   { game_id: 2, game_name: 'Battle Arena', player_id: 1, score: 120, is_winner: true },
-]
+];
 
 export default function PlayerStatsPage({ players, games, onNavigation, currentView, selectedPlayerId }: PlayerStatsPageProps) {
-  const [selectedPeriod, setSelectedPeriod] = useState('all')
+  //const [selectedPeriod, setSelectedPeriod] = useState('all');
 
   // If selectedPlayerId is provided, filter to show only that player's stats
   const displayPlayers = selectedPlayerId 
     ? players.filter(p => p.player_id === selectedPlayerId)
-    : players
+    : players;
 
   // Filter sessions for selected player if specified
   const displaySessions = selectedPlayerId
     ? mockSessions.filter(session => session.player_id === selectedPlayerId)
-    : mockSessions
+    : mockSessions;
 
   const selectedPlayer = selectedPlayerId 
     ? players.find(p => p.player_id === selectedPlayerId)
-    : null
+    : null;
 
   const stats = useMemo(() => {
-    const totalPlayers = displayPlayers.length
-    const totalGames = games.length
-    const totalSessions = displaySessions.length
-    const avgScore = displayPlayers.reduce((sum, p) => sum + p.average_score, 0) / displayPlayers.length || 0
+    const totalPlayers = displayPlayers.length;
+    const totalGames = games.length;
+    const totalSessions = displaySessions.length;
+    const avgScore = displayPlayers.reduce((sum, p) => sum + p.average_score, 0) / displayPlayers.length || 0;
 
     return {
       totalPlayers,
       totalGames,
       totalSessions,
       avgScore: Math.round(avgScore * 10) / 10
-    }
-  }, [displayPlayers, games, displaySessions])
+    };
+  }, [displayPlayers, games, displaySessions]);
 
   const topPlayers = useMemo(() => {
     return [...displayPlayers]
       .sort((a, b) => b.total_score - a.total_score)
-      .slice(0, 5)
-  }, [displayPlayers])
+      .slice(0, 5);
+  }, [displayPlayers]);
 
   const recentActivity = useMemo(() => {
     return displaySessions
       .map(session => {
-        const player = players.find(p => p.player_id === session.player_id)
+        const player = players.find(p => p.player_id === session.player_id);
         return {
           ...session,
           player_name: player?.player_name || 'Unknown'
-        }
+        };
       })
-      .slice(0, 5)
-  }, [displaySessions, players])
+      .slice(0, 5);
+  }, [displaySessions, players]);
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-900 to-slate-800 text-white">
@@ -225,5 +224,5 @@ export default function PlayerStatsPage({ players, games, onNavigation, currentV
       {/* Bottom Navigation */}
       <BottomNavigation currentView={currentView} onNavigation={onNavigation} />
     </div>
-  )
+  );
 }

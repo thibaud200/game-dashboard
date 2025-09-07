@@ -1,7 +1,7 @@
 import { Alert, AlertTitle, AlertDescription } from "@/components/ui/alert";
 import { Button } from "@/components/ui/button";
 
-import { AlertTriangle, ArrowClockwise } from "@phosphor-icons/react";
+import { ArrowClockwise, AlertTriangle } from "@phosphor-icons/react";
 
 interface ErrorFallbackProps {
   error: Error;
@@ -42,4 +42,4 @@ export const ErrorFallback = ({ error, resetErrorBoundary }: ErrorFallbackProps)
       </div>
     </div>
   );
-}
+};

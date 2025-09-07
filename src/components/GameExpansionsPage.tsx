@@ -1,14 +1,15 @@
-import React, { useState } from 'react'
-import { Button } from '@/components/ui/button'
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
-import { Input } from '@/components/ui/input'
-import { Label } from '@/components/ui/label'
-import { Textarea } from '@/components/ui/textarea'
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog'
-import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from '@/components/ui/alert-dialog'
-import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip'
-import { ArrowLeft, Plus, Edit, Trash, Calendar, Users, Gamepad2, TrendingUp, Settings } from '@phosphor-icons/react'
-import { toast } from 'sonner'
+import React, { useState } from 'react';
+import { Button } from '@/components/ui/button';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
+import { Textarea } from '@/components/ui/textarea';
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
+import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from '@/components/ui/alert-dialog';
+import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip';
+import { ArrowLeft, Plus, Edit, Trash, Calendar, Users, Gamepad2, TrendingUp, Settings } from '@phosphor-icons/react';
+import { toast } from 'sonner';
+import log from "loglevel";
 
 interface GameExpansion {
   expansion_id?: number
@@ -44,14 +45,14 @@ export default function GameExpansionsPage({
   onDeleteExpansion,
   embedded = false
 }: GameExpansionsPageProps) {
-  const [isAddDialogOpen, setIsAddDialogOpen] = useState(false)
-  const [editingExpansion, setEditingExpansion] = useState<GameExpansion | null>(null)
+  const [isAddDialogOpen, setIsAddDialogOpen] = useState(false);
+  const [editingExpansion, setEditingExpansion] = useState<GameExpansion | null>(null);
   const [formData, setFormData] = useState({
     name: '',
     year_published: '',
     description: '',
     bgg_expansion_id: ''
-  })
+  });
 
   const resetForm = () => {
     setFormData({
@@ -59,15 +60,15 @@ export default function GameExpansionsPage({
       year_published: '',
       description: '',
       bgg_expansion_id: ''
-    })
-  }
+    });
+  };
 
   const handleAddExpansion = async (e: React.FormEvent) => {
-    e.preventDefault()
+    e.preventDefault();
     
     if (!formData.name.trim()) {
-      toast.error('Le nom de l\'extension est requis')
-      return
+      toast.error('Le nom de l\'extension est requis');
+      return;
     }
 
     try {
@@ -76,24 +77,24 @@ export default function GameExpansionsPage({
         year_published: formData.year_published ? parseInt(formData.year_published) : undefined,
         description: formData.description.trim() || undefined,
         bgg_expansion_id: formData.bgg_expansion_id ? parseInt(formData.bgg_expansion_id) : undefined
-      }
+      };
 
-      await onAddExpansion(game.game_id, expansionData)
-      toast.success('Extension ajoutée avec succès')
-      setIsAddDialogOpen(false)
-      resetForm()
+      await onAddExpansion(game.game_id, expansionData);
+      toast.success('Extension ajoutée avec succès');
+      setIsAddDialogOpen(false);
+      resetForm();
     } catch (error) {
-      console.error('Error adding expansion:', error)
-      toast.error('Erreur lors de l\'ajout de l\'extension')
+      log.error('Error adding expansion:', error);
+      toast.error('Erreur lors de l\'ajout de l\'extension');
     }
-  }
+  };
 
   const handleEditExpansion = async (e: React.FormEvent) => {
-    e.preventDefault()
+    e.preventDefault();
     
     if (!editingExpansion || !formData.name.trim()) {
-      toast.error('Le nom de l\'extension est requis')
-      return
+      toast.error('Le nom de l\'extension est requis');
+      return;
     }
 
     try {
@@ -102,51 +103,51 @@ export default function GameExpansionsPage({
         year_published: formData.year_published ? parseInt(formData.year_published) : undefined,
         description: formData.description.trim() || undefined,
         bgg_expansion_id: formData.bgg_expansion_id ? parseInt(formData.bgg_expansion_id) : undefined
-      }
+      };
 
-      await onUpdateExpansion(editingExpansion.expansion_id!, expansionData)
-      toast.success('Extension modifiée avec succès')
-      setEditingExpansion(null)
-      resetForm()
+      await onUpdateExpansion(editingExpansion.expansion_id!, expansionData);
+      toast.success('Extension modifiée avec succès');
+      setEditingExpansion(null);
+      resetForm();
     } catch (error) {
-      console.error('Error updating expansion:', error)
-      toast.error('Erreur lors de la modification de l\'extension')
+      log.error('Error updating expansion:', error);
+      toast.error('Erreur lors de la modification de l\'extension');
     }
-  }
+  };
 
   const handleDeleteExpansion = async (expansionId: number, expansionName: string) => {
     try {
-      await onDeleteExpansion(expansionId)
-      toast.success(`Extension "${expansionName}" supprimée avec succès`)
+      await onDeleteExpansion(expansionId);
+      toast.success(`Extension "${expansionName}" supprimée avec succès`);
     } catch (error) {
-      console.error('Error deleting expansion:', error)
-      toast.error('Erreur lors de la suppression de l\'extension')
+      log.error('Error deleting expansion:', error);
+      toast.error('Erreur lors de la suppression de l\'extension');
     }
-  }
+  };
 
   const openEditDialog = (expansion: GameExpansion) => {
-    setEditingExpansion(expansion)
+    setEditingExpansion(expansion);
     setFormData({
       name: expansion.name,
       year_published: expansion.year_published?.toString() || '',
       description: expansion.description || '',
       bgg_expansion_id: expansion.bgg_expansion_id?.toString() || ''
-    })
-  }
+    });
+  };
 
   const closeEditDialog = () => {
-    setEditingExpansion(null)
-    resetForm()
-  }
+    setEditingExpansion(null);
+    resetForm();
+  };
 
   // Close dialogs and reset form when component unmounts or navigation changes
   React.useEffect(() => {
     return () => {
-      setIsAddDialogOpen(false)
-      setEditingExpansion(null)
-      resetForm()
-    }
-  }, [])
+      setIsAddDialogOpen(false);
+      setEditingExpansion(null);
+      resetForm();
+    };
+  }, []);
 
   const ExpansionForm = ({ onSubmit, submitText }: { onSubmit: (e: React.FormEvent) => void, submitText: string }) => (
     <form onSubmit={onSubmit} className="space-y-4">
@@ -214,7 +215,7 @@ export default function GameExpansionsPage({
         </Button>
       </div>
     </form>
-  )
+  );
 
   return (
     <div className={embedded ? "" : "min-h-screen bg-gradient-to-br from-slate-900 to-slate-800"}>
@@ -231,9 +232,9 @@ export default function GameExpansionsPage({
                     onClick={() => {
                       // Contextual navigation based on source
                       if (navigationSource === 'game-detail') {
-                        onNavigation('game-detail', game.game_id)
+                        onNavigation('game-detail', game.game_id);
                       } else {
-                        onNavigation('games')
+                        onNavigation('games');
                       }
                     }}
                     className="text-white/80 hover:text-white hover:bg-white/10 p-2"
@@ -457,5 +458,5 @@ export default function GameExpansionsPage({
         </div>
       )}
     </div>
-  )
+  );
 }

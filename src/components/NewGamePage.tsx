@@ -1,14 +1,15 @@
-import React, { useState } from 'react'
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
-import { Button } from "@/components/ui/button"
-import { Input } from "@/components/ui/input"
-import { Label } from "@/components/ui/label"
-import { Textarea } from "@/components/ui/textarea"
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
-import { Checkbox } from "@/components/ui/checkbox"
-import { ArrowLeft, Play, Users, Trophy, Timer } from '@phosphor-icons/react'
-import { toast } from 'sonner'
-import BottomNavigation from './BottomNavigation'
+import React, { useState } from 'react';
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Textarea } from "@/components/ui/textarea";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { Checkbox } from "@/components/ui/checkbox";
+import { ArrowLeft, Play, Users, Trophy, Timer } from '@phosphor-icons/react';
+import { toast } from 'sonner';
+import BottomNavigation from './BottomNavigation';
+import log from "loglevel";
 
 interface Player {
   player_id: number
@@ -69,44 +70,44 @@ export default function NewGamePage({
   currentView,
   onCreateSession 
 }: NewGamePageProps) {
-  const [selectedGameId, setSelectedGameId] = useState<string>('')
-  const [sessionType, setSessionType] = useState<'competitive' | 'cooperative' | 'campaign' | 'hybrid'>('competitive')
-  const [selectedPlayers, setSelectedPlayers] = useState<number[]>([])
-  const [playerScores, setPlayerScores] = useState<{[key: number]: number}>({})
-  const [winnerId, setWinnerId] = useState<string>('')
-  const [duration, setDuration] = useState<string>('')
-  const [notes, setNotes] = useState<string>('')
-  const [isSubmitting, setIsSubmitting] = useState(false)
+  const [selectedGameId, setSelectedGameId] = useState<string>('');
+  const [sessionType, setSessionType] = useState<'competitive' | 'cooperative' | 'campaign' | 'hybrid'>('competitive');
+  const [selectedPlayers, setSelectedPlayers] = useState<number[]>([]);
+  const [playerScores, setPlayerScores] = useState<{[key: number]: number}>({});
+  const [winnerId, setWinnerId] = useState<string>('');
+  const [duration, setDuration] = useState<string>('');
+  const [notes, setNotes] = useState<string>('');
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
-  const selectedGame = games.find(g => g.game_id.toString() === selectedGameId)
+  const selectedGame = games.find(g => g.game_id.toString() === selectedGameId);
 
   const handlePlayerToggle = (playerId: number) => {
     setSelectedPlayers(prev => {
       if (prev.includes(playerId)) {
-        return prev.filter(id => id !== playerId)
+        return prev.filter(id => id !== playerId);
       } else {
-        return [...prev, playerId]
+        return [...prev, playerId];
       }
-    })
-  }
+    });
+  };
 
   const handleScoreChange = (playerId: number, value: string) => {
     setPlayerScores(prev => ({
       ...prev,
       [playerId]: parseInt(value) || 0
-    }))
-  }
+    }));
+  };
 
   const canSubmit = () => {
     return selectedGameId && 
            selectedPlayers.length >= (selectedGame?.min_players || 1) &&
-           selectedPlayers.length <= (selectedGame?.max_players || 8)
-  }
+           selectedPlayers.length <= (selectedGame?.max_players || 8);
+  };
 
   const handleSubmit = async () => {
-    if (!selectedGame || !onCreateSession) return
+    if (!selectedGame || !onCreateSession) return;
 
-    setIsSubmitting(true)
+    setIsSubmitting(true);
     try {
       const sessionData = {
         game_id: parseInt(selectedGameId),
@@ -120,18 +121,18 @@ export default function NewGamePage({
           score: playerScores[playerId] || 0,
           is_winner: winnerId === playerId.toString()
         }))
-      }
+      };
 
-      await onCreateSession(sessionData)
-      toast.success('Game session created successfully!')
-      onNavigation('dashboard')
+      await onCreateSession(sessionData);
+      toast.success('Game session created successfully!');
+      onNavigation('dashboard');
     } catch (error) {
-      console.error('Error creating session:', error)
-      toast.error('Failed to create game session')
+      log.error('Error creating session:', error);
+      toast.error('Failed to create game session');
     } finally {
-      setIsSubmitting(false)
+      setIsSubmitting(false);
     }
-  }
+  };
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-900 to-slate-800 text-white">
@@ -259,8 +260,8 @@ export default function NewGamePage({
             </CardHeader>
             <CardContent className="space-y-4">
               {selectedPlayers.map(playerId => {
-                const player = players.find(p => p.player_id === playerId)
-                if (!player) return null
+                const player = players.find(p => p.player_id === playerId);
+                if (!player) return null;
 
                 return (
                   <div key={playerId} className="flex items-center gap-4">
@@ -286,7 +287,7 @@ export default function NewGamePage({
                       <span className="text-white/60 text-sm">Winner</span>
                     </div>
                   </div>
-                )
+                );
               })}
             </CardContent>
           </Card>
@@ -349,5 +350,5 @@ export default function NewGamePage({
         onNavigation={onNavigation}
       />
     </div>
-  )
+  );
 }

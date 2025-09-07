@@ -1,3 +1,4 @@
+import log from "loglevel";
 // BoardGameGeek API integration service
 export interface BGGGame {
   id: number
@@ -53,27 +54,27 @@ export interface BGGSearchResult {
 }
 
 class BGGApiService {
-  private readonly baseUrl = 'https://boardgamegeek.com/xmlapi2'
-  private readonly corsProxy = 'https://api.allorigins.win/raw?url='
+  private readonly baseUrl = 'https://boardgamegeek.com/xmlapi2';
+  private readonly corsProxy = 'https://api.allorigins.win/raw?url=';
 
   /**
    * Search for games by name
    */
   async searchGames(query: string): Promise<BGGSearchResult[]> {
     try {
-      const encodedQuery = encodeURIComponent(query)
-      const url = `${this.corsProxy}${encodeURIComponent(`${this.baseUrl}/search?query=${encodedQuery}&type=boardgame`)}`
+      const encodedQuery = encodeURIComponent(query);
+      const url = `${this.corsProxy}${encodeURIComponent(`${this.baseUrl}/search?query=${encodedQuery}&type=boardgame`)}`;
       
-      const response = await fetch(url)
+      const response = await fetch(url);
       if (!response.ok) {
-        throw new Error(`BGG API error: ${response.status}`)
+        throw new Error(`BGG API error: ${response.status}`);
       }
       
-      const xmlText = await response.text()
-      return this.parseSearchResults(xmlText)
+      const xmlText = await response.text();
+      return this.parseSearchResults(xmlText);
     } catch (error) {
-      console.error('Error searching BGG:', error)
-      return []
+      log.error('Error searching BGG:', error);
+      return [];
     }
   }
 
@@ -82,18 +83,18 @@ class BGGApiService {
    */
   async getGameDetails(bggId: number): Promise<BGGGame | null> {
     try {
-      const url = `${this.corsProxy}${encodeURIComponent(`${this.baseUrl}/thing?id=${bggId}&stats=1`)}`
+      const url = `${this.corsProxy}${encodeURIComponent(`${this.baseUrl}/thing?id=${bggId}&stats=1`)}`;
       
-      const response = await fetch(url)
+      const response = await fetch(url);
       if (!response.ok) {
-        throw new Error(`BGG API error: ${response.status}`)
+        throw new Error(`BGG API error: ${response.status}`);
       }
       
-      const xmlText = await response.text()
-      return this.parseGameDetails(xmlText, bggId)
+      const xmlText = await response.text();
+      return this.parseGameDetails(xmlText, bggId);
     } catch (error) {
-      console.error('Error fetching BGG game details:', error)
-      return null
+      log.error('Error fetching BGG game details:', error);
+      return null;
     }
   }
 
@@ -102,34 +103,34 @@ class BGGApiService {
    */
   async getGameExpansions(bggId: number): Promise<BGGExpansion[]> {
     try {
-      const url = `${this.corsProxy}${encodeURIComponent(`${this.baseUrl}/thing?id=${bggId}&stats=1`)}`
+      const url = `${this.corsProxy}${encodeURIComponent(`${this.baseUrl}/thing?id=${bggId}&stats=1`)}`;
       
-      const response = await fetch(url)
+      const response = await fetch(url);
       if (!response.ok) {
-        throw new Error(`BGG API error: ${response.status}`)
+        throw new Error(`BGG API error: ${response.status}`);
       }
       
-      const xmlText = await response.text()
-      return this.parseExpansions(xmlText)
+      const xmlText = await response.text();
+      return this.parseExpansions(xmlText);
     } catch (error) {
-      console.error('Error fetching BGG expansions:', error)
-      return []
+      log.error('Error fetching BGG expansions:', error);
+      return [];
     }
   }
 
   private parseSearchResults(xmlText: string): BGGSearchResult[] {
     try {
-      const parser = new DOMParser()
-      const xmlDoc = parser.parseFromString(xmlText, 'text/xml')
-      const items = xmlDoc.getElementsByTagName('item')
+      const parser = new DOMParser();
+      const xmlDoc = parser.parseFromString(xmlText, 'text/xml');
+      const items = xmlDoc.getElementsByTagName('item');
       
-      const results: BGGSearchResult[] = []
+      const results: BGGSearchResult[] = [];
       
       for (let i = 0; i < items.length; i++) {
-        const item = items[i]
-        const id = parseInt(item.getAttribute('id') || '0')
-        const nameElement = item.getElementsByTagName('name')[0]
-        const yearElement = item.getElementsByTagName('yearpublished')[0]
+        const item = items[i];
+        const id = parseInt(item.getAttribute('id') || '0');
+        const nameElement = item.getElementsByTagName('name')[0];
+        const yearElement = item.getElementsByTagName('yearpublished')[0];
         
         if (id && nameElement) {
           results.push({
@@ -137,64 +138,64 @@ class BGGApiService {
             name: nameElement.getAttribute('value') || '',
             year_published: parseInt(yearElement?.getAttribute('value') || '0'),
             type: item.getAttribute('type') || ''
-          })
+          });
         }
       }
       
-      return results.slice(0, 10) // Limit to 10 results
+      return results.slice(0, 10); // Limit to 10 results
     } catch (error) {
-      console.error('Error parsing search results:', error)
-      return []
+      log.error('Error parsing search results:', error);
+      return [];
     }
   }
 
   private parseGameDetails(xmlText: string, bggId: number): BGGGame | null {
     try {
-      const parser = new DOMParser()
-      const xmlDoc = parser.parseFromString(xmlText, 'text/xml')
-      const item = xmlDoc.getElementsByTagName('item')[0]
+      const parser = new DOMParser();
+      const xmlDoc = parser.parseFromString(xmlText, 'text/xml');
+      const item = xmlDoc.getElementsByTagName('item')[0];
       
-      if (!item) return null
+      if (!item) return null;
 
       // Basic info
-      const names = item.getElementsByTagName('name')
-      const primaryName = names[0]?.getAttribute('value') || ''
+      const names = item.getElementsByTagName('name');
+      const primaryName = names[0]?.getAttribute('value') || '';
       
-      const images = item.getElementsByTagName('image')
-      const thumbnails = item.getElementsByTagName('thumbnail')
-      const descriptions = item.getElementsByTagName('description')
+      const images = item.getElementsByTagName('image');
+      const thumbnails = item.getElementsByTagName('thumbnail');
+      const descriptions = item.getElementsByTagName('description');
       
       // Player counts
-      const minPlayers = parseInt(this.getNodeValue(item, 'minplayers') || '1')
-      const maxPlayers = parseInt(this.getNodeValue(item, 'maxplayers') || '1')
-      const minAge = parseInt(this.getNodeValue(item, 'minage') || '8')
-      const playingTime = parseInt(this.getNodeValue(item, 'playingtime') || '0')
-      const minPlaytime = parseInt(this.getNodeValue(item, 'minplaytime') || playingTime.toString())
-      const maxPlaytime = parseInt(this.getNodeValue(item, 'maxplaytime') || playingTime.toString())
+      const minPlayers = parseInt(this.getNodeValue(item, 'minplayers') || '1');
+      const maxPlayers = parseInt(this.getNodeValue(item, 'maxplayers') || '1');
+      const minAge = parseInt(this.getNodeValue(item, 'minage') || '8');
+      const playingTime = parseInt(this.getNodeValue(item, 'playingtime') || '0');
+      const minPlaytime = parseInt(this.getNodeValue(item, 'minplaytime') || playingTime.toString());
+      const maxPlaytime = parseInt(this.getNodeValue(item, 'maxplaytime') || playingTime.toString());
       
       // Publication info
-      const yearPublished = parseInt(this.getNodeValue(item, 'yearpublished') || '0')
+      const yearPublished = parseInt(this.getNodeValue(item, 'yearpublished') || '0');
       
       // Get categories and mechanics
-      const categories = this.getLinkValues(item, 'boardgamecategory')
-      const mechanics = this.getLinkValues(item, 'boardgamemechanic')
-      const designers = this.getLinkValues(item, 'boardgamedesigner')
-      const publishers = this.getLinkValues(item, 'boardgamepublisher')
+      const categories = this.getLinkValues(item, 'boardgamecategory');
+      const mechanics = this.getLinkValues(item, 'boardgamemechanic');
+      const designers = this.getLinkValues(item, 'boardgamedesigner');
+      const publishers = this.getLinkValues(item, 'boardgamepublisher');
       
       // Stats
-      const statistics = item.getElementsByTagName('statistics')[0]
-      const ratings = statistics?.getElementsByTagName('ratings')[0]
-      const average = parseFloat(ratings?.getElementsByTagName('average')[0]?.getAttribute('value') || '0')
-      const averageweight = parseFloat(ratings?.getElementsByTagName('averageweight')[0]?.getAttribute('value') || '0')
+      const statistics = item.getElementsByTagName('statistics')[0];
+      const ratings = statistics?.getElementsByTagName('ratings')[0];
+      const average = parseFloat(ratings?.getElementsByTagName('average')[0]?.getAttribute('value') || '0');
+      const averageweight = parseFloat(ratings?.getElementsByTagName('averageweight')[0]?.getAttribute('value') || '0');
 
       // Determine game modes based on categories and mechanics
-      const gameModes = this.determineGameModes(categories, mechanics)
+      const gameModes = this.determineGameModes(categories, mechanics);
       
       // Get expansions
-      const expansions = this.parseExpansions(xmlText)
+      const expansions = this.parseExpansions(xmlText);
 
       // Generate mock characters based on game theme
-      const characters = this.generateMockCharacters(primaryName, categories)
+      const characters = this.generateMockCharacters(primaryName, categories);
 
       return {
         id: bggId,
@@ -223,47 +224,47 @@ class BGGApiService {
         supports_hybrid: gameModes.hybrid,
         is_expansion: this.getLinkValues(item, 'boardgameexpansion').length > 0,
         base_game_id: this.getBaseGameId(item)
-      }
+      };
     } catch (error) {
-      console.error('Error parsing game details:', error)
-      return null
+      log.error('Error parsing game details:', error);
+      return null;
     }
   }
 
   private parseExpansions(xmlText: string): BGGExpansion[] {
     try {
-      const parser = new DOMParser()
-      const xmlDoc = parser.parseFromString(xmlText, 'text/xml')
-      const item = xmlDoc.getElementsByTagName('item')[0]
+      const parser = new DOMParser();
+      const xmlDoc = parser.parseFromString(xmlText, 'text/xml');
+      const item = xmlDoc.getElementsByTagName('item')[0];
       
-      if (!item) return []
+      if (!item) return [];
 
-      const expansionLinks = item.querySelectorAll('link[type="boardgameexpansion"]')
-      const expansions: BGGExpansion[] = []
+      const expansionLinks = item.querySelectorAll('link[type="boardgameexpansion"]');
+      const expansions: BGGExpansion[] = [];
 
       expansionLinks.forEach(link => {
-        const id = parseInt(link.getAttribute('id') || '0')
-        const name = link.getAttribute('value') || ''
+        const id = parseInt(link.getAttribute('id') || '0');
+        const name = link.getAttribute('value') || '';
         
         if (id && name) {
           expansions.push({
             bgg_expansion_id: id,
             name,
             year_published: 0 // Would need separate API call for each expansion
-          })
+          });
         }
-      })
+      });
 
-      return expansions
+      return expansions;
     } catch (error) {
-      console.error('Error parsing expansions:', error)
-      return []
+      log.error('Error parsing expansions:', error);
+      return [];
     }
   }
 
   private generateMockCharacters(gameName: string, categories: string[]): BGGCharacter[] {
     // Simple character generation based on game categories
-    const characters: BGGCharacter[] = []
+    const characters: BGGCharacter[] = [];
     
     if (categories.some(cat => cat.toLowerCase().includes('fantasy') || cat.toLowerCase().includes('adventure'))) {
       characters.push(
@@ -279,7 +280,7 @@ class BGGApiService {
           description: 'A wielder of arcane magic',
           abilities: ['Spell Casting', 'Elemental Magic', 'Mystic Shield']
         }
-      )
+      );
     }
     
     if (categories.some(cat => cat.toLowerCase().includes('sci-fi') || cat.toLowerCase().includes('space'))) {
@@ -296,7 +297,7 @@ class BGGApiService {
           description: 'Technology specialist',
           abilities: ['Equipment Repair', 'System Hacking', 'Shield Boost']
         }
-      )
+      );
     }
 
     if (categories.some(cat => cat.toLowerCase().includes('economic') || cat.toLowerCase().includes('trading'))) {
@@ -307,10 +308,10 @@ class BGGApiService {
           description: 'Expert trader and negotiator',
           abilities: ['Resource Trading', 'Market Analysis', 'Profit Boost']
         }
-      )
+      );
     }
 
-    return characters
+    return characters;
   }
 
   private determineGameModes(categories: string[], mechanics: string[]): {
@@ -319,21 +320,21 @@ class BGGApiService {
     campaign: boolean,
     hybrid: boolean
   } {
-    const categoryStr = categories.join(' ').toLowerCase()
-    const mechanicStr = mechanics.join(' ').toLowerCase()
+    const categoryStr = categories.join(' ').toLowerCase();
+    const mechanicStr = mechanics.join(' ').toLowerCase();
     
     const modes = {
       cooperative: false,
       competitive: true, // Default to competitive for most games
       campaign: false,
     hybrid: false
-    }
+    };
     
     // Check for cooperative elements
     if (mechanicStr.includes('cooperative') || 
         mechanicStr.includes('co-op') ||
         categoryStr.includes('cooperative')) {
-      modes.cooperative = true
+      modes.cooperative = true;
     }
     
     // Check for campaign/legacy elements
@@ -343,7 +344,7 @@ class BGGApiService {
         categoryStr.includes('legacy') ||
         mechanicStr.includes('story') ||
         mechanicStr.includes('narrative')) {
-      modes.campaign = true
+      modes.campaign = true;
     }
     
     // Check for hybrid elements (semi-cooperative, team vs team, etc.)
@@ -353,44 +354,44 @@ class BGGApiService {
         mechanicStr.includes('traitor') ||
         mechanicStr.includes('hidden role') ||
         (modes.cooperative && modes.competitive)) {
-      modes.hybrid = true
+      modes.hybrid = true;
     }
     
     // If cooperative but no competitive elements, turn off competitive
     if (modes.cooperative && !mechanicStr.includes('competitive') && !mechanicStr.includes('versus')) {
       // Keep competitive true unless clearly only cooperative
       if (mechanicStr.includes('fully cooperative') || categoryStr.includes('fully cooperative')) {
-        modes.competitive = false
+        modes.competitive = false;
       }
     }
     
-    return modes
+    return modes;
   }
 
   private getNodeValue(item: Element, tagName: string): string | null {
-    const elements = item.getElementsByTagName(tagName)
-    return elements[0]?.getAttribute('value') || null
+    const elements = item.getElementsByTagName(tagName);
+    return elements[0]?.getAttribute('value') || null;
   }
 
   private getLinkValues(item: Element, type: string): string[] {
-    const links = item.querySelectorAll(`link[type="${type}"]`)
-    const values: string[] = []
+    const links = item.querySelectorAll(`link[type="${type}"]`);
+    const values: string[] = [];
     
     links.forEach(link => {
-      const value = link.getAttribute('value')
-      if (value) values.push(value)
-    })
+      const value = link.getAttribute('value');
+      if (value) values.push(value);
+    });
     
-    return values
+    return values;
   }
 
   private getBaseGameId(item: Element): number | undefined {
-    const baseGameLinks = item.querySelectorAll('link[type="boardgameimplementation"]')
+    const baseGameLinks = item.querySelectorAll('link[type="boardgameimplementation"]');
     if (baseGameLinks.length > 0) {
-      return parseInt(baseGameLinks[0].getAttribute('id') || '0') || undefined
+      return parseInt(baseGameLinks[0].getAttribute('id') || '0') || undefined;
     }
-    return undefined
+    return undefined;
   }
 }
 
-export const bggApiService = new BGGApiService()
+export const bggApiService = new BGGApiService();

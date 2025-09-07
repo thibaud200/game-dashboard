@@ -1,11 +1,11 @@
-import React from 'react'
+import React from 'react';
 import {
   TrendingUp,
   Users,
   Gamepad2,
   Settings,
   ChartBar
-} from '@phosphor-icons/react'
+} from '@phosphor-icons/react';
 
 interface BottomNavigationProps {
   currentView: string
@@ -30,47 +30,47 @@ export default function BottomNavigation({ currentView, onNavigation, showStats 
       icon: Gamepad2,
       label: 'Games'
     }
-  ]
+  ];
 
   if (showStats) {
     navItems.push({
       id: 'stats',
       icon: ChartBar,
       label: 'Stats'
-    })
+    });
   }
 
   navItems.push({
     id: 'settings',
     icon: Settings,
     label: 'Settings'
-  })
+  });
 
   const handleNavigation = (view: string) => {
     if (view === 'stats') {
       // Show stats selector or navigate to default stats page
       // Check current context to decide which stats to show
-      const currentPath = window.location.pathname
+      const currentPath = window.location.pathname;
       if (currentPath.includes('player') || currentView.includes('player')) {
-        onNavigation('player-stats')
+        onNavigation('player-stats');
       } else if (currentPath.includes('game') || currentView.includes('game')) {
-        onNavigation('game-stats')
+        onNavigation('game-stats');
       } else {
         // Default to player stats from dashboard
-        onNavigation('player-stats')
+        onNavigation('player-stats');
       }
     } else {
-      onNavigation(view)
+      onNavigation(view);
     }
-  }
+  };
 
   return (
     <div className="fixed bottom-0 left-0 right-0 bg-slate-800/90 backdrop-blur-md border-t border-white/10">
       <div className="flex justify-around items-center py-2">
         {navItems.map((item) => {
-          const Icon = item.icon
+          const Icon = item.icon;
           const isActive = currentView === item.id || 
-            (item.id === 'stats' && (currentView === 'player-stats' || currentView === 'game-stats'))
+            (item.id === 'stats' && (currentView === 'player-stats' || currentView === 'game-stats'));
           
           return (
             <button
@@ -85,9 +85,9 @@ export default function BottomNavigation({ currentView, onNavigation, showStats 
               <Icon className="w-6 h-6 mb-1" />
               <span className="text-xs">{item.label}</span>
             </button>
-          )
+          );
         })}
       </div>
     </div>
-  )
+  );
 }
