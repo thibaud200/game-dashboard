@@ -1,4 +1,3 @@
-import log from "loglevel";
 // BoardGameGeek API integration service
 export interface BGGGame {
   id: number
@@ -73,7 +72,7 @@ class BGGApiService {
       const xmlText = await response.text();
       return this.parseSearchResults(xmlText);
     } catch (error) {
-      log.error('Error searching BGG:', error);
+      console.error('Error searching BGG:', error);
       return [];
     }
   }
@@ -93,7 +92,7 @@ class BGGApiService {
       const xmlText = await response.text();
       return this.parseGameDetails(xmlText, bggId);
     } catch (error) {
-      log.error('Error fetching BGG game details:', error);
+      console.error('Error fetching BGG game details:', error);
       return null;
     }
   }
@@ -113,7 +112,7 @@ class BGGApiService {
       const xmlText = await response.text();
       return this.parseExpansions(xmlText);
     } catch (error) {
-      log.error('Error fetching BGG expansions:', error);
+      console.error('Error fetching BGG expansions:', error);
       return [];
     }
   }
@@ -144,7 +143,7 @@ class BGGApiService {
       
       return results.slice(0, 10); // Limit to 10 results
     } catch (error) {
-      log.error('Error parsing search results:', error);
+      console.error('Error parsing search results:', error);
       return [];
     }
   }
@@ -226,7 +225,7 @@ class BGGApiService {
         base_game_id: this.getBaseGameId(item)
       };
     } catch (error) {
-      log.error('Error parsing game details:', error);
+      console.error('Error parsing game details:', error);
       return null;
     }
   }
@@ -257,7 +256,7 @@ class BGGApiService {
 
       return expansions;
     } catch (error) {
-      log.error('Error parsing expansions:', error);
+      console.error('Error parsing expansions:', error);
       return [];
     }
   }

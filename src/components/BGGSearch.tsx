@@ -5,7 +5,6 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { bggApiService, BGGSearchResult, BGGGame } from '@/services/bggApi';
-import log from "loglevel";
 
 interface BGGSearchProps {
   onGameSelect: (game: BGGGame) => void
@@ -30,7 +29,7 @@ export default function BGGSearch({ onGameSelect, onClose }: BGGSearchProps) {
       setSearchResults(results);
     } catch (error) {
       setSearchError('Failed to search BoardGameGeek. Please try again.');
-      log.error('BGG Search error:', error);
+      console.error('BGG Search error:', error);
     } finally {
       setIsSearching(false);
     }
@@ -49,7 +48,7 @@ export default function BGGSearch({ onGameSelect, onClose }: BGGSearchProps) {
       }
     } catch (error) {
       setSearchError('Failed to load game details. Please try again.');
-      log.error('BGG Details error:', error);
+      console.error('BGG Details error:', error);
     } finally {
       setIsLoadingDetails(false);
     }

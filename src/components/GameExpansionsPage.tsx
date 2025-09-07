@@ -9,7 +9,6 @@ import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, 
 import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip';
 import { ArrowLeft, Plus, Edit, Trash, Calendar, Users, Gamepad2, TrendingUp, Settings } from '@phosphor-icons/react';
 import { toast } from 'sonner';
-import log from "loglevel";
 
 interface GameExpansion {
   expansion_id?: number
@@ -84,7 +83,7 @@ export default function GameExpansionsPage({
       setIsAddDialogOpen(false);
       resetForm();
     } catch (error) {
-      log.error('Error adding expansion:', error);
+      console.error('Error adding expansion:', error);
       toast.error('Erreur lors de l\'ajout de l\'extension');
     }
   };
@@ -110,7 +109,7 @@ export default function GameExpansionsPage({
       setEditingExpansion(null);
       resetForm();
     } catch (error) {
-      log.error('Error updating expansion:', error);
+      console.error('Error updating expansion:', error);
       toast.error('Erreur lors de la modification de l\'extension');
     }
   };
@@ -120,7 +119,7 @@ export default function GameExpansionsPage({
       await onDeleteExpansion(expansionId);
       toast.success(`Extension "${expansionName}" supprimée avec succès`);
     } catch (error) {
-      log.error('Error deleting expansion:', error);
+      console.error('Error deleting expansion:', error);
       toast.error('Erreur lors de la suppression de l\'extension');
     }
   };

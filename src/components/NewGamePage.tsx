@@ -9,7 +9,6 @@ import { Checkbox } from "@/components/ui/checkbox";
 import { ArrowLeft, Play, Users, Trophy, Timer } from '@phosphor-icons/react';
 import { toast } from 'sonner';
 import BottomNavigation from './BottomNavigation';
-import log from "loglevel";
 
 interface Player {
   player_id: number
@@ -127,7 +126,7 @@ export default function NewGamePage({
       toast.success('Game session created successfully!');
       onNavigation('dashboard');
     } catch (error) {
-      log.error('Error creating session:', error);
+      console.error('Error creating session:', error);
       toast.error('Failed to create game session');
     } finally {
       setIsSubmitting(false);

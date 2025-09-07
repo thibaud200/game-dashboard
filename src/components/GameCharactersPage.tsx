@@ -9,7 +9,6 @@ import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, 
 import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip';
 import { ArrowLeft, Plus, Edit, Trash, UserCircle, Zap, Users, Gamepad2, TrendingUp, Settings } from '@phosphor-icons/react';
 import { toast } from 'sonner';
-import log from "loglevel";
 
 interface GameCharacter {
   character_id?: number
@@ -98,7 +97,7 @@ export default function GameCharactersPage({
       setIsAddDialogOpen(false);
       resetForm();
     } catch (error) {
-      log.error('Error adding character:', error);
+      console.error('Error adding character:', error);
       toast.error('Erreur lors de l\'ajout du personnage');
     }
   };
@@ -125,7 +124,7 @@ export default function GameCharactersPage({
       setEditingCharacter(null);
       resetForm();
     } catch (error) {
-      log.error('Error updating character:', error);
+      console.error('Error updating character:', error);
       toast.error('Erreur lors de la modification du personnage');
     }
   };
@@ -135,7 +134,7 @@ export default function GameCharactersPage({
       await onDeleteCharacter(characterId);
       toast.success(`Personnage "${characterName}" supprimé avec succès`);
     } catch (error) {
-      log.error('Error deleting character:', error);
+      console.error('Error deleting character:', error);
       toast.error('Erreur lors de la suppression du personnage');
     }
   };

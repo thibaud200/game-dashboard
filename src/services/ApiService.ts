@@ -1,4 +1,3 @@
-import log from "loglevel";
 // API service to connect frontend with backend database
 const API_BASE_URL = process.env.NODE_ENV === 'production' 
   ? 'https://your-api-domain.com/api' 
@@ -31,7 +30,7 @@ class ApiService {
       
       return await response.json();
     } catch (error) {
-      log.error(`API request failed for ${endpoint}:`, error);
+      console.error(`API request failed for ${endpoint}:`, error);
       throw error;
     }
   }

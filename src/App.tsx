@@ -13,7 +13,6 @@ import GameStatsPage from '@/components/GameStatsPage';
 import NewGamePage from '@/components/NewGamePage';
 import SettingsPage from '@/components/SettingsPage';
 import ApiService from '@/services/ApiService';
-import log from 'loglevel';
 // Database-aligned interfaces
 
 interface Player {
@@ -395,7 +394,7 @@ export default function ModernDashboard() {
       setGames(apiGames);
       
     } catch (error) {
-      log.warn('API not available, using local storage:', error);
+      console.warn('API not available, using local storage:', error);
       setApiConnected(false);
       
       // Fall back to local storage or mock data
@@ -476,7 +475,7 @@ export default function ModernDashboard() {
         return player;
       }
     } catch (error) {
-      log.error('Error adding player:', error);
+      console.error('Error adding player:', error);
       throw error;
     }
   };
@@ -503,7 +502,7 @@ export default function ModernDashboard() {
         );
       }
     } catch (error) {
-      log.error('Error updating player:', error);
+      console.error('Error updating player:', error);
       throw error;
     }
   };
@@ -548,7 +547,7 @@ export default function ModernDashboard() {
         return game;
       }
     } catch (error) {
-      log.error('Error adding game:', error);
+      console.error('Error adding game:', error);
       throw error;
     }
   };
@@ -577,7 +576,7 @@ export default function ModernDashboard() {
         );
       }
     } catch (error) {
-      log.error('Error updating game:', error);
+      console.error('Error updating game:', error);
       throw error;
     }
   };
@@ -592,7 +591,7 @@ export default function ModernDashboard() {
         setPlayers((currentPlayers) => (currentPlayers || []).filter(p => p.player_id !== playerId));
       }
     } catch (error) {
-      log.error('Error deleting player:', error);
+      console.error('Error deleting player:', error);
       throw error;
     }
   };
@@ -607,7 +606,7 @@ export default function ModernDashboard() {
         setGames((currentGames) => (currentGames || []).filter(g => g.game_id !== gameId));
       }
     } catch (error) {
-      log.error('Error deleting game:', error);
+      console.error('Error deleting game:', error);
       throw error;
     }
   };
@@ -643,7 +642,7 @@ export default function ModernDashboard() {
         return expansion;
       }
     } catch (error) {
-      log.error('Error adding expansion:', error);
+      console.error('Error adding expansion:', error);
       throw error;
     }
   };
@@ -668,7 +667,7 @@ export default function ModernDashboard() {
         );
       }
     } catch (error) {
-      log.error('Error updating expansion:', error);
+      console.error('Error updating expansion:', error);
       throw error;
     }
   };
@@ -688,7 +687,7 @@ export default function ModernDashboard() {
         );
       }
     } catch (error) {
-      log.error('Error deleting expansion:', error);
+      console.error('Error deleting expansion:', error);
       throw error;
     }
   };
@@ -725,7 +724,7 @@ export default function ModernDashboard() {
         return character;
       }
     } catch (error) {
-      log.error('Error adding character:', error);
+      console.error('Error adding character:', error);
       throw error;
     }
   };
@@ -750,7 +749,7 @@ export default function ModernDashboard() {
         );
       }
     } catch (error) {
-      log.error('Error updating character:', error);
+      console.error('Error updating character:', error);
       throw error;
     }
   };
@@ -770,7 +769,7 @@ export default function ModernDashboard() {
         );
       }
     } catch (error) {
-      log.error('Error deleting character:', error);
+      console.error('Error deleting character:', error);
       throw error;
     }
   };
@@ -871,10 +870,10 @@ export default function ModernDashboard() {
                 await ApiService.createSession(sessionData);
               } else {
                 // For local storage, we could save sessions to useKV but it's not implemented yet
-                log.info('Session saved locally:', sessionData);
+                console.info('Session saved locally:', sessionData);
               }
             } catch (error) {
-              log.error('Error creating session:', error);
+              console.error('Error creating session:', error);
               throw error;
             }
           }}
