@@ -2,7 +2,7 @@ import React from 'react';
 import {
   Users,
   GameController,
-  TrendingUp,
+  TrendUp,
   Gear,
   Plus,
   Play,
@@ -149,7 +149,7 @@ export function DashboardView({
                   onClick={handlePlayersClick}
                   className="text-teal-400 hover:text-teal-300 transition-colors"
                 >
-                  <TrendingUp className="w-5 h-5" />
+                  <TrendUp className="w-5 h-5" />
                 </button>
               </TooltipTrigger>
               <TooltipContent>

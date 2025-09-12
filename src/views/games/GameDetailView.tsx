@@ -11,7 +11,7 @@ import {
   DropdownMenuTrigger,
   DropdownMenuSeparator
 } from '@/components/ui/dropdown-menu';
-import { ArrowLeft, Users, Clock, Star, Barbell, Calendar, Buildings, User, DotsThree, Crown, TrendUp, Gear, Gamepad2 } from '@phosphor-icons/react';
+import { ArrowLeft, Users, Clock, Star, Barbell, Calendar, Buildings, User, DotsThree, Crown, TrendUp, Gear, GameController } from '@phosphor-icons/react';
 import GameExpansionsPage from '@/components/GameExpansionsPage';
 import GameCharactersPage from '@/components/GameCharactersPage';
 import { UseGameDetailProps } from '@/hooks/games/useGameDetail';
@@ -101,7 +101,7 @@ export default function GameDetailView({
                     onClick={tabHandlers.setOverview}
                     className="hover:bg-slate-700 focus:bg-slate-700"
                   >
-                    <Gamepad2 className="w-4 h-4 mr-2" />
+                    <GameController className="w-4 h-4 mr-2" />
                     Vue générale
                   </DropdownMenuItem>
                   <DropdownMenuItem 
@@ -248,7 +248,7 @@ export default function GameDetailView({
             onClick={handleNavigation.games}
             className="flex flex-col items-center p-3 transition-colors text-primary"
           >
-            <Gamepad2 className="w-6 h-6 mb-1" />
+            <GameController className="w-6 h-6 mb-1" />
             <span className="text-xs">Games</span>
           </button>
           <button
@@ -287,7 +287,7 @@ function GameOverview({ game, gameTypes, onNavigation }: GameOverviewProps) {
                 />
               ) : (
                 <div className="w-24 h-24 md:w-32 md:h-32 bg-slate-700/50 rounded-lg border border-slate-600 flex items-center justify-center">
-                  <Gamepad2 className="w-8 h-8 md:w-12 md:h-12 text-slate-400" />
+                  <GameController className="w-8 h-8 md:w-12 md:h-12 text-slate-400" />
                 </div>
               )}
             </div>

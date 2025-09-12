@@ -7,7 +7,7 @@ import { Textarea } from '@/components/ui/textarea';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from '@/components/ui/alert-dialog';
 import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip';
-import { ArrowLeft, Plus, PencilSimple, Trash, Calendar, Users, Gamepad2, TrendingUp, Gear } from '@phosphor-icons/react';
+import { ArrowLeft, Plus, PencilSimple, Trash, Calendar, Users, GameController, TrendUp, Gear } from '@phosphor-icons/react';
 import { useGameExpansions, UseGameExpansionsProps } from '@/hooks/games/useGameExpansions';
 
 const ExpansionForm = ({ 
@@ -339,7 +339,7 @@ export default function GameExpansionsView(props: UseGameExpansionsProps) {
               onClick={handleNavigation.dashboard}
               className="flex flex-col items-center p-3 transition-colors text-white/60 hover:text-white"
             >
-              <TrendingUp className="w-6 h-6 mb-1" />
+              <TrendUp className="w-6 h-6 mb-1" />
               <span className="text-xs">Dashboard</span>
             </button>
             <button
@@ -353,7 +353,7 @@ export default function GameExpansionsView(props: UseGameExpansionsProps) {
               onClick={handleNavigation.games}
               className="flex flex-col items-center p-3 transition-colors text-primary"
             >
-              <Gamepad2 className="w-6 h-6 mb-1" />
+              <GameController className="w-6 h-6 mb-1" />
               <span className="text-xs">Games</span>
             </button>
             <button

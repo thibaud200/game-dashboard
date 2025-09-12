@@ -1,7 +1,7 @@
 // API service to connect frontend with backend database
-const API_BASE_URL = process.env.NODE_ENV === 'production' 
-  ? 'https://your-api-domain.com/api' 
-  : 'http://localhost:3001/api';
+const API_BASE_URL = typeof window !== 'undefined' && window.location.hostname === 'localhost'
+  ? 'http://localhost:3001/api' 
+  : 'https://your-api-domain.com/api';
 
 class ApiService {
   private async request<T>(endpoint: string, options: RequestInit = {}): Promise<T> {
@@ -175,11 +175,16 @@ class ApiService {
   }
 
   async updateSession(sessionId: number, sessionData: any) {
-    return this.request<any>(`/sessions/${sessionId}`, 'PUT', sessionData);
+    return this.request<any>(`/sessions/${sessionId}`, {
+      method: 'PUT',
+      body: JSON.stringify(sessionData),
+    });
   }
 
   async deleteSession(sessionId: number) {
-    return this.request<void>(`/sessions/${sessionId}`, 'DELETE');
+    return this.request<void>(`/sessions/${sessionId}`, {
+      method: 'DELETE',
+    });
   }
 
   // Statistics

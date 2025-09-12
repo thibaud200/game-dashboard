@@ -2,14 +2,14 @@ import React from 'react';
 import {
   ArrowLeft,
   Plus,
-  Search,
+  MagnifyingGlass,
   Trophy,
   Users,
-  TrendingUp,
-  Edit,
-  Trash2,
+  TrendUp,
+  PencilSimple,
+  Trash,
   ChartLineUp,
-  MoreVertical
+  DotsThreeVertical
 } from '@phosphor-icons/react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -80,7 +80,7 @@ export function PlayersPageView(props: PlayersPageViewProps) {
             onClick={props.handlePlayerStatsClick}
             className="p-2 hover:bg-white/10 rounded-lg transition-colors"
           >
-            <TrendingUp className="w-6 h-6" />
+            <TrendUp className="w-6 h-6" />
           </button>
         </div>
 
@@ -109,7 +109,7 @@ export function PlayersPageView(props: PlayersPageViewProps) {
         {/* Search and Add */}
         <div className="flex gap-3 mb-6">
           <div className="relative flex-1">
-            <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-white/60" />
+            <MagnifyingGlass className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-white/60" />
             <Input
               placeholder="Search players..."
               value={props.searchQuery}
@@ -204,7 +204,7 @@ export function PlayersPageView(props: PlayersPageViewProps) {
                 <DropdownMenu>
                   <DropdownMenuTrigger asChild>
                     <Button variant="ghost" size="sm">
-                      <MoreVertical className="w-4 h-4" />
+                      <DotsThreeVertical className="w-4 h-4" />
                     </Button>
                   </DropdownMenuTrigger>
                   <DropdownMenuContent className="bg-slate-800 border-white/20">
@@ -219,14 +219,14 @@ export function PlayersPageView(props: PlayersPageViewProps) {
                       onClick={() => props.handleEditPlayer(player)}
                       className="text-white hover:bg-white/10"
                     >
-                      <Edit className="w-4 h-4 mr-2" />
+                      <PencilSimple className="w-4 h-4 mr-2" />
                       Edit
                     </DropdownMenuItem>
                     <DropdownMenuItem 
                       onClick={() => props.handleDeletePlayer(player.player_id)}
                       className="text-white hover:bg-white/10"
                     >
-                      <Trash2 className="w-4 h-4 mr-2" />
+                      <Trash className="w-4 h-4 mr-2" />
                       Delete
                     </DropdownMenuItem>
                   </DropdownMenuContent>
@@ -255,7 +255,7 @@ export function PlayersPageView(props: PlayersPageViewProps) {
                         onClick={() => props.handleEditPlayer(player)}
                         className="hover:bg-white/10"
                       >
-                        <Edit className="w-4 h-4" />
+                        <PencilSimple className="w-4 h-4" />
                       </Button>
                     </TooltipTrigger>
                     <TooltipContent>Edit Player</TooltipContent>
@@ -268,7 +268,7 @@ export function PlayersPageView(props: PlayersPageViewProps) {
                         variant="ghost"
                         className="hover:bg-white/10 text-red-400 hover:text-red-300"
                       >
-                        <Trash2 className="w-4 h-4" />
+                        <Trash className="w-4 h-4" />
                       </Button>
                     </AlertDialogTrigger>
                     <AlertDialogContent className="bg-slate-800 border-white/20">

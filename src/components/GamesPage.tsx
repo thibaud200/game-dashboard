@@ -1,3 +1,8 @@
+import React, { useState } from 'react';
+import { Game, BGGGame } from '@/types';
+import { useGamesPage, GamesPageData } from '@/hooks/useGamesPage';
+import GamesPageView from '@/views/GamesPageView';
+
 interface GamesPageProps {
   games: Game[]
   onNavigation: (view: string, gameId?: number, source?: string) => void

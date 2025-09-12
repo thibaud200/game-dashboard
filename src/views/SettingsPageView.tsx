@@ -4,11 +4,11 @@ import {
   Bell,
   Moon,
   Globe,
-  Save,
-  HelpCircle,
+  FloppyDisk,
+  Question,
   Download,
   Upload,
-  Trash2
+  Trash
 } from '@phosphor-icons/react';
 import { Button } from '@/components/ui/button';
 import { Switch } from '@/components/ui/switch';
@@ -107,7 +107,7 @@ export function SettingsPageView(props: SettingsPageViewProps) {
 
             <div className="flex items-center justify-between">
               <div className="flex items-center space-x-3">
-                <Save className="w-5 h-5 text-orange-400" />
+                <FloppyDisk className="w-5 h-5 text-orange-400" />
                 <div>
                   <div className="font-medium">Auto Save</div>
                   <div className="text-white/60 text-sm">Automatically save changes</div>
@@ -121,7 +121,7 @@ export function SettingsPageView(props: SettingsPageViewProps) {
 
             <div className="flex items-center justify-between">
               <div className="flex items-center space-x-3">
-                <HelpCircle className="w-5 h-5 text-yellow-400" />
+                <Question className="w-5 h-5 text-yellow-400" />
                 <div>
                   <div className="font-medium">Show Tooltips</div>
                   <div className="text-white/60 text-sm">Display helpful tooltips</div>
@@ -162,7 +162,7 @@ export function SettingsPageView(props: SettingsPageViewProps) {
               className="w-full justify-start"
               variant="destructive"
             >
-              <Trash2 className="w-4 h-4 mr-2" />
+              <Trash className="w-4 h-4 mr-2" />
               Reset All Data
             </Button>
           </div>

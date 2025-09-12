@@ -252,7 +252,7 @@ export default function GameStatsView({
                 <div key={type} className="space-y-1">
                   <div className="flex justify-between text-sm">
                     <span className="capitalize">{type}</span>
-                    <span>{count} sessions ({percentage.toFixed(0)}%)</span>
+                    <span>{count as number} sessions ({percentage.toFixed(0)}%)</span>
                   </div>
                   <div className="w-full bg-white/10 rounded-full h-2">
                     <div
@@ -281,7 +281,7 @@ export default function GameStatsView({
                 <div key={count} className="space-y-1">
                   <div className="flex justify-between text-sm">
                     <span>{count} players</span>
-                    <span>{sessions} sessions ({percentage.toFixed(0)}%)</span>
+                    <span>{sessions as number} sessions ({percentage.toFixed(0)}%)</span>
                   </div>
                   <div className="w-full bg-white/10 rounded-full h-2">
                     <div
@@ -337,7 +337,12 @@ export default function GameStatsView({
               const winner = players.find(p => p.player_id === session.winner_player_id);
               return (
                 <div key={index} className="flex items-center space-x-3 p-3 bg-white/5 rounded-xl">
-                  <div className={`w-3 h-3 rounded-full bg-${session.session_type === 'competitive' ? 'red' : session.session_type === 'cooperative' ? 'blue' : session.session_type === 'campaign' ? 'purple' : 'green'}-400`} />
+                  <div className={`w-3 h-3 rounded-full ${
+                    session.session_type === 'competitive' ? 'bg-red-400' :
+                    session.session_type === 'cooperative' ? 'bg-blue-400' :
+                    session.session_type === 'campaign' ? 'bg-purple-400' :
+                    'bg-green-400'
+                  }`} />
                   <div className="flex-1">
                     <div className="font-medium capitalize">{session.session_type}</div>
                     <div className="text-white/60 text-sm">

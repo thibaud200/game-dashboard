@@ -53,7 +53,7 @@ export default function PlayerStatsPage({
       stats={stats}
       topPlayers={topPlayers}
       recentActivity={recentActivity}
-      selectedPlayer={selectedPlayer}
+      selectedPlayer={selectedPlayer || null}
       onNavigation={onNavigation}
       currentView={currentView}
     />

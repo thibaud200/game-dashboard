@@ -92,12 +92,12 @@ export const usePlayersPage = (data: PlayersPageData) => {
         player_name: formData.player_name,
         avatar: formData.avatar || `https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=100&h=100&fit=crop&crop=face`,
         favorite_game: formData.favorite_game || 'None',
-        games_played: 0,
-        wins: 0,
-        total_score: 0,
+        total_score: formData.total_score || 0,
+        games_played: formData.games_played || 0,
+        wins: formData.wins || 0,
         average_score: 0,
         created_at: now
-      });
+      } as any);
       resetForm();
       setIsAddDialogOpen(false);
     }

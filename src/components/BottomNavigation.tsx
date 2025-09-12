@@ -1,6 +1,6 @@
 import React from 'react';
 import {
-  TrendingUp,
+  TrendUp,
   Users,
   GameController,
   Gear,
@@ -17,7 +17,7 @@ export default function BottomNavigation({ currentView, onNavigation, showStats 
   const navItems = [
     {
       id: 'dashboard',
-      icon: TrendingUp,
+      icon: TrendUp,
       label: 'Dashboard'
     },
     {
