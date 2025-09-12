@@ -43,7 +43,7 @@ export const useGamesPage = (data: GamesPageData) => {
   const [categoryFilter, setCategoryFilter] = useState<string>('all');
   const [difficultyFilter, setDifficultyFilter] = useState<string>('all');
   
-  const [formData, setFormData] = useState<GameFormData>({
+  const [formData, setFormData] = useState<GameFormData & { expansions: any[], characters: any[] }>({
     name: '',
     description: '',
     image: '',
@@ -64,7 +64,9 @@ export const useGamesPage = (data: GamesPageData) => {
     supports_hybrid: false,
     has_expansion: false,
     has_characters: false,
-    bgg_id: undefined
+    bgg_id: undefined,
+    expansions: [],
+    characters: []
   });
 
   // Check mobile viewport
@@ -149,7 +151,9 @@ export const useGamesPage = (data: GamesPageData) => {
       supports_hybrid: false,
       has_expansion: false,
       has_characters: false,
-      bgg_id: undefined
+      bgg_id: undefined,
+      expansions: [],
+      characters: []
     });
   };
 
@@ -218,7 +222,9 @@ export const useGamesPage = (data: GamesPageData) => {
       supports_hybrid: game.supports_hybrid,
       has_expansion: game.has_expansion,
       has_characters: game.has_characters,
-      bgg_id: game.bgg_id
+      bgg_id: game.bgg_id,
+      expansions: game.expansions || [],
+      characters: game.characters || []
     });
     setIsEditDialogOpen(true);
   };
@@ -277,6 +283,9 @@ export const useGamesPage = (data: GamesPageData) => {
       bgg_id: bggGame.id,
       category: bggGame.categories?.[0] || '',
       has_expansion: (bggGame.expansions?.length || 0) > 0,
+      has_characters: false, // BGG doesn't provide character info typically
+      expansions: bggGame.expansions || [],
+      characters: [],
       // Set game modes based on BGG data if available
       supports_competitive: true, // Default
       supports_cooperative: bggGame.mechanics?.includes('Cooperative Game') || false,

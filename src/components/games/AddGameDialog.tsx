@@ -78,7 +78,7 @@ export default function AddGameDialog({
     setFormData(prev => ({
       ...prev,
       characters: [
-        ...prev.characters,
+        ...(prev.characters || []),
         {
           character_key: `character-${Date.now()}`,
           name: '',
@@ -92,7 +92,7 @@ export default function AddGameDialog({
   const updateCharacter = (index: number, field: keyof GameCharacter, value: string | string[]) => {
     setFormData(prev => ({
       ...prev,
-      characters: prev.characters.map((char, i) => 
+      characters: (prev.characters || []).map((char, i) => 
         i === index ? { ...char, [field]: value } : char
       )
     }));
@@ -101,15 +101,15 @@ export default function AddGameDialog({
   const removeCharacter = (index: number) => {
     setFormData(prev => ({
       ...prev,
-      characters: prev.characters.filter((_, i) => i !== index)
+      characters: (prev.characters || []).filter((_, i) => i !== index)
     }));
   };
 
   const addAbility = (charIndex: number) => {
     setFormData(prev => ({
       ...prev,
-      characters: prev.characters.map((char, i) => 
-        i === charIndex ? { ...char, abilities: [...char.abilities, ''] } : char
+      characters: (prev.characters || []).map((char, i) => 
+        i === charIndex ? { ...char, abilities: [...(char.abilities || []), ''] } : char
       )
     }));
   };
@@ -117,10 +117,10 @@ export default function AddGameDialog({
   const updateAbility = (charIndex: number, abilityIndex: number, value: string) => {
     setFormData(prev => ({
       ...prev,
-      characters: prev.characters.map((char, i) => 
+      characters: (prev.characters || []).map((char, i) => 
         i === charIndex ? {
           ...char,
-          abilities: char.abilities.map((ability, j) => j === abilityIndex ? value : ability)
+          abilities: (char.abilities || []).map((ability, j) => j === abilityIndex ? value : ability)
         } : char
       )
     }));
@@ -129,10 +129,10 @@ export default function AddGameDialog({
   const removeAbility = (charIndex: number, abilityIndex: number) => {
     setFormData(prev => ({
       ...prev,
-      characters: prev.characters.map((char, i) => 
+      characters: (prev.characters || []).map((char, i) => 
         i === charIndex ? {
           ...char,
-          abilities: char.abilities.filter((_, j) => j !== abilityIndex)
+          abilities: (char.abilities || []).filter((_, j) => j !== abilityIndex)
         } : char
       )
     }));
@@ -404,7 +404,7 @@ export default function AddGameDialog({
               <div className="space-y-2">
                 <Label>Expansions</Label>
                 <Textarea
-                  value={formData.expansions
+                  value={(formData.expansions || [])
                     .map(expansion => 
                       `${expansion.name}${expansion.year_published && expansion.year_published > 0 ? ` (${expansion.year_published})` : ''}`
                     ).join(', ')}
@@ -462,7 +462,7 @@ export default function AddGameDialog({
                     Add Character
                   </Button>
                 </div>
-                {formData.characters.map((character, charIndex) => (
+                {(formData.characters || []).map((character, charIndex) => (
               <div key={charIndex} className="p-3 bg-slate-700 rounded-lg border border-slate-600 space-y-2">
                 <div className="flex space-x-2">
                   <Input
@@ -499,7 +499,7 @@ export default function AddGameDialog({
                       Add Ability
                     </Button>
                   </div>
-                  {character.abilities.map((ability, abilityIndex) => (
+                  {(character.abilities || []).map((ability, abilityIndex) => (
                     <div key={abilityIndex} className="flex space-x-1">
                       <Input
                         value={ability}
