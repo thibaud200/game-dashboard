@@ -1,7 +1,7 @@
 import React from 'react';
 import {
   ArrowLeft,
-  Settings,
+  Gear,
   User,
   Database,
   Bell,
@@ -13,12 +13,12 @@ import {
 } from '@phosphor-icons/react';
 import BottomNavigation from './BottomNavigation';
 
-interface SettingsPageProps {
+interface GearPageProps {
   onNavigation: (view: string) => void
   currentView: string
 }
 
-export default function SettingsPage({ onNavigation, currentView }: SettingsPageProps) {
+export default function GearPage({ onNavigation, currentView }: GearPageProps) {
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-900 to-slate-800 text-white">
       {/* Header */}
@@ -30,14 +30,14 @@ export default function SettingsPage({ onNavigation, currentView }: SettingsPage
           >
             <ArrowLeft className="w-6 h-6" />
           </button>
-          <h1 className="text-2xl font-bold">Settings</h1>
+          <h1 className="text-2xl font-bold">Gear</h1>
           <div className="w-10" />
         </div>
       </div>
 
       {/* Content */}
       <div className="px-4 space-y-6 pb-32">
-        {/* Profile Settings */}
+        {/* Profile Gear */}
         <div className="bg-white/10 backdrop-blur-md rounded-2xl p-6 border border-white/20 shadow-xl">
           <div className="flex items-center space-x-3 mb-4">
             <User className="w-6 h-6 text-primary" />
@@ -45,12 +45,12 @@ export default function SettingsPage({ onNavigation, currentView }: SettingsPage
           </div>
           <div className="space-y-4">
             <button className="w-full text-left p-3 bg-white/5 rounded-xl hover:bg-white/10 transition-colors">
-              <div className="font-medium">Edit Profile</div>
+              <div className="font-medium">PencilSimple Profile</div>
               <div className="text-white/60 text-sm">Update your name and avatar</div>
             </button>
             <button className="w-full text-left p-3 bg-white/5 rounded-xl hover:bg-white/10 transition-colors">
               <div className="font-medium">Preferences</div>
-              <div className="text-white/60 text-sm">Game preferences and favorites</div>
+              <div className="text-white/60 text-sm">Circle preferences and favorites</div>
             </button>
           </div>
         </div>
@@ -109,7 +109,7 @@ export default function SettingsPage({ onNavigation, currentView }: SettingsPage
           </div>
           <div className="space-y-4">
             <button className="w-full text-left p-3 bg-white/5 rounded-xl hover:bg-white/10 transition-colors">
-              <div className="font-medium">Game Reminders</div>
+              <div className="font-medium">Circle Reminders</div>
               <div className="text-white/60 text-sm">Get notified about game sessions</div>
             </button>
             <button className="w-full text-left p-3 bg-white/5 rounded-xl hover:bg-white/10 transition-colors">
@@ -131,7 +131,7 @@ export default function SettingsPage({ onNavigation, currentView }: SettingsPage
               <div className="text-white/60 text-sm">Control what data is shared</div>
             </button>
             <button className="w-full text-left p-3 bg-white/5 rounded-xl hover:bg-white/10 transition-colors">
-              <div className="font-medium">Backup Settings</div>
+              <div className="font-medium">Backup Gear</div>
               <div className="text-white/60 text-sm">Automatic backup frequency</div>
             </button>
           </div>
@@ -158,13 +158,13 @@ export default function SettingsPage({ onNavigation, currentView }: SettingsPage
         {/* About */}
         <div className="bg-white/10 backdrop-blur-md rounded-2xl p-6 border border-white/20 shadow-xl">
           <div className="flex items-center space-x-3 mb-4">
-            <Settings className="w-6 h-6 text-muted-foreground" />
+            <Gear className="w-6 h-6 text-muted-foreground" />
             <h2 className="text-lg font-semibold">About</h2>
           </div>
           <div className="space-y-2 text-white/60">
-            <div>Board Game Dashboard v1.0.0</div>
+            <div>Board Circle Dashboard v1.0.0</div>
             <div>Built with React and love for board games</div>
-            <div className="text-xs pt-2">© 2024 Board Game Dashboard</div>
+            <div className="text-xs pt-2">© 2024 Board Circle Dashboard</div>
           </div>
         </div>
       </div>

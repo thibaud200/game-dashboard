@@ -1,9 +1,9 @@
 import React from 'react';
 import {
   Users,
-  Gamepad2,
-  TrendingUp,
-  Settings,
+  Star,
+  TrendUp,
+  Gear,
   Plus,
   Play,
   ArrowLeft
@@ -28,7 +28,7 @@ interface DashboardProps {
     created_at: Date
     favorite_game: string
   }>
-  recentGames: Array<{
+  recentCircles: Array<{
     game_id: number
     name: string
     image: string
@@ -45,7 +45,7 @@ interface DashboardProps {
 export default function Dashboard({ 
   stats, 
   recentPlayers, 
-  recentGames, 
+  recentCircles, 
   currentView, 
   onNavigation 
 }: DashboardProps) {
@@ -75,11 +75,11 @@ export default function Dashboard({
                   onClick={() => onNavigation('settings')}
                   className="p-2 hover:bg-white/10 rounded-lg transition-colors"
                 >
-                  <Settings className="w-6 h-6" />
+                  <Gear className="w-6 h-6" />
                 </button>
               </TooltipTrigger>
               <TooltipContent>
-                <p>Settings</p>
+                <p>Gear</p>
               </TooltipContent>
             </Tooltip>
           </div>
@@ -117,7 +117,7 @@ export default function Dashboard({
               >
                 <div className="w-20 h-20 rounded-full bg-gradient-to-r from-emerald-400 to-emerald-600 flex items-center justify-center shadow-lg">
                   <div className="text-center">
-                    <div className="text-xs text-white/80">Games</div>
+                    <div className="text-xs text-white/80">Circles</div>
                     <div className="text-lg font-bold text-white">
                       {stats.gamesCount}
                     </div>
@@ -127,7 +127,7 @@ export default function Dashboard({
               </button>
             </TooltipTrigger>
             <TooltipContent>
-              <p>View All Games</p>
+              <p>View All Circles</p>
             </TooltipContent>
           </Tooltip>
         </div>
@@ -145,7 +145,7 @@ export default function Dashboard({
                   onClick={() => onNavigation('players')}
                   className="text-teal-400 hover:text-teal-300 transition-colors"
                 >
-                  <TrendingUp className="w-5 h-5" />
+                  <TrendUp className="w-5 h-5" />
                 </button>
               </TooltipTrigger>
               <TooltipContent>
@@ -193,24 +193,24 @@ export default function Dashboard({
         {/* Section Jeux récents */}
         <div className="bg-white/10 backdrop-blur-md rounded-2xl p-4 border border-white/20 shadow-xl">
           <div className="flex items-center justify-between mb-4">
-            <h2 className="text-lg font-semibold">Recent Games</h2>
+            <h2 className="text-lg font-semibold">Recent Circles</h2>
             <Tooltip>
               <TooltipTrigger asChild>
                 <button
                   onClick={() => onNavigation('games')}
                   className="text-teal-400 hover:text-teal-300 transition-colors"
                 >
-                  <Gamepad2 className="w-5 h-5" />
+                  <Circle className="w-5 h-5" />
                 </button>
               </TooltipTrigger>
               <TooltipContent>
-                <p>View All Games</p>
+                <p>View All Circles</p>
               </TooltipContent>
             </Tooltip>
           </div>
           <div className="grid grid-cols-3 gap-3">
-            {recentGames.length > 0 ? (
-              recentGames.map((game) => (
+            {recentCircles.length > 0 ? (
+              recentCircles.map((game) => (
                 <button
                   key={game.game_id}
                   onClick={() => onNavigation('game-stats', game.game_id)}
@@ -287,11 +287,11 @@ export default function Dashboard({
                 className="bg-gradient-to-r from-teal-500 to-teal-600 rounded-2xl p-4 flex flex-col items-center justify-center hover:from-teal-600 hover:to-teal-700 transition-all duration-200 shadow-lg hover:shadow-xl hover:scale-105"
               >
                 <Play className="w-8 h-8 mb-2" />
-                <span className="font-medium">New Game</span>
+                <span className="font-medium">New Circle</span>
               </button>
             </TooltipTrigger>
             <TooltipContent>
-              <p>Start a New Game Session</p>
+              <p>Start a New Circle Session</p>
             </TooltipContent>
           </Tooltip>
           <Tooltip>

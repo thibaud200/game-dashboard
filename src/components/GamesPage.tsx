@@ -1,25 +1,25 @@
 import React, { useState } from 'react';
 import {
-  Gamepad2,
+  Star,
   Plus,
   ArrowLeft,
-  Search,
+  MagnifyingGlass,
   Trash,
   Users,
-  Edit,
+  PencilSimple,
   Eye,
   Clock,
   Target,
   Calendar,
   Star,
   Shield,
-  Swords,
+  Sword,
   Crown,
   CaretDown,
   CaretUp,
-  ExternalLink,
-  ChartBar,
-  DotsThreeVertical
+  Link,
+  ChartLineUp,
+  DotsThree
 } from '@phosphor-icons/react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -49,8 +49,8 @@ import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Checkbox } from '@/components/ui/checkbox';
-import BGGSearch from '@/components/BGGSearch';
-import { BGGGame } from '@/services/bggApi';
+import BGGMagnifyingGlass from '@/components/BGGMagnifyingGlass';
+import { BGGCircle } from '@/services/bggApi';
 import BottomNavigation from './BottomNavigation';
 
 interface Character {
@@ -69,7 +69,7 @@ interface Expansion {
   year_published: number
 }
 
-interface Game {
+interface Circle {
   game_id: number
   name: string
   image: string
@@ -99,12 +99,12 @@ interface Game {
   updated_at?: Date
 }
 
-interface GamesPageProps {
-  games: Game[]
+interface CirclesPageProps {
+  games: Circle[]
   onNavigation: (view: string, gameId?: number, source?: string) => void
-  onAddGame: (game: Omit<Game, 'game_id' | 'players'>) => void
-  onUpdateGame: (gameId: number, game: Partial<Game>) => void
-  onDeleteGame: (gameId: number) => void
+  onAddCircle: (game: Omit<Star, 'game_id' | 'players'>) => void
+  onUpdateCircle: (gameId: number, game: Partial<Circle>) => void
+  onDeleteCircle: (gameId: number) => void
   onAddExpansion?: (gameId: number, expansion: any) => void
   onUpdateExpansion?: (expansionId: number, expansion: any) => void
   onDeleteExpansion?: (expansionId: number) => void
@@ -114,23 +114,23 @@ interface GamesPageProps {
   currentView?: string
 }
 
-export default function GamesPage({ 
+export default function CirclesPage({ 
   games, 
   onNavigation, 
-  onAddGame, 
-  onUpdateGame,
-  onDeleteGame,
+  onAddStar, 
+  onUpdateStar,
+  onDeleteStar,
   onAddExpansion,
   onUpdateExpansion,
   onDeleteExpansion,
   currentView = 'games'
-}: GamesPageProps) {
-  const [searchQuery, setSearchQuery] = useState('');
-  const [editingGame, setEditingGame] = useState<Game | null>(null);
+}: CirclesPageProps) {
+  const [searchQuery, setMagnifyingGlassQuery] = useState('');
+  const [editingStar, setPencilSimpleingCircle] = useState<Circle | null>(null);
   const [isAddDialogOpen, setIsAddDialogOpen] = useState(false);
-  const [isEditDialogOpen, setIsEditDialogOpen] = useState(false);
-  const [isBGGSearchOpen, setIsBGGSearchOpen] = useState(false);
-  const [expandedGame, setExpandedGame] = useState<number | null>(null);
+  const [isPencilSimpleDialogOpen, setIsPencilSimpleDialogOpen] = useState(false);
+  const [isBGGMagnifyingGlassOpen, setIsBGGMagnifyingGlassOpen] = useState(false);
+  const [expandedStar, setExpandedCircle] = useState<number | null>(null);
   const [formData, setFormData] = useState({
     name: '',
     image: '',
@@ -157,7 +157,7 @@ export default function GamesPage({
     bgg_id: undefined as number | undefined
   });
 
-  const filteredGames = games.filter(game =>
+  const filteredCircles = games.filter(game =>
     game.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
     game.category.toLowerCase().includes(searchQuery.toLowerCase()) ||
     game.designer.toLowerCase().includes(searchQuery.toLowerCase()) ||
@@ -192,40 +192,40 @@ export default function GamesPage({
     });
   };
 
-  const handleBGGGameSelect = (bggGame: BGGGame) => {
+  const handleBGGCircleSelect = (bggCircle: BGGCircle) => {
     setFormData({
-      name: bggGame.name,
-      image: bggGame.image,
-      min_players: bggGame.min_players,
-      max_players: bggGame.max_players,
-      description: bggGame.description,
-      duration: `${bggGame.min_playtime}-${bggGame.max_playtime} min`,
-      difficulty: bggGame.weight > 3.5 ? 'Expert' : bggGame.weight > 2.5 ? 'Intermediate' : 'Beginner',
-      category: bggGame.categories[0] || 'General',
-      year_published: bggGame.year_published,
-      publisher: bggGame.publishers[0] || 'Unknown',
-      designer: bggGame.designers[0] || 'Unknown',
-      bgg_rating: bggGame.rating,
-      weight: bggGame.weight,
-      age_min: bggGame.min_age,
-      expansions: bggGame.expansions,
-      characters: bggGame.characters,
-      has_expansion: bggGame.expansions.length > 0,
-      has_characters: bggGame.characters.length > 0,
-      supports_cooperative: bggGame.supports_cooperative,
-      supports_competitive: bggGame.supports_competitive,
-      supports_campaign: bggGame.supports_campaign,
-      supports_hybrid: bggGame.supports_hybrid,
-      bgg_id: bggGame.id
+      name: bggCircle.name,
+      image: bggCircle.image,
+      min_players: bggCircle.min_players,
+      max_players: bggCircle.max_players,
+      description: bggCircle.description,
+      duration: `${bggCircle.min_playtime}-${bggCircle.max_playtime} min`,
+      difficulty: bggCircle.weight > 3.5 ? 'Expert' : bggCircle.weight > 2.5 ? 'Intermediate' : 'Beginner',
+      category: bggCircle.categories[0] || 'General',
+      year_published: bggCircle.year_published,
+      publisher: bggCircle.publishers[0] || 'Unknown',
+      designer: bggCircle.designers[0] || 'Unknown',
+      bgg_rating: bggCircle.rating,
+      weight: bggCircle.weight,
+      age_min: bggCircle.min_age,
+      expansions: bggCircle.expansions,
+      characters: bggCircle.characters,
+      has_expansion: bggCircle.expansions.length > 0,
+      has_characters: bggCircle.characters.length > 0,
+      supports_cooperative: bggCircle.supports_cooperative,
+      supports_competitive: bggCircle.supports_competitive,
+      supports_campaign: bggCircle.supports_campaign,
+      supports_hybrid: bggCircle.supports_hybrid,
+      bgg_id: bggCircle.id
     });
-    setIsBGGSearchOpen(false);
+    setIsBGGMagnifyingGlassOpen(false);
   };
 
-  const handleAddGame = () => {
+  const handleAddCircle = () => {
     if (formData.name.trim()) {
       // Automatically set timestamps - these are not in the form
       const now = new Date();
-      onAddGame({
+      onAddCircle({
         name: formData.name,
         image: formData.image || 'https://images.unsplash.com/photo-1606092195730-5d7b9af1efc5?w=150&h=150&fit=crop',
         min_players: formData.min_players,
@@ -256,8 +256,8 @@ export default function GamesPage({
     }
   };
 
-  const handleEditGame = (game: Game) => {
-    setEditingGame(game);
+  const handlePencilSimpleCircle = (game: Circle) => {
+    setPencilSimpleingCircle(game);
     setFormData({
       name: game.name,
       image: game.image,
@@ -283,20 +283,20 @@ export default function GamesPage({
       supports_hybrid: game.supports_hybrid || false,
       bgg_id: game.bgg_id
     });
-    setIsEditDialogOpen(true);
+    setIsPencilSimpleDialogOpen(true);
   };
 
-  const handleUpdateGame = () => {
-    if (editingGame && formData.name.trim()) {
+  const handleUpdateCircle = () => {
+    if (editingCircle && formData.name.trim()) {
       // Automatically set updated_at timestamp
       const now = new Date();
-      onUpdateGame(editingGame.game_id, {
+      onUpdateCircle(editingCircle.game_id, {
         ...formData,
         updated_at: now
       });
       resetForm();
-      setEditingGame(null);
-      setIsEditDialogOpen(false);
+      setPencilSimpleingCircle(null);
+      setIsPencilSimpleDialogOpen(false);
     }
   };
 
@@ -309,13 +309,13 @@ export default function GamesPage({
     }
   };
 
-  const getGameModesBadges = (game: Game) => {
+  const getCircleModesBadges = (game: Circle) => {
     const modes = [];
     
     if (game.supports_competitive) {
       modes.push(
         <Badge key="competitive" variant="outline" className="border-red-400/30 text-red-400 text-xs">
-          <Swords className="w-3 h-3 mr-1" />
+          <Sword className="w-3 h-3 mr-1" />
           Compétitif
         </Badge>
       );
@@ -443,7 +443,7 @@ export default function GamesPage({
               <p>Back to Dashboard</p>
             </TooltipContent>
           </Tooltip>
-          <h1 className="text-2xl font-bold">Games</h1>
+          <h1 className="text-2xl font-bold">Circles</h1>
           <div className="flex space-x-2">
             <Tooltip>
               <TooltipTrigger asChild>
@@ -451,18 +451,18 @@ export default function GamesPage({
                   onClick={() => onNavigation('game-stats')}
                   className="p-2 hover:bg-white/10 rounded-lg transition-colors"
                 >
-                  <ChartBar className="w-6 h-6" />
+                  <ChartLineUp className="w-6 h-6" />
                 </button>
               </TooltipTrigger>
               <TooltipContent>
-                <p>View Game Stats</p>
+                <p>View Circle Stats</p>
               </TooltipContent>
             </Tooltip>
             <Dialog open={isAddDialogOpen} onOpenChange={(open) => {
               setIsAddDialogOpen(open);
               if (!open) {
                 resetForm();
-                setIsBGGSearchOpen(false);
+                setIsBGGMagnifyingGlassOpen(false);
               }
             }}>
               <Tooltip>
@@ -474,36 +474,36 @@ export default function GamesPage({
                 </DialogTrigger>
               </TooltipTrigger>
               <TooltipContent>
-                <p>Add New Game</p>
+                <p>Add New Circle</p>
               </TooltipContent>
             </Tooltip>
             <DialogContent className="bg-slate-800 border-slate-700 text-white max-w-2xl max-h-[90vh] overflow-y-auto">
               <DialogHeader>
-                <DialogTitle>Add New Game</DialogTitle>
+                <DialogTitle>Add New Circle</DialogTitle>
               </DialogHeader>
               <div className="space-y-4">
                 <div className="flex space-x-2">
                   <Button 
-                    onClick={() => setIsBGGSearchOpen(true)}
+                    onClick={() => setIsBGGMagnifyingGlassOpen(true)}
                     variant="outline" 
                     className="border-teal-600 text-teal-400 hover:bg-teal-600/20"
                   >
-                    <ExternalLink className="w-4 h-4 mr-2" />
-                    Search BoardGameGeek
+                    <Link className="w-4 h-4 mr-2" />
+                    MagnifyingGlass BoardCircleGeek
                   </Button>
                 </div>
 
-                {isBGGSearchOpen && (
+                {isBGGMagnifyingGlassOpen && (
                   <div className="p-4 bg-slate-700 rounded-lg border border-slate-600">
-                    <BGGSearch 
-                      onGameSelect={handleBGGGameSelect}
-                      onClose={() => setIsBGGSearchOpen(false)}
+                    <BGGMagnifyingGlass 
+                      onCircleSelect={handleBGGCircleSelect}
+                      onClose={() => setIsBGGMagnifyingGlassOpen(false)}
                     />
                   </div>
                 )}
 
                 <div>
-                  <Label htmlFor="game-name">Game Name *</Label>
+                  <Label htmlFor="game-name">Circle Name *</Label>
                   <Input
                     id="game-name"
                     value={formData.name}
@@ -584,7 +584,7 @@ export default function GamesPage({
                     </Select>
                   </div>
                   <div>
-                    <Label>Game Modes</Label>
+                    <Label>Circle Modes</Label>
                     <div className="grid grid-cols-2 gap-2 mt-2">
                       <div className="flex items-center space-x-2">
                         <Checkbox 
@@ -594,7 +594,7 @@ export default function GamesPage({
                           className="border-slate-600"
                         />
                         <Label htmlFor="supports-competitive" className="text-sm flex items-center">
-                          <Swords className="w-3 h-3 mr-1 text-red-400" />
+                          <Sword className="w-3 h-3 mr-1 text-red-400" />
                           Compétitif
                         </Label>
                       </div>
@@ -655,7 +655,7 @@ export default function GamesPage({
                       value={formData.designer}
                       onChange={(e) => setFormData(prev => ({ ...prev, designer: e.target.value }))}
                       className="bg-slate-700 border-slate-600 text-white"
-                      placeholder="Game designer"
+                      placeholder="Circle designer"
                     />
                   </div>
                   <div>
@@ -860,30 +860,30 @@ export default function GamesPage({
                   )}
                 </div>
 
-                <Button onClick={handleAddGame} className="w-full bg-emerald-600 hover:bg-emerald-700">
-                  Add Game
+                <Button onClick={handleAddCircle} className="w-full bg-emerald-600 hover:bg-emerald-700">
+                  Add Circle
                 </Button>
               </div>
             </DialogContent>
           </Dialog>
         </div>
 
-        {/* Search */}
+        {/* MagnifyingGlass */}
         <div className="relative mb-6">
-          <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-white/60 w-4 h-4" />
+          <MagnifyingGlass className="absolute left-3 top-1/2 transform -translate-y-1/2 text-white/60 w-4 h-4" />
           <Input
             value={searchQuery}
-            onChange={(e) => setSearchQuery(e.target.value)}
-            placeholder="Search games, designers, publishers..."
+            onChange={(e) => setMagnifyingGlassQuery(e.target.value)}
+            placeholder="MagnifyingGlass games, designers, publishers..."
             className="pl-10 bg-white/10 border-white/20 text-white placeholder:text-white/60"
           />
         </div>
 
-        {/* Games Stats */}
+        {/* Circles Stats */}
         <div className="grid grid-cols-3 gap-4 mb-6">
           <div className="bg-white/10 backdrop-blur-md rounded-xl p-3 text-center border border-white/20">
             <div className="text-2xl font-bold text-emerald-400">{games.length}</div>
-            <div className="text-xs text-white/80">Total Games</div>
+            <div className="text-xs text-white/80">Total Circles</div>
           </div>
           <div className="bg-white/10 backdrop-blur-md rounded-xl p-3 text-center border border-white/20">
             <div className="text-2xl font-bold text-blue-400">
@@ -900,10 +900,10 @@ export default function GamesPage({
         </div>
       </div>
 
-      {/* Games Grid */}
+      {/* Circles Grid */}
       <div className="px-4 pb-32">
         <div className="grid grid-cols-1 gap-4">
-          {filteredGames.map((game) => (
+          {filteredCircles.map((game) => (
             <Card key={game.game_id} className="bg-white/10 backdrop-blur-md border-white/20">
               <CardContent className="p-0">
                 <div className="flex">
@@ -922,7 +922,7 @@ export default function GamesPage({
                           <Badge variant="secondary" className="bg-teal-600/20 text-teal-300 text-xs">
                             {game.category}
                           </Badge>
-                          {getGameModesBadges(game).map((badge, index) => (
+                          {getCircleModesBadges(game).map((badge, index) => (
                             <React.Fragment key={index}>
                               {badge}
                             </React.Fragment>
@@ -987,11 +987,11 @@ export default function GamesPage({
                             <button
                               onClick={(e) => {
                                 e.stopPropagation();
-                                setExpandedGame(expandedGame === game.game_id ? null : game.game_id);
+                                setExpandedCircle(expandedCircle === game.game_id ? null : game.game_id);
                               }}
                               className="text-white/60 hover:text-white transition-colors"
                             >
-                              {expandedGame === game.game_id ? (
+                              {expandedCircle === game.game_id ? (
                                 <CaretUp className="w-4 h-4" />
                               ) : (
                                 <CaretDown className="w-4 h-4" />
@@ -1001,7 +1001,7 @@ export default function GamesPage({
                         )}
                         
                         {/* Expanded Details */}
-                        {expandedGame === game.game_id && (
+                        {expandedCircle === game.game_id && (
                           <div className="mt-3 pt-3 border-t border-white/10 space-y-3">
                             {game.expansions && game.expansions.length > 0 && (
                               <div>
@@ -1031,7 +1031,7 @@ export default function GamesPage({
                                     });
                                     
                                     // Update the game with new expansions
-                                    onUpdateGame(game.game_id, { ...game, expansions: parsedExpansions });
+                                    onUpdateCircle(game.game_id, { ...game, expansions: parsedExpansions });
                                   }}
                                   placeholder="Format: Extension 1 (2023), Extension 2 (2024), ..."
                                   className="min-h-[60px] bg-white/5 border-white/10 text-white text-xs resize-none"
@@ -1096,25 +1096,25 @@ export default function GamesPage({
                                 className="p-2 hover:bg-teal-500/20 rounded-lg transition-colors text-teal-400 hover:text-teal-300"
                                 aria-label="View game stats"
                               >
-                                <ChartBar className="w-4 h-4" />
+                                <ChartLineUp className="w-4 h-4" />
                               </button>
                             </TooltipTrigger>
                             <TooltipContent>
-                              <p>View Game Stats</p>
+                              <p>View Circle Stats</p>
                             </TooltipContent>
                           </Tooltip>
                           <Tooltip>
                             <TooltipTrigger asChild>
                               <button 
-                                onClick={() => handleEditGame(game)}
+                                onClick={() => handlePencilSimpleCircle(game)}
                                 className="p-2 hover:bg-white/10 rounded-lg transition-colors text-white/60 hover:text-white"
-                                aria-label="Edit game"
+                                aria-label="PencilSimple game"
                               >
-                                <Edit className="w-4 h-4" />
+                                <PencilSimple className="w-4 h-4" />
                               </button>
                             </TooltipTrigger>
                             <TooltipContent>
-                              <p>Edit Game</p>
+                              <p>PencilSimple Circle</p>
                             </TooltipContent>
                           </Tooltip>
                           <AlertDialog>
@@ -1130,12 +1130,12 @@ export default function GamesPage({
                                 </AlertDialogTrigger>
                               </TooltipTrigger>
                               <TooltipContent>
-                                <p>Delete Game</p>
+                                <p>Delete Circle</p>
                               </TooltipContent>
                             </Tooltip>
                             <AlertDialogContent className="bg-slate-800 border-slate-700 text-white">
                               <AlertDialogHeader>
-                                <AlertDialogTitle>Delete Game</AlertDialogTitle>
+                                <AlertDialogTitle>Delete Circle</AlertDialogTitle>
                                 <AlertDialogDescription className="text-white/70">
                                   Are you sure you want to delete "{game.name}"? This action cannot be undone and will also remove all associated expansions and characters.
                                 </AlertDialogDescription>
@@ -1145,7 +1145,7 @@ export default function GamesPage({
                                   Cancel
                                 </AlertDialogCancel>
                                 <AlertDialogAction 
-                                  onClick={() => onDeleteGame(game.game_id)}
+                                  onClick={() => onDeleteCircle(game.game_id)}
                                   className="bg-red-600 hover:bg-red-700 text-white"
                                 >
                                   Delete
@@ -1161,9 +1161,9 @@ export default function GamesPage({
                             <DropdownMenuTrigger asChild>
                               <button 
                                 className="p-2 hover:bg-white/10 rounded-lg transition-colors text-white hover:text-white min-w-[44px] min-h-[44px] flex items-center justify-center bg-white/10 border border-white/20 shadow-lg"
-                                aria-label="Game options menu"
+                                aria-label="Circle options menu"
                               >
-                                <DotsThreeVertical className="w-5 h-5" />
+                                <DotsThree className="w-5 h-5" />
                               </button>
                             </DropdownMenuTrigger>
                             <DropdownMenuContent align="end" className="bg-slate-800 border-slate-700 text-white">
@@ -1178,15 +1178,15 @@ export default function GamesPage({
                                 onClick={() => onNavigation('game-stats', game.game_id)}
                                 className="hover:bg-teal-500/20 cursor-pointer text-teal-400"
                               >
-                                <ChartBar className="w-4 h-4 mr-2" />
+                                <ChartLineUp className="w-4 h-4 mr-2" />
                                 View Stats
                               </DropdownMenuItem>
                               <DropdownMenuItem 
-                                onClick={() => handleEditGame(game)}
+                                onClick={() => handlePencilSimpleCircle(game)}
                                 className="hover:bg-slate-700 cursor-pointer"
                               >
-                                <Edit className="w-4 h-4 mr-2" />
-                                Edit Game
+                                <PencilSimple className="w-4 h-4 mr-2" />
+                                PencilSimple Circle
                               </DropdownMenuItem>
                               <DropdownMenuItem 
                                 onClick={() => onNavigation('game-expansions', game.game_id, 'games')}
@@ -1212,12 +1212,12 @@ export default function GamesPage({
                                     className="hover:bg-red-500/20 cursor-pointer text-red-400"
                                   >
                                     <Trash className="w-4 h-4 mr-2" />
-                                    Delete Game
+                                    Delete Circle
                                   </DropdownMenuItem>
                                 </AlertDialogTrigger>
                                 <AlertDialogContent className="bg-slate-800 border-slate-700 text-white">
                                   <AlertDialogHeader>
-                                    <AlertDialogTitle>Delete Game</AlertDialogTitle>
+                                    <AlertDialogTitle>Delete Circle</AlertDialogTitle>
                                     <AlertDialogDescription className="text-white/70">
                                       Are you sure you want to delete "{game.name}"? This action cannot be undone and will also remove all associated expansions and characters.
                                     </AlertDialogDescription>
@@ -1227,7 +1227,7 @@ export default function GamesPage({
                                       Cancel
                                     </AlertDialogCancel>
                                     <AlertDialogAction 
-                                      onClick={() => onDeleteGame(game.game_id)}
+                                      onClick={() => onDeleteCircle(game.game_id)}
                                       className="bg-red-600 hover:bg-red-700 text-white"
                                     >
                                       Delete
@@ -1247,30 +1247,30 @@ export default function GamesPage({
           ))}
         </div>
         
-        {filteredGames.length === 0 && (
+        {filteredCircles.length === 0 && (
           <div className="text-center py-12">
-            <Gamepad2 className="w-16 h-16 text-white/20 mx-auto mb-4" />
+            <Circle className="w-16 h-16 text-white/20 mx-auto mb-4" />
             <p className="text-white/60">No games found</p>
           </div>
         )}
       </div>
       </div>
 
-      {/* Edit Game Dialog */}
-      <Dialog open={isEditDialogOpen} onOpenChange={(open) => {
-        setIsEditDialogOpen(open);
+      {/* PencilSimple Circle Dialog */}
+      <Dialog open={isPencilSimpleDialogOpen} onOpenChange={(open) => {
+        setIsPencilSimpleDialogOpen(open);
         if (!open) {
           resetForm();
-          setEditingGame(null);
+          setPencilSimpleingCircle(null);
         }
       }}>
         <DialogContent className="bg-slate-800 border-slate-700 text-white max-w-2xl max-h-[90vh] overflow-y-auto">
           <DialogHeader>
-            <DialogTitle>Edit Game</DialogTitle>
+            <DialogTitle>PencilSimple Circle</DialogTitle>
           </DialogHeader>
           <div className="space-y-4">
             <div>
-              <Label htmlFor="edit-game-name">Game Name *</Label>
+              <Label htmlFor="edit-game-name">Circle Name *</Label>
               <Input
                 id="edit-game-name"
                 value={formData.name}
@@ -1351,7 +1351,7 @@ export default function GamesPage({
                 </Select>
               </div>
               <div>
-                <Label>Game Modes</Label>
+                <Label>Circle Modes</Label>
                 <div className="grid grid-cols-2 gap-2 mt-2">
                   <div className="flex items-center space-x-2">
                     <Checkbox 
@@ -1361,7 +1361,7 @@ export default function GamesPage({
                       className="border-slate-600"
                     />
                     <Label htmlFor="edit-supports-competitive" className="text-sm flex items-center">
-                      <Swords className="w-3 h-3 mr-1 text-red-400" />
+                      <Sword className="w-3 h-3 mr-1 text-red-400" />
                       Compétitif
                     </Label>
                   </div>
@@ -1422,7 +1422,7 @@ export default function GamesPage({
                   value={formData.designer}
                   onChange={(e) => setFormData(prev => ({ ...prev, designer: e.target.value }))}
                   className="bg-slate-700 border-slate-600 text-white"
-                  placeholder="Game designer"
+                  placeholder="Circle designer"
                 />
               </div>
               <div>
@@ -1622,8 +1622,8 @@ export default function GamesPage({
                 </div>
               )}
             </div>
-            <Button onClick={handleUpdateGame} className="w-full bg-blue-600 hover:bg-blue-700">
-              Update Game
+            <Button onClick={handleUpdateCircle} className="w-full bg-blue-600 hover:bg-blue-700">
+              Update Circle
             </Button>
           </div>
         </DialogContent>

@@ -13,95 +13,7 @@ import GameStatsPage from '@/components/GameStatsPage';
 import NewGamePage from '@/components/NewGamePage';
 import SettingsPage from '@/components/SettingsPage';
 import ApiService from '@/services/ApiService';
-// Database-aligned interfaces
-
-interface Player {
-  player_id: number
-  player_name: string
-  avatar?: string
-  games_played: number
-  wins: number
-  total_score: number
-  average_score: number
-  favorite_game?: string
-  created_at: Date
-  updated_at?: Date
-  // Calculated field for display
-  stats?: string
-}
-
-interface Game {
-  game_id: number
-  bgg_id?: number
-  name: string
-  description?: string
-  image?: string
-  min_players: number
-  max_players: number
-  duration?: string
-  difficulty?: string
-  category?: string
-  year_published?: number
-  publisher?: string
-  designer?: string
-  bgg_rating?: number
-  weight?: number
-  age_min?: number
-  supports_cooperative: boolean
-  supports_competitive: boolean
-  supports_campaign: boolean
-  supports_hybrid: boolean // New field to replace game_type
-  has_expansion: boolean
-  has_characters: boolean
-  created_at: Date
-  updated_at?: Date
-  // Related data
-  expansions: GameExpansion[]
-  characters: GameCharacter[]
-  // Calculated field for display
-  players?: string
-}
-
-interface GameExpansion {
-  expansion_id?: number
-  game_id?: number
-  bgg_expansion_id?: number
-  name: string
-  year_published?: number
-  description?: string
-}
-
-interface GameCharacter {
-  character_id?: number
-  game_id?: number
-  character_key: string
-  name: string
-  description?: string
-  avatar?: string // Fixed: This field was missing from table Game_Characters
-  abilities?: string[] // Will be stored as JSON in database
-}
-
-interface GameSession {
-  session_id: number
-  game_id: number
-  session_date: Date
-  duration_minutes?: number
-  winner_player_id?: number
-  session_type: 'competitive' | 'cooperative' | 'campaign' | 'hybrid'
-  notes?: string
-  created_at: Date
-}
-
-interface SessionPlayer {
-  session_player_id?: number
-  session_id: number
-  player_id: number
-  character_id?: number
-  score: number
-  placement?: number
-  is_winner: boolean
-  notes?: string
-}
+import { Player, Game, GameExpansion, GameCharacter, GameSession, SessionPlayer } from '@/types';
 
 // Mock data aligned with database structure
 const mockData = {
@@ -140,7 +52,7 @@ const mockData = {
       wins: 15,
       total_score: 1620,
       average_score: 50.6,
-      favorite_game: 'Mind Games',
+      favorite_game: 'Mind Circles',
       created_at: new Date('2024-01-28'),
       stats: '1,620 pts'
     },
@@ -170,7 +82,7 @@ const mockData = {
       difficulty: 'Expert',
       category: 'Strategy',
       year_published: 2022,
-      publisher: 'Strategy Games Inc.',
+      publisher: 'Strategy Circles Inc.',
       designer: 'John Designer',
       bgg_rating: 7.8,
       weight: 3.5,
@@ -208,7 +120,7 @@ const mockData = {
       difficulty: 'Intermediate',
       category: 'Combat',
       year_published: 2023,
-      publisher: 'Combat Games Ltd.',
+      publisher: 'Combat Circles Ltd.',
       designer: 'Sarah Designer',
       bgg_rating: 7.2,
       weight: 2.8,
@@ -254,7 +166,7 @@ const mockData = {
     {
       game_id: 3,
       bgg_id: 34567,
-      name: 'Mind Games',
+      name: 'Mind Circles',
       description: 'Psychological warfare meets board game mechanics.',
       image: 'https://images.unsplash.com/photo-1606092195730-5d7b9af1efc5?w=150&h=150&fit=crop',
       min_players: 2,
@@ -291,7 +203,7 @@ const mockData = {
       difficulty: 'Expert',
       category: 'Strategy',
       year_published: 2020,
-      publisher: 'Cosmic Games',
+      publisher: 'Cosmic Circles',
       designer: 'Maria Cosmos',
       bgg_rating: 8.1,
       weight: 4.2,
@@ -850,7 +762,7 @@ export default function ModernDashboard() {
           players={apiConnected ? recentPlayers : (players || [])}
           onNavigation={handleNavigation}
           currentView={currentView}
-          selectedGameId={currentGameId || undefined}
+          selectedCircleId={currentGameId || undefined}
         />
       </TooltipProvider>
     );

@@ -24,7 +24,7 @@ interface Player {
   stats?: string
 }
 
-interface Game {
+interface Circle {
   game_id: number
   bgg_id?: number
   name: string
@@ -54,22 +54,22 @@ interface Game {
   players?: string
 }
 
-interface NewGamePageProps {
-  games: Game[]
+interface NewCirclePageProps {
+  games: Circle[]
   players: Player[]
   onNavigation: (view: string) => void
   currentView: string
   onCreateSession: (sessionData: any) => Promise<void>
 }
 
-export default function NewGamePage({ 
+export default function NewCirclePage({ 
   games, 
   players,
   onNavigation, 
   currentView,
   onCreateSession 
-}: NewGamePageProps) {
-  const [selectedGameId, setSelectedGameId] = useState<string>('');
+}: NewCirclePageProps) {
+  const [selectedCircleId, setSelectedCircleId] = useState<string>('');
   const [sessionType, setSessionType] = useState<'competitive' | 'cooperative' | 'campaign' | 'hybrid'>('competitive');
   const [selectedPlayers, setSelectedPlayers] = useState<number[]>([]);
   const [playerScores, setPlayerScores] = useState<{[key: number]: number}>({});
@@ -78,7 +78,7 @@ export default function NewGamePage({
   const [notes, setNotes] = useState<string>('');
   const [isSubmitting, setIsSubmitting] = useState(false);
 
-  const selectedGame = games.find(g => g.game_id.toString() === selectedGameId);
+  const selectedCircle = games.find(g => g.game_id.toString() === selectedCircleId);
 
   const handlePlayerToggle = (playerId: number) => {
     setSelectedPlayers(prev => {
@@ -98,18 +98,18 @@ export default function NewGamePage({
   };
 
   const canSubmit = () => {
-    return selectedGameId && 
-           selectedPlayers.length >= (selectedGame?.min_players || 1) &&
-           selectedPlayers.length <= (selectedGame?.max_players || 8);
+    return selectedCircleId && 
+           selectedPlayers.length >= (selectedCircle?.min_players || 1) &&
+           selectedPlayers.length <= (selectedCircle?.max_players || 8);
   };
 
   const handleSubmit = async () => {
-    if (!selectedGame || !onCreateSession) return;
+    if (!selectedCircle || !onCreateSession) return;
 
     setIsSubmitting(true);
     try {
       const sessionData = {
-        game_id: parseInt(selectedGameId),
+        game_id: parseInt(selectedCircleId),
         session_date: new Date(),
         duration_minutes: duration ? parseInt(duration) : null,
         winner_player_id: winnerId ? parseInt(winnerId) : null,
@@ -123,7 +123,7 @@ export default function NewGamePage({
       };
 
       await onCreateSession(sessionData);
-      toast.success('Game session created successfully!');
+      toast.success('Circle session created successfully!');
       onNavigation('dashboard');
     } catch (error) {
       console.error('Error creating session:', error);
@@ -145,22 +145,22 @@ export default function NewGamePage({
           >
             <ArrowLeft className="w-4 h-4" />
           </Button>
-          <h1 className="text-2xl font-bold text-white">New Game Session</h1>
+          <h1 className="text-2xl font-bold text-white">New Circle Session</h1>
         </div>
 
-        {/* Game Setup */}
+        {/* Circle Setup */}
         <Card className="bg-white/10 backdrop-blur-md border-white/20">
           <CardHeader>
             <CardTitle className="flex items-center gap-2 text-white">
               <Play className="w-5 h-5" />
-              Game Setup
+              Circle Setup
             </CardTitle>
           </CardHeader>
           <CardContent>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               <div>
-                <Label className="text-white/80">Game</Label>
-                <Select value={selectedGameId} onValueChange={setSelectedGameId}>
+                <Label className="text-white/80">Circle</Label>
+                <Select value={selectedCircleId} onValueChange={setSelectedCircleId}>
                   <SelectTrigger className="bg-white/5 border-white/20 text-white">
                     <SelectValue placeholder="Choose a game..." />
                   </SelectTrigger>
@@ -174,7 +174,7 @@ export default function NewGamePage({
                 </Select>
               </div>
 
-              {selectedGame && (
+              {selectedCircle && (
                 <div>
                   <Label className="text-white/80">Session Type</Label>
                   <Select value={sessionType} onValueChange={(value: 'competitive' | 'cooperative' | 'campaign' | 'hybrid') => setSessionType(value)}>
@@ -182,16 +182,16 @@ export default function NewGamePage({
                       <SelectValue />
                     </SelectTrigger>
                     <SelectContent className="bg-slate-800 border-white/20">
-                      {selectedGame.supports_competitive && (
+                      {selectedCircle.supports_competitive && (
                         <SelectItem value="competitive">Competitive</SelectItem>
                       )}
-                      {selectedGame.supports_cooperative && (
+                      {selectedCircle.supports_cooperative && (
                         <SelectItem value="cooperative">Cooperative</SelectItem>
                       )}
-                      {selectedGame.supports_campaign && (
+                      {selectedCircle.supports_campaign && (
                         <SelectItem value="campaign">Campaign</SelectItem>
                       )}
-                      {selectedGame.supports_hybrid && (
+                      {selectedCircle.supports_hybrid && (
                         <SelectItem value="hybrid">Hybrid</SelectItem>
                       )}
                     </SelectContent>
@@ -200,14 +200,14 @@ export default function NewGamePage({
               )}
             </div>
 
-            {selectedGame && (
+            {selectedCircle && (
               <div className="mt-4 p-4 bg-white/5 rounded-lg">
                 <p className="text-white/80 text-sm">
-                  <strong>{selectedGame.name}</strong> • {selectedGame.min_players}-{selectedGame.max_players} players
-                  {selectedGame.duration && ` • ${selectedGame.duration}`}
+                  <strong>{selectedCircle.name}</strong> • {selectedCircle.min_players}-{selectedCircle.max_players} players
+                  {selectedCircle.duration && ` • ${selectedCircle.duration}`}
                 </p>
-                {selectedGame.description && (
-                  <p className="text-white/60 text-sm mt-2">{selectedGame.description}</p>
+                {selectedCircle.description && (
+                  <p className="text-white/60 text-sm mt-2">{selectedCircle.description}</p>
                 )}
               </div>
             )}
@@ -215,7 +215,7 @@ export default function NewGamePage({
         </Card>
 
         {/* Player Selection */}
-        {selectedGame && (
+        {selectedCircle && (
           <Card className="bg-white/10 backdrop-blur-md border-white/20">
             <CardHeader>
               <CardTitle className="flex items-center gap-2 text-white">
@@ -315,7 +315,7 @@ export default function NewGamePage({
               <div>
                 <Label className="text-white/80">Notes</Label>
                 <Textarea
-                  placeholder="Game notes, highlights, or observations..."
+                  placeholder="Circle notes, highlights, or observations..."
                   value={notes}
                   onChange={(e) => setNotes(e.target.value)}
                   className="bg-white/5 border-white/20 text-white min-h-20"

@@ -6,7 +6,7 @@ import { cn } from "@/lib/utils";
 // Format: { THEME_NAME: CSS_SELECTOR }
 const THEMES = { light: "", dark: ".dark" } as const;
 
-export type ChartConfig = {
+export type ChartLineUpConfig = {
   [k in string]: {
     label?: ReactNode
     icon?: ComponentType
@@ -16,30 +16,30 @@ export type ChartConfig = {
   )
 }
 
-type ChartContextProps = {
-  config: ChartConfig
+type ChartLineUpContextProps = {
+  config: ChartLineUpConfig
 }
 
-const ChartContext = createContext<ChartContextProps | null>(null);
+const ChartLineUpContext = createContext<ChartLineUpContextProps | null>(null);
 
-function useChart() {
-  const context = useContext(ChartContext);
+function useChartLineUp() {
+  const context = useContext(ChartLineUpContext);
 
   if (!context) {
-    throw new Error("useChart must be used within a <ChartContainer />");
+    throw new Error("useChartLineUp must be used within a <ChartLineUpContainer />");
   }
 
   return context;
 }
 
-function ChartContainer({
+function ChartLineUpContainer({
   id,
   className,
   children,
   config,
   ...props
 }: ComponentProps<"div"> & {
-  config: ChartConfig
+  config: ChartLineUpConfig
   children: ComponentProps<
     typeof RechartsPrimitive.ResponsiveContainer
   >["children"]
@@ -48,7 +48,7 @@ function ChartContainer({
   const chartId = `chart-${id || uniqueId.replace(/:/g, "")}`;
 
   return (
-    <ChartContext.Provider value={{ config }}>
+    <ChartLineUpContext.Provider value={{ config }}>
       <div
         data-slot="chart"
         data-chart={chartId}
@@ -58,16 +58,16 @@ function ChartContainer({
         )}
         {...props}
       >
-        <ChartStyle id={chartId} config={config} />
+        <ChartLineUpStyle id={chartId} config={config} />
         <RechartsPrimitive.ResponsiveContainer>
           {children}
         </RechartsPrimitive.ResponsiveContainer>
       </div>
-    </ChartContext.Provider>
+    </ChartLineUpContext.Provider>
   );
 }
 
-const ChartStyle = ({ id, config }: { id: string; config: ChartConfig }) => {
+const ChartLineUpStyle = ({ id, config }: { id: string; config: ChartLineUpConfig }) => {
   const colorConfig = Object.entries(config).filter(
     ([, config]) => config.theme || config.color
   );
@@ -100,9 +100,9 @@ ${colorConfig
   );
 };
 
-const ChartTooltip = RechartsPrimitive.Tooltip;
+const ChartLineUpTooltip = RechartsPrimitive.Tooltip;
 
-function ChartTooltipContent({
+function ChartLineUpTooltipContent({
   active,
   payload,
   className,
@@ -124,7 +124,7 @@ function ChartTooltipContent({
     nameKey?: string
     labelKey?: string
   }) {
-  const { config } = useChart();
+  const { config } = useChartLineUp();
 
   const tooltipLabel = useMemo(() => {
     if (hideLabel || !payload?.length) {
@@ -246,9 +246,9 @@ function ChartTooltipContent({
   );
 }
 
-const ChartLegend = RechartsPrimitive.Legend;
+const ChartLineUpLegend = RechartsPrimitive.Legend;
 
-function ChartLegendContent({
+function ChartLineUpLegendContent({
   className,
   hideIcon = false,
   payload,
@@ -259,7 +259,7 @@ function ChartLegendContent({
     hideIcon?: boolean
     nameKey?: string
   }) {
-  const { config } = useChart();
+  const { config } = useChartLineUp();
 
   if (!payload?.length) {
     return null;
@@ -304,7 +304,7 @@ function ChartLegendContent({
 
 // Helper to extract item config from a payload.
 function getPayloadConfigFromPayload(
-  config: ChartConfig,
+  config: ChartLineUpConfig,
   payload: unknown,
   key: string
 ) {
@@ -342,10 +342,10 @@ function getPayloadConfigFromPayload(
 }
 
 export {
-  ChartContainer,
-  ChartTooltip,
-  ChartTooltipContent,
-  ChartLegend,
-  ChartLegendContent,
-  ChartStyle,
+  ChartLineUpContainer,
+  ChartLineUpTooltip,
+  ChartLineUpTooltipContent,
+  ChartLineUpLegend,
+  ChartLineUpLegendContent,
+  ChartLineUpStyle,
 };

@@ -5,8 +5,8 @@ import {
   Clock,
   Target,
   Star,
-  ChartBar,
-  ChartPie
+  ChartLineUp,
+  ChartLineUp
 } from '@phosphor-icons/react';
 import BottomNavigation from './BottomNavigation';
 
@@ -24,7 +24,7 @@ interface Player {
   stats?: string
 }
 
-interface Game {
+interface Circle {
   game_id: number
   name: string
   min_players: number
@@ -36,13 +36,13 @@ interface Game {
 
 interface PlayerStatsPageProps {
   players: Player[]
-  games: Game[]
+  games: Circle[]
   onNavigation: (view: string) => void
   currentView: string
   selectedPlayerId?: number
 }
 
-interface GameSession {
+interface CircleSession {
   game_id: number
   game_name: string
   player_id: number
@@ -51,7 +51,7 @@ interface GameSession {
 }
 
 // Mock session data for demonstration
-const mockSessions: GameSession[] = [
+const mockSessions: CircleSession[] = [
   { game_id: 1, game_name: 'Strategy Pro', player_id: 1, score: 95, is_winner: true },
   { game_id: 1, game_name: 'Strategy Pro', player_id: 2, score: 78, is_winner: false },
   { game_id: 2, game_name: 'Battle Arena', player_id: 1, score: 120, is_winner: true },
@@ -76,13 +76,13 @@ export default function PlayerStatsPage({ players, games, onNavigation, currentV
 
   const stats = useMemo(() => {
     const totalPlayers = displayPlayers.length;
-    const totalGames = games.length;
+    const totalCircles = games.length;
     const totalSessions = displaySessions.length;
     const avgScore = displayPlayers.reduce((sum, p) => sum + p.average_score, 0) / displayPlayers.length || 0;
 
     return {
       totalPlayers,
-      totalGames,
+      totalCircles,
       totalSessions,
       avgScore: Math.round(avgScore * 10) / 10
     };
@@ -208,14 +208,14 @@ export default function PlayerStatsPage({ players, games, onNavigation, currentV
           </div>
         </div>
 
-        {/* Performance Charts Placeholder */}
+        {/* Performance ChartLineUps Placeholder */}
         <div className="bg-white/10 backdrop-blur-md rounded-2xl p-4 border border-white/20 shadow-xl">
           <h2 className="text-lg font-semibold mb-4 flex items-center">
-            <ChartBar className="w-5 h-5 mr-2 text-purple-400" />
+            <ChartLineUp className="w-5 h-5 mr-2 text-purple-400" />
             Performance Overview
           </h2>
           <div className="text-center py-8 text-white/60">
-            <ChartPie className="w-16 h-16 mx-auto mb-4 opacity-50" />
+            <ChartLineUp className="w-16 h-16 mx-auto mb-4 opacity-50" />
             <p>Detailed charts coming soon...</p>
           </div>
         </div>

@@ -1,19 +1,19 @@
 import React, { useState, useMemo } from 'react';
 import {
   ArrowLeft,
-  TrendingUp,
+  TrendUp,
   Users,
   Clock,
   Star,
-  ChartBar,
-  ChartPie,
+  ChartLineUp,
+  ChartLineUp,
   Calendar,
   Trophy,
   Target
 } from '@phosphor-icons/react';
 import BottomNavigation from './BottomNavigation';
 
-interface Game {
+interface Circle {
   game_id: number
   name: string
   description?: string
@@ -43,15 +43,15 @@ interface Player {
   avatar?: string
 }
 
-interface GameStatsPageProps {
-  games: Game[]
+interface CircleStatsPageProps {
+  games: Circle[]
   players: Player[]
   onNavigation: (view: string) => void
   currentView: string
-  selectedGameId?: number
+  selectedCircleId?: number
 }
 
-interface GameSession {
+interface CircleSession {
   session_id: number
   game_id: number
   date: Date
@@ -63,7 +63,7 @@ interface GameSession {
 }
 
 // Mock session data for demonstration
-const mockGameSessions: GameSession[] = [
+const mockCircleSessions: CircleSession[] = [
   { session_id: 1, game_id: 1, date: new Date('2024-02-15'), duration_minutes: 75, winner_player_id: 1, session_type: 'competitive', player_count: 4, average_score: 85 },
   { session_id: 2, game_id: 1, date: new Date('2024-02-12'), duration_minutes: 80, winner_player_id: 2, session_type: 'competitive', player_count: 3, average_score: 78 },
   { session_id: 3, game_id: 1, date: new Date('2024-02-08'), duration_minutes: 70, winner_player_id: 1, session_type: 'campaign', player_count: 4, average_score: 92 },
@@ -71,27 +71,27 @@ const mockGameSessions: GameSession[] = [
   { session_id: 5, game_id: 2, date: new Date('2024-02-10'), duration_minutes: 65, winner_player_id: 2, session_type: 'competitive', player_count: 4, average_score: 82 }
 ];
 
-export default function GameStatsPage({ games, players, onNavigation, currentView, selectedGameId }: GameStatsPageProps) {
+export default function CircleStatsPage({ games, players, onNavigation, currentView, selectedCircleId }: CircleStatsPageProps) {
   const [selectedPeriod, setSelectedPeriod] = useState<'week' | 'month' | 'year' | 'all'>('month');
   
-  // Use selectedGameId if provided, otherwise default to first game
-  const [selectedGame, setSelectedGame] = useState<Game | null>(() => {
-    if (selectedGameId) {
-      return games.find(g => g.game_id === selectedGameId) || games[0] || null;
+  // Use selectedCircleId if provided, otherwise default to first game
+  const [selectedStar, setSelectedCircle] = useState<Circle | null>(() => {
+    if (selectedCircleId) {
+      return games.find(g => g.game_id === selectedCircleId) || games[0] || null;
     }
     return games[0] || null;
   });
 
-  // If selectedGameId is provided, filter to show only that game's stats
-  /*const displayGames = selectedGameId 
-    ? games.filter(g => g.game_id === selectedGameId)
+  // If selectedCircleId is provided, filter to show only that game's stats
+  /*const displayCircles = selectedCircleId 
+    ? games.filter(g => g.game_id === selectedCircleId)
     : games;*/
 
   // Calculate comprehensive game stats
   const gameStats = useMemo(() => {
-    if (!selectedGame) return null;
+    if (!selectedCircle) return null;
 
-    const gameSessions = mockGameSessions.filter(s => s.game_id === selectedGame.game_id);
+    const gameSessions = mockCircleSessions.filter(s => s.game_id === selectedCircle.game_id);
     const totalSessions = gameSessions.length;
     const totalPlayers = gameSessions.reduce((sum, s) => sum + s.player_count, 0);
     const averagePlayerCount = totalSessions > 0 ? totalPlayers / totalSessions : 0;
@@ -154,9 +154,9 @@ export default function GameStatsPage({ games, players, onNavigation, currentVie
       playFrequency,
       recentSessions: gameSessions.slice(-5)
     };
-  }, [selectedGame, players]);
+  }, [selectedStar, players]);
 
-  if (!selectedGame || !gameStats) {
+  if (!selectedCircle || !gameStats) {
     return (
       <div className="min-h-screen bg-gradient-to-br from-slate-900 to-slate-800 text-white">
         <div className="px-4 pt-8 pb-6">
@@ -167,7 +167,7 @@ export default function GameStatsPage({ games, players, onNavigation, currentVie
             >
               <ArrowLeft className="w-6 h-6" />
             </button>
-            <h1 className="text-2xl font-bold">Game Stats</h1>
+            <h1 className="text-2xl font-bold">Circle Stats</h1>
             <div className="w-10" />
           </div>
           <div className="text-center text-white/60">
@@ -191,19 +191,19 @@ export default function GameStatsPage({ games, players, onNavigation, currentVie
             <ArrowLeft className="w-6 h-6" />
           </button>
           <h1 className="text-2xl font-bold">
-            {selectedGameId && selectedGame ? `${selectedGame.name} Stats` : 'Game Statistics'}
+            {selectedCircleId && selectedCircle ? `${selectedCircle.name} Stats` : 'Circle Statistics'}
           </h1>
           <div className="w-10" />
         </div>
 
-        {/* Game Selector - Only show when not viewing specific game stats */}
-        {!selectedGameId && (
+        {/* Circle Selector - Only show when not viewing specific game stats */}
+        {!selectedCircleId && (
           <div className="mb-6">
             <select
-              value={selectedGame?.game_id || ''}
+              value={selectedCircle?.game_id || ''}
               onChange={(e) => {
                 const game = games.find(g => g.game_id === parseInt(e.target.value));
-                setSelectedGame(game || null);
+                setSelectedCircle(game || null);
               }}
               className="w-full bg-white/10 border border-white/20 rounded-xl px-4 py-3 text-white focus:outline-none focus:ring-2 focus:ring-primary"
             >
@@ -245,30 +245,30 @@ export default function GameStatsPage({ games, players, onNavigation, currentVie
             onClick={() => onNavigation('game-stats')}
             className="flex-1 px-4 py-2 rounded-lg transition-colors bg-primary text-primary-foreground"
           >
-            Game Stats
+            Circle Stats
           </button>
         </div>
       </div>
 
       {/* Content */}
       <div className="px-4 space-y-6 pb-32">
-        {/* Game Overview */}
+        {/* Circle Overview */}
         <div className="bg-white/10 backdrop-blur-md rounded-2xl p-6 border border-white/20 shadow-xl">
           <div className="flex items-center space-x-4 mb-6">
             <img
-              src={selectedGame.image || 'https://images.unsplash.com/photo-1606092195730-5d7b9af1efc5?w=150&h=150&fit=crop'}
-              alt={selectedGame.name}
+              src={selectedCircle.image || 'https://images.unsplash.com/photo-1606092195730-5d7b9af1efc5?w=150&h=150&fit=crop'}
+              alt={selectedCircle.name}
               className="w-16 h-16 rounded-lg object-cover"
             />
             <div>
-              <h2 className="text-2xl font-bold">{selectedGame.name}</h2>
+              <h2 className="text-2xl font-bold">{selectedCircle.name}</h2>
               <p className="text-white/60">
-                {selectedGame.category} • {selectedGame.players} players
+                {selectedCircle.category} • {selectedCircle.players} players
               </p>
-              {selectedGame.bgg_rating && (
+              {selectedCircle.bgg_rating && (
                 <div className="flex items-center space-x-1 mt-1">
                   <Star className="w-4 h-4 text-yellow-400" />
-                  <span className="text-white/60 text-sm">{selectedGame.bgg_rating}/10</span>
+                  <span className="text-white/60 text-sm">{selectedCircle.bgg_rating}/10</span>
                 </div>
               )}
             </div>
@@ -299,11 +299,11 @@ export default function GameStatsPage({ games, players, onNavigation, currentVie
           </div>
         </div>
 
-        {/* Session Performance Chart */}
+        {/* Session Performance ChartLineUp */}
         <div className="bg-white/10 backdrop-blur-md rounded-2xl p-6 border border-white/20 shadow-xl">
           <div className="flex items-center justify-between mb-4">
             <h3 className="text-lg font-semibold">Score Trend</h3>
-            <TrendingUp className="w-5 h-5 text-primary" />
+            <TrendUp className="w-5 h-5 text-primary" />
           </div>
           <div className="h-32 flex items-end space-x-2">
             {gameStats.performanceTrend.map((score, index) => {
@@ -326,7 +326,7 @@ export default function GameStatsPage({ games, players, onNavigation, currentVie
         <div className="bg-white/10 backdrop-blur-md rounded-2xl p-6 border border-white/20 shadow-xl">
           <div className="flex items-center justify-between mb-4">
             <h3 className="text-lg font-semibold">Session Types</h3>
-            <ChartPie className="w-5 h-5 text-secondary" />
+            <ChartLineUp className="w-5 h-5 text-secondary" />
           </div>
           <div className="space-y-3">
             {Object.entries(gameStats.sessionTypes).map(([type, count]) => {
@@ -359,7 +359,7 @@ export default function GameStatsPage({ games, players, onNavigation, currentVie
         <div className="bg-white/10 backdrop-blur-md rounded-2xl p-6 border border-white/20 shadow-xl">
           <div className="flex items-center justify-between mb-4">
             <h3 className="text-lg font-semibold">Player Count Distribution</h3>
-            <ChartBar className="w-5 h-5 text-accent" />
+            <ChartLineUp className="w-5 h-5 text-accent" />
           </div>
           <div className="space-y-3">
             {Object.entries(gameStats.playerCountDistribution)

@@ -1,53 +1,53 @@
 import React, { useState, useEffect } from 'react';
-import { Search, CircleNotch, ExternalLink } from '@phosphor-icons/react';
+import { MagnifyingGlass, Star, Link } from '@phosphor-icons/react';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
-import { bggApiService, BGGSearchResult, BGGGame } from '@/services/bggApi';
+import { bggApiService, BGGMagnifyingGlassResult, BGGCircle } from '@/services/bggApi';
 
-interface BGGSearchProps {
-  onGameSelect: (game: BGGGame) => void
+interface BGGMagnifyingGlassProps {
+  onCircleSelect: (game: BGGCircle) => void
   onClose: () => void
 }
 
-export default function BGGSearch({ onGameSelect, onClose }: BGGSearchProps) {
+export default function BGGMagnifyingGlass({ onCircleSelect, onClose }: BGGMagnifyingGlassProps) {
   const [query, setQuery] = useState('');
-  const [searchResults, setSearchResults] = useState<BGGSearchResult[]>([]);
-  const [isSearching, setIsSearching] = useState(false);
+  const [searchResults, setMagnifyingGlassResults] = useState<BGGMagnifyingGlassResult[]>([]);
+  const [isMagnifyingGlassing, setIsMagnifyingGlassing] = useState(false);
   const [isLoadingDetails, setIsLoadingDetails] = useState(false);
-  const [searchError, setSearchError] = useState('');
+  const [searchError, setMagnifyingGlassError] = useState('');
 
-  const handleSearch = async () => {
+  const handleMagnifyingGlass = async () => {
     if (!query.trim()) return;
 
-    setIsSearching(true);
-    setSearchError('');
+    setIsMagnifyingGlassing(true);
+    setMagnifyingGlassError('');
     
     try {
-      const results = await bggApiService.searchGames(query.trim());
-      setSearchResults(results);
+      const results = await bggApiService.searchCircles(query.trim());
+      setMagnifyingGlassResults(results);
     } catch (error) {
-      setSearchError('Failed to search BoardGameGeek. Please try again.');
-      console.error('BGG Search error:', error);
+      setMagnifyingGlassError('Failed to search BoardCircleGeek. Please try again.');
+      console.error('BGG MagnifyingGlass error:', error);
     } finally {
-      setIsSearching(false);
+      setIsMagnifyingGlassing(false);
     }
   };
 
-  const handleGameSelect = async (result: BGGSearchResult) => {
+  const handleCircleSelect = async (result: BGGMagnifyingGlassResult) => {
     setIsLoadingDetails(true);
     
     try {
-      const gameDetails = await bggApiService.getGameDetails(result.id);
+      const gameDetails = await bggApiService.getCircleDetails(result.id);
       if (gameDetails) {
-        onGameSelect(gameDetails);
+        onCircleSelect(gameDetails);
         onClose();
       } else {
-        setSearchError('Failed to load game details. Please try again.');
+        setMagnifyingGlassError('Failed to load game details. Please try again.');
       }
     } catch (error) {
-      setSearchError('Failed to load game details. Please try again.');
+      setMagnifyingGlassError('Failed to load game details. Please try again.');
       console.error('BGG Details error:', error);
     } finally {
       setIsLoadingDetails(false);
@@ -56,7 +56,7 @@ export default function BGGSearch({ onGameSelect, onClose }: BGGSearchProps) {
 
   const handleKeyPress = (e: React.KeyboardEvent) => {
     if (e.key === 'Enter') {
-      handleSearch();
+      handleMagnifyingGlass();
     }
   };
 
@@ -64,25 +64,25 @@ export default function BGGSearch({ onGameSelect, onClose }: BGGSearchProps) {
     <div className="space-y-4">
       <div className="flex items-center space-x-2">
         <div className="relative flex-1">
-          <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-white/60 w-4 h-4" />
+          <MagnifyingGlass className="absolute left-3 top-1/2 transform -translate-y-1/2 text-white/60 w-4 h-4" />
           <Input
             value={query}
             onChange={(e) => setQuery(e.target.value)}
             onKeyPress={handleKeyPress}
-            placeholder="Search BoardGameGeek..."
+            placeholder="MagnifyingGlass BoardCircleGeek..."
             className="pl-10 bg-slate-700 border-slate-600 text-white"
-            disabled={isSearching || isLoadingDetails}
+            disabled={isMagnifyingGlassing || isLoadingDetails}
           />
         </div>
         <Button 
-          onClick={handleSearch} 
-          disabled={isSearching || isLoadingDetails || !query.trim()}
+          onClick={handleMagnifyingGlass} 
+          disabled={isMagnifyingGlassing || isLoadingDetails || !query.trim()}
           className="bg-teal-600 hover:bg-teal-700"
         >
-          {isSearching ? (
-            <CircleNotch className="w-4 h-4 animate-spin" />
+          {isMagnifyingGlassing ? (
+            <Circle className="w-4 h-4 animate-spin" />
           ) : (
-            <Search className="w-4 h-4" />
+            <MagnifyingGlass className="w-4 h-4" />
           )}
         </Button>
       </div>
@@ -95,7 +95,7 @@ export default function BGGSearch({ onGameSelect, onClose }: BGGSearchProps) {
 
       {isLoadingDetails && (
         <div className="flex items-center justify-center py-8">
-          <CircleNotch className="w-6 h-6 animate-spin text-teal-400" />
+          <Circle className="w-6 h-6 animate-spin text-teal-400" />
           <span className="ml-2 text-white/60">Loading game details...</span>
         </div>
       )}
@@ -105,7 +105,7 @@ export default function BGGSearch({ onGameSelect, onClose }: BGGSearchProps) {
           <Card 
             key={result.id} 
             className="bg-white/5 backdrop-blur-md border-white/10 hover:bg-white/10 transition-all cursor-pointer"
-            onClick={() => handleGameSelect(result)}
+            onClick={() => handleCircleSelect(result)}
           >
             <CardContent className="p-3">
               <div className="flex items-center justify-between">
@@ -122,13 +122,13 @@ export default function BGGSearch({ onGameSelect, onClose }: BGGSearchProps) {
                     </Badge>
                   </div>
                 </div>
-                <ExternalLink className="w-4 h-4 text-white/40" />
+                <Link className="w-4 h-4 text-white/40" />
               </div>
             </CardContent>
           </Card>
         ))}
         
-        {searchResults.length === 0 && query && !isSearching && (
+        {searchResults.length === 0 && query && !isMagnifyingGlassing && (
           <div className="text-center py-8 text-white/60">
             No games found. Try a different search term.
           </div>
@@ -136,7 +136,7 @@ export default function BGGSearch({ onGameSelect, onClose }: BGGSearchProps) {
       </div>
 
       <div className="text-xs text-white/40 text-center">
-        Data from BoardGameGeek.com
+        Data from BoardCircleGeek.com
       </div>
     </div>
   );

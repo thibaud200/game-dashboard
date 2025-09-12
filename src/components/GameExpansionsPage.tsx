@@ -7,10 +7,10 @@ import { Textarea } from '@/components/ui/textarea';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from '@/components/ui/alert-dialog';
 import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip';
-import { ArrowLeft, Plus, Edit, Trash, Calendar, Users, Gamepad2, TrendingUp, Settings } from '@phosphor-icons/react';
+import { ArrowLeft, Plus, PencilSimple, Trash, Calendar, Users, Star, TrendUp, Gear } from '@phosphor-icons/react';
 import { toast } from 'sonner';
 
-interface GameExpansion {
+interface CircleExpansion {
   expansion_id?: number
   game_id?: number
   bgg_expansion_id?: number
@@ -19,23 +19,23 @@ interface GameExpansion {
   description?: string
 }
 
-interface Game {
+interface Circle {
   game_id: number
   name: string
-  expansions: GameExpansion[]
+  expansions: CircleExpansion[]
 }
 
-interface GameExpansionsPageProps {
-  game: Game
+interface CircleExpansionsPageProps {
+  game: Circle
   onNavigation: (view: string, gameId?: number, source?: string) => void
   navigationSource?: string
-  onAddExpansion: (gameId: number, expansionData: any) => Promise<GameExpansion>
+  onAddExpansion: (gameId: number, expansionData: any) => Promise<CircleExpansion>
   onUpdateExpansion: (expansionId: number, expansionData: any) => Promise<void>
   onDeleteExpansion: (expansionId: number) => Promise<void>
   embedded?: boolean
 }
 
-export default function GameExpansionsPage({ 
+export default function CircleExpansionsPage({ 
   game, 
   onNavigation, 
   navigationSource = 'games',
@@ -43,9 +43,9 @@ export default function GameExpansionsPage({
   onUpdateExpansion, 
   onDeleteExpansion,
   embedded = false
-}: GameExpansionsPageProps) {
+}: CircleExpansionsPageProps) {
   const [isAddDialogOpen, setIsAddDialogOpen] = useState(false);
-  const [editingExpansion, setEditingExpansion] = useState<GameExpansion | null>(null);
+  const [editingExpansion, setPencilSimpleingExpansion] = useState<CircleExpansion | null>(null);
   const [formData, setFormData] = useState({
     name: '',
     year_published: '',
@@ -88,7 +88,7 @@ export default function GameExpansionsPage({
     }
   };
 
-  const handleEditExpansion = async (e: React.FormEvent) => {
+  const handlePencilSimpleExpansion = async (e: React.FormEvent) => {
     e.preventDefault();
     
     if (!editingExpansion || !formData.name.trim()) {
@@ -106,7 +106,7 @@ export default function GameExpansionsPage({
 
       await onUpdateExpansion(editingExpansion.expansion_id!, expansionData);
       toast.success('Extension modifiée avec succès');
-      setEditingExpansion(null);
+      setPencilSimpleingExpansion(null);
       resetForm();
     } catch (error) {
       console.error('Error updating expansion:', error);
@@ -124,8 +124,8 @@ export default function GameExpansionsPage({
     }
   };
 
-  const openEditDialog = (expansion: GameExpansion) => {
-    setEditingExpansion(expansion);
+  const openPencilSimpleDialog = (expansion: CircleExpansion) => {
+    setPencilSimpleingExpansion(expansion);
     setFormData({
       name: expansion.name,
       year_published: expansion.year_published?.toString() || '',
@@ -134,8 +134,8 @@ export default function GameExpansionsPage({
     });
   };
 
-  const closeEditDialog = () => {
-    setEditingExpansion(null);
+  const closePencilSimpleDialog = () => {
+    setPencilSimpleingExpansion(null);
     resetForm();
   };
 
@@ -143,7 +143,7 @@ export default function GameExpansionsPage({
   React.useEffect(() => {
     return () => {
       setIsAddDialogOpen(false);
-      setEditingExpansion(null);
+      setPencilSimpleingExpansion(null);
       resetForm();
     };
   }, []);
@@ -184,7 +184,7 @@ export default function GameExpansionsPage({
           value={formData.bgg_expansion_id}
           onChange={(e) => setFormData(prev => ({ ...prev, bgg_expansion_id: e.target.value }))}
           className="bg-slate-700/50 border-slate-600 text-white"
-          placeholder="ID BoardGameGeek"
+          placeholder="ID BoardCircleGeek"
           min="1"
         />
       </div>
@@ -204,7 +204,7 @@ export default function GameExpansionsPage({
         <Button
           type="button"
           variant="outline"
-          onClick={editingExpansion ? closeEditDialog : () => setIsAddDialogOpen(false)}
+          onClick={editingExpansion ? closePencilSimpleDialog : () => setIsAddDialogOpen(false)}
           className="border-slate-600 text-slate-300 hover:bg-slate-700/50"
         >
           Annuler
@@ -245,7 +245,7 @@ export default function GameExpansionsPage({
                   </Button>
                 </TooltipTrigger>
                 <TooltipContent>
-                  <p>{navigationSource === 'game-detail' ? 'Back to Game Details' : 'Back to Games List'}</p>
+                  <p>{navigationSource === 'game-detail' ? 'Back to Circle Details' : 'Back to Circles List'}</p>
                 </TooltipContent>
               </Tooltip>
               <div className="h-6 w-px bg-slate-600 hidden md:block"></div>
@@ -332,15 +332,15 @@ export default function GameExpansionsPage({
                         <Button
                           variant="outline"
                           size="sm"
-                          onClick={() => openEditDialog(expansion)}
+                          onClick={() => openPencilSimpleDialog(expansion)}
                           className="border-slate-600 text-slate-300 hover:bg-slate-700/50 flex-1"
                         >
-                          <Edit className="w-4 h-4 md:mr-2" />
+                          <PencilSimple className="w-4 h-4 md:mr-2" />
                           <span className="hidden md:inline">Modifier</span>
                         </Button>
                       </TooltipTrigger>
                       <TooltipContent>
-                        <p>Edit Expansion</p>
+                        <p>PencilSimple Expansion</p>
                       </TooltipContent>
                     </Tooltip>
                     
@@ -410,13 +410,13 @@ export default function GameExpansionsPage({
           </Card>
         )}
 
-      {/* Edit Dialog */}
-      <Dialog open={!!editingExpansion} onOpenChange={(open) => !open && closeEditDialog()}>
+      {/* PencilSimple Dialog */}
+      <Dialog open={!!editingExpansion} onOpenChange={(open) => !open && closePencilSimpleDialog()}>
         <DialogContent className="bg-slate-800 border-slate-700 max-w-md mx-4">
           <DialogHeader>
             <DialogTitle className="text-white">Modifier l'extension</DialogTitle>
           </DialogHeader>
-          <ExpansionForm onSubmit={handleEditExpansion} submitText="Modifier" />
+          <ExpansionForm onSubmit={handlePencilSimpleExpansion} submitText="Modifier" />
         </DialogContent>
       </Dialog>
       </div>
@@ -429,7 +429,7 @@ export default function GameExpansionsPage({
               onClick={() => onNavigation('dashboard')}
               className="flex flex-col items-center p-3 transition-colors text-white/60 hover:text-white"
             >
-              <TrendingUp className="w-6 h-6 mb-1" />
+              <TrendUp className="w-6 h-6 mb-1" />
               <span className="text-xs">Dashboard</span>
             </button>
             <button
@@ -443,15 +443,15 @@ export default function GameExpansionsPage({
               onClick={() => onNavigation('games')}
               className="flex flex-col items-center p-3 transition-colors text-primary"
             >
-              <Gamepad2 className="w-6 h-6 mb-1" />
-              <span className="text-xs">Games</span>
+              <Circle className="w-6 h-6 mb-1" />
+              <span className="text-xs">Circles</span>
             </button>
             <button
               onClick={() => onNavigation('settings')}
               className="flex flex-col items-center p-3 transition-colors text-white/60 hover:text-white"
             >
-              <Settings className="w-6 h-6 mb-1" />
-              <span className="text-xs">Settings</span>
+              <Gear className="w-6 h-6 mb-1" />
+              <span className="text-xs">Gear</span>
             </button>
           </div>
         </div>

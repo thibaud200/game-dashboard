@@ -3,14 +3,14 @@ import {
   Users,
   Plus,
   ArrowLeft,
-  Search,
+  MagnifyingGlass,
   Trophy,
-  Gamepad2,
+  Star,
   Medal,
   Trash,
-  Edit,
-  MoreVertical,
-  ChartBar
+  PencilSimple,
+  DotsThree,
+  ChartLineUp
 } from '@phosphor-icons/react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -70,10 +70,10 @@ export default function PlayersPage({
   onDeletePlayer,
   currentView = 'players'
 }: PlayersPageProps) {
-  const [searchQuery, setSearchQuery] = useState('');
-  const [editingPlayer, setEditingPlayer] = useState<Player | null>(null);
+  const [searchQuery, setMagnifyingGlassQuery] = useState('');
+  const [editingPlayer, setPencilSimpleingPlayer] = useState<Player | null>(null);
   const [isAddDialogOpen, setIsAddDialogOpen] = useState(false);
-  const [isEditDialogOpen, setIsEditDialogOpen] = useState(false);
+  const [isPencilSimpleDialogOpen, setIsPencilSimpleDialogOpen] = useState(false);
   const [isMobile, setIsMobile] = useState(false);
   const [formData, setFormData] = useState({
     player_name: '',
@@ -129,8 +129,8 @@ export default function PlayersPage({
     }
   };
 
-  const handleEditPlayer = (player: Player) => {
-    setEditingPlayer(player);
+  const handlePencilSimplePlayer = (player: Player) => {
+    setPencilSimpleingPlayer(player);
     setFormData({
       player_name: player.player_name,
       avatar: player.avatar,
@@ -139,7 +139,7 @@ export default function PlayersPage({
       games_played: player.games_played,
       wins: player.wins
     });
-    setIsEditDialogOpen(true);
+    setIsPencilSimpleDialogOpen(true);
   };
 
   const handleUpdatePlayer = () => {
@@ -153,8 +153,8 @@ export default function PlayersPage({
         updated_at: now
       });
       resetForm();
-      setEditingPlayer(null);
-      setIsEditDialogOpen(false);
+      setPencilSimpleingPlayer(null);
+      setIsPencilSimpleDialogOpen(false);
     }
   };
 
@@ -184,7 +184,7 @@ export default function PlayersPage({
                   onClick={() => onNavigation('player-stats')}
                   className="p-2 hover:bg-white/10 rounded-lg transition-colors"
                 >
-                  <ChartBar className="w-6 h-6" />
+                  <ChartLineUp className="w-6 h-6" />
                 </button>
               </TooltipTrigger>
               <TooltipContent>
@@ -235,7 +235,7 @@ export default function PlayersPage({
                   />
                 </div>
                 <div>
-                  <Label htmlFor="favorite-game">Favorite Game</Label>
+                  <Label htmlFor="favorite-game">Favorite Circle</Label>
                   <Input
                     id="favorite-game"
                     value={formData.favorite_game}
@@ -252,13 +252,13 @@ export default function PlayersPage({
           </Dialog>
         </div>
 
-        {/* Search */}
+        {/* MagnifyingGlass */}
         <div className="relative mb-6">
-          <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-white/60 w-4 h-4" />
+          <MagnifyingGlass className="absolute left-3 top-1/2 transform -translate-y-1/2 text-white/60 w-4 h-4" />
           <Input
             value={searchQuery}
-            onChange={(e) => setSearchQuery(e.target.value)}
-            placeholder="Search players..."
+            onChange={(e) => setMagnifyingGlassQuery(e.target.value)}
+            placeholder="MagnifyingGlass players..."
             className="pl-10 bg-white/10 border-white/20 text-white placeholder:text-white/60"
           />
         </div>
@@ -273,7 +273,7 @@ export default function PlayersPage({
             <div className="text-2xl font-bold text-emerald-400">
               {players.reduce((sum, p) => sum + p.games_played, 0)}
             </div>
-            <div className="text-xs text-white/80">Games Played</div>
+            <div className="text-xs text-white/80">Circles Played</div>
           </div>
           <div className="bg-white/10 backdrop-blur-md rounded-xl p-3 text-center border border-white/20">
             <div className="text-2xl font-bold text-blue-400">
@@ -304,7 +304,7 @@ export default function PlayersPage({
                       <span>{player.stats}</span>
                     </span>
                     <span className="flex items-center space-x-1">
-                      <Gamepad2 className="w-4 h-4" />
+                      <Circle className="w-4 h-4" />
                       <span>{player.games_played} games</span>
                     </span>
                     <span className="flex items-center space-x-1">
@@ -329,7 +329,7 @@ export default function PlayersPage({
                   <DropdownMenu>
                     <DropdownMenuTrigger asChild>
                       <button className="p-2 hover:bg-white/10 rounded-lg transition-colors text-white/60">
-                        <MoreVertical className="w-5 h-5" />
+                        <DotsThree className="w-5 h-5" />
                       </button>
                     </DropdownMenuTrigger>
                     <DropdownMenuContent className="bg-slate-800 border-slate-600 text-white">
@@ -337,15 +337,15 @@ export default function PlayersPage({
                         onClick={() => onNavigation('player-stats', player.player_id)}
                         className="hover:bg-teal-500/20 focus:bg-teal-500/20"
                       >
-                        <ChartBar className="w-4 h-4 mr-2" />
+                        <ChartLineUp className="w-4 h-4 mr-2" />
                         View Stats
                       </DropdownMenuItem>
                       <DropdownMenuItem 
-                        onClick={() => handleEditPlayer(player)}
+                        onClick={() => handlePencilSimplePlayer(player)}
                         className="hover:bg-blue-500/20 focus:bg-blue-500/20"
                       >
-                        <Edit className="w-4 h-4 mr-2" />
-                        Edit Player
+                        <PencilSimple className="w-4 h-4 mr-2" />
+                        PencilSimple Player
                       </DropdownMenuItem>
                       <AlertDialog>
                         <AlertDialogTrigger asChild>
@@ -387,7 +387,7 @@ export default function PlayersPage({
                           onClick={() => onNavigation('player-stats', player.player_id)}
                           className="p-2 hover:bg-teal-500/20 rounded-lg transition-colors text-teal-400"
                         >
-                          <ChartBar className="w-4 h-4" />
+                          <ChartLineUp className="w-4 h-4" />
                         </button>
                       </TooltipTrigger>
                       <TooltipContent>
@@ -397,14 +397,14 @@ export default function PlayersPage({
                     <Tooltip>
                       <TooltipTrigger asChild>
                         <button
-                          onClick={() => handleEditPlayer(player)}
+                          onClick={() => handlePencilSimplePlayer(player)}
                           className="p-2 hover:bg-blue-500/20 rounded-lg transition-colors text-blue-400"
                         >
-                          <Edit className="w-4 h-4" />
+                          <PencilSimple className="w-4 h-4" />
                         </button>
                       </TooltipTrigger>
                       <TooltipContent>
-                        <p>Edit Player</p>
+                        <p>PencilSimple Player</p>
                       </TooltipContent>
                     </Tooltip>
                     <AlertDialog>
@@ -456,17 +456,17 @@ export default function PlayersPage({
       </div>
       </div>
 
-      {/* Edit Player Dialog */}
-      <Dialog open={isEditDialogOpen} onOpenChange={(open) => {
-        setIsEditDialogOpen(open);
+      {/* PencilSimple Player Dialog */}
+      <Dialog open={isPencilSimpleDialogOpen} onOpenChange={(open) => {
+        setIsPencilSimpleDialogOpen(open);
         if (!open) {
           resetForm();
-          setEditingPlayer(null);
+          setPencilSimpleingPlayer(null);
         }
       }}>
         <DialogContent className="bg-slate-800 border-slate-700 text-white max-w-md max-h-[90vh] overflow-y-auto">
           <DialogHeader>
-            <DialogTitle>Edit Player</DialogTitle>
+            <DialogTitle>PencilSimple Player</DialogTitle>
           </DialogHeader>
           <div className="space-y-4">
             <div>
@@ -490,7 +490,7 @@ export default function PlayersPage({
               />
             </div>
             <div>
-              <Label htmlFor="edit-favorite-game">Favorite Game</Label>
+              <Label htmlFor="edit-favorite-game">Favorite Circle</Label>
               <Input
                 id="edit-favorite-game"
                 value={formData.favorite_game}
@@ -511,7 +511,7 @@ export default function PlayersPage({
                 />
               </div>
               <div>
-                <Label htmlFor="edit-games-played">Games Played</Label>
+                <Label htmlFor="edit-games-played">Circles Played</Label>
                 <Input
                   id="edit-games-played"
                   type="number"

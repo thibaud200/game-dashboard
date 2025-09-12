@@ -11,11 +11,11 @@ import {
   DropdownMenuTrigger,
   DropdownMenuSeparator
 } from '@/components/ui/dropdown-menu';
-import { ArrowLeft, Users, Clock, Star, Weight, Calendar, Factory, User, Gamepad2, UserCircle, DotsThreeVertical, Crown, TrendingUp, Settings } from '@phosphor-icons/react';
-import GameExpansionsPage from '@/components/GameExpansionsPage';
-import GameCharactersPage from '@/components/GameCharactersPage';
+import { ArrowLeft, Users, Clock, Star, Barbell, Calendar, Buildings, User, Star, User, DotsThree, Crown, TrendUp, Gear } from '@phosphor-icons/react';
+import CircleExpansionsPage from '@/components/CircleExpansionsPage';
+import CircleCharactersPage from '@/components/CircleCharactersPage';
 
-interface Game {
+interface Circle {
   game_id: number
   bgg_id?: number
   name: string
@@ -40,12 +40,12 @@ interface Game {
   has_characters: boolean
   created_at: Date
   updated_at?: Date
-  expansions: GameExpansion[]
-  characters: GameCharacter[]
+  expansions: CircleExpansion[]
+  characters: CircleCharacter[]
   players?: string
 }
 
-interface GameExpansion {
+interface CircleExpansion {
   expansion_id?: number
   game_id?: number
   bgg_expansion_id?: number
@@ -54,7 +54,7 @@ interface GameExpansion {
   description?: string
 }
 
-interface GameCharacter {
+interface CircleCharacter {
   character_id?: number
   game_id?: number
   character_key: string
@@ -64,8 +64,8 @@ interface GameCharacter {
   abilities?: string[]
 }
 
-interface GameDetailPageProps {
-  game: Game
+interface CircleDetailPageProps {
+  game: Circle
   onNavigation: (view: string, gameId?: number, source?: string) => void
   currentView: string
   navigationSource?: string
@@ -77,7 +77,7 @@ interface GameDetailPageProps {
   onDeleteCharacter?: (characterId: number) => Promise<void>
 }
 
-export default function GameDetailPage({ 
+export default function CircleDetailPage({ 
   game, 
   onNavigation,
   navigationSource = 'games',
@@ -87,7 +87,7 @@ export default function GameDetailPage({
   onAddCharacter,
   onUpdateCharacter,
   onDeleteCharacter
-}: GameDetailPageProps) {
+}: CircleDetailPageProps) {
   const [activeTab, setActiveTab] = useState('overview');
 
   const gameTypes = [];
@@ -115,7 +115,7 @@ export default function GameDetailPage({
                 </Button>
               </TooltipTrigger>
               <TooltipContent>
-                <p>Back to Games List</p>
+                <p>Back to Circles List</p>
               </TooltipContent>
             </Tooltip>
             <div className="h-6 w-px bg-slate-600 hidden md:block"></div>
@@ -128,7 +128,7 @@ export default function GameDetailPage({
                   <TooltipTrigger asChild>
                     <DropdownMenuTrigger asChild>
                       <Button variant="ghost" size="sm" className="text-white/80 hover:text-white hover:bg-white/10 p-2">
-                        <DotsThreeVertical className="w-5 h-5" />
+                        <DotsThree className="w-5 h-5" />
                       </Button>
                     </DropdownMenuTrigger>
                   </TooltipTrigger>
@@ -141,7 +141,7 @@ export default function GameDetailPage({
                     onClick={() => setActiveTab('overview')}
                     className="hover:bg-slate-700 focus:bg-slate-700"
                   >
-                    <Gamepad2 className="w-4 h-4 mr-2" />
+                    <Circle className="w-4 h-4 mr-2" />
                     Vue générale
                   </DropdownMenuItem>
                   <DropdownMenuItem 
@@ -155,7 +155,7 @@ export default function GameDetailPage({
                     onClick={() => setActiveTab('characters')}
                     className="hover:bg-slate-700 focus:bg-slate-700"
                   >
-                    <UserCircle className="w-4 h-4 mr-2" />
+                    <User className="w-4 h-4 mr-2" />
                     Personnages ({game.characters?.length || 0})
                   </DropdownMenuItem>
                   <DropdownMenuSeparator className="bg-slate-600" />
@@ -170,7 +170,7 @@ export default function GameDetailPage({
                     onClick={() => onNavigation('game-characters', game.game_id, 'game-detail')}
                     className="hover:bg-slate-700 focus:bg-slate-700"
                   >
-                    <UserCircle className="w-4 h-4 mr-2" />
+                    <User className="w-4 h-4 mr-2" />
                     Gérer les personnages
                   </DropdownMenuItem>
                 </DropdownMenuContent>
@@ -206,12 +206,12 @@ export default function GameDetailPage({
             </TabsList>
 
             <TabsContent value="overview" className="mt-6">
-              {renderGameOverview()}
+              {renderCircleOverview()}
             </TabsContent>
 
             <TabsContent value="expansions" className="mt-6">
               {onAddExpansion && onUpdateExpansion && onDeleteExpansion && (
-                <GameExpansionsPage
+                <CircleExpansionsPage
                   game={game}
                   onNavigation={onNavigation}
                   navigationSource={navigationSource}
@@ -225,7 +225,7 @@ export default function GameDetailPage({
 
             <TabsContent value="characters" className="mt-6">
               {onAddCharacter && onUpdateCharacter && onDeleteCharacter && (
-                <GameCharactersPage
+                <CircleCharactersPage
                   game={game}
                   onNavigation={onNavigation}
                   navigationSource={navigationSource}
@@ -241,9 +241,9 @@ export default function GameDetailPage({
 
         {/* Mobile Layout - Show current tab content */}
         <div className="md:hidden pb-32">
-          {activeTab === 'overview' && renderGameOverview()}
+          {activeTab === 'overview' && renderCircleOverview()}
           {activeTab === 'expansions' && onAddExpansion && onUpdateExpansion && onDeleteExpansion && (
-            <GameExpansionsPage
+            <CircleExpansionsPage
               game={game}
               onNavigation={onNavigation}
               navigationSource={navigationSource}
@@ -254,7 +254,7 @@ export default function GameDetailPage({
             />
           )}
           {activeTab === 'characters' && onAddCharacter && onUpdateCharacter && onDeleteCharacter && (
-            <GameCharactersPage
+            <CircleCharactersPage
               game={game}
               onNavigation={onNavigation}
               navigationSource={navigationSource}
@@ -274,7 +274,7 @@ export default function GameDetailPage({
             onClick={() => onNavigation('dashboard')}
             className="flex flex-col items-center p-3 transition-colors text-white/60 hover:text-white"
           >
-            <TrendingUp className="w-6 h-6 mb-1" />
+            <TrendUp className="w-6 h-6 mb-1" />
             <span className="text-xs">Dashboard</span>
           </button>
           <button
@@ -288,29 +288,29 @@ export default function GameDetailPage({
             onClick={() => onNavigation('games')}
             className="flex flex-col items-center p-3 transition-colors text-primary"
           >
-            <Gamepad2 className="w-6 h-6 mb-1" />
-            <span className="text-xs">Games</span>
+            <Circle className="w-6 h-6 mb-1" />
+            <span className="text-xs">Circles</span>
           </button>
           <button
             onClick={() => onNavigation('settings')}
             className="flex flex-col items-center p-3 transition-colors text-white/60 hover:text-white"
           >
-            <Settings className="w-6 h-6 mb-1" />
-            <span className="text-xs">Settings</span>
+            <Gear className="w-6 h-6 mb-1" />
+            <span className="text-xs">Gear</span>
           </button>
         </div>
       </div>
     </div>
   );
 
-  function renderGameOverview() {
+  function renderCircleOverview() {
     return (
       <>
-        {/* Game Overview Card */}
+        {/* Circle Overview Card */}
         <Card className="bg-slate-800/50 border-slate-700/50 mb-6 md:mb-8">
           <CardContent className="p-4 md:p-6">
             <div className="flex flex-col md:flex-row gap-4 md:gap-6">
-              {/* Game Image */}
+              {/* Circle Image */}
               <div className="flex-shrink-0 self-center md:self-start">
                 {game.image ? (
                   <img 
@@ -320,12 +320,12 @@ export default function GameDetailPage({
                   />
                 ) : (
                   <div className="w-24 h-24 md:w-32 md:h-32 bg-slate-700/50 rounded-lg border border-slate-600 flex items-center justify-center">
-                    <Gamepad2 className="w-8 h-8 md:w-12 md:h-12 text-slate-400" />
+                    <Circle className="w-8 h-8 md:w-12 md:h-12 text-slate-400" />
                   </div>
                 )}
               </div>
 
-              {/* Game Info */}
+              {/* Circle Info */}
               <div className="flex-1">
                 <div className="flex flex-col md:flex-row md:items-start md:justify-between mb-4">
                   <div className="mb-4 md:mb-0">
@@ -342,7 +342,7 @@ export default function GameDetailPage({
                   )}
                 </div>
 
-                {/* Game Stats */}
+                {/* Circle Stats */}
                 <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 md:gap-4 mb-4">
                   <div className="flex items-center gap-2 text-slate-300">
                     <Users className="w-4 h-4 text-primary" />
@@ -356,7 +356,7 @@ export default function GameDetailPage({
                   )}
                   {game.weight && (
                     <div className="flex items-center gap-2 text-slate-300">
-                      <Weight className="w-4 h-4 text-primary" />
+                      <Barbell className="w-4 h-4 text-primary" />
                       <span className="text-sm">Complexité {game.weight}/5</span>
                     </div>
                   )}
@@ -372,7 +372,7 @@ export default function GameDetailPage({
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-3 md:gap-4 mb-4">
                   {game.publisher && (
                     <div className="flex items-center gap-2 text-slate-300">
-                      <Factory className="w-4 h-4 text-primary" />
+                      <Buildings className="w-4 h-4 text-primary" />
                       <span className="text-sm">{game.publisher}</span>
                     </div>
                   )}
@@ -384,7 +384,7 @@ export default function GameDetailPage({
                   )}
                 </div>
 
-                {/* Game Types */}
+                {/* Circle Types */}
                 {gameTypes.length > 0 && (
                   <div className="flex gap-2 flex-wrap">
                     {gameTypes.map((type) => (
@@ -459,7 +459,7 @@ export default function GameDetailPage({
             <CardHeader>
               <div className="flex items-center justify-between">
                 <CardTitle className="text-white flex items-center gap-2">
-                  <UserCircle className="w-5 h-5 text-primary" />
+                  <User className="w-5 h-5 text-primary" />
                   Personnages ({game.characters?.length || 0})
                 </CardTitle>
                 <Button
@@ -485,7 +485,7 @@ export default function GameDetailPage({
                         />
                       ) : (
                         <div className="w-10 h-10 bg-slate-600 rounded-full flex items-center justify-center">
-                          <UserCircle className="w-6 h-6 text-slate-400" />
+                          <User className="w-6 h-6 text-slate-400" />
                         </div>
                       )}
                       <div>

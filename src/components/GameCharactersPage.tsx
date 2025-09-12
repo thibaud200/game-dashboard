@@ -7,10 +7,10 @@ import { Textarea } from '@/components/ui/textarea';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from '@/components/ui/alert-dialog';
 import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip';
-import { ArrowLeft, Plus, Edit, Trash, UserCircle, Zap, Users, Gamepad2, TrendingUp, Settings } from '@phosphor-icons/react';
+import { ArrowLeft, Plus, PencilSimple, Trash, User, Lightning, Users, Star, TrendUp, Gear } from '@phosphor-icons/react';
 import { toast } from 'sonner';
 
-interface GameCharacter {
+interface CircleCharacter {
   character_id?: number
   game_id?: number
   character_key: string
@@ -20,23 +20,23 @@ interface GameCharacter {
   abilities?: string[]
 }
 
-interface Game {
+interface Circle {
   game_id: number
   name: string
-  characters: GameCharacter[]
+  characters: CircleCharacter[]
 }
 
-interface GameCharactersPageProps {
-  game: Game
+interface CircleCharactersPageProps {
+  game: Circle
   onNavigation: (view: string, gameId?: number, source?: string) => void
   navigationSource?: string
-  onAddCharacter: (gameId: number, characterData: any) => Promise<GameCharacter>
+  onAddCharacter: (gameId: number, characterData: any) => Promise<CircleCharacter>
   onUpdateCharacter: (characterId: number, characterData: any) => Promise<void>
   onDeleteCharacter: (characterId: number) => Promise<void>
   embedded?: boolean
 }
 
-export default function GameCharactersPage({ 
+export default function CircleCharactersPage({ 
   game, 
   onNavigation, 
   navigationSource = 'games',
@@ -44,9 +44,9 @@ export default function GameCharactersPage({
   onUpdateCharacter, 
   onDeleteCharacter,
   embedded = false
-}: GameCharactersPageProps) {
+}: CircleCharactersPageProps) {
   const [isAddDialogOpen, setIsAddDialogOpen] = useState(false);
-  const [editingCharacter, setEditingCharacter] = useState<GameCharacter | null>(null);
+  const [editingCharacter, setPencilSimpleingCharacter] = useState<CircleCharacter | null>(null);
   const [formData, setFormData] = useState({
     character_key: '',
     name: '',
@@ -102,7 +102,7 @@ export default function GameCharactersPage({
     }
   };
 
-  const handleEditCharacter = async (e: React.FormEvent) => {
+  const handlePencilSimpleCharacter = async (e: React.FormEvent) => {
     e.preventDefault();
     
     if (!editingCharacter || !formData.name.trim() || !formData.character_key.trim()) {
@@ -121,7 +121,7 @@ export default function GameCharactersPage({
 
       await onUpdateCharacter(editingCharacter.character_id!, characterData);
       toast.success('Personnage modifié avec succès');
-      setEditingCharacter(null);
+      setPencilSimpleingCharacter(null);
       resetForm();
     } catch (error) {
       console.error('Error updating character:', error);
@@ -139,8 +139,8 @@ export default function GameCharactersPage({
     }
   };
 
-  const openEditDialog = (character: GameCharacter) => {
-    setEditingCharacter(character);
+  const openPencilSimpleDialog = (character: CircleCharacter) => {
+    setPencilSimpleingCharacter(character);
     setFormData({
       character_key: character.character_key,
       name: character.name,
@@ -150,8 +150,8 @@ export default function GameCharactersPage({
     });
   };
 
-  const closeEditDialog = () => {
-    setEditingCharacter(null);
+  const closePencilSimpleDialog = () => {
+    setPencilSimpleingCharacter(null);
     resetForm();
   };
 
@@ -159,7 +159,7 @@ export default function GameCharactersPage({
   React.useEffect(() => {
     return () => {
       setIsAddDialogOpen(false);
-      setEditingCharacter(null);
+      setPencilSimpleingCharacter(null);
       resetForm();
     };
   }, []);
@@ -230,7 +230,7 @@ export default function GameCharactersPage({
         <Button
           type="button"
           variant="outline"
-          onClick={editingCharacter ? closeEditDialog : () => setIsAddDialogOpen(false)}
+          onClick={editingCharacter ? closePencilSimpleDialog : () => setIsAddDialogOpen(false)}
           className="border-slate-600 text-slate-300 hover:bg-slate-700/50"
         >
           Annuler
@@ -271,7 +271,7 @@ export default function GameCharactersPage({
                   </Button>
                 </TooltipTrigger>
                 <TooltipContent>
-                  <p>{navigationSource === 'game-detail' ? 'Back to Game Details' : 'Back to Games List'}</p>
+                  <p>{navigationSource === 'game-detail' ? 'Back to Circle Details' : 'Back to Circles List'}</p>
                 </TooltipContent>
               </Tooltip>
               <div className="h-6 w-px bg-slate-600 hidden md:block"></div>
@@ -342,7 +342,7 @@ export default function GameCharactersPage({
                       />
                     ) : (
                       <div className="w-10 h-10 md:w-12 md:h-12 bg-slate-600 rounded-full flex items-center justify-center">
-                        <UserCircle className="w-6 h-6 md:w-8 md:h-8 text-slate-400" />
+                        <User className="w-6 h-6 md:w-8 md:h-8 text-slate-400" />
                       </div>
                     )}
                     <div>
@@ -359,7 +359,7 @@ export default function GameCharactersPage({
                   {character.abilities && character.abilities.length > 0 && (
                     <div>
                       <div className="flex items-center gap-2 mb-2">
-                        <Zap className="w-4 h-4 text-primary" />
+                        <Lightning className="w-4 h-4 text-primary" />
                         <span className="text-white text-sm font-medium">Capacités</span>
                       </div>
                       <div className="flex flex-wrap gap-1">
@@ -381,15 +381,15 @@ export default function GameCharactersPage({
                         <Button
                           variant="outline"
                           size="sm"
-                          onClick={() => openEditDialog(character)}
+                          onClick={() => openPencilSimpleDialog(character)}
                           className="border-slate-600 text-slate-300 hover:bg-slate-700/50 flex-1"
                         >
-                          <Edit className="w-4 h-4 md:mr-2" />
+                          <PencilSimple className="w-4 h-4 md:mr-2" />
                           <span className="hidden md:inline">Modifier</span>
                         </Button>
                       </TooltipTrigger>
                       <TooltipContent>
-                        <p>Edit Character</p>
+                        <p>PencilSimple Character</p>
                       </TooltipContent>
                     </Tooltip>
                     
@@ -441,7 +441,7 @@ export default function GameCharactersPage({
         ) : (
           <Card className="bg-slate-800/50 border-slate-700/50">
             <CardContent className="p-12 text-center">
-              <UserCircle className="w-16 h-16 text-slate-600 mx-auto mb-4" />
+              <User className="w-16 h-16 text-slate-600 mx-auto mb-4" />
               <h3 className="text-xl font-semibold text-white mb-2">Aucun personnage</h3>
               <p className="text-slate-400 mb-6">
                 Ce jeu n'a pas encore de personnages enregistrés.
@@ -465,13 +465,13 @@ export default function GameCharactersPage({
         )}
       </div>
 
-      {/* Edit Dialog */}
-      <Dialog open={!!editingCharacter} onOpenChange={(open) => !open && closeEditDialog()}>
+      {/* PencilSimple Dialog */}
+      <Dialog open={!!editingCharacter} onOpenChange={(open) => !open && closePencilSimpleDialog()}>
         <DialogContent className="bg-slate-800 border-slate-700 max-w-md mx-4">
           <DialogHeader>
             <DialogTitle className="text-white">Modifier le personnage</DialogTitle>
           </DialogHeader>
-          <CharacterForm onSubmit={handleEditCharacter} submitText="Modifier" />
+          <CharacterForm onSubmit={handlePencilSimpleCharacter} submitText="Modifier" />
         </DialogContent>
       </Dialog>
 
@@ -483,7 +483,7 @@ export default function GameCharactersPage({
               onClick={() => onNavigation('dashboard')}
               className="flex flex-col items-center p-3 transition-colors text-white/60 hover:text-white"
             >
-              <TrendingUp className="w-6 h-6 mb-1" />
+              <TrendUp className="w-6 h-6 mb-1" />
               <span className="text-xs">Dashboard</span>
             </button>
             <button
@@ -497,15 +497,15 @@ export default function GameCharactersPage({
               onClick={() => onNavigation('games')}
               className="flex flex-col items-center p-3 transition-colors text-primary"
             >
-              <Gamepad2 className="w-6 h-6 mb-1" />
-              <span className="text-xs">Games</span>
+              <Circle className="w-6 h-6 mb-1" />
+              <span className="text-xs">Circles</span>
             </button>
             <button
               onClick={() => onNavigation('settings')}
               className="flex flex-col items-center p-3 transition-colors text-white/60 hover:text-white"
             >
-              <Settings className="w-6 h-6 mb-1" />
-              <span className="text-xs">Settings</span>
+              <Gear className="w-6 h-6 mb-1" />
+              <span className="text-xs">Gear</span>
             </button>
           </div>
         </div>
