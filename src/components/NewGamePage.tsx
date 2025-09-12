@@ -1,14 +1,7 @@
-import React, { useState } from 'react';
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import { Textarea } from "@/components/ui/textarea";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { Checkbox } from "@/components/ui/checkbox";
-import { ArrowLeft, Play, Users, Trophy, Timer } from '@phosphor-icons/react';
+import React from 'react';
 import { toast } from 'sonner';
-import BottomNavigation from './BottomNavigation';
+import { useNewGamePage } from '@/hooks/useNewGamePage';
+import NewGameView from '@/views/NewGameView';
 
 interface Player {
   player_id: number
@@ -24,7 +17,7 @@ interface Player {
   stats?: string
 }
 
-interface Circle {
+interface Game {
   game_id: number
   bgg_id?: number
   name: string
@@ -54,300 +47,46 @@ interface Circle {
   players?: string
 }
 
-interface NewCirclePageProps {
-  games: Circle[]
+interface NewGamePageProps {
+  games: Game[]
   players: Player[]
   onNavigation: (view: string) => void
   currentView: string
   onCreateSession: (sessionData: any) => Promise<void>
 }
 
-export default function NewCirclePage({ 
+export default function NewGamePage({ 
   games, 
   players,
   onNavigation, 
   currentView,
   onCreateSession 
-}: NewCirclePageProps) {
-  const [selectedCircleId, setSelectedCircleId] = useState<string>('');
-  const [sessionType, setSessionType] = useState<'competitive' | 'cooperative' | 'campaign' | 'hybrid'>('competitive');
-  const [selectedPlayers, setSelectedPlayers] = useState<number[]>([]);
-  const [playerScores, setPlayerScores] = useState<{[key: number]: number}>({});
-  const [winnerId, setWinnerId] = useState<string>('');
-  const [duration, setDuration] = useState<string>('');
-  const [notes, setNotes] = useState<string>('');
-  const [isSubmitting, setIsSubmitting] = useState(false);
+}: NewGamePageProps) {
+  const hookData = useNewGamePage(games, players, onCreateSession);
 
-  const selectedCircle = games.find(g => g.game_id.toString() === selectedCircleId);
-
-  const handlePlayerToggle = (playerId: number) => {
-    setSelectedPlayers(prev => {
-      if (prev.includes(playerId)) {
-        return prev.filter(id => id !== playerId);
-      } else {
-        return [...prev, playerId];
-      }
-    });
-  };
-
-  const handleScoreChange = (playerId: number, value: string) => {
-    setPlayerScores(prev => ({
-      ...prev,
-      [playerId]: parseInt(value) || 0
-    }));
-  };
-
-  const canSubmit = () => {
-    return selectedCircleId && 
-           selectedPlayers.length >= (selectedCircle?.min_players || 1) &&
-           selectedPlayers.length <= (selectedCircle?.max_players || 8);
-  };
-
-  const handleSubmit = async () => {
-    if (!selectedCircle || !onCreateSession) return;
-
-    setIsSubmitting(true);
+  const handleSubmitWithToast = async (): Promise<{ success: boolean }> => {
     try {
-      const sessionData = {
-        game_id: parseInt(selectedCircleId),
-        session_date: new Date(),
-        duration_minutes: duration ? parseInt(duration) : null,
-        winner_player_id: winnerId ? parseInt(winnerId) : null,
-        session_type: sessionType,
-        notes: notes || null,
-        players: selectedPlayers.map(playerId => ({
-          player_id: playerId,
-          score: playerScores[playerId] || 0,
-          is_winner: winnerId === playerId.toString()
-        }))
-      };
-
-      await onCreateSession(sessionData);
-      toast.success('Circle session created successfully!');
-      onNavigation('dashboard');
+      const result = await hookData.handleSubmit();
+      if (result && result.success) {
+        toast.success('Game session created successfully!');
+        hookData.resetForm();
+        return result;
+      }
+      throw new Error('Failed to create session');
     } catch (error) {
-      console.error('Error creating session:', error);
       toast.error('Failed to create game session');
-    } finally {
-      setIsSubmitting(false);
+      throw error;
     }
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-900 to-slate-800 text-white">
-      <div className="container mx-auto px-4 py-6 pb-32 space-y-6">
-        {/* Header */}
-        <div className="flex items-center gap-4">
-          <Button
-            onClick={() => onNavigation('dashboard')}
-            variant="ghost"
-            className="text-white hover:bg-white/10"
-          >
-            <ArrowLeft className="w-4 h-4" />
-          </Button>
-          <h1 className="text-2xl font-bold text-white">New Circle Session</h1>
-        </div>
-
-        {/* Circle Setup */}
-        <Card className="bg-white/10 backdrop-blur-md border-white/20">
-          <CardHeader>
-            <CardTitle className="flex items-center gap-2 text-white">
-              <Play className="w-5 h-5" />
-              Circle Setup
-            </CardTitle>
-          </CardHeader>
-          <CardContent>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              <div>
-                <Label className="text-white/80">Circle</Label>
-                <Select value={selectedCircleId} onValueChange={setSelectedCircleId}>
-                  <SelectTrigger className="bg-white/5 border-white/20 text-white">
-                    <SelectValue placeholder="Choose a game..." />
-                  </SelectTrigger>
-                  <SelectContent className="bg-slate-800 border-white/20">
-                    {games.map(game => (
-                      <SelectItem key={game.game_id} value={game.game_id.toString()}>
-                        {game.name}
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
-              </div>
-
-              {selectedCircle && (
-                <div>
-                  <Label className="text-white/80">Session Type</Label>
-                  <Select value={sessionType} onValueChange={(value: 'competitive' | 'cooperative' | 'campaign' | 'hybrid') => setSessionType(value)}>
-                    <SelectTrigger className="bg-white/5 border-white/20 text-white">
-                      <SelectValue />
-                    </SelectTrigger>
-                    <SelectContent className="bg-slate-800 border-white/20">
-                      {selectedCircle.supports_competitive && (
-                        <SelectItem value="competitive">Competitive</SelectItem>
-                      )}
-                      {selectedCircle.supports_cooperative && (
-                        <SelectItem value="cooperative">Cooperative</SelectItem>
-                      )}
-                      {selectedCircle.supports_campaign && (
-                        <SelectItem value="campaign">Campaign</SelectItem>
-                      )}
-                      {selectedCircle.supports_hybrid && (
-                        <SelectItem value="hybrid">Hybrid</SelectItem>
-                      )}
-                    </SelectContent>
-                  </Select>
-                </div>
-              )}
-            </div>
-
-            {selectedCircle && (
-              <div className="mt-4 p-4 bg-white/5 rounded-lg">
-                <p className="text-white/80 text-sm">
-                  <strong>{selectedCircle.name}</strong> • {selectedCircle.min_players}-{selectedCircle.max_players} players
-                  {selectedCircle.duration && ` • ${selectedCircle.duration}`}
-                </p>
-                {selectedCircle.description && (
-                  <p className="text-white/60 text-sm mt-2">{selectedCircle.description}</p>
-                )}
-              </div>
-            )}
-          </CardContent>
-        </Card>
-
-        {/* Player Selection */}
-        {selectedCircle && (
-          <Card className="bg-white/10 backdrop-blur-md border-white/20">
-            <CardHeader>
-              <CardTitle className="flex items-center gap-2 text-white">
-                <Users className="w-5 h-5" />
-                Select Players
-              </CardTitle>
-            </CardHeader>
-            <CardContent>
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                {players.map(player => (
-                  <div key={player.player_id} className="flex items-center space-x-3 p-3 bg-white/5 rounded-lg">
-                    <Checkbox
-                      checked={selectedPlayers.includes(player.player_id)}
-                      onCheckedChange={() => handlePlayerToggle(player.player_id)}
-                      className="data-[state=checked]:bg-teal-500 data-[state=checked]:border-teal-500"
-                    />
-                    <div className="flex items-center gap-3 flex-1">
-                      {player.avatar && (
-                        <img src={player.avatar} alt={player.player_name} className="w-8 h-8 rounded-full" />
-                      )}
-                      <div>
-                        <p className="text-white font-medium">{player.player_name}</p>
-                        <p className="text-white/60 text-sm">{player.stats}</p>
-                      </div>
-                    </div>
-                  </div>
-                ))}
-              </div>
-            </CardContent>
-          </Card>
-        )}
-
-        {/* Scoring */}
-        {selectedPlayers.length > 0 && sessionType === 'competitive' && (
-          <Card className="bg-white/10 backdrop-blur-md border-white/20">
-            <CardHeader>
-              <CardTitle className="flex items-center gap-2 text-white">
-                <Trophy className="w-5 h-5" />
-                Scoring
-              </CardTitle>
-            </CardHeader>
-            <CardContent className="space-y-4">
-              {selectedPlayers.map(playerId => {
-                const player = players.find(p => p.player_id === playerId);
-                if (!player) return null;
-
-                return (
-                  <div key={playerId} className="flex items-center gap-4">
-                    <div className="flex items-center gap-3 flex-1">
-                      {player.avatar && (
-                        <img src={player.avatar} alt={player.player_name} className="w-8 h-8 rounded-full" />
-                      )}
-                      <span className="text-white font-medium">{player.player_name}</span>
-                    </div>
-                    <div className="flex items-center gap-2">
-                      <Input
-                        type="number"
-                        placeholder="Score"
-                        value={playerScores[playerId] || ''}
-                        onChange={(e) => handleScoreChange(playerId, e.target.value)}
-                        className="w-20 bg-white/5 border-white/20 text-white"
-                      />
-                      <Checkbox
-                        checked={winnerId === playerId.toString()}
-                        onCheckedChange={(checked) => setWinnerId(checked ? playerId.toString() : '')}
-                        className="data-[state=checked]:bg-yellow-500 data-[state=checked]:border-yellow-500"
-                      />
-                      <span className="text-white/60 text-sm">Winner</span>
-                    </div>
-                  </div>
-                );
-              })}
-            </CardContent>
-          </Card>
-        )}
-
-        {/* Session Details */}
-        {selectedPlayers.length > 0 && (
-          <Card className="bg-white/10 backdrop-blur-md border-white/20">
-            <CardHeader>
-              <CardTitle className="flex items-center gap-2 text-white">
-                <Timer className="w-5 h-5" />
-                Session Details
-              </CardTitle>
-            </CardHeader>
-            <CardContent className="space-y-4">
-              <div>
-                <Label className="text-white/80">Duration (minutes)</Label>
-                <Input
-                  type="number"
-                  placeholder="60"
-                  value={duration}
-                  onChange={(e) => setDuration(e.target.value)}
-                  className="bg-white/5 border-white/20 text-white"
-                />
-              </div>
-              <div>
-                <Label className="text-white/80">Notes</Label>
-                <Textarea
-                  placeholder="Circle notes, highlights, or observations..."
-                  value={notes}
-                  onChange={(e) => setNotes(e.target.value)}
-                  className="bg-white/5 border-white/20 text-white min-h-20"
-                />
-              </div>
-            </CardContent>
-          </Card>
-        )}
-
-        {/* Submit Button */}
-        <div className="flex gap-4">
-          <Button
-            onClick={() => onNavigation('dashboard')}
-            variant="outline"
-            className="flex-1 bg-white/10 text-white border-white/20 hover:bg-white/20"
-          >
-            Cancel
-          </Button>
-          <Button
-            onClick={handleSubmit}
-            disabled={!canSubmit() || isSubmitting}
-            className="flex-1 bg-gradient-to-r from-teal-500 to-teal-600 hover:from-teal-600 hover:to-teal-700"
-          >
-            {isSubmitting ? 'Creating...' : 'Create Session'}
-          </Button>
-        </div>
-      </div>
-
-      <BottomNavigation 
-        currentView={currentView}
-        onNavigation={onNavigation}
-      />
-    </div>
+    <NewGameView
+      {...hookData}
+      handleSubmit={handleSubmitWithToast}
+      games={games}
+      players={players}
+      onNavigation={onNavigation}
+      currentView={currentView}
+    />
   );
 }

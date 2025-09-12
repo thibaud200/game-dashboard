@@ -1,0 +1,101 @@
+import { useMemo } from 'react';
+
+interface Player {
+  player_id: number
+  player_name: string
+  avatar?: string
+  games_played: number
+  wins: number
+  total_score: number
+  average_score: number
+  favorite_game?: string
+  created_at: Date
+  updated_at?: Date
+  stats?: string
+}
+
+interface Game {
+  game_id: number
+  name: string
+  min_players: number
+  max_players: number
+  difficulty?: string
+  year_published?: number
+  players?: string
+}
+
+interface PlayerSession {
+  game_id: number
+  game_name: string
+  player_id: number
+  score: number
+  is_winner: boolean
+}
+
+// Mock session data for demonstration
+const mockSessions: PlayerSession[] = [
+  { game_id: 1, game_name: 'Strategy Pro', player_id: 1, score: 95, is_winner: true },
+  { game_id: 1, game_name: 'Strategy Pro', player_id: 2, score: 78, is_winner: false },
+  { game_id: 2, game_name: 'Battle Arena', player_id: 1, score: 120, is_winner: true },
+];
+
+export const usePlayerStatsPage = (
+  players: Player[],
+  games: Game[],
+  selectedPlayerId?: number
+) => {
+  // If selectedPlayerId is provided, filter to show only that player's stats
+  const displayPlayers = selectedPlayerId 
+    ? players.filter(p => p.player_id === selectedPlayerId)
+    : players;
+
+  // Filter sessions for selected player if specified
+  const displaySessions = selectedPlayerId
+    ? mockSessions.filter(session => session.player_id === selectedPlayerId)
+    : mockSessions;
+
+  const selectedPlayer = selectedPlayerId 
+    ? players.find(p => p.player_id === selectedPlayerId)
+    : null;
+
+  const stats = useMemo(() => {
+    const totalPlayers = displayPlayers.length;
+    const totalGames = games.length;
+    const totalSessions = displaySessions.length;
+    const avgScore = displayPlayers.reduce((sum, p) => sum + p.average_score, 0) / displayPlayers.length || 0;
+
+    return {
+      totalPlayers,
+      totalGames,
+      totalSessions,
+      avgScore: Math.round(avgScore * 10) / 10
+    };
+  }, [displayPlayers, games, displaySessions]);
+
+  const topPlayers = useMemo(() => {
+    return [...displayPlayers]
+      .sort((a, b) => b.total_score - a.total_score)
+      .slice(0, 5);
+  }, [displayPlayers]);
+
+  const recentActivity = useMemo(() => {
+    return displaySessions
+      .map(session => {
+        const player = players.find(p => p.player_id === session.player_id);
+        return {
+          ...session,
+          player_name: player?.player_name || 'Unknown'
+        };
+      })
+      .slice(0, 5);
+  }, [displaySessions, players]);
+
+  return {
+    stats,
+    topPlayers,
+    recentActivity,
+    selectedPlayer,
+    displayPlayers,
+    displaySessions
+  };
+};
