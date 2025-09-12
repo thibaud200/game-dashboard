@@ -149,26 +149,45 @@ export interface BGGGame {
   description: string;
   image: string;
   thumbnail: string;
-  minPlayers: number;
-  maxPlayers: number;
-  playingTime: number;
-  minPlayTime: number;
-  maxPlayTime: number;
-  minAge: number;
-  yearpublished: number;
+  min_players: number;
+  max_players: number;
+  playing_time: number;
+  min_playtime: number;
+  max_playtime: number;
+  min_age: number;
+  year_published: number;
   categories: string[];
   mechanics: string[];
   designers: string[];
   publishers: string[];
   rating: number;
   weight: number;
-  expansions?: BGGExpansion[];
+  difficulty: string;
+  expansions: BGGExpansion[];
+  characters: BGGCharacter[];
+  supports_cooperative: boolean;
+  supports_competitive: boolean;
+  supports_campaign: boolean;
+  supports_hybrid: boolean;
+  is_expansion: boolean;
+  base_game_id?: number;
 }
 
 export interface BGGExpansion {
-  id: number;
+  expansion_id?: number;
+  bgg_expansion_id: number;
   name: string;
-  yearpublished: number;
+  year_published: number;
+  description?: string;
+}
+
+export interface BGGCharacter {
+  character_id?: string;
+  character_key: string;
+  name: string;
+  description: string;
+  abilities: string[];
+  avatar?: string;
 }
 
 // API response types

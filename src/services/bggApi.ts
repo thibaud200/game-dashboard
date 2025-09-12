@@ -18,6 +18,7 @@ export interface BGGGame {
   mechanics: string[]
   rating: number
   weight: number
+  difficulty: string
   expansions: BGGExpansion[]
   characters: BGGCharacter[]
   supports_cooperative: boolean
@@ -195,6 +196,9 @@ class BGGApiService {
 
       // Generate mock characters based on game theme
       const characters = this.generateMockCharacters(primaryName, categories);
+      
+      // Map weight to difficulty
+      const difficulty = this.mapWeightToDifficulty(averageweight);
 
       return {
         id: bggId,
@@ -215,6 +219,7 @@ class BGGApiService {
         mechanics,
         rating: average,
         weight: averageweight,
+        difficulty,
         expansions,
         characters,
         supports_cooperative: gameModes.cooperative,
@@ -259,6 +264,12 @@ class BGGApiService {
       console.error('Error parsing expansions:', error);
       return [];
     }
+  }
+
+  private mapWeightToDifficulty(weight: number): string {
+    if (weight <= 2.0) return 'Beginner';
+    if (weight <= 3.5) return 'Intermediate';
+    return 'Expert';
   }
 
   private generateMockCharacters(gameName: string, categories: string[]): BGGCharacter[] {

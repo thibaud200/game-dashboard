@@ -271,26 +271,27 @@ export const useGamesPage = (data: GamesPageData) => {
       name: bggGame.name,
       description: bggGame.description || '',
       image: bggGame.image || bggGame.thumbnail || '',
-      min_players: bggGame.minPlayers || 1,
-      max_players: bggGame.maxPlayers || 4,
-      duration: bggGame.playingTime ? `${bggGame.playingTime} min` : '',
-      year_published: bggGame.yearpublished || new Date().getFullYear(),
+      min_players: bggGame.min_players || 1,
+      max_players: bggGame.max_players || 4,
+      duration: bggGame.playing_time ? `${bggGame.playing_time} min` : '',
+      year_published: bggGame.year_published || new Date().getFullYear(),
       publisher: bggGame.publishers?.[0] || '',
       designer: bggGame.designers?.[0] || '',
       bgg_rating: bggGame.rating || 0,
       weight: bggGame.weight || 0,
-      age_min: bggGame.minAge || 8,
+      difficulty: bggGame.difficulty || '', // Now mapped from BGG weight
+      age_min: bggGame.min_age || 8,
       bgg_id: bggGame.id,
       category: bggGame.categories?.[0] || '',
       has_expansion: (bggGame.expansions?.length || 0) > 0,
-      has_characters: false, // BGG doesn't provide character info typically
+      has_characters: (bggGame.characters?.length || 0) > 0, // Auto-detect from BGG data
       expansions: bggGame.expansions || [],
-      characters: [],
-      // Set game modes based on BGG data if available
-      supports_competitive: true, // Default
-      supports_cooperative: bggGame.mechanics?.includes('Cooperative Game') || false,
-      supports_campaign: bggGame.mechanics?.includes('Campaign') || false,
-      supports_hybrid: false
+      characters: bggGame.characters || [], // Use BGG generated characters
+      // Set game modes based on BGG data
+      supports_competitive: bggGame.supports_competitive ?? true,
+      supports_cooperative: bggGame.supports_cooperative ?? false,
+      supports_campaign: bggGame.supports_campaign ?? false,
+      supports_hybrid: bggGame.supports_hybrid ?? false
     }));
   };
 
