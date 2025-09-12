@@ -1,8 +1,8 @@
 import React from 'react';
 import {
-  TrendUp,
+  TrendingUp,
   Users,
-  Star,
+  GameController,
   Gear,
   ChartLineUp
 } from '@phosphor-icons/react';
@@ -17,7 +17,7 @@ export default function BottomNavigation({ currentView, onNavigation, showStats 
   const navItems = [
     {
       id: 'dashboard',
-      icon: TrendUp,
+      icon: TrendingUp,
       label: 'Dashboard'
     },
     {
@@ -27,7 +27,7 @@ export default function BottomNavigation({ currentView, onNavigation, showStats 
     },
     {
       id: 'games',
-      icon: Star,
+      icon: GameController,
       label: 'Games'
     }
   ];
@@ -43,7 +43,7 @@ export default function BottomNavigation({ currentView, onNavigation, showStats 
   navItems.push({
     id: 'settings',
     icon: Gear,
-    label: 'Gear'
+    label: 'Settings'
   });
 
   const handleNavigation = (view: string) => {

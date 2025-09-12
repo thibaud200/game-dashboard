@@ -7,7 +7,7 @@ import { Textarea } from '@/components/ui/textarea';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from '@/components/ui/alert-dialog';
 import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip';
-import { ArrowLeft, Plus, PencilSimple, Trash, Calendar, Users, Star, TrendUp, Gear } from '@phosphor-icons/react';
+import { ArrowLeft, Plus, PencilSimple, Trash, Calendar, Users, Star, TrendingUp, Gear } from '@phosphor-icons/react';
 import { toast } from 'sonner';
 
 interface CircleExpansion {
@@ -429,7 +429,7 @@ export default function GameExpansionsPage({
               onClick={() => onNavigation('dashboard')}
               className="flex flex-col items-center p-3 transition-colors text-white/60 hover:text-white"
             >
-              <TrendUp className="w-6 h-6 mb-1" />
+              <TrendingUp className="w-6 h-6 mb-1" />
               <span className="text-xs">Dashboard</span>
             </button>
             <button

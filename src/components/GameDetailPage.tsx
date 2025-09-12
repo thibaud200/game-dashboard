@@ -11,7 +11,7 @@ import {
   DropdownMenuTrigger,
   DropdownMenuSeparator
 } from '@/components/ui/dropdown-menu';
-import { ArrowLeft, Users, Clock, Star, Barbell, Calendar, Buildings, User, DotsThree, Crown, TrendUp, Gear } from '@phosphor-icons/react';
+import { ArrowLeft, Users, Clock, Star, Barbell, Calendar, Buildings, User, DotsThree, Crown, TrendingUp, Gear } from '@phosphor-icons/react';
 import GameExpansionsPage from '@/components/GameExpansionsPage';
 import GameCharactersPage from '@/components/GameCharactersPage';
 
@@ -274,7 +274,7 @@ export default function CircleDetailPage({
             onClick={() => onNavigation('dashboard')}
             className="flex flex-col items-center p-3 transition-colors text-white/60 hover:text-white"
           >
-            <TrendUp className="w-6 h-6 mb-1" />
+            <TrendingUp className="w-6 h-6 mb-1" />
             <span className="text-xs">Dashboard</span>
           </button>
           <button

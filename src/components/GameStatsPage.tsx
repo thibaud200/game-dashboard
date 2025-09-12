@@ -1,7 +1,7 @@
 import React, { useState, useMemo } from 'react';
 import {
   ArrowLeft,
-  TrendUp,
+  TrendingUp,
   Users,
   Clock,
   Star,
@@ -302,7 +302,7 @@ export default function CircleStatsPage({ games, players, onNavigation, currentV
         <div className="bg-white/10 backdrop-blur-md rounded-2xl p-6 border border-white/20 shadow-xl">
           <div className="flex items-center justify-between mb-4">
             <h3 className="text-lg font-semibold">Score Trend</h3>
-            <TrendUp className="w-5 h-5 text-primary" />
+            <TrendingUp className="w-5 h-5 text-primary" />
           </div>
           <div className="h-32 flex items-end space-x-2">
             {gameStats.performanceTrend.map((score, index) => {

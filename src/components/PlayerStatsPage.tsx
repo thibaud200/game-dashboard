@@ -5,7 +5,6 @@ import {
   Clock,
   Target,
   Star,
-  ChartLineUp,
   ChartLineUp
 } from '@phosphor-icons/react';
 import BottomNavigation from './BottomNavigation';
