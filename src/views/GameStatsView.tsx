@@ -10,7 +10,6 @@ import {
   Trophy,
   Target
 } from '@phosphor-icons/react';
-import BottomNavigation from '@/components/BottomNavigation';
 
 interface Game {
   game_id: number
@@ -85,7 +84,6 @@ export default function GameStatsView({
             No game data available
           </div>
         </div>
-        <BottomNavigation currentView={currentView} onNavigation={onNavigation} />
       </div>
     );
   }
@@ -364,8 +362,6 @@ export default function GameStatsView({
           </div>
         </div>
       </div>
-
-      <BottomNavigation currentView={currentView} onNavigation={onNavigation} />
     </div>
   );
 }

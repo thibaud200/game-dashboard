@@ -33,7 +33,6 @@ import {
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
 import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip';
-import BottomNavigation from '@/components/BottomNavigation';
 import { Player, PlayerFormData } from '@/types';
 
 interface PlayersPageViewProps {
@@ -398,8 +397,6 @@ export function PlayersPageView(props: PlayersPageViewProps) {
         </DialogContent>
       </Dialog>
 
-      {/* Bottom Navigation */}
-      <BottomNavigation currentView={props.currentView} onNavigation={props.onNavigation} />
     </div>
   );
 }

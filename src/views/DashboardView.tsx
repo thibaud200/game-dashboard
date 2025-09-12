@@ -10,7 +10,6 @@ import {
   Circle
 } from '@phosphor-icons/react';
 import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip';
-import BottomNavigation from '@/components/BottomNavigation';
 import { Player, Game, NavigationHandler } from '@/types';
 
 interface DashboardViewProps {
@@ -314,9 +313,6 @@ export function DashboardView({
           </Tooltip>
         </div>
       </div>
-
-      {/* Bottom Navigation */}
-      <BottomNavigation currentView={currentView} onNavigation={onNavigation} />
     </div>
   );
 }

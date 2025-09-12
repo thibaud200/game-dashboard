@@ -7,7 +7,6 @@ import { Textarea } from "@/components/ui/textarea";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Checkbox } from "@/components/ui/checkbox";
 import { ArrowLeft, Play, Users, Trophy, Timer } from '@phosphor-icons/react';
-import BottomNavigation from '@/components/BottomNavigation';
 
 interface Player {
   player_id: number
@@ -330,11 +329,6 @@ export default function NewGameView({
           </Button>
         </div>
       </div>
-
-      <BottomNavigation 
-        currentView={currentView}
-        onNavigation={onNavigation}
-      />
     </div>
   );
 }

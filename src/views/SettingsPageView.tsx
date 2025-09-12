@@ -5,7 +5,7 @@ import {
   Moon,
   Globe,
   FloppyDisk,
-  Question,
+  Info,
   Download,
   Upload,
   Trash
@@ -13,7 +13,6 @@ import {
 import { Button } from '@/components/ui/button';
 import { Switch } from '@/components/ui/switch';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import BottomNavigation from '@/components/BottomNavigation';
 
 interface SettingsPageViewProps {
   currentView: string;
@@ -121,7 +120,7 @@ export function SettingsPageView(props: SettingsPageViewProps) {
 
             <div className="flex items-center justify-between">
               <div className="flex items-center space-x-3">
-                <Question className="w-5 h-5 text-yellow-400" />
+                <Info className="w-5 h-5 text-yellow-400" />
                 <div>
                   <div className="font-medium">Show Tooltips</div>
                   <div className="text-white/60 text-sm">Display helpful tooltips</div>
@@ -180,8 +179,6 @@ export function SettingsPageView(props: SettingsPageViewProps) {
         </div>
       </div>
 
-      {/* Bottom Navigation */}
-      <BottomNavigation currentView={props.currentView} onNavigation={props.onNavigation} />
     </div>
   );
 }

@@ -7,7 +7,6 @@ import {
   Star,
   ChartBar
 } from '@phosphor-icons/react';
-import BottomNavigation from '@/components/BottomNavigation';
 
 interface Player {
   player_id: number
@@ -167,8 +166,6 @@ export default function PlayerStatsView({
         </div>
       </div>
 
-      {/* Bottom Navigation */}
-      <BottomNavigation currentView={currentView} onNavigation={onNavigation} />
     </div>
   );
 }

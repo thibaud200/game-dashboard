@@ -10,6 +10,7 @@ import GameDetailPage from '@/components/GameDetailPage';
 import GameExpansionsPage from '@/components/GameExpansionsPage';
 import GameCharactersPage from '@/components/GameCharactersPage';
 import BottomNavigation from '@/components/BottomNavigation';
+import { TooltipProvider } from '@/components/ui/tooltip';
 import { Player, Game } from '@/types';
 
 // Mock data (extended with all required fields)
@@ -329,16 +330,20 @@ export default function App() {
 
   if (stats.loading) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-slate-900 to-slate-800 flex items-center justify-center">
-        <div className="text-white text-lg">Chargement du dashboard...</div>
-      </div>
+      <TooltipProvider>
+        <div className="min-h-screen bg-gradient-to-br from-slate-900 to-slate-800 flex items-center justify-center">
+          <div className="text-white text-lg">Chargement du dashboard...</div>
+        </div>
+      </TooltipProvider>
     );
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-900 to-slate-800 text-white">
-      {renderCurrentView()}
-      <BottomNavigation currentView={currentView} onNavigation={handleNavigation} />
-    </div>
+    <TooltipProvider>
+      <div className="min-h-screen bg-gradient-to-br from-slate-900 to-slate-800 text-white">
+        {renderCurrentView()}
+        <BottomNavigation currentView={currentView} onNavigation={handleNavigation} />
+      </div>
+    </TooltipProvider>
   );
 }

@@ -33,7 +33,6 @@ import {
 import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip';
 import { Textarea } from '@/components/ui/textarea';
 import { Game } from '@/types';
-import BottomNavigation from '@/components/BottomNavigation';
 import AddGameDialog from '@/components/games/AddGameDialog';
 import EditGameDialog from '@/components/games/EditGameDialog';
 import DeleteGameDialog from '@/components/games/DeleteGameDialog';
@@ -594,8 +593,6 @@ export default function GamesPageView({
         }}
       />
 
-      {/* Bottom Navigation */}
-      <BottomNavigation currentView={currentView} onNavigation={onNavigation} />
     </div>
   );
 }
