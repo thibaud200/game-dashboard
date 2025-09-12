@@ -12,13 +12,10 @@ import {
   AlertDialogTrigger 
 } from '@/components/ui/alert-dialog';
 
-interface Circle {
-  game_id: number
-  name: string
-}
+import { Game } from '@/types';
 
 interface DeleteGameDialogProps {
-  game: Circle
+  game: Game
   onDeleteGame: (gameId: number) => void
   trigger: React.ReactNode
 }

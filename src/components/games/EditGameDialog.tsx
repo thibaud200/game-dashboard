@@ -15,51 +15,7 @@ import { Textarea } from '@/components/ui/textarea';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Checkbox } from '@/components/ui/checkbox';
 
-interface Character {
-  character_id?: number
-  character_key: string
-  name: string
-  description: string
-  abilities: string[]
-  avatar?: string
-}
-
-interface Expansion {
-  expansion_id?: number
-  bgg_expansion_id?: number
-  name: string
-  year_published: number
-}
-
-interface Circle {
-  game_id: number
-  name: string
-  image: string
-  min_players: number
-  max_players: number
-  description: string
-  duration: string
-  difficulty: string
-  category: string
-  year_published: number
-  publisher: string
-  designer: string
-  bgg_rating: number
-  weight: number
-  age_min: number
-  players: string
-  expansions: Expansion[]
-  characters: Character[]
-  has_expansion: boolean
-  has_characters: boolean
-  supports_cooperative: boolean
-  supports_competitive: boolean
-  supports_campaign: boolean
-  supports_hybrid: boolean
-  bgg_id?: number
-  created_at: Date
-  updated_at?: Date
-}
+import { Game, GameExpansion, GameCharacter } from '@/types';
 
 interface FormData {
   name: string
@@ -76,8 +32,8 @@ interface FormData {
   bgg_rating: number
   weight: number
   age_min: number
-  expansions: Expansion[]
-  characters: Character[]
+  expansions: GameExpansion[]
+  characters: GameCharacter[]
   has_expansion: boolean
   has_characters: boolean
   supports_cooperative: boolean
@@ -90,7 +46,7 @@ interface FormData {
 interface EditGameDialogProps {
   isOpen: boolean
   onOpenChange: (open: boolean) => void
-  editingGame: Circle | null
+  editingGame: Game | null
   formData: FormData
   onFormDataChange: (data: Partial<FormData>) => void
   onUpdateGame: () => void
@@ -126,7 +82,7 @@ export default function EditGameDialog({
     }));
   };
 
-  const updateCharacter = (index: number, field: keyof Character, value: string | string[]) => {
+  const updateCharacter = (index: number, field: keyof GameCharacter, value: string | string[]) => {
     setFormData(prev => ({
       ...prev,
       characters: prev.characters.map((char, i) => 

@@ -15,24 +15,10 @@ import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Checkbox } from '@/components/ui/checkbox';
-import BGGMagnifyingGlass from '@/components/BGGMagnifyingGlass';
-import { BGGCircle } from '@/services/bggApi';
+import BGGSearch from '@/components/BGGSearch';
+import { BGGGame } from '@/services/bggApi';
 
-interface Character {
-  character_id?: number
-  character_key: string
-  name: string
-  description: string
-  abilities: string[]
-  avatar?: string
-}
-
-interface Expansion {
-  expansion_id?: number
-  bgg_expansion_id?: number
-  name: string
-  year_published: number
-}
+import { Game, GameExpansion, GameCharacter } from '@/types';
 
 interface FormData {
   name: string
@@ -49,8 +35,8 @@ interface FormData {
   bgg_rating: number
   weight: number
   age_min: number
-  expansions: Expansion[]
-  characters: Character[]
+  expansions: GameExpansion[]
+  characters: GameCharacter[]
   has_expansion: boolean
   has_characters: boolean
   supports_cooperative: boolean
@@ -65,10 +51,10 @@ interface AddGameDialogProps {
   onOpenChange: (open: boolean) => void
   formData: FormData
   onFormDataChange: (data: Partial<FormData>) => void
-  onBGGCircleSelect: (circle: BGGCircle) => void
+  onBGGGameSelect: (circle: BGGGame) => void
   onAddGame: () => void
   onResetForm: () => void
-  isBGGMagnifyingGlassOpen: boolean
+  isBGGSearchOpen: boolean
   onBGGSearchToggle: (open: boolean) => void
 }
 
@@ -77,10 +63,10 @@ export default function AddGameDialog({
   onOpenChange,
   formData,
   onFormDataChange,
-  onBGGCircleSelect,
+  onBGGGameSelect,
   onAddGame,
   onResetForm,
-  isBGGMagnifyingGlassOpen,
+  isBGGSearchOpen,
   onBGGSearchToggle
 }: AddGameDialogProps) {
   const setFormData = (updater: (prev: FormData) => FormData) => {
@@ -103,7 +89,7 @@ export default function AddGameDialog({
     }));
   };
 
-  const updateCharacter = (index: number, field: keyof Character, value: string | string[]) => {
+  const updateCharacter = (index: number, field: keyof GameCharacter, value: string | string[]) => {
     setFormData(prev => ({
       ...prev,
       characters: prev.characters.map((char, i) => 
@@ -176,10 +162,10 @@ export default function AddGameDialog({
             </Button>
           </div>
 
-          {isBGGMagnifyingGlassOpen && (
+          {isBGGSearchOpen && (
             <div className="p-4 bg-slate-700 rounded-lg border border-slate-600">
-              <BGGMagnifyingGlass 
-                onCircleSelect={onBGGCircleSelect}
+              <BGGSearch 
+                onGameSelect={onBGGGameSelect}
                 onClose={() => onBGGSearchToggle(false)}
               />
             </div>

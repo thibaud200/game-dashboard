@@ -1,53 +1,53 @@
 import React, { useState, useEffect } from 'react';
-import { MagnifyingGlass, Star, Link } from '@phosphor-icons/react';
+import { MagnifyingGlass, Star, Link, Circle } from '@phosphor-icons/react';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
-import { bggApiService, BGGMagnifyingGlassResult, BGGCircle } from '@/services/bggApi';
+import { bggApiService, BGGSearchResult, BGGGame } from '@/services/bggApi';
 
-interface BGGMagnifyingGlassProps {
-  onCircleSelect: (game: BGGCircle) => void
+interface BGGSearchProps {
+  onGameSelect: (game: BGGGame) => void
   onClose: () => void
 }
 
-export default function BGGMagnifyingGlass({ onCircleSelect, onClose }: BGGMagnifyingGlassProps) {
+export default function BGGSearch({ onGameSelect, onClose }: BGGSearchProps) {
   const [query, setQuery] = useState('');
-  const [searchResults, setMagnifyingGlassResults] = useState<BGGMagnifyingGlassResult[]>([]);
-  const [isMagnifyingGlassing, setIsMagnifyingGlassing] = useState(false);
+  const [searchResults, setSearchResults] = useState<BGGSearchResult[]>([]);
+  const [isSearching, setIsSearching] = useState(false);
   const [isLoadingDetails, setIsLoadingDetails] = useState(false);
-  const [searchError, setMagnifyingGlassError] = useState('');
+  const [searchError, setSearchError] = useState('');
 
-  const handleMagnifyingGlass = async () => {
+  const handleSearch = async () => {
     if (!query.trim()) return;
 
-    setIsMagnifyingGlassing(true);
-    setMagnifyingGlassError('');
+    setIsSearching(true);
+    setSearchError('');
     
     try {
-      const results = await bggApiService.searchCircles(query.trim());
-      setMagnifyingGlassResults(results);
+      const results = await bggApiService.searchGames(query.trim());
+      setSearchResults(results);
     } catch (error) {
-      setMagnifyingGlassError('Failed to search BoardCircleGeek. Please try again.');
-      console.error('BGG MagnifyingGlass error:', error);
+      setSearchError('Failed to search BoardGameGeek. Please try again.');
+      console.error('BGG Search error:', error);
     } finally {
-      setIsMagnifyingGlassing(false);
+      setIsSearching(false);
     }
   };
 
-  const handleCircleSelect = async (result: BGGMagnifyingGlassResult) => {
+  const handleGameSelect = async (result: BGGSearchResult) => {
     setIsLoadingDetails(true);
     
     try {
-      const gameDetails = await bggApiService.getCircleDetails(result.id);
+      const gameDetails = await bggApiService.getGameDetails(result.id);
       if (gameDetails) {
-        onCircleSelect(gameDetails);
+        onGameSelect(gameDetails);
         onClose();
       } else {
-        setMagnifyingGlassError('Failed to load game details. Please try again.');
+        setSearchError('Failed to load game details. Please try again.');
       }
     } catch (error) {
-      setMagnifyingGlassError('Failed to load game details. Please try again.');
+      setSearchError('Failed to load game details. Please try again.');
       console.error('BGG Details error:', error);
     } finally {
       setIsLoadingDetails(false);
@@ -56,7 +56,7 @@ export default function BGGMagnifyingGlass({ onCircleSelect, onClose }: BGGMagni
 
   const handleKeyPress = (e: React.KeyboardEvent) => {
     if (e.key === 'Enter') {
-      handleMagnifyingGlass();
+      handleSearch();
     }
   };
 
@@ -69,17 +69,17 @@ export default function BGGMagnifyingGlass({ onCircleSelect, onClose }: BGGMagni
             value={query}
             onChange={(e) => setQuery(e.target.value)}
             onKeyPress={handleKeyPress}
-            placeholder="MagnifyingGlass BoardCircleGeek..."
+            placeholder="Search BoardGameGeek..."
             className="pl-10 bg-slate-700 border-slate-600 text-white"
-            disabled={isMagnifyingGlassing || isLoadingDetails}
+            disabled={isSearching || isLoadingDetails}
           />
         </div>
         <Button 
-          onClick={handleMagnifyingGlass} 
-          disabled={isMagnifyingGlassing || isLoadingDetails || !query.trim()}
+          onClick={handleSearch} 
+          disabled={isSearching || isLoadingDetails || !query.trim()}
           className="bg-teal-600 hover:bg-teal-700"
         >
-          {isMagnifyingGlassing ? (
+          {isSearching ? (
             <Circle className="w-4 h-4 animate-spin" />
           ) : (
             <MagnifyingGlass className="w-4 h-4" />
@@ -105,7 +105,7 @@ export default function BGGMagnifyingGlass({ onCircleSelect, onClose }: BGGMagni
           <Card 
             key={result.id} 
             className="bg-white/5 backdrop-blur-md border-white/10 hover:bg-white/10 transition-all cursor-pointer"
-            onClick={() => handleCircleSelect(result)}
+            onClick={() => handleGameSelect(result)}
           >
             <CardContent className="p-3">
               <div className="flex items-center justify-between">
@@ -128,7 +128,7 @@ export default function BGGMagnifyingGlass({ onCircleSelect, onClose }: BGGMagni
           </Card>
         ))}
         
-        {searchResults.length === 0 && query && !isMagnifyingGlassing && (
+        {searchResults.length === 0 && query && !isSearching && (
           <div className="text-center py-8 text-white/60">
             No games found. Try a different search term.
           </div>
@@ -136,7 +136,7 @@ export default function BGGMagnifyingGlass({ onCircleSelect, onClose }: BGGMagni
       </div>
 
       <div className="text-xs text-white/40 text-center">
-        Data from BoardCircleGeek.com
+        Data from BoardGameGeek.com
       </div>
     </div>
   );

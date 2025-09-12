@@ -23,7 +23,6 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Card, CardContent } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
-import { DialogTrigger } from '@/components/ui/dialog';
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -33,57 +32,12 @@ import {
 } from '@/components/ui/dropdown-menu';
 import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip';
 import { Textarea } from '@/components/ui/textarea';
-import { BGGCircle } from '@/services/bggApi';
+import { Game, GameExpansion, GameCharacter } from '@/types';
+import { BGGGame } from '@/services/bggApi';
 import BottomNavigation from './BottomNavigation';
 import AddGameDialog from '@/components/games/AddGameDialog';
 import EditGameDialog from '@/components/games/EditGameDialog';
 import DeleteGameDialog from '@/components/games/DeleteGameDialog';
-
-interface Character {
-  character_id?: number
-  character_key: string
-  name: string
-  description: string
-  abilities: string[]
-  avatar?: string
-}
-
-interface Expansion {
-  expansion_id?: number
-  bgg_expansion_id?: number
-  name: string
-  year_published: number
-}
-
-interface Circle {
-  game_id: number
-  name: string
-  image: string
-  min_players: number
-  max_players: number
-  description: string
-  duration: string
-  difficulty: string
-  category: string
-  year_published: number
-  publisher: string
-  designer: string
-  bgg_rating: number
-  weight: number
-  age_min: number
-  players: string
-  expansions: Expansion[]
-  characters: Character[]
-  has_expansion: boolean
-  has_characters: boolean
-  supports_cooperative: boolean
-  supports_competitive: boolean
-  supports_campaign: boolean
-  supports_hybrid: boolean
-  bgg_id?: number
-  created_at: Date
-  updated_at?: Date
-}
 
 interface FormData {
   name: string
@@ -100,8 +54,8 @@ interface FormData {
   bgg_rating: number
   weight: number
   age_min: number
-  expansions: Expansion[]
-  characters: Character[]
+  expansions: GameExpansion[]
+  characters: GameCharacter[]
   has_expansion: boolean
   has_characters: boolean
   supports_cooperative: boolean
@@ -112,10 +66,10 @@ interface FormData {
 }
 
 interface GamesPageProps {
-  games: Circle[]
+  games: Game[]
   onNavigation: (view: string, gameId?: number, source?: string) => void
-  onAddGame: (game: Omit<Circle, 'game_id' | 'players'>) => void
-  onUpdateGame: (gameId: number, game: Partial<Circle>) => void
+  onAddGame: (game: Omit<Game, 'game_id' | 'players'>) => void
+  onUpdateGame: (gameId: number, game: Partial<Game>) => void
   onDeleteGame: (gameId: number) => void
   onAddExpansion?: (gameId: number, expansion: any) => void
   onUpdateExpansion?: (expansionId: number, expansion: any) => void
@@ -138,7 +92,7 @@ export default function GamesPage({
   currentView = 'games'
 }: GamesPageProps) {
   const [searchQuery, setSearchQuery] = useState('');
-  const [editingGame, setEditingGame] = useState<Circle | null>(null);
+  const [editingGame, setEditingGame] = useState<Game | null>(null);
   const [isAddDialogOpen, setIsAddDialogOpen] = useState(false);
   const [isEditDialogOpen, setIsEditDialogOpen] = useState(false);
   const [isBGGSearchOpen, setIsBGGSearchOpen] = useState(false);
@@ -204,31 +158,31 @@ export default function GamesPage({
     });
   };
 
-  const handleBGGCircleSelect = (bggCircle: BGGCircle) => {
+  const handleBGGGameSelect = (bggGame: BGGGame) => {
     setFormData({
-      name: bggCircle.name,
-      image: bggCircle.image,
-      min_players: bggCircle.min_players,
-      max_players: bggCircle.max_players,
-      description: bggCircle.description,
-      duration: `${bggCircle.min_playtime}-${bggCircle.max_playtime} min`,
-      difficulty: bggCircle.weight > 3.5 ? 'Expert' : bggCircle.weight > 2.5 ? 'Intermediate' : 'Beginner',
-      category: bggCircle.categories[0] || 'General',
-      year_published: bggCircle.year_published,
-      publisher: bggCircle.publishers[0] || 'Unknown',
-      designer: bggCircle.designers[0] || 'Unknown',
-      bgg_rating: bggCircle.rating,
-      weight: bggCircle.weight,
-      age_min: bggCircle.min_age,
-      expansions: bggCircle.expansions,
-      characters: bggCircle.characters,
-      has_expansion: bggCircle.expansions.length > 0,
-      has_characters: bggCircle.characters.length > 0,
-      supports_cooperative: bggCircle.supports_cooperative,
-      supports_competitive: bggCircle.supports_competitive,
-      supports_campaign: bggCircle.supports_campaign,
-      supports_hybrid: bggCircle.supports_hybrid,
-      bgg_id: bggCircle.id
+      name: bggGame.name,
+      image: bggGame.image,
+      min_players: bggGame.min_players,
+      max_players: bggGame.max_players,
+      description: bggGame.description,
+      duration: `${bggGame.min_playtime}-${bggGame.max_playtime} min`,
+      difficulty: bggGame.weight > 3.5 ? 'Expert' : bggGame.weight > 2.5 ? 'Intermediate' : 'Beginner',
+      category: bggGame.categories[0] || 'General',
+      year_published: bggGame.year_published,
+      publisher: bggGame.publishers[0] || 'Unknown',
+      designer: bggGame.designers[0] || 'Unknown',
+      bgg_rating: bggGame.rating,
+      weight: bggGame.weight,
+      age_min: bggGame.min_age,
+      expansions: bggGame.expansions,
+      characters: bggGame.characters,
+      has_expansion: bggGame.expansions.length > 0,
+      has_characters: bggGame.characters.length > 0,
+      supports_cooperative: bggGame.supports_cooperative,
+      supports_competitive: bggGame.supports_competitive,
+      supports_campaign: bggGame.supports_campaign,
+      supports_hybrid: bggGame.supports_hybrid,
+      bgg_id: bggGame.id
     });
     setIsBGGSearchOpen(false);
   };
@@ -271,7 +225,7 @@ export default function GamesPage({
     }
   };
 
-  const handleEditGame = (game: Circle) => {
+  const handleEditGame = (game: Game) => {
     setEditingGame(game);
     setFormData({
       name: game.name,
@@ -323,7 +277,7 @@ export default function GamesPage({
     }
   };
 
-  const getGameModesBadges = (game: Circle) => {
+  const getGameModesBadges = (game: Game) => {
     const modes = [];
     
     if (game.supports_competitive) {
@@ -414,19 +368,20 @@ export default function GamesPage({
               onOpenChange={setIsAddDialogOpen}
               formData={formData}
               onFormDataChange={handleFormDataChange}
-              onBGGCircleSelect={handleBGGCircleSelect}
+              onBGGGameSelect={handleBGGGameSelect}
               onAddGame={handleAddGame}
               onResetForm={resetForm}
-              isBGGMagnifyingGlassOpen={isBGGSearchOpen}
+              isBGGSearchOpen={isBGGSearchOpen}
               onBGGSearchToggle={setIsBGGSearchOpen}
             />
             <Tooltip>
               <TooltipTrigger asChild>
-                <DialogTrigger asChild>
-                  <button className="p-2 hover:bg-white/10 rounded-lg transition-colors">
-                    <Plus className="w-6 h-6" />
-                  </button>
-                </DialogTrigger>
+                <button 
+                  onClick={() => setIsAddDialogOpen(true)}
+                  className="p-2 hover:bg-white/10 rounded-lg transition-colors"
+                >
+                  <Plus className="w-6 h-6" />
+                </button>
               </TooltipTrigger>
               <TooltipContent>
                 <p>Add New Game</p>
