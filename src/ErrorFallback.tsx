@@ -1,8 +1,6 @@
 import { Alert, AlertTitle, AlertDescription } from "@/components/ui/alert";
 import { Button } from "@/components/ui/button";
 
-import { ArrowClockwise, WarningCircle } from "@phosphor-icons/react";
-
 interface ErrorFallbackProps {
   error: Error;
   resetErrorBoundary: () => void;
@@ -15,29 +13,27 @@ export const ErrorFallback = ({ error, resetErrorBoundary }: ErrorFallbackProps)
   }
 
   return (
-    <div className="min-h-screen bg-background flex items-center justify-center p-4">
+    <div className="min-h-screen bg-slate-900 text-white flex items-center justify-center p-4">
       <div className="w-full max-w-md">
         <Alert variant="destructive" className="mb-6">
-          <WarningCircle />
-          <AlertTitle>This spark has encountered a runtime error</AlertTitle>
+          <AlertTitle>Runtime Error</AlertTitle>
           <AlertDescription>
-            Something unexpected happened while running the application. The error details are shown below. Contact the spark author and let them know about this issue.
+            Something unexpected happened while running the application. The error details are shown below.
           </AlertDescription>
         </Alert>
         
-        <div className="bg-card border rounded-lg p-4 mb-6">
-          <h3 className="font-semibold text-sm text-muted-foreground mb-2">Error Details:</h3>
-          <pre className="text-xs text-destructive bg-muted/50 p-3 rounded border overflow-auto max-h-32">
+        <div className="bg-slate-800 border border-red-500 rounded-lg p-4 mb-6">
+          <h3 className="font-semibold text-sm text-red-400 mb-2">Error Details:</h3>
+          <pre className="text-xs text-red-300 bg-slate-900 p-3 rounded border overflow-auto max-h-32">
             {error.message}
           </pre>
         </div>
         
         <Button 
           onClick={resetErrorBoundary} 
-          className="w-full"
+          className="w-full bg-slate-700 hover:bg-slate-600"
           variant="outline"
         >
-          <ArrowClockwise />
           Try Again
         </Button>
       </div>
