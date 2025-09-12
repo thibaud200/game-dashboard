@@ -16,7 +16,6 @@ import {
   Crown,
   CaretDown,
   CaretUp,
-  Link,
   ChartLineUp,
   DotsThree
 } from '@phosphor-icons/react';
@@ -24,18 +23,7 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Card, CardContent } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
-import { 
-  AlertDialog, 
-  AlertDialogAction, 
-  AlertDialogCancel, 
-  AlertDialogContent, 
-  AlertDialogDescription, 
-  AlertDialogFooter, 
-  AlertDialogHeader, 
-  AlertDialogTitle, 
-  AlertDialogTrigger 
-} from '@/components/ui/alert-dialog';
+import { DialogTrigger } from '@/components/ui/dialog';
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -44,13 +32,12 @@ import {
   DropdownMenuSeparator
 } from '@/components/ui/dropdown-menu';
 import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip';
-import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { Checkbox } from '@/components/ui/checkbox';
-import BGGMagnifyingGlass from '@/components/BGGMagnifyingGlass';
 import { BGGCircle } from '@/services/bggApi';
 import BottomNavigation from './BottomNavigation';
+import AddGameDialog from '@/components/games/AddGameDialog';
+import EditGameDialog from '@/components/games/EditGameDialog';
+import DeleteGameDialog from '@/components/games/DeleteGameDialog';
 
 interface Character {
   character_id?: number
@@ -58,7 +45,7 @@ interface Character {
   name: string
   description: string
   abilities: string[]
-  avatar?: string // Fixed: Added avatar field that was missing
+  avatar?: string
 }
 
 interface Expansion {
@@ -98,12 +85,38 @@ interface Circle {
   updated_at?: Date
 }
 
-interface CirclesPageProps {
+interface FormData {
+  name: string
+  image: string
+  min_players: number
+  max_players: number
+  description: string
+  duration: string
+  difficulty: string
+  category: string
+  year_published: number
+  publisher: string
+  designer: string
+  bgg_rating: number
+  weight: number
+  age_min: number
+  expansions: Expansion[]
+  characters: Character[]
+  has_expansion: boolean
+  has_characters: boolean
+  supports_cooperative: boolean
+  supports_competitive: boolean
+  supports_campaign: boolean
+  supports_hybrid: boolean
+  bgg_id?: number
+}
+
+interface GamesPageProps {
   games: Circle[]
   onNavigation: (view: string, gameId?: number, source?: string) => void
-  onAddCircle: (game: Omit<Star, 'game_id' | 'players'>) => void
-  onUpdateCircle: (gameId: number, game: Partial<Circle>) => void
-  onDeleteCircle: (gameId: number) => void
+  onAddGame: (game: Omit<Circle, 'game_id' | 'players'>) => void
+  onUpdateGame: (gameId: number, game: Partial<Circle>) => void
+  onDeleteGame: (gameId: number) => void
   onAddExpansion?: (gameId: number, expansion: any) => void
   onUpdateExpansion?: (expansionId: number, expansion: any) => void
   onDeleteExpansion?: (expansionId: number) => void
@@ -113,24 +126,24 @@ interface CirclesPageProps {
   currentView?: string
 }
 
-export default function CirclesPage({ 
+export default function GamesPage({ 
   games, 
   onNavigation, 
-  onAddStar, 
-  onUpdateStar,
-  onDeleteStar,
+  onAddGame, 
+  onUpdateGame,
+  onDeleteGame,
   onAddExpansion,
   onUpdateExpansion,
   onDeleteExpansion,
   currentView = 'games'
-}: CirclesPageProps) {
-  const [searchQuery, setMagnifyingGlassQuery] = useState('');
-  const [editingStar, setPencilSimpleingCircle] = useState<Circle | null>(null);
+}: GamesPageProps) {
+  const [searchQuery, setSearchQuery] = useState('');
+  const [editingGame, setEditingGame] = useState<Circle | null>(null);
   const [isAddDialogOpen, setIsAddDialogOpen] = useState(false);
-  const [isPencilSimpleDialogOpen, setIsPencilSimpleDialogOpen] = useState(false);
-  const [isBGGMagnifyingGlassOpen, setIsBGGMagnifyingGlassOpen] = useState(false);
-  const [expandedStar, setExpandedCircle] = useState<number | null>(null);
-  const [formData, setFormData] = useState({
+  const [isEditDialogOpen, setIsEditDialogOpen] = useState(false);
+  const [isBGGSearchOpen, setIsBGGSearchOpen] = useState(false);
+  const [expandedGame, setExpandedGame] = useState<number | null>(null);
+  const [formData, setFormData] = useState<FormData>({
     name: '',
     image: '',
     min_players: 2,
@@ -145,18 +158,18 @@ export default function CirclesPage({
     bgg_rating: 0,
     weight: 0,
     age_min: 8,
-    expansions: [] as Expansion[],
-    characters: [] as Character[],
+    expansions: [],
+    characters: [],
     has_expansion: false,
     has_characters: false,
     supports_cooperative: false,
     supports_competitive: true,
     supports_campaign: false,
     supports_hybrid: false,
-    bgg_id: undefined as number | undefined
+    bgg_id: undefined
   });
 
-  const filteredCircles = games.filter(game =>
+  const filteredGames = games.filter(game =>
     game.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
     game.category.toLowerCase().includes(searchQuery.toLowerCase()) ||
     game.designer.toLowerCase().includes(searchQuery.toLowerCase()) ||
@@ -217,14 +230,17 @@ export default function CirclesPage({
       supports_hybrid: bggCircle.supports_hybrid,
       bgg_id: bggCircle.id
     });
-    setIsBGGMagnifyingGlassOpen(false);
+    setIsBGGSearchOpen(false);
   };
 
-  const handleAddCircle = () => {
+  const handleFormDataChange = (newData: Partial<FormData>) => {
+    setFormData(prev => ({ ...prev, ...newData }));
+  };
+
+  const handleAddGame = () => {
     if (formData.name.trim()) {
-      // Automatically set timestamps - these are not in the form
       const now = new Date();
-      onAddCircle({
+      onAddGame({
         name: formData.name,
         image: formData.image || 'https://images.unsplash.com/photo-1606092195730-5d7b9af1efc5?w=150&h=150&fit=crop',
         min_players: formData.min_players,
@@ -255,8 +271,8 @@ export default function CirclesPage({
     }
   };
 
-  const handlePencilSimpleCircle = (game: Circle) => {
-    setPencilSimpleingCircle(game);
+  const handleEditGame = (game: Circle) => {
+    setEditingGame(game);
     setFormData({
       name: game.name,
       image: game.image,
@@ -282,20 +298,19 @@ export default function CirclesPage({
       supports_hybrid: game.supports_hybrid || false,
       bgg_id: game.bgg_id
     });
-    setIsPencilSimpleDialogOpen(true);
+    setIsEditDialogOpen(true);
   };
 
-  const handleUpdateCircle = () => {
-    if (editingCircle && formData.name.trim()) {
-      // Automatically set updated_at timestamp
+  const handleUpdateGame = () => {
+    if (editingGame && formData.name.trim()) {
       const now = new Date();
-      onUpdateCircle(editingCircle.game_id, {
+      onUpdateGame(editingGame.game_id, {
         ...formData,
         updated_at: now
       });
       resetForm();
-      setPencilSimpleingCircle(null);
-      setIsPencilSimpleDialogOpen(false);
+      setEditingGame(null);
+      setIsEditDialogOpen(false);
     }
   };
 
@@ -308,7 +323,7 @@ export default function CirclesPage({
     }
   };
 
-  const getCircleModesBadges = (game: Circle) => {
+  const getGameModesBadges = (game: Circle) => {
     const modes = [];
     
     if (game.supports_competitive) {
@@ -360,70 +375,6 @@ export default function CirclesPage({
     ));
   };
 
-  const addCharacter = () => {
-    setFormData(prev => ({
-      ...prev,
-      characters: [
-        ...prev.characters,
-        {
-          character_key: `character-${Date.now()}`,
-          name: '',
-          description: '',
-          abilities: ['']
-        }
-      ]
-    }));
-  };
-
-  const updateCharacter = (index: number, field: keyof Character, value: string | string[]) => {
-    setFormData(prev => ({
-      ...prev,
-      characters: prev.characters.map((char, i) => 
-        i === index ? { ...char, [field]: value } : char
-      )
-    }));
-  };
-
-  const removeCharacter = (index: number) => {
-    setFormData(prev => ({
-      ...prev,
-      characters: prev.characters.filter((_, i) => i !== index)
-    }));
-  };
-
-  const addAbility = (charIndex: number) => {
-    setFormData(prev => ({
-      ...prev,
-      characters: prev.characters.map((char, i) => 
-        i === charIndex ? { ...char, abilities: [...char.abilities, ''] } : char
-      )
-    }));
-  };
-
-  const updateAbility = (charIndex: number, abilityIndex: number, value: string) => {
-    setFormData(prev => ({
-      ...prev,
-      characters: prev.characters.map((char, i) => 
-        i === charIndex ? {
-          ...char,
-          abilities: char.abilities.map((ability, j) => j === abilityIndex ? value : ability)
-        } : char
-      )
-    }));
-  };
-
-  const removeAbility = (charIndex: number, abilityIndex: number) => {
-    setFormData(prev => ({
-      ...prev,
-      characters: prev.characters.map((char, i) => 
-        i === charIndex ? {
-          ...char,
-          abilities: char.abilities.filter((_, j) => j !== abilityIndex)
-        } : char
-      )
-    }));
-  };
-
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-900 to-slate-800 text-white">
       {/* Header */}
@@ -442,7 +393,7 @@ export default function CirclesPage({
               <p>Back to Dashboard</p>
             </TooltipContent>
           </Tooltip>
-          <h1 className="text-2xl font-bold">Circles</h1>
+          <h1 className="text-2xl font-bold">Games</h1>
           <div className="flex space-x-2">
             <Tooltip>
               <TooltipTrigger asChild>
@@ -454,435 +405,52 @@ export default function CirclesPage({
                 </button>
               </TooltipTrigger>
               <TooltipContent>
-                <p>View Circle Stats</p>
+                <p>View Game Stats</p>
               </TooltipContent>
             </Tooltip>
-            <Dialog open={isAddDialogOpen} onOpenChange={(open) => {
-              setIsAddDialogOpen(open);
-              if (!open) {
-                resetForm();
-                setIsBGGMagnifyingGlassOpen(false);
-              }
-            }}>
-              <Tooltip>
-                <TooltipTrigger asChild>
-                  <DialogTrigger asChild>
-                    <button className="p-2 hover:bg-white/10 rounded-lg transition-colors">
-                      <Plus className="w-6 h-6" />
-                    </button>
+            
+            <AddGameDialog
+              isOpen={isAddDialogOpen}
+              onOpenChange={setIsAddDialogOpen}
+              formData={formData}
+              onFormDataChange={handleFormDataChange}
+              onBGGCircleSelect={handleBGGCircleSelect}
+              onAddGame={handleAddGame}
+              onResetForm={resetForm}
+              isBGGMagnifyingGlassOpen={isBGGSearchOpen}
+              onBGGSearchToggle={setIsBGGSearchOpen}
+            />
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <DialogTrigger asChild>
+                  <button className="p-2 hover:bg-white/10 rounded-lg transition-colors">
+                    <Plus className="w-6 h-6" />
+                  </button>
                 </DialogTrigger>
               </TooltipTrigger>
               <TooltipContent>
-                <p>Add New Circle</p>
+                <p>Add New Game</p>
               </TooltipContent>
             </Tooltip>
-            <DialogContent className="bg-slate-800 border-slate-700 text-white max-w-2xl max-h-[90vh] overflow-y-auto">
-              <DialogHeader>
-                <DialogTitle>Add New Circle</DialogTitle>
-              </DialogHeader>
-              <div className="space-y-4">
-                <div className="flex space-x-2">
-                  <Button 
-                    onClick={() => setIsBGGMagnifyingGlassOpen(true)}
-                    variant="outline" 
-                    className="border-teal-600 text-teal-400 hover:bg-teal-600/20"
-                  >
-                    <Link className="w-4 h-4 mr-2" />
-                    MagnifyingGlass BoardCircleGeek
-                  </Button>
-                </div>
-
-                {isBGGMagnifyingGlassOpen && (
-                  <div className="p-4 bg-slate-700 rounded-lg border border-slate-600">
-                    <BGGMagnifyingGlass 
-                      onCircleSelect={handleBGGCircleSelect}
-                      onClose={() => setIsBGGMagnifyingGlassOpen(false)}
-                    />
-                  </div>
-                )}
-
-                <div>
-                  <Label htmlFor="game-name">Circle Name *</Label>
-                  <Input
-                    id="game-name"
-                    value={formData.name}
-                    onChange={(e) => setFormData(prev => ({ ...prev, name: e.target.value }))}
-                    className="bg-slate-700 border-slate-600 text-white"
-                    placeholder="Enter game name"
-                  />
-                </div>
-                <div>
-                  <Label htmlFor="game-image">Image URL</Label>
-                  <Input
-                    id="game-image"
-                    value={formData.image}
-                    onChange={(e) => setFormData(prev => ({ ...prev, image: e.target.value }))}
-                    className="bg-slate-700 border-slate-600 text-white"
-                    placeholder="https://..."
-                  />
-                </div>
-                <div className="grid grid-cols-2 gap-4">
-                  <div>
-                    <Label htmlFor="min-players">Min Players</Label>
-                    <Input
-                      id="min-players"
-                      type="number"
-                      min="1"
-                      value={formData.min_players}
-                      onChange={(e) => setFormData(prev => ({ ...prev, min_players: parseInt(e.target.value) || 1 }))}
-                      className="bg-slate-700 border-slate-600 text-white"
-                    />
-                  </div>
-                  <div>
-                    <Label htmlFor="max-players">Max Players</Label>
-                    <Input
-                      id="max-players"
-                      type="number"
-                      min="1"
-                      value={formData.max_players}
-                      onChange={(e) => setFormData(prev => ({ ...prev, max_players: parseInt(e.target.value) || 1 }))}
-                      className="bg-slate-700 border-slate-600 text-white"
-                    />
-                  </div>
-                </div>
-                <div className="grid grid-cols-2 gap-4">
-                  <div>
-                    <Label htmlFor="duration">Duration</Label>
-                    <Input
-                      id="duration"
-                      value={formData.duration}
-                      onChange={(e) => setFormData(prev => ({ ...prev, duration: e.target.value }))}
-                      className="bg-slate-700 border-slate-600 text-white"
-                      placeholder="30-60 min"
-                    />
-                  </div>
-                  <div>
-                    <Label htmlFor="age-min">Min Age</Label>
-                    <Input
-                      id="age-min"
-                      type="number"
-                      min="1"
-                      value={formData.age_min}
-                      onChange={(e) => setFormData(prev => ({ ...prev, age_min: parseInt(e.target.value) || 1 }))}
-                      className="bg-slate-700 border-slate-600 text-white"
-                    />
-                  </div>
-                </div>
-                <div className="grid grid-cols-2 gap-4">
-                  <div>
-                    <Label htmlFor="difficulty">Difficulty</Label>
-                    <Select value={formData.difficulty} onValueChange={(value) => setFormData(prev => ({ ...prev, difficulty: value }))}>
-                      <SelectTrigger className="bg-slate-700 border-slate-600 text-white">
-                        <SelectValue />
-                      </SelectTrigger>
-                      <SelectContent className="bg-slate-700 border-slate-600">
-                        <SelectItem value="Beginner">Beginner</SelectItem>
-                        <SelectItem value="Intermediate">Intermediate</SelectItem>
-                        <SelectItem value="Expert">Expert</SelectItem>
-                      </SelectContent>
-                    </Select>
-                  </div>
-                  <div>
-                    <Label>Circle Modes</Label>
-                    <div className="grid grid-cols-2 gap-2 mt-2">
-                      <div className="flex items-center space-x-2">
-                        <Checkbox 
-                          id="supports-competitive"
-                          checked={formData.supports_competitive}
-                          onCheckedChange={(checked) => setFormData(prev => ({ ...prev, supports_competitive: checked as boolean }))}
-                          className="border-slate-600"
-                        />
-                        <Label htmlFor="supports-competitive" className="text-sm flex items-center">
-                          <Sword className="w-3 h-3 mr-1 text-red-400" />
-                          Compétitif
-                        </Label>
-                      </div>
-                      <div className="flex items-center space-x-2">
-                        <Checkbox 
-                          id="supports-cooperative"
-                          checked={formData.supports_cooperative}
-                          onCheckedChange={(checked) => setFormData(prev => ({ ...prev, supports_cooperative: checked as boolean }))}
-                          className="border-slate-600"
-                        />
-                        <Label htmlFor="supports-cooperative" className="text-sm flex items-center">
-                          <Shield className="w-3 h-3 mr-1 text-blue-400" />
-                          Coopératif
-                        </Label>
-                      </div>
-                      <div className="flex items-center space-x-2">
-                        <Checkbox 
-                          id="supports-campaign"
-                          checked={formData.supports_campaign}
-                          onCheckedChange={(checked) => setFormData(prev => ({ ...prev, supports_campaign: checked as boolean }))}
-                          className="border-slate-600"
-                        />
-                        <Label htmlFor="supports-campaign" className="text-sm flex items-center">
-                          <Crown className="w-3 h-3 mr-1 text-purple-400" />
-                          Campagne
-                        </Label>
-                      </div>
-                      <div className="flex items-center space-x-2">
-                        <Checkbox 
-                          id="supports-hybrid"
-                          checked={formData.supports_hybrid}
-                          onCheckedChange={(checked) => setFormData(prev => ({ ...prev, supports_hybrid: checked as boolean }))}
-                          className="border-slate-600"
-                        />
-                        <Label htmlFor="supports-hybrid" className="text-sm flex items-center">
-                          <Target className="w-3 h-3 mr-1 text-orange-400" />
-                          Hybride
-                        </Label>
-                      </div>
-                    </div>
-                  </div>
-                </div>
-                <div>
-                  <Label htmlFor="category">Category</Label>
-                  <Input
-                    id="category"
-                    value={formData.category}
-                    onChange={(e) => setFormData(prev => ({ ...prev, category: e.target.value }))}
-                    className="bg-slate-700 border-slate-600 text-white"
-                    placeholder="Strategy, Party, etc."
-                  />
-                </div>
-                <div className="grid grid-cols-2 gap-4">
-                  <div>
-                    <Label htmlFor="designer">Designer</Label>
-                    <Input
-                      id="designer"
-                      value={formData.designer}
-                      onChange={(e) => setFormData(prev => ({ ...prev, designer: e.target.value }))}
-                      className="bg-slate-700 border-slate-600 text-white"
-                      placeholder="Circle designer"
-                    />
-                  </div>
-                  <div>
-                    <Label htmlFor="publisher">Publisher</Label>
-                    <Input
-                      id="publisher"
-                      value={formData.publisher}
-                      onChange={(e) => setFormData(prev => ({ ...prev, publisher: e.target.value }))}
-                      className="bg-slate-700 border-slate-600 text-white"
-                      placeholder="Publisher"
-                    />
-                  </div>
-                </div>
-                <div className="grid grid-cols-3 gap-4">
-                  <div>
-                    <Label htmlFor="year-published">Year</Label>
-                    <Input
-                      id="year-published"
-                      type="number"
-                      min="1800"
-                      max="2030"
-                      value={formData.year_published}
-                      onChange={(e) => setFormData(prev => ({ ...prev, year_published: parseInt(e.target.value) || new Date().getFullYear() }))}
-                      className="bg-slate-700 border-slate-600 text-white"
-                    />
-                  </div>
-                  <div>
-                    <Label htmlFor="bgg-rating">BGG Rating</Label>
-                    <Input
-                      id="bgg-rating"
-                      type="number"
-                      min="0"
-                      max="10"
-                      step="0.1"
-                      value={formData.bgg_rating}
-                      onChange={(e) => setFormData(prev => ({ ...prev, bgg_rating: parseFloat(e.target.value) || 0 }))}
-                      className="bg-slate-700 border-slate-600 text-white"
-                    />
-                  </div>
-                  <div>
-                    <Label htmlFor="weight">Weight (1-5)</Label>
-                    <Input
-                      id="weight"
-                      type="number"
-                      min="0"
-                      max="5"
-                      step="0.1"
-                      value={formData.weight}
-                      onChange={(e) => setFormData(prev => ({ ...prev, weight: parseFloat(e.target.value) || 0 }))}
-                      className="bg-slate-700 border-slate-600 text-white"
-                    />
-                  </div>
-                </div>
-                <div>
-                  <Label htmlFor="description">Description</Label>
-                  <Textarea
-                    id="description"
-                    value={formData.description}
-                    onChange={(e) => setFormData(prev => ({ ...prev, description: e.target.value }))}
-                    className="bg-slate-700 border-slate-600 text-white"
-                    placeholder="Brief game description"
-                    rows={3}
-                  />
-                </div>
-
-                <div>
-                  <div className="flex items-center space-x-2 mb-2">
-                    <Checkbox 
-                      id="has_expansion"
-                      checked={formData.has_expansion}
-                      onCheckedChange={(checked) => setFormData(prev => ({ ...prev, has_expansion: !!checked }))}
-                    />
-                    <Label htmlFor="has_expansion">Has expansions</Label>
-                  </div>
-                  {/* Expansions Display - show if checkbox is checked */}
-                  {formData.has_expansion && (
-                    <div className="space-y-2">
-                      <Label>Expansions</Label>
-                      <Textarea
-                        value={formData.expansions
-                          .map(expansion => 
-                            `${expansion.name}${expansion.year_published && expansion.year_published > 0 ? ` (${expansion.year_published})` : ''}`
-                          ).join(', ')}
-                        onChange={(e) => {
-                          // Parse the textarea content back to expansions array
-                          const expansionTexts = e.target.value.split(',').map(text => text.trim()).filter(text => text);
-                          const parsedExpansions = expansionTexts.map((text, index) => {
-                            const match = text.match(/^(.+?)\s*\((\d{4})\)$/);
-                            if (match) {
-                              return {
-                                expansion_id: index,
-                                name: match[1].trim(),
-                                year_published: parseInt(match[2])
-                              };
-                            } else {
-                              return {
-                                expansion_id: index,
-                                name: text,
-                                year_published: 0
-                              };
-                            }
-                          });
-                          
-                          setFormData(prev => ({ ...prev, expansions: parsedExpansions }));
-                        }}
-                        placeholder="Extension 1 (2023), Extension 2 (2024), ..."
-                        className="bg-slate-700 border-slate-600 text-white"
-                        rows={3}
-                      />
-                    </div>
-                  )}
-                </div>
-
-                {/* Characters Section */}
-                <div className="space-y-2">
-                  <div className="flex items-center space-x-2 mb-2">
-                    <Checkbox 
-                      id="has_character"
-                      checked={formData.has_characters}
-                      onCheckedChange={(checked) => setFormData(prev => ({ ...prev, has_characters: !!checked }))}
-                    />
-                    <Label htmlFor="has_character">Has character roles</Label>
-                  </div>
-                  {formData.has_characters && (
-                    <>
-                      <div className="flex items-center justify-between">
-                        <Label>Characters/Roles</Label>
-                        <Button 
-                          type="button"
-                          onClick={addCharacter}
-                          
-                          variant="outline"
-                          className="border-slate-600 text-white hover:bg-slate-600"
-                        >
-                          <Plus className="w-3 h-3 mr-1" />
-                          Add Character
-                        </Button>
-                      </div>
-                      {formData.characters.map((character, charIndex) => (
-                    <div key={charIndex} className="p-3 bg-slate-700 rounded-lg border border-slate-600 space-y-2">
-                      <div className="flex space-x-2">
-                        <Input
-                          value={character.name}
-                          onChange={(e) => updateCharacter(charIndex, 'name', e.target.value)}
-                          placeholder="Character name"
-                          className="bg-slate-600 border-slate-500 text-white"
-                        />
-                        <Button
-                          type="button"
-                          onClick={() => removeCharacter(charIndex)}
-                          
-                          variant="outline"
-                          className="border-red-500 text-red-400 hover:bg-red-500/20"
-                        >
-                          <Trash className="w-3 h-3" />
-                        </Button>
-                      </div>
-                      <Input
-                        value={character.description}
-                        onChange={(e) => updateCharacter(charIndex, 'description', e.target.value)}
-                        placeholder="Character description"
-                        className="bg-slate-600 border-slate-500 text-white"
-                      />
-                      <div className="space-y-1">
-                        <div className="flex items-center justify-between">
-                          <Label className="text-xs">Abilities</Label>
-                          <Button
-                            type="button"
-                            onClick={() => addAbility(charIndex)}
-                            
-                            variant="outline"
-                            className="border-slate-500 text-white hover:bg-slate-500 h-6 text-xs"
-                          >
-                            <Plus className="w-2 h-2 mr-1" />
-                            Add Ability
-                          </Button>
-                        </div>
-                        {character.abilities.map((ability, abilityIndex) => (
-                          <div key={abilityIndex} className="flex space-x-1">
-                            <Input
-                              value={ability}
-                              onChange={(e) => updateAbility(charIndex, abilityIndex, e.target.value)}
-                              placeholder="Ability name"
-                              className="bg-slate-600 border-slate-500 text-white text-xs"
-                              
-                            />
-                            <Button
-                              type="button"
-                              onClick={() => removeAbility(charIndex, abilityIndex)}
-                              
-                              variant="outline"
-                              className="border-red-500 text-red-400 hover:bg-red-500/20 h-8 w-8 p-0"
-                            >
-                              <Trash className="w-2 h-2" />
-                            </Button>
-                          </div>
-                        ))}
-                      </div>
-                    </div>
-                  ))}
-                    </>
-                  )}
-                </div>
-
-                <Button onClick={handleAddCircle} className="w-full bg-emerald-600 hover:bg-emerald-700">
-                  Add Circle
-                </Button>
-              </div>
-            </DialogContent>
-          </Dialog>
+          </div>
         </div>
 
-        {/* MagnifyingGlass */}
+        {/* Search */}
         <div className="relative mb-6">
           <MagnifyingGlass className="absolute left-3 top-1/2 transform -translate-y-1/2 text-white/60 w-4 h-4" />
           <Input
             value={searchQuery}
-            onChange={(e) => setMagnifyingGlassQuery(e.target.value)}
-            placeholder="MagnifyingGlass games, designers, publishers..."
+            onChange={(e) => setSearchQuery(e.target.value)}
+            placeholder="Search games, designers, publishers..."
             className="pl-10 bg-white/10 border-white/20 text-white placeholder:text-white/60"
           />
         </div>
 
-        {/* Circles Stats */}
+        {/* Games Stats */}
         <div className="grid grid-cols-3 gap-4 mb-6">
           <div className="bg-white/10 backdrop-blur-md rounded-xl p-3 text-center border border-white/20">
             <div className="text-2xl font-bold text-emerald-400">{games.length}</div>
-            <div className="text-xs text-white/80">Total Circles</div>
+            <div className="text-xs text-white/80">Total Games</div>
           </div>
           <div className="bg-white/10 backdrop-blur-md rounded-xl p-3 text-center border border-white/20">
             <div className="text-2xl font-bold text-blue-400">
@@ -899,10 +467,10 @@ export default function CirclesPage({
         </div>
       </div>
 
-      {/* Circles Grid */}
+      {/* Games Grid */}
       <div className="px-4 pb-32">
         <div className="grid grid-cols-1 gap-4">
-          {filteredCircles.map((game) => (
+          {filteredGames.map((game) => (
             <Card key={game.game_id} className="bg-white/10 backdrop-blur-md border-white/20">
               <CardContent className="p-0">
                 <div className="flex">
@@ -921,7 +489,7 @@ export default function CirclesPage({
                           <Badge variant="secondary" className="bg-teal-600/20 text-teal-300 text-xs">
                             {game.category}
                           </Badge>
-                          {getCircleModesBadges(game).map((badge, index) => (
+                          {getGameModesBadges(game).map((badge, index) => (
                             <React.Fragment key={index}>
                               {badge}
                             </React.Fragment>
@@ -986,11 +554,11 @@ export default function CirclesPage({
                             <button
                               onClick={(e) => {
                                 e.stopPropagation();
-                                setExpandedCircle(expandedCircle === game.game_id ? null : game.game_id);
+                                setExpandedGame(expandedGame === game.game_id ? null : game.game_id);
                               }}
                               className="text-white/60 hover:text-white transition-colors"
                             >
-                              {expandedCircle === game.game_id ? (
+                              {expandedGame === game.game_id ? (
                                 <CaretUp className="w-4 h-4" />
                               ) : (
                                 <CaretDown className="w-4 h-4" />
@@ -1000,7 +568,7 @@ export default function CirclesPage({
                         )}
                         
                         {/* Expanded Details */}
-                        {expandedCircle === game.game_id && (
+                        {expandedGame === game.game_id && (
                           <div className="mt-3 pt-3 border-t border-white/10 space-y-3">
                             {game.expansions && game.expansions.length > 0 && (
                               <div>
@@ -1010,7 +578,6 @@ export default function CirclesPage({
                                     `${exp.name}${exp.year_published > 0 ? ` (${exp.year_published})` : ''}`
                                   ).join(', ')}
                                   onChange={(e) => {
-                                    // Parse the textarea content back to expansions array
                                     const expansionTexts = e.target.value.split(',').map(text => text.trim()).filter(text => text);
                                     const parsedExpansions = expansionTexts.map((text, index) => {
                                       const match = text.match(/^(.+?)\s*\((\d{4})\)$/);
@@ -1029,8 +596,7 @@ export default function CirclesPage({
                                       }
                                     });
                                     
-                                    // Update the game with new expansions
-                                    onUpdateCircle(game.game_id, { ...game, expansions: parsedExpansions });
+                                    onUpdateGame(game.game_id, { ...game, expansions: parsedExpansions });
                                   }}
                                   placeholder="Format: Extension 1 (2023), Extension 2 (2024), ..."
                                   className="min-h-[60px] bg-white/5 border-white/10 text-white text-xs resize-none"
@@ -1099,59 +665,42 @@ export default function CirclesPage({
                               </button>
                             </TooltipTrigger>
                             <TooltipContent>
-                              <p>View Circle Stats</p>
+                              <p>View Game Stats</p>
                             </TooltipContent>
                           </Tooltip>
                           <Tooltip>
                             <TooltipTrigger asChild>
                               <button 
-                                onClick={() => handlePencilSimpleCircle(game)}
+                                onClick={() => handleEditGame(game)}
                                 className="p-2 hover:bg-white/10 rounded-lg transition-colors text-white/60 hover:text-white"
-                                aria-label="PencilSimple game"
+                                aria-label="Edit game"
                               >
                                 <PencilSimple className="w-4 h-4" />
                               </button>
                             </TooltipTrigger>
                             <TooltipContent>
-                              <p>PencilSimple Circle</p>
+                              <p>Edit Game</p>
                             </TooltipContent>
                           </Tooltip>
-                          <AlertDialog>
-                            <Tooltip>
-                              <TooltipTrigger asChild>
-                                <AlertDialogTrigger asChild>
+                          <DeleteGameDialog
+                            game={game}
+                            onDeleteGame={onDeleteGame}
+                            trigger={
+                              <Tooltip>
+                                <TooltipTrigger asChild>
                                   <button 
                                     className="p-2 hover:bg-red-500/20 rounded-lg transition-colors text-red-400 hover:text-red-300"
                                     aria-label="Delete game"
                                   >
                                     <Trash className="w-4 h-4" />
                                   </button>
-                                </AlertDialogTrigger>
-                              </TooltipTrigger>
-                              <TooltipContent>
-                                <p>Delete Circle</p>
-                              </TooltipContent>
-                            </Tooltip>
-                            <AlertDialogContent className="bg-slate-800 border-slate-700 text-white">
-                              <AlertDialogHeader>
-                                <AlertDialogTitle>Delete Circle</AlertDialogTitle>
-                                <AlertDialogDescription className="text-white/70">
-                                  Are you sure you want to delete "{game.name}"? This action cannot be undone and will also remove all associated expansions and characters.
-                                </AlertDialogDescription>
-                              </AlertDialogHeader>
-                              <AlertDialogFooter>
-                                <AlertDialogCancel className="bg-slate-700 border-slate-600 text-white hover:bg-slate-600">
-                                  Cancel
-                                </AlertDialogCancel>
-                                <AlertDialogAction 
-                                  onClick={() => onDeleteCircle(game.game_id)}
-                                  className="bg-red-600 hover:bg-red-700 text-white"
-                                >
-                                  Delete
-                                </AlertDialogAction>
-                              </AlertDialogFooter>
-                            </AlertDialogContent>
-                          </AlertDialog>
+                                </TooltipTrigger>
+                                <TooltipContent>
+                                  <p>Delete Game</p>
+                                </TooltipContent>
+                              </Tooltip>
+                            }
+                          />
                         </div>
 
                         {/* Mobile Actions - Contextual menu */}
@@ -1160,7 +709,7 @@ export default function CirclesPage({
                             <DropdownMenuTrigger asChild>
                               <button 
                                 className="p-2 hover:bg-white/10 rounded-lg transition-colors text-white hover:text-white min-w-[44px] min-h-[44px] flex items-center justify-center bg-white/10 border border-white/20 shadow-lg"
-                                aria-label="Circle options menu"
+                                aria-label="Game options menu"
                               >
                                 <DotsThree className="w-5 h-5" />
                               </button>
@@ -1181,11 +730,11 @@ export default function CirclesPage({
                                 View Stats
                               </DropdownMenuItem>
                               <DropdownMenuItem 
-                                onClick={() => handlePencilSimpleCircle(game)}
+                                onClick={() => handleEditGame(game)}
                                 className="hover:bg-slate-700 cursor-pointer"
                               >
                                 <PencilSimple className="w-4 h-4 mr-2" />
-                                PencilSimple Circle
+                                Edit Game
                               </DropdownMenuItem>
                               <DropdownMenuItem 
                                 onClick={() => onNavigation('game-expansions', game.game_id, 'games')}
@@ -1204,36 +753,19 @@ export default function CirclesPage({
                                 </DropdownMenuItem>
                               )}
                               <DropdownMenuSeparator className="bg-slate-600" />
-                              <AlertDialog>
-                                <AlertDialogTrigger asChild>
+                              <DeleteGameDialog
+                                game={game}
+                                onDeleteGame={onDeleteGame}
+                                trigger={
                                   <DropdownMenuItem 
                                     onSelect={(e) => e.preventDefault()}
                                     className="hover:bg-red-500/20 cursor-pointer text-red-400"
                                   >
                                     <Trash className="w-4 h-4 mr-2" />
-                                    Delete Circle
+                                    Delete Game
                                   </DropdownMenuItem>
-                                </AlertDialogTrigger>
-                                <AlertDialogContent className="bg-slate-800 border-slate-700 text-white">
-                                  <AlertDialogHeader>
-                                    <AlertDialogTitle>Delete Circle</AlertDialogTitle>
-                                    <AlertDialogDescription className="text-white/70">
-                                      Are you sure you want to delete "{game.name}"? This action cannot be undone and will also remove all associated expansions and characters.
-                                    </AlertDialogDescription>
-                                  </AlertDialogHeader>
-                                  <AlertDialogFooter>
-                                    <AlertDialogCancel className="bg-slate-700 border-slate-600 text-white hover:bg-slate-600">
-                                      Cancel
-                                    </AlertDialogCancel>
-                                    <AlertDialogAction 
-                                      onClick={() => onDeleteCircle(game.game_id)}
-                                      className="bg-red-600 hover:bg-red-700 text-white"
-                                    >
-                                      Delete
-                                    </AlertDialogAction>
-                                  </AlertDialogFooter>
-                                </AlertDialogContent>
-                              </AlertDialog>
+                                }
+                              />
                             </DropdownMenuContent>
                           </DropdownMenu>
                         </div>
@@ -1246,387 +778,27 @@ export default function CirclesPage({
           ))}
         </div>
         
-        {filteredCircles.length === 0 && (
+        {filteredGames.length === 0 && (
           <div className="text-center py-12">
-            <Circle className="w-16 h-16 text-white/20 mx-auto mb-4" />
+            <div className="w-16 h-16 text-white/20 mx-auto mb-4" />
             <p className="text-white/60">No games found</p>
           </div>
         )}
       </div>
-      </div>
 
-      {/* PencilSimple Circle Dialog */}
-      <Dialog open={isPencilSimpleDialogOpen} onOpenChange={(open) => {
-        setIsPencilSimpleDialogOpen(open);
-        if (!open) {
+      {/* Edit Game Dialog */}
+      <EditGameDialog
+        isOpen={isEditDialogOpen}
+        onOpenChange={setIsEditDialogOpen}
+        editingGame={editingGame}
+        formData={formData}
+        onFormDataChange={handleFormDataChange}
+        onUpdateGame={handleUpdateGame}
+        onResetForm={() => {
           resetForm();
-          setPencilSimpleingCircle(null);
-        }
-      }}>
-        <DialogContent className="bg-slate-800 border-slate-700 text-white max-w-2xl max-h-[90vh] overflow-y-auto">
-          <DialogHeader>
-            <DialogTitle>PencilSimple Circle</DialogTitle>
-          </DialogHeader>
-          <div className="space-y-4">
-            <div>
-              <Label htmlFor="edit-game-name">Circle Name *</Label>
-              <Input
-                id="edit-game-name"
-                value={formData.name}
-                onChange={(e) => setFormData(prev => ({ ...prev, name: e.target.value }))}
-                className="bg-slate-700 border-slate-600 text-white"
-                placeholder="Enter game name"
-              />
-            </div>
-            <div>
-              <Label htmlFor="edit-game-image">Image URL</Label>
-              <Input
-                id="edit-game-image"
-                value={formData.image}
-                onChange={(e) => setFormData(prev => ({ ...prev, image: e.target.value }))}
-                className="bg-slate-700 border-slate-600 text-white"
-                placeholder="https://..."
-              />
-            </div>
-            <div className="grid grid-cols-2 gap-4">
-              <div>
-                <Label htmlFor="edit-min-players">Min Players</Label>
-                <Input
-                  id="edit-min-players"
-                  type="number"
-                  min="1"
-                  value={formData.min_players}
-                  onChange={(e) => setFormData(prev => ({ ...prev, min_players: parseInt(e.target.value) || 1 }))}
-                  className="bg-slate-700 border-slate-600 text-white"
-                />
-              </div>
-              <div>
-                <Label htmlFor="edit-max-players">Max Players</Label>
-                <Input
-                  id="edit-max-players"
-                  type="number"
-                  min="1"
-                  value={formData.max_players}
-                  onChange={(e) => setFormData(prev => ({ ...prev, max_players: parseInt(e.target.value) || 1 }))}
-                  className="bg-slate-700 border-slate-600 text-white"
-                />
-              </div>
-            </div>
-            <div className="grid grid-cols-2 gap-4">
-              <div>
-                <Label htmlFor="edit-duration">Duration</Label>
-                <Input
-                  id="edit-duration"
-                  value={formData.duration}
-                  onChange={(e) => setFormData(prev => ({ ...prev, duration: e.target.value }))}
-                  className="bg-slate-700 border-slate-600 text-white"
-                  placeholder="30-60 min"
-                />
-              </div>
-              <div>
-                <Label htmlFor="edit-age-min">Min Age</Label>
-                <Input
-                  id="edit-age-min"
-                  type="number"
-                  min="1"
-                  value={formData.age_min}
-                  onChange={(e) => setFormData(prev => ({ ...prev, age_min: parseInt(e.target.value) || 1 }))}
-                  className="bg-slate-700 border-slate-600 text-white"
-                />
-              </div>
-            </div>
-            <div className="grid grid-cols-2 gap-4">
-              <div>
-                <Label htmlFor="edit-difficulty">Difficulty</Label>
-                <Select value={formData.difficulty} onValueChange={(value) => setFormData(prev => ({ ...prev, difficulty: value }))}>
-                  <SelectTrigger className="bg-slate-700 border-slate-600 text-white">
-                    <SelectValue />
-                  </SelectTrigger>
-                  <SelectContent className="bg-slate-700 border-slate-600">
-                    <SelectItem value="Beginner">Beginner</SelectItem>
-                    <SelectItem value="Intermediate">Intermediate</SelectItem>
-                    <SelectItem value="Expert">Expert</SelectItem>
-                  </SelectContent>
-                </Select>
-              </div>
-              <div>
-                <Label>Circle Modes</Label>
-                <div className="grid grid-cols-2 gap-2 mt-2">
-                  <div className="flex items-center space-x-2">
-                    <Checkbox 
-                      id="edit-supports-competitive"
-                      checked={formData.supports_competitive}
-                      onCheckedChange={(checked) => setFormData(prev => ({ ...prev, supports_competitive: checked as boolean }))}
-                      className="border-slate-600"
-                    />
-                    <Label htmlFor="edit-supports-competitive" className="text-sm flex items-center">
-                      <Sword className="w-3 h-3 mr-1 text-red-400" />
-                      Compétitif
-                    </Label>
-                  </div>
-                  <div className="flex items-center space-x-2">
-                    <Checkbox 
-                      id="edit-supports-cooperative"
-                      checked={formData.supports_cooperative}
-                      onCheckedChange={(checked) => setFormData(prev => ({ ...prev, supports_cooperative: checked as boolean }))}
-                      className="border-slate-600"
-                    />
-                    <Label htmlFor="edit-supports-cooperative" className="text-sm flex items-center">
-                      <Shield className="w-3 h-3 mr-1 text-blue-400" />
-                      Coopératif
-                    </Label>
-                  </div>
-                  <div className="flex items-center space-x-2">
-                    <Checkbox 
-                      id="edit-supports-campaign"
-                      checked={formData.supports_campaign}
-                      onCheckedChange={(checked) => setFormData(prev => ({ ...prev, supports_campaign: checked as boolean }))}
-                      className="border-slate-600"
-                    />
-                    <Label htmlFor="edit-supports-campaign" className="text-sm flex items-center">
-                      <Crown className="w-3 h-3 mr-1 text-purple-400" />
-                      Campagne
-                    </Label>
-                  </div>
-                  <div className="flex items-center space-x-2">
-                    <Checkbox 
-                      id="edit-supports-hybrid"
-                      checked={formData.supports_hybrid}
-                      onCheckedChange={(checked) => setFormData(prev => ({ ...prev, supports_hybrid: checked as boolean }))}
-                      className="border-slate-600"
-                    />
-                    <Label htmlFor="edit-supports-hybrid" className="text-sm flex items-center">
-                      <Target className="w-3 h-3 mr-1 text-orange-400" />
-                      Hybride
-                    </Label>
-                  </div>
-                </div>
-              </div>
-            </div>
-            <div>
-              <Label htmlFor="edit-category">Category</Label>
-              <Input
-                id="edit-category"
-                value={formData.category}
-                onChange={(e) => setFormData(prev => ({ ...prev, category: e.target.value }))}
-                className="bg-slate-700 border-slate-600 text-white"
-                placeholder="Strategy, Party, etc."
-              />
-            </div>
-            <div className="grid grid-cols-2 gap-4">
-              <div>
-                <Label htmlFor="edit-designer">Designer</Label>
-                <Input
-                  id="edit-designer"
-                  value={formData.designer}
-                  onChange={(e) => setFormData(prev => ({ ...prev, designer: e.target.value }))}
-                  className="bg-slate-700 border-slate-600 text-white"
-                  placeholder="Circle designer"
-                />
-              </div>
-              <div>
-                <Label htmlFor="edit-publisher">Publisher</Label>
-                <Input
-                  id="edit-publisher"
-                  value={formData.publisher}
-                  onChange={(e) => setFormData(prev => ({ ...prev, publisher: e.target.value }))}
-                  className="bg-slate-700 border-slate-600 text-white"
-                  placeholder="Publisher"
-                />
-              </div>
-            </div>
-            <div className="grid grid-cols-3 gap-4">
-              <div>
-                <Label htmlFor="edit-year-published">Year</Label>
-                <Input
-                  id="edit-year-published"
-                  type="number"
-                  min="1800"
-                  max="2030"
-                  value={formData.year_published}
-                  onChange={(e) => setFormData(prev => ({ ...prev, year_published: parseInt(e.target.value) || new Date().getFullYear() }))}
-                  className="bg-slate-700 border-slate-600 text-white"
-                />
-              </div>
-              <div>
-                <Label htmlFor="edit-bgg-rating">BGG Rating</Label>
-                <Input
-                  id="edit-bgg-rating"
-                  type="number"
-                  min="0"
-                  max="10"
-                  step="0.1"
-                  value={formData.bgg_rating}
-                  onChange={(e) => setFormData(prev => ({ ...prev, bgg_rating: parseFloat(e.target.value) || 0 }))}
-                  className="bg-slate-700 border-slate-600 text-white"
-                />
-              </div>
-              <div>
-                <Label htmlFor="edit-weight">Weight (1-5)</Label>
-                <Input
-                  id="edit-weight"
-                  type="number"
-                  min="0"
-                  max="5"
-                  step="0.1"
-                  value={formData.weight}
-                  onChange={(e) => setFormData(prev => ({ ...prev, weight: parseFloat(e.target.value) || 0 }))}
-                  className="bg-slate-700 border-slate-600 text-white"
-                />
-              </div>
-            </div>
-            <div>
-              <Label htmlFor="edit-description">Description</Label>
-              <Textarea
-                id="edit-description"
-                value={formData.description}
-                onChange={(e) => setFormData(prev => ({ ...prev, description: e.target.value }))}
-                className="bg-slate-700 border-slate-600 text-white"
-                placeholder="Brief game description"
-                rows={3}
-              />
-            </div>
-
-            <div>
-              <div className="flex items-center space-x-2 mb-2">
-                <Checkbox 
-                  id="edit-has_expansion"
-                  checked={formData.has_expansion}
-                  onCheckedChange={(checked) => setFormData(prev => ({ ...prev, has_expansion: !!checked }))}
-                />
-                <Label htmlFor="edit-has_expansion">Has expansions</Label>
-              </div>
-              {/* Expansions Display - show if checkbox is checked */}
-              {formData.has_expansion && (
-                <div className="space-y-2">
-                    <Label>Expansions</Label>
-                    <Textarea
-                    id="edit-expansion"
-                    value={formData.expansions
-                        .map(
-                        (exp) =>
-                            `${exp.name} (${exp.year_published > 0 ? exp.year_published : "N/A"})`
-                        )
-                        .join(", ")}
-                    onChange={(e) =>
-                        setFormData((prev) => ({
-                        ...prev,
-                        expansions: e.target.value
-                            .split(",")
-                            .map((item, idx) => {
-                            const match = item.trim().match(/^(.*)\s+\((.*)\)$/);
-                            return {
-                                id: prev.expansions[idx]?.id || Date.now() + idx,
-                                name: match ? match[1].trim() : item.trim(),
-                                year_published:
-                                match && match[2] !== "N/A" ? parseInt(match[2]) : 0,
-                            };
-                            }),
-                        }))
-                    }
-                    className="bg-slate-700 border-slate-600 text-white"
-                    placeholder="Extension 1 (2023), Extension 2 (2024), etc..."
-                    rows={3}
-                    />
-                </div>
-                )}
-            </div>
-
-            {/* Characters Section */}
-            <div className="space-y-2">
-              <div className="flex items-center space-x-2 mb-2">
-                <Checkbox 
-                  id="edit-has_character"
-                  checked={formData.has_characters}
-                  onCheckedChange={(checked) => setFormData(prev => ({ ...prev, has_characters: !!checked }))}
-                />
-                <Label htmlFor="edit-has_character">Has character roles</Label>
-              </div>
-              {formData.has_characters && (
-                <div className="space-y-3">
-                  <div className="flex items-center justify-between">
-                    <Label>Characters/Roles</Label>
-                    <Button 
-                      type="button"
-                      onClick={addCharacter}
-                      variant="outline"
-                      className="border-slate-600 text-white hover:bg-slate-600"
-                    >
-                      <Plus className="w-4 h-4 mr-2" />
-                      Add Character
-                    </Button>
-                  </div>
-                  {formData.characters.map((character, charIndex) => (
-                    <div key={charIndex} className="p-3 bg-slate-700 rounded-lg border border-slate-600 space-y-2">
-                      <div className="flex space-x-2">
-                        <Input
-                          value={character.name}
-                          onChange={(e) => updateCharacter(charIndex, 'name', e.target.value)}
-                          placeholder="Character name"
-                          className="bg-slate-600 border-slate-500 text-white"
-                        />
-                        <Button
-                          type="button"
-                          onClick={() => removeCharacter(charIndex)}
-                          
-                          variant="outline"
-                          className="border-red-500 text-red-400 hover:bg-red-500/20"
-                        >
-                          <Trash className="w-3 h-3" />
-                        </Button>
-                      </div>
-                      <Input
-                        value={character.description}
-                        onChange={(e) => updateCharacter(charIndex, 'description', e.target.value)}
-                        placeholder="Character description"
-                        className="bg-slate-600 border-slate-500 text-white"
-                      />
-                      <div className="space-y-1">
-                        <div className="flex items-center justify-between">
-                          <Label className="text-xs">Abilities</Label>
-                          <Button
-                            type="button"
-                            onClick={() => addAbility(charIndex)}
-                            
-                            variant="outline"
-                            className="border-slate-500 text-white hover:bg-slate-500 h-6 text-xs"
-                          >
-                            <Plus className="w-2 h-2 mr-1" />
-                            Add Ability
-                          </Button>
-                        </div>
-                        {character.abilities.map((ability, abilityIndex) => (
-                          <div key={abilityIndex} className="flex space-x-1">
-                            <Input
-                              value={ability}
-                              onChange={(e) => updateAbility(charIndex, abilityIndex, e.target.value)}
-                              placeholder="Ability name"
-                              className="bg-slate-600 border-slate-500 text-white text-xs"
-                              
-                            />
-                            <Button
-                              type="button"
-                              onClick={() => removeAbility(charIndex, abilityIndex)}
-                              
-                              variant="outline"
-                              className="border-red-500 text-red-400 hover:bg-red-500/20 h-8 w-8 p-0"
-                            >
-                              <Trash className="w-2 h-2" />
-                            </Button>
-                          </div>
-                        ))}
-                      </div>
-                    </div>
-                  ))}
-                </div>
-              )}
-            </div>
-            <Button onClick={handleUpdateCircle} className="w-full bg-blue-600 hover:bg-blue-700">
-              Update Circle
-            </Button>
-          </div>
-        </DialogContent>
-      </Dialog>
+          setEditingGame(null);
+        }}
+      />
 
       {/* Bottom Navigation */}
       <BottomNavigation currentView={currentView} onNavigation={onNavigation} />
