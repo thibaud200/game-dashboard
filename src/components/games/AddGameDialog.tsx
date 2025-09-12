@@ -16,8 +16,6 @@ import { Textarea } from '@/components/ui/textarea';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Checkbox } from '@/components/ui/checkbox';
 import BGGMagnifyingGlass from '@/components/BGGMagnifyingGlass';
-
-import BGGMagnifyingGlass from '@/components/BGGMagnifyingGlass';
 import { BGGCircle } from '@/services/bggApi';
 
 interface Character {
