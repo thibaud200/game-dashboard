@@ -26,7 +26,7 @@ interface Circle {
   characters: CircleCharacter[]
 }
 
-interface CircleCharactersPageProps {
+interface GameCharactersPageProps {
   game: Circle
   onNavigation: (view: string, gameId?: number, source?: string) => void
   navigationSource?: string
@@ -36,7 +36,7 @@ interface CircleCharactersPageProps {
   embedded?: boolean
 }
 
-export default function CircleCharactersPage({ 
+export default function GameCharactersPage({ 
   game, 
   onNavigation, 
   navigationSource = 'games',
@@ -44,7 +44,7 @@ export default function CircleCharactersPage({
   onUpdateCharacter, 
   onDeleteCharacter,
   embedded = false
-}: CircleCharactersPageProps) {
+}: GameCharactersPageProps) {
   const [isAddDialogOpen, setIsAddDialogOpen] = useState(false);
   const [editingCharacter, setPencilSimpleingCharacter] = useState<CircleCharacter | null>(null);
   const [formData, setFormData] = useState({

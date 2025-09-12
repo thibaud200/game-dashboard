@@ -25,7 +25,7 @@ interface Circle {
   expansions: CircleExpansion[]
 }
 
-interface CircleExpansionsPageProps {
+interface GameExpansionsPageProps {
   game: Circle
   onNavigation: (view: string, gameId?: number, source?: string) => void
   navigationSource?: string
@@ -35,7 +35,7 @@ interface CircleExpansionsPageProps {
   embedded?: boolean
 }
 
-export default function CircleExpansionsPage({ 
+export default function GameExpansionsPage({ 
   game, 
   onNavigation, 
   navigationSource = 'games',
@@ -43,7 +43,7 @@ export default function CircleExpansionsPage({
   onUpdateExpansion, 
   onDeleteExpansion,
   embedded = false
-}: CircleExpansionsPageProps) {
+}: GameExpansionsPageProps) {
   const [isAddDialogOpen, setIsAddDialogOpen] = useState(false);
   const [editingExpansion, setPencilSimpleingExpansion] = useState<CircleExpansion | null>(null);
   const [formData, setFormData] = useState({

@@ -11,9 +11,9 @@ import {
   DropdownMenuTrigger,
   DropdownMenuSeparator
 } from '@/components/ui/dropdown-menu';
-import { ArrowLeft, Users, Clock, Star, Barbell, Calendar, Buildings, User, Star, User, DotsThree, Crown, TrendUp, Gear } from '@phosphor-icons/react';
-import CircleExpansionsPage from '@/components/CircleExpansionsPage';
-import CircleCharactersPage from '@/components/CircleCharactersPage';
+import { ArrowLeft, Users, Clock, Star, Barbell, Calendar, Buildings, User, DotsThree, Crown, TrendUp, Gear } from '@phosphor-icons/react';
+import GameExpansionsPage from '@/components/GameExpansionsPage';
+import GameCharactersPage from '@/components/GameCharactersPage';
 
 interface Circle {
   game_id: number
@@ -211,7 +211,7 @@ export default function CircleDetailPage({
 
             <TabsContent value="expansions" className="mt-6">
               {onAddExpansion && onUpdateExpansion && onDeleteExpansion && (
-                <CircleExpansionsPage
+                <GameExpansionsPage
                   game={game}
                   onNavigation={onNavigation}
                   navigationSource={navigationSource}
@@ -225,7 +225,7 @@ export default function CircleDetailPage({
 
             <TabsContent value="characters" className="mt-6">
               {onAddCharacter && onUpdateCharacter && onDeleteCharacter && (
-                <CircleCharactersPage
+                <GameCharactersPage
                   game={game}
                   onNavigation={onNavigation}
                   navigationSource={navigationSource}
@@ -243,7 +243,7 @@ export default function CircleDetailPage({
         <div className="md:hidden pb-32">
           {activeTab === 'overview' && renderCircleOverview()}
           {activeTab === 'expansions' && onAddExpansion && onUpdateExpansion && onDeleteExpansion && (
-            <CircleExpansionsPage
+            <GameExpansionsPage
               game={game}
               onNavigation={onNavigation}
               navigationSource={navigationSource}
@@ -254,7 +254,7 @@ export default function CircleDetailPage({
             />
           )}
           {activeTab === 'characters' && onAddCharacter && onUpdateCharacter && onDeleteCharacter && (
-            <CircleCharactersPage
+            <GameCharactersPage
               game={game}
               onNavigation={onNavigation}
               navigationSource={navigationSource}
