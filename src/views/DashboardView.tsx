@@ -204,7 +204,7 @@ export function DashboardView({
                   onClick={handleGamesClick}
                   className="text-teal-400 hover:text-teal-300 transition-colors"
                 >
-                  <Circle className="w-5 h-5" />
+                  <GameController className="w-5 h-5" />
                 </button>
               </TooltipTrigger>
               <TooltipContent>
