@@ -1,88 +1,243 @@
-// Database-aligned interfaces
+// Shared types for the application
+
 export interface Player {
-  player_id: number
-  player_name: string
-  avatar?: string
-  games_played: number
-  wins: number
-  total_score: number
-  average_score: number
-  favorite_game?: string
-  created_at: Date
-  updated_at?: Date
-  // Calculated field for display
-  stats?: string
+  player_id: number;
+  player_name: string;
+  avatar: string;
+  stats: string;
+  games_played: number;
+  wins: number;
+  total_score: number;
+  average_score: number;
+  created_at: Date;
+  updated_at?: Date;
+  favorite_game: string;
 }
 
 export interface Game {
-  game_id: number
-  bgg_id?: number
-  name: string
-  description?: string
-  image?: string
-  min_players: number
-  max_players: number
-  duration?: string
-  difficulty?: string
-  category?: string
-  year_published?: number
-  publisher?: string
-  designer?: string
-  bgg_rating?: number
-  weight?: number
-  age_min?: number
-  supports_cooperative: boolean
-  supports_competitive: boolean
-  supports_campaign: boolean
-  supports_hybrid: boolean // New field to replace game_type
-  has_expansion: boolean
-  has_characters: boolean
-  created_at: Date
-  updated_at?: Date
-  // Related data
-  expansions: GameExpansion[]
-  characters: GameCharacter[]
-  // Calculated field for display
-  players?: string
+  game_id: number;
+  bgg_id?: number;
+  name: string;
+  description: string;
+  image: string;
+  min_players: number;
+  max_players: number;
+  duration: string;
+  difficulty: string;
+  category: string;
+  year_published: number;
+  publisher: string;
+  designer: string;
+  bgg_rating: number;
+  weight: number;
+  age_min: number;
+  supports_cooperative: boolean;
+  supports_competitive: boolean;
+  supports_campaign: boolean;
+  supports_hybrid: boolean;
+  has_expansion: boolean;
+  has_characters: boolean;
+  created_at: Date;
+  updated_at?: Date;
+  expansions: GameExpansion[];
+  characters: GameCharacter[];
+  players: string; // Computed field "min-max"
 }
 
 export interface GameExpansion {
-  expansion_id?: number
-  game_id?: number
-  bgg_expansion_id?: number
-  name: string
-  year_published?: number
-  description?: string
+  expansion_id?: number;
+  game_id?: number;
+  bgg_expansion_id?: number;
+  name: string;
+  year_published: number;
+  description?: string;
 }
 
 export interface GameCharacter {
-  character_id?: number
-  game_id?: number
-  character_key: string
-  name: string
-  description?: string
-  avatar?: string // Fixed: This field was missing from table Game_Characters
-  abilities?: string[] // Will be stored as JSON in database
+  character_id?: number;
+  game_id?: number;
+  character_key: string;
+  name: string;
+  description: string;
+  avatar?: string;
+  abilities: string[];
 }
 
 export interface GameSession {
-  session_id: number
-  game_id: number
-  session_date: Date
-  duration_minutes?: number
-  winner_player_id?: number
-  session_type: 'competitive' | 'cooperative' | 'campaign' | 'hybrid'
-  notes?: string
-  created_at: Date
+  session_id?: number;
+  game_id: number;
+  session_type: 'competitive' | 'cooperative' | 'campaign' | 'hybrid';
+  session_date: Date;
+  duration_minutes?: number;
+  notes?: string;
+  created_at: Date;
+  updated_at?: Date;
 }
 
 export interface SessionPlayer {
-  session_player_id?: number
-  session_id: number
-  player_id: number
-  character_id?: number
-  score: number
-  placement?: number
-  is_winner: boolean
-  notes?: string
+  session_player_id?: number;
+  session_id: number;
+  player_id: number;
+  character_id?: number;
+  score?: number;
+  placement?: number;
+  is_winner: boolean;
+  notes?: string;
 }
+
+// Navigation handler type
+export type NavigationHandler = (view: string, id?: number, source?: string) => void;
+
+// Form data types
+export interface PlayerFormData {
+  player_name: string;
+  avatar: string;
+  favorite_game: string;
+  total_score: number;
+  games_played: number;
+  wins: number;
+}
+
+export interface GameFormData {
+  name: string;
+  description: string;
+  image: string;
+  min_players: number;
+  max_players: number;
+  duration: string;
+  difficulty: string;
+  category: string;
+  year_published: number;
+  publisher: string;
+  designer: string;
+  bgg_rating: number;
+  weight: number;
+  age_min: number;
+  supports_cooperative: boolean;
+  supports_competitive: boolean;
+  supports_campaign: boolean;
+  supports_hybrid: boolean;
+  has_expansion: boolean;
+  has_characters: boolean;
+  bgg_id?: number;
+}
+
+// Statistics types
+export interface PlayerStats {
+  player_id: number;
+  total_games: number;
+  total_wins: number;
+  win_rate: number;
+  average_score: number;
+  favorite_games: string[];
+  recent_activity: SessionPlayer[];
+}
+
+export interface GameStats {
+  game_id: number;
+  total_sessions: number;
+  unique_players: number;
+  average_duration: number;
+  most_frequent_players: Player[];
+  win_distribution: { [key: string]: number };
+}
+
+// BGG API types
+export interface BGGGame {
+  id: number;
+  name: string;
+  description: string;
+  image: string;
+  thumbnail: string;
+  minPlayers: number;
+  maxPlayers: number;
+  playingTime: number;
+  minPlayTime: number;
+  maxPlayTime: number;
+  minAge: number;
+  yearpublished: number;
+  categories: string[];
+  mechanics: string[];
+  designers: string[];
+  publishers: string[];
+  rating: number;
+  weight: number;
+  expansions?: BGGExpansion[];
+}
+
+export interface BGGExpansion {
+  id: number;
+  name: string;
+  yearpublished: number;
+}
+
+// API response types
+export interface ApiResponse<T> {
+  success: boolean;
+  data?: T;
+  error?: string;
+  message?: string;
+}
+
+// Component props base types
+export interface BasePageProps {
+  currentView?: string;
+  onNavigation: NavigationHandler;
+}
+
+export interface BaseDialogProps {
+  open: boolean;
+  onOpenChange: (open: boolean) => void;
+}
+
+// Hook return types for common patterns
+export interface UseFormReturn<T> {
+  formData: T;
+  setFormData: React.Dispatch<React.SetStateAction<T>>;
+  resetForm: () => void;
+  isValid: boolean;
+}
+
+export interface UseDialogReturn {
+  isOpen: boolean;
+  open: () => void;
+  close: () => void;
+  toggle: () => void;
+}
+
+export interface UseMobileReturn {
+  isMobile: boolean;
+  isTablet: boolean;
+  isDesktop: boolean;
+}
+
+// Error types
+export interface AppError {
+  code: string;
+  message: string;
+  details?: any;
+}
+
+// Loading states
+export interface LoadingState {
+  loading: boolean;
+  error: AppError | null;
+}
+
+// Pagination types
+export interface PaginationState {
+  page: number;
+  pageSize: number;
+  total: number;
+  hasMore: boolean;
+}
+
+// Search and filter types
+export interface SearchState {
+  query: string;
+  filters: Record<string, any>;
+  sortBy: string;
+  sortOrder: 'asc' | 'desc';
+}
+
+export default {};
