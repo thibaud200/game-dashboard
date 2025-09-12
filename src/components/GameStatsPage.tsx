@@ -6,7 +6,6 @@ import {
   Clock,
   Star,
   ChartLineUp,
-  ChartLineUp,
   Calendar,
   Trophy,
   Target

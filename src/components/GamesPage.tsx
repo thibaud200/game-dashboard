@@ -11,7 +11,6 @@ import {
   Clock,
   Target,
   Calendar,
-  Star,
   Shield,
   Sword,
   Crown,
