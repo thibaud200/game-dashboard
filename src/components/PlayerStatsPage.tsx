@@ -1,5 +1,6 @@
 import React from 'react';
 import { usePlayerStatsPage } from '@/hooks/usePlayerStatsPage';
+import { TooltipProvider } from '@/components/ui/tooltip';
 import PlayerStatsView from '@/views/PlayerStatsView';
 
 interface Player {
@@ -49,13 +50,15 @@ export default function PlayerStatsPage({
   } = usePlayerStatsPage(players, games, selectedPlayerId);
 
   return (
-    <PlayerStatsView
-      stats={stats}
-      topPlayers={topPlayers}
-      recentActivity={recentActivity}
-      selectedPlayer={selectedPlayer || null}
-      onNavigation={onNavigation}
-      currentView={currentView}
-    />
+    <TooltipProvider>
+      <PlayerStatsView
+        stats={stats}
+        topPlayers={topPlayers}
+        recentActivity={recentActivity}
+        selectedPlayer={selectedPlayer || null}
+        onNavigation={onNavigation}
+        currentView={currentView}
+      />
+    </TooltipProvider>
   );
 }

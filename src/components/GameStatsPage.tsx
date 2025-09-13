@@ -1,5 +1,6 @@
 import React from 'react';
 import { useGameStatsPage } from '@/hooks/useGameStatsPage';
+import { TooltipProvider } from '@/components/ui/tooltip';
 import GameStatsView from '@/views/GameStatsView';
 
 interface Game {
@@ -56,17 +57,19 @@ export default function GameStatsPage({
   } = useGameStatsPage(games, players, selectedCircleId);
 
   return (
-    <GameStatsView
-      selectedPeriod={selectedPeriod}
-      setSelectedPeriod={setSelectedPeriod}
-      selectedGame={selectedGame}
-      setSelectedGame={setSelectedGame}
-      gameStats={gameStats}
-      games={games}
-      onNavigation={onNavigation}
-      currentView={currentView}
-      selectedGameId={selectedCircleId}
-      players={players}
-    />
+    <TooltipProvider>
+      <GameStatsView
+        selectedPeriod={selectedPeriod}
+        setSelectedPeriod={setSelectedPeriod}
+        selectedGame={selectedGame}
+        setSelectedGame={setSelectedGame}
+        gameStats={gameStats}
+        games={games}
+        onNavigation={onNavigation}
+        currentView={currentView}
+        selectedGameId={selectedCircleId}
+        players={players}
+      />
+    </TooltipProvider>
   );
 }

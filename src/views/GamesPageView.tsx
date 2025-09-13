@@ -98,6 +98,9 @@ export default function GamesPageView({
   setEditDialogOpen
 }: GamesPageViewProps) {
   
+  // Safety check for games array
+  const safeGames = games || [];
+  
   const getDifficultyColor = (difficulty: string) => {
     switch (difficulty.toLowerCase()) {
       case 'beginner': return 'text-green-400';
@@ -239,7 +242,7 @@ export default function GamesPageView({
           </div>
           <div className="bg-white/10 backdrop-blur-md rounded-xl p-3 text-center border border-white/20">
             <div className="text-2xl font-bold text-blue-400">
-              {[...new Set(games.map(g => g.category))].length}
+              {[...new Set(safeGames.map(g => g.category || 'Unknown'))].length}
             </div>
             <div className="text-xs text-white/80">Categories</div>
           </div>
@@ -255,7 +258,7 @@ export default function GamesPageView({
       {/* Games Grid */}
       <div className="px-4 pb-32">
         <div className="grid grid-cols-1 gap-4">
-          {games.map((game) => (
+          {safeGames.map((game) => (
             <Card key={game.game_id} className="bg-white/10 backdrop-blur-md border-white/20">
               <CardContent className="p-0">
                 <div className="flex">
@@ -359,7 +362,7 @@ export default function GamesPageView({
                               <div>
                                 <h4 className="text-sm font-medium text-purple-300 mb-1">Expansions</h4>
                                 <Textarea
-                                  value={game.expansions.map(exp => 
+                                  value={(game.expansions || []).map(exp => 
                                     `${exp.name}${exp.year_published > 0 ? ` (${exp.year_published})` : ''}`
                                   ).join(', ')}
                                   onChange={(e) => {
@@ -400,7 +403,7 @@ export default function GamesPageView({
                               <div>
                                 <h4 className="text-sm font-medium text-orange-300 mb-1">Characters/Roles</h4>
                                 <div className="space-y-1">
-                                  {game.characters.map((character) => (
+                                  {(game.characters || []).map((character) => (
                                     <div key={character.character_key} className="text-xs text-white/70 bg-white/5 rounded p-2">
                                       <div className="font-medium">{character.name}</div>
                                       {character.description && (

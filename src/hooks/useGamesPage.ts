@@ -82,9 +82,10 @@ export const useGamesPage = (data: GamesPageData) => {
 
   // Computed values
   const filteredAndSortedGames = useMemo(() => {
-    let filtered = games.filter(game => {
-      const matchesSearch = game.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
-                           game.description.toLowerCase().includes(searchQuery.toLowerCase());
+    const safeGames = games || [];
+    let filtered = safeGames.filter(game => {
+      const matchesSearch = (game.name || '').toLowerCase().includes(searchQuery.toLowerCase()) ||
+                           (game.description || '').toLowerCase().includes(searchQuery.toLowerCase());
       const matchesCategory = categoryFilter === 'all' || game.category === categoryFilter;
       const matchesDifficulty = difficultyFilter === 'all' || game.difficulty === difficultyFilter;
       
@@ -100,10 +101,10 @@ export const useGamesPage = (data: GamesPageData) => {
           comparison = a.name.localeCompare(b.name);
           break;
         case 'year':
-          comparison = a.year_published - b.year_published;
+          comparison = (a.year_published || 0) - (b.year_published || 0);
           break;
         case 'rating':
-          comparison = a.bgg_rating - b.bgg_rating;
+          comparison = (a.bgg_rating || 0) - (b.bgg_rating || 0);
           break;
       }
       
@@ -114,18 +115,21 @@ export const useGamesPage = (data: GamesPageData) => {
   }, [games, searchQuery, categoryFilter, difficultyFilter, sortBy, sortOrder]);
 
   const categories = useMemo(() => {
-    const cats = [...new Set(games.map(g => g.category).filter(Boolean))];
+    const safeGames = games || [];
+    const cats = [...new Set(safeGames.map(g => g.category).filter(Boolean))];
     return cats.sort();
   }, [games]);
 
   const difficulties = useMemo(() => {
-    const diffs = [...new Set(games.map(g => g.difficulty).filter(Boolean))];
+    const safeGames = games || [];
+    const diffs = [...new Set(safeGames.map(g => g.difficulty).filter(Boolean))];
     return diffs.sort();
   }, [games]);
 
-  const totalGames = games.length;
-  const averageRating = games.length > 0 
-    ? games.reduce((sum, g) => sum + g.bgg_rating, 0) / games.length
+  const safeGames = games || [];
+  const totalGames = safeGames.length;
+  const averageRating = safeGames.length > 0 
+    ? safeGames.reduce((sum, g) => sum + (g.bgg_rating || 0), 0) / safeGames.length
     : 0;
 
   // Form management

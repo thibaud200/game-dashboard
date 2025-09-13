@@ -110,6 +110,11 @@ export default function NewGameView({
   onNavigation,
   currentView
 }: NewGameViewProps) {
+  // Safety checks for arrays
+  const safeGames = games || [];
+  const safePlayers = players || [];
+  const safeSelectedPlayers = selectedPlayers || [];
+  
   const onSubmit = async () => {
     try {
       await handleSubmit();
@@ -151,7 +156,7 @@ export default function NewGameView({
                     <SelectValue placeholder="Choose a game..." />
                   </SelectTrigger>
                   <SelectContent className="bg-slate-800 border-white/20">
-                    {games.map(game => (
+                    {safeGames.map(game => (
                       <SelectItem key={game.game_id} value={game.game_id.toString()}>
                         {game.name}
                       </SelectItem>
@@ -211,10 +216,10 @@ export default function NewGameView({
             </CardHeader>
             <CardContent>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                {players.map(player => (
+                {safePlayers.map(player => (
                   <div key={player.player_id} className="flex items-center space-x-3 p-3 bg-white/5 rounded-lg">
                     <Checkbox
-                      checked={selectedPlayers.includes(player.player_id)}
+                      checked={safeSelectedPlayers.includes(player.player_id)}
                       onCheckedChange={() => handlePlayerToggle(player.player_id)}
                       className="data-[state=checked]:bg-teal-500 data-[state=checked]:border-teal-500"
                     />
@@ -244,8 +249,8 @@ export default function NewGameView({
               </CardTitle>
             </CardHeader>
             <CardContent className="space-y-4">
-              {selectedPlayers.map(playerId => {
-                const player = players.find(p => p.player_id === playerId);
+              {safeSelectedPlayers.map(playerId => {
+                const player = safePlayers.find(p => p.player_id === playerId);
                 if (!player) return null;
 
                 return (

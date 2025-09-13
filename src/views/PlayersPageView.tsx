@@ -49,6 +49,9 @@ interface PlayersPageViewProps {
 }
 
 export function PlayersPageView(props: PlayersPageViewProps) {
+  // Safety check for players array
+  const safePlayers = props.players || [];
+  
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-900 to-slate-800 text-white">
       {/* Header */}
@@ -120,7 +123,7 @@ export function PlayersPageView(props: PlayersPageViewProps) {
 
       {/* Players List */}
       <div className="px-4 space-y-3 pb-32">
-        {props.players.map((player) => (
+        {safePlayers.map((player) => (
           <div key={player.player_id} className="bg-white/10 backdrop-blur-md rounded-xl p-4 border border-white/20 shadow-xl">
             <div className="flex items-center space-x-4">
               <img

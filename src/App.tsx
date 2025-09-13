@@ -330,20 +330,16 @@ export default function App() {
 
   if (stats.loading) {
     return (
-      <TooltipProvider>
-        <div className="min-h-screen bg-gradient-to-br from-slate-900 to-slate-800 flex items-center justify-center">
-          <div className="text-white text-lg">Chargement du dashboard...</div>
-        </div>
-      </TooltipProvider>
+      <div className="min-h-screen bg-gradient-to-br from-slate-900 to-slate-800 flex items-center justify-center">
+        <div className="text-white text-lg">Chargement du dashboard...</div>
+      </div>
     );
   }
 
   return (
-    <TooltipProvider>
-      <div className="min-h-screen bg-gradient-to-br from-slate-900 to-slate-800 text-white">
-        {renderCurrentView()}
-        <BottomNavigation currentView={currentView} onNavigation={handleNavigation} />
-      </div>
-    </TooltipProvider>
+    <div className="min-h-screen bg-gradient-to-br from-slate-900 to-slate-800 text-white">
+      {renderCurrentView()}
+      <BottomNavigation currentView={currentView} onNavigation={handleNavigation} />
+    </div>
   );
 }

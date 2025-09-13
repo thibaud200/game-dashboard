@@ -1,4 +1,5 @@
 import React from 'react';
+import { TooltipProvider } from '@/components/ui/tooltip';
 import GameExpansionsView from '@/views/games/GameExpansionsView';
 import { Game, GameExpansion } from '@/types';
 
@@ -13,5 +14,9 @@ interface GameExpansionsPageProps {
 }
 
 export default function GameExpansionsPage(props: GameExpansionsPageProps) {
-  return <GameExpansionsView {...props} />;
+  return (
+    <TooltipProvider>
+      <GameExpansionsView {...props} />
+    </TooltipProvider>
+  );
 }

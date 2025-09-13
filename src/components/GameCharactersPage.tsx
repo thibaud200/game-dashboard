@@ -1,4 +1,5 @@
 import React from 'react';
+import { TooltipProvider } from '@/components/ui/tooltip';
 import GameCharactersView from '@/views/games/GameCharactersView';
 import { Game, GameCharacter } from '@/types';
 
@@ -13,5 +14,9 @@ interface GameCharactersPageProps {
 }
 
 export default function GameCharactersPage(props: GameCharactersPageProps) {
-  return <GameCharactersView {...props} />;
+  return (
+    <TooltipProvider>
+      <GameCharactersView {...props} />
+    </TooltipProvider>
+  );
 }

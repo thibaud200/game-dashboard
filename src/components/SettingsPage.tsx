@@ -1,6 +1,7 @@
 import React from 'react';
 import { SettingsPageView } from '@/views/SettingsPageView';
 import { useSettingsPage, SettingsPageData } from '@/hooks/useSettingsPage';
+import { TooltipProvider } from '@/components/ui/tooltip';
 import { NavigationHandler } from '@/types';
 
 interface SettingsPageProps {
@@ -16,5 +17,9 @@ export default function SettingsPage(props: SettingsPageProps) {
 
   const logic = useSettingsPage(settingsPageData);
 
-  return <SettingsPageView {...logic} />;
+  return (
+    <TooltipProvider>
+      <SettingsPageView {...logic} />
+    </TooltipProvider>
+  );
 }

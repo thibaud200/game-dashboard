@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { Game, BGGGame } from '@/types';
 import { useGamesPage, GamesPageData } from '@/hooks/useGamesPage';
+import { TooltipProvider } from '@/components/ui/tooltip';
 import GamesPageView from '@/views/GamesPageView';
 
 interface GamesPageProps {
@@ -81,31 +82,33 @@ export default function GamesPage(props: GamesPageProps) {
   };
 
   return (
-    <GamesPageView
-      games={games}
-      currentView={currentView || 'games'}
-      totalGames={totalGames}
-      averageRating={averageRating}
-      formData={formData}
-      editingGame={editingGame}
-      isAddDialogOpen={isAddDialogOpen}
-      isEditDialogOpen={isEditDialogOpen}
-      isBGGSearchOpen={isBGGSearchOpen}
-      expandedGame={expandedGame}
-      searchQuery={searchQuery}
-      onNavigation={onNavigation}
-      onSearchChange={setSearchQuery}
-      onAddDialogToggle={onAddDialogToggle}
-      onFormDataChange={handleFormDataChange}
-      onBGGGameSelect={handleBGGGameSelect}
-      onAddGame={handleAddGame}
-      onResetForm={resetForm}
-      onEditGame={handleEditGame}
-      onUpdateGame={handleUpdateGame}
-      onDeleteGame={handleDeleteGame}
-      setBGGSearchOpen={setIsBGGSearchOpen}
-      setExpandedGame={setExpandedGame}
-      setEditDialogOpen={handleEditDialogOpen}
-    />
+    <TooltipProvider>
+      <GamesPageView
+        games={games}
+        currentView={currentView || 'games'}
+        totalGames={totalGames}
+        averageRating={averageRating}
+        formData={formData}
+        editingGame={editingGame}
+        isAddDialogOpen={isAddDialogOpen}
+        isEditDialogOpen={isEditDialogOpen}
+        isBGGSearchOpen={isBGGSearchOpen}
+        expandedGame={expandedGame}
+        searchQuery={searchQuery}
+        onNavigation={onNavigation}
+        onSearchChange={setSearchQuery}
+        onAddDialogToggle={onAddDialogToggle}
+        onFormDataChange={handleFormDataChange}
+        onBGGGameSelect={handleBGGGameSelect}
+        onAddGame={handleAddGame}
+        onResetForm={resetForm}
+        onEditGame={handleEditGame}
+        onUpdateGame={handleUpdateGame}
+        onDeleteGame={handleDeleteGame}
+        setBGGSearchOpen={setIsBGGSearchOpen}
+        setExpandedGame={setExpandedGame}
+        setEditDialogOpen={handleEditDialogOpen}
+      />
+    </TooltipProvider>
   );
 }
