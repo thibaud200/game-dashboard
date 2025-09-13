@@ -33,9 +33,7 @@ import {
 import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip';
 import { Textarea } from '@/components/ui/textarea';
 import { Game } from '@/types';
-import AddGameDialog from '@/components/games/AddGameDialog';
-import EditGameDialog from '@/components/games/EditGameDialog';
-import DeleteGameDialog from '@/components/games/DeleteGameDialog';
+import { AddGameDialog, EditGameDialog, DeleteGameDialog } from '@/components/dialogs';
 
 interface GamesPageViewProps {
   // Data
