@@ -25,6 +25,7 @@ export function useGameExpansions(props: UseGameExpansionsProps) {
 
   const [isAddDialogOpen, setIsAddDialogOpen] = useState(false);
   const [editingExpansion, setEditingExpansion] = useState<GameExpansion | null>(null);
+  const [deleteExpansionId, setDeleteExpansionId] = useState<number | null>(null);
   const [formData, setFormData] = useState({
     name: '',
     year_published: '',
@@ -137,6 +138,7 @@ export function useGameExpansions(props: UseGameExpansionsProps) {
     // State
     isAddDialogOpen,
     editingExpansion,
+    deleteExpansionId,
     formData,
     
     // Computed
@@ -144,6 +146,7 @@ export function useGameExpansions(props: UseGameExpansionsProps) {
 
     // Handlers
     setIsAddDialogOpen,
+    setDeleteExpansionId,
     setFormData,
     handleAddExpansion,
     handleEditExpansion,

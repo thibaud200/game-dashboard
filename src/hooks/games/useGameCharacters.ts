@@ -25,6 +25,7 @@ export function useGameCharacters(props: UseGameCharactersProps) {
 
   const [isAddDialogOpen, setIsAddDialogOpen] = useState(false);
   const [editingCharacter, setEditingCharacter] = useState<GameCharacter | null>(null);
+  const [deleteCharacterId, setDeleteCharacterId] = useState<number | null>(null);
   const [formData, setFormData] = useState({
     character_key: '',
     name: '',
@@ -142,6 +143,7 @@ export function useGameCharacters(props: UseGameCharactersProps) {
     // State
     isAddDialogOpen,
     editingCharacter,
+    deleteCharacterId,
     formData,
     
     // Computed
@@ -149,6 +151,7 @@ export function useGameCharacters(props: UseGameCharactersProps) {
 
     // Handlers
     setIsAddDialogOpen,
+    setDeleteCharacterId,
     setFormData,
     handleAddCharacter,
     handleEditCharacter,

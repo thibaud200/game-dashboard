@@ -1,143 +1,51 @@
 import React from 'react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
-import { Textarea } from '@/components/ui/textarea';
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
-import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from '@/components/ui/alert-dialog';
 import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip';
 import { ArrowLeft, Plus, PencilSimple, Trash, User, Lightning, Users, Star, TrendUp, Gear } from '@phosphor-icons/react';
 import { useGameCharacters, UseGameCharactersProps } from '@/hooks/games/useGameCharacters';
-
-const CharacterForm = ({ 
-  formData, 
-  setFormData, 
-  onSubmit, 
-  onCancel, 
-  submitText 
-}: { 
-  formData: any;
-  setFormData: (data: any) => void;
-  onSubmit: (e: React.FormEvent) => void;
-  onCancel: () => void;
-  submitText: string;
-}) => (
-  <form onSubmit={onSubmit} className="space-y-4">
-    <div className="space-y-2">
-      <Label htmlFor="name" className="text-white">Nom du personnage *</Label>
-      <Input
-        id="name"
-        value={formData.name}
-        onChange={(e) => setFormData((prev: any) => ({ ...prev, name: e.target.value }))}
-        className="bg-slate-700/50 border-slate-600 text-white"
-        placeholder="Nom du personnage"
-        required
-      />
-    </div>
-
-    <div className="space-y-2">
-      <Label htmlFor="character_key" className="text-white">Clé du personnage *</Label>
-      <Input
-        id="character_key"
-        value={formData.character_key}
-        onChange={(e) => setFormData((prev: any) => ({ ...prev, character_key: e.target.value }))}
-        className="bg-slate-700/50 border-slate-600 text-white"
-        placeholder="warrior, mage, archer..."
-        required
-      />
-      <p className="text-slate-400 text-xs">Identifiant unique (sera automatiquement formaté)</p>
-    </div>
-
-    <div className="space-y-2">
-      <Label htmlFor="avatar" className="text-white">Avatar (URL)</Label>
-      <Input
-        id="avatar"
-        value={formData.avatar}
-        onChange={(e) => setFormData((prev: any) => ({ ...prev, avatar: e.target.value }))}
-        className="bg-slate-700/50 border-slate-600 text-white"
-        placeholder="https://example.com/avatar.jpg"
-        type="url"
-      />
-    </div>
-
-    <div className="space-y-2">
-      <Label htmlFor="description" className="text-white">Description</Label>
-      <Textarea
-        id="description"
-        value={formData.description}
-        onChange={(e) => setFormData((prev: any) => ({ ...prev, description: e.target.value }))}
-        className="bg-slate-700/50 border-slate-600 text-white min-h-[80px]"
-        placeholder="Description du personnage..."
-      />
-    </div>
-
-    <div className="space-y-2">
-      <Label htmlFor="abilities" className="text-white">Capacités</Label>
-      <Textarea
-        id="abilities"
-        value={formData.abilities}
-        onChange={(e) => setFormData((prev: any) => ({ ...prev, abilities: e.target.value }))}
-        className="bg-slate-700/50 border-slate-600 text-white min-h-[80px]"
-        placeholder="Attaque lourde, Bouclier, Intimidation..."
-      />
-      <p className="text-slate-400 text-xs">Séparez les capacités par des virgules</p>
-    </div>
-
-    <div className="flex justify-end gap-2 pt-4">
-      <Button
-        type="button"
-        variant="outline"
-        onClick={onCancel}
-        className="border-slate-600 text-slate-300 hover:bg-slate-700/50"
-      >
-        Annuler
-      </Button>
-      <Button type="submit" className="bg-primary hover:bg-primary/90 text-primary-foreground">
-        {submitText}
-      </Button>
-    </div>
-  </form>
-);
+import { AddCharacterDialog, EditCharacterDialog, DeleteCharacterDialog } from '@/components/dialogs';
 
 export default function GameCharactersView(props: UseGameCharactersProps) {
   const {
     isAddDialogOpen,
     editingCharacter,
+    deleteCharacterId,
     formData,
     characters,
     setIsAddDialogOpen,
+    setDeleteCharacterId,
     setFormData,
-    handleAddCharacter,
-    handleEditCharacter,
-    handleDeleteCharacter,
     openEditDialog,
     closeDialogs,
-    handleNavigation,
-    game,
-    embedded,
-    navigationSource
+    handleAddCharacter,
+    handleEditCharacter,
+    handleDeleteCharacter
   } = useGameCharacters(props);
 
+  const {
+    game,
+    onNavigation,
+    navigationSource,
+    embedded = false
+  } = props;
+
   return (
-    <div className={embedded ? "" : "min-h-screen bg-gradient-to-br from-slate-900 to-slate-800"}>
+    <>
       {/* Header - Only show when not embedded */}
       {!embedded && (
-        <div className="bg-slate-800/50 backdrop-blur-sm border-b border-slate-700/50 sticky top-0 z-10">
-          <div className="max-w-7xl mx-auto px-4 md:px-6 py-3 md:py-4">
+        <div className="bg-slate-800/50 border-b border-slate-700/50">
+          <div className="max-w-7xl mx-auto px-4 md:px-6 py-4 md:py-6">
             <div className="flex items-center gap-3 md:gap-4">
               <Tooltip>
                 <TooltipTrigger asChild>
                   <Button
                     variant="ghost"
                     size="sm"
-                    onClick={handleNavigation.back}
-                    className="text-white/80 hover:text-white hover:bg-white/10 p-2"
+                    onClick={() => onNavigation(navigationSource === 'game-detail' ? 'game-detail' : 'games', game.game_id)}
+                    className="text-slate-300 hover:text-white hover:bg-slate-700/50 p-2"
                   >
-                    <ArrowLeft className="w-4 h-4 md:mr-2" />
-                    <span className="hidden md:inline">
-                      {navigationSource === 'game-detail' ? 'Retour au jeu' : 'Retour aux jeux'}
-                    </span>
+                    <ArrowLeft className="w-5 h-5" />
                   </Button>
                 </TooltipTrigger>
                 <TooltipContent>
@@ -149,34 +57,21 @@ export default function GameCharactersView(props: UseGameCharactersProps) {
                 Personnages - {game.name}
               </h1>
               
-              <Dialog open={isAddDialogOpen} onOpenChange={setIsAddDialogOpen}>
-                <Tooltip>
-                  <TooltipTrigger asChild>
-                    <DialogTrigger asChild>
-                      <Button className="bg-primary hover:bg-primary/90 text-primary-foreground text-sm md:text-base">
-                        <Plus className="w-4 h-4 md:mr-2" />
-                        <span className="hidden md:inline">Ajouter un personnage</span>
-                        <span className="md:hidden">Ajouter</span>
-                      </Button>
-                    </DialogTrigger>
-                  </TooltipTrigger>
-                  <TooltipContent>
-                    <p>Add New Character</p>
-                  </TooltipContent>
-                </Tooltip>
-                <DialogContent className="bg-slate-800 border-slate-700 max-w-md mx-4">
-                  <DialogHeader>
-                    <DialogTitle className="text-white">Ajouter un personnage</DialogTitle>
-                  </DialogHeader>
-                  <CharacterForm 
-                    formData={formData}
-                    setFormData={setFormData}
-                    onSubmit={handleAddCharacter} 
-                    onCancel={() => setIsAddDialogOpen(false)}
-                    submitText="Ajouter" 
-                  />
-                </DialogContent>
-              </Dialog>
+              <Tooltip>
+                <TooltipTrigger asChild>
+                  <Button 
+                    onClick={() => setIsAddDialogOpen(true)}
+                    className="bg-primary hover:bg-primary/90 text-primary-foreground text-sm md:text-base"
+                  >
+                    <Plus className="w-4 h-4 md:mr-2" />
+                    <span className="hidden md:inline">Ajouter un personnage</span>
+                    <span className="md:hidden">Ajouter</span>
+                  </Button>
+                </TooltipTrigger>
+                <TooltipContent>
+                  <p>Add New Character</p>
+                </TooltipContent>
+              </Tooltip>
             </div>
           </div>
         </div>
@@ -188,26 +83,13 @@ export default function GameCharactersView(props: UseGameCharactersProps) {
         {embedded && (
           <div className="flex items-center justify-between mb-4 md:mb-6">
             <h2 className="text-xl md:text-2xl font-bold text-white">Personnages ({characters.length})</h2>
-            <Dialog open={isAddDialogOpen} onOpenChange={setIsAddDialogOpen}>
-              <DialogTrigger asChild>
-                <Button className="bg-primary hover:bg-primary/90 text-primary-foreground text-sm">
-                  <Plus className="w-4 h-4 md:mr-2" />
-                  <span className="hidden md:inline">Ajouter</span>
-                </Button>
-              </DialogTrigger>
-              <DialogContent className="bg-slate-800 border-slate-700 max-w-md mx-4">
-                <DialogHeader>
-                  <DialogTitle className="text-white">Ajouter un personnage</DialogTitle>
-                </DialogHeader>
-                <CharacterForm 
-                  formData={formData}
-                  setFormData={setFormData}
-                  onSubmit={handleAddCharacter} 
-                  onCancel={() => setIsAddDialogOpen(false)}
-                  submitText="Ajouter" 
-                />
-              </DialogContent>
-            </Dialog>
+            <Button 
+              onClick={() => setIsAddDialogOpen(true)}
+              className="bg-primary hover:bg-primary/90 text-primary-foreground text-sm"
+            >
+              <Plus className="w-4 h-4 md:mr-2" />
+              <span className="hidden md:inline">Ajouter</span>
+            </Button>
           </div>
         )}
         
@@ -218,19 +100,19 @@ export default function GameCharactersView(props: UseGameCharactersProps) {
                 <CardHeader className="pb-3 md:pb-6">
                   <div className="flex items-center gap-3">
                     {character.avatar ? (
-                      <img 
-                        src={character.avatar} 
+                      <img
+                        src={character.avatar}
                         alt={character.name}
-                        className="w-10 h-10 md:w-12 md:h-12 rounded-full object-cover border border-slate-600"
+                        className="w-12 h-12 rounded-full object-cover"
                       />
                     ) : (
-                      <div className="w-10 h-10 md:w-12 md:h-12 bg-slate-600 rounded-full flex items-center justify-center">
-                        <User className="w-6 h-6 md:w-8 md:h-8 text-slate-400" />
+                      <div className="w-12 h-12 rounded-full bg-slate-700 flex items-center justify-center">
+                        <User className="w-6 h-6 text-slate-400" />
                       </div>
                     )}
-                    <div>
+                    <div className="flex-1">
                       <CardTitle className="text-white text-base md:text-lg">{character.name}</CardTitle>
-                      <p className="text-slate-400 text-xs md:text-sm">{character.character_key}</p>
+                      <p className="text-slate-400 text-sm">{character.character_key}</p>
                     </div>
                   </div>
                 </CardHeader>
@@ -240,16 +122,16 @@ export default function GameCharactersView(props: UseGameCharactersProps) {
                   )}
                   
                   {character.abilities && character.abilities.length > 0 && (
-                    <div>
-                      <div className="flex items-center gap-2 mb-2">
+                    <div className="space-y-2">
+                      <div className="flex items-center gap-2 text-slate-300">
                         <Lightning className="w-4 h-4 text-primary" />
-                        <span className="text-white text-sm font-medium">Capacités</span>
+                        <span className="text-sm font-medium">Capacités</span>
                       </div>
                       <div className="flex flex-wrap gap-1">
                         {character.abilities.map((ability, index) => (
-                          <span 
+                          <span
                             key={index}
-                            className="bg-primary/20 text-primary px-2 py-1 rounded text-xs"
+                            className="text-xs bg-slate-700 text-slate-300 px-2 py-1 rounded"
                           >
                             {ability}
                           </span>
@@ -276,46 +158,21 @@ export default function GameCharactersView(props: UseGameCharactersProps) {
                       </TooltipContent>
                     </Tooltip>
                     
-                    <AlertDialog>
-                      <Tooltip>
-                        <TooltipTrigger asChild>
-                          <AlertDialogTrigger asChild>
-                            <Button
-                              variant="outline"
-                              size="sm"
-                              className="border-red-600/50 text-red-400 hover:bg-red-600/10 hover:border-red-600"
-                            >
-                              <Trash className="w-4 h-4" />
-                            </Button>
-                          </AlertDialogTrigger>
-                        </TooltipTrigger>
-                        <TooltipContent>
-                          <p>Delete Character</p>
-                        </TooltipContent>
-                      </Tooltip>
-                      <AlertDialogContent className="bg-slate-800 border-slate-700 mx-4">
-                        <AlertDialogHeader>
-                          <AlertDialogTitle className="text-white">
-                            Supprimer le personnage
-                          </AlertDialogTitle>
-                          <AlertDialogDescription className="text-slate-300">
-                            Êtes-vous sûr de vouloir supprimer le personnage "{character.name}" ? 
-                            Cette action est irréversible.
-                          </AlertDialogDescription>
-                        </AlertDialogHeader>
-                        <AlertDialogFooter>
-                          <AlertDialogCancel className="border-slate-600 text-slate-300 hover:bg-slate-700/50">
-                            Annuler
-                          </AlertDialogCancel>
-                          <AlertDialogAction
-                            onClick={() => handleDeleteCharacter(character.character_id!)}
-                            className="bg-red-600 hover:bg-red-700 text-white"
-                          >
-                            Supprimer
-                          </AlertDialogAction>
-                        </AlertDialogFooter>
-                      </AlertDialogContent>
-                    </AlertDialog>
+                    <Tooltip>
+                      <TooltipTrigger asChild>
+                        <Button
+                          variant="outline"
+                          size="sm"
+                          onClick={() => setDeleteCharacterId(character.character_id!)}
+                          className="border-red-600/50 text-red-400 hover:bg-red-600/10 hover:border-red-600"
+                        >
+                          <Trash className="w-4 h-4" />
+                        </Button>
+                      </TooltipTrigger>
+                      <TooltipContent>
+                        <p>Delete Character</p>
+                      </TooltipContent>
+                    </Tooltip>
                   </div>
                 </CardContent>
               </Card>
@@ -323,88 +180,69 @@ export default function GameCharactersView(props: UseGameCharactersProps) {
           </div>
         ) : (
           <Card className="bg-slate-800/50 border-slate-700/50">
-            <CardContent className="p-12 text-center">
-              <User className="w-16 h-16 text-slate-600 mx-auto mb-4" />
-              <h3 className="text-xl font-semibold text-white mb-2">Aucun personnage</h3>
-              <p className="text-slate-400 mb-6">
-                Ce jeu n'a pas encore de personnages enregistrés.
-              </p>
-              <Dialog open={isAddDialogOpen} onOpenChange={setIsAddDialogOpen}>
-                <DialogTrigger asChild>
-                  <Button className="bg-primary hover:bg-primary/90 text-primary-foreground">
-                    <Plus className="w-4 h-4 mr-2" />
-                    Ajouter le premier personnage
-                  </Button>
-                </DialogTrigger>
-                <DialogContent className="bg-slate-800 border-slate-700 max-w-md mx-4">
-                  <DialogHeader>
-                    <DialogTitle className="text-white">Ajouter un personnage</DialogTitle>
-                  </DialogHeader>
-                  <CharacterForm 
-                    formData={formData}
-                    setFormData={setFormData}
-                    onSubmit={handleAddCharacter} 
-                    onCancel={() => setIsAddDialogOpen(false)}
-                    submitText="Ajouter" 
-                  />
-                </DialogContent>
-              </Dialog>
+            <CardContent className="text-center py-12">
+              <p className="text-slate-400 mb-4">Aucun personnage ajouté pour ce jeu.</p>
+              <Button 
+                onClick={() => setIsAddDialogOpen(true)}
+                className="bg-primary hover:bg-primary/90 text-primary-foreground"
+              >
+                <Plus className="w-4 h-4 mr-2" />
+                Ajouter le premier personnage
+              </Button>
             </CardContent>
           </Card>
         )}
-
-        {/* Edit Dialog */}
-        <Dialog open={!!editingCharacter} onOpenChange={(open) => !open && closeDialogs()}>
-          <DialogContent className="bg-slate-800 border-slate-700 max-w-md mx-4">
-            <DialogHeader>
-              <DialogTitle className="text-white">Modifier le personnage</DialogTitle>
-            </DialogHeader>
-            <CharacterForm 
-              formData={formData}
-              setFormData={setFormData}
-              onSubmit={handleEditCharacter} 
-              onCancel={closeDialogs}
-              submitText="Modifier" 
-            />
-          </DialogContent>
-        </Dialog>
       </div>
+
+      {/* Dialogs */}
+      <AddCharacterDialog
+        isOpen={isAddDialogOpen}
+        onOpenChange={setIsAddDialogOpen}
+        formData={formData}
+        setFormData={setFormData}
+        onSubmit={handleAddCharacter}
+      />
+
+      <EditCharacterDialog
+        isOpen={!!editingCharacter}
+        onOpenChange={(open) => !open && closeDialogs()}
+        formData={formData}
+        setFormData={setFormData}
+        onSubmit={handleEditCharacter}
+      />
+
+      <DeleteCharacterDialog
+        isOpen={!!deleteCharacterId}
+        onOpenChange={(open) => !open && setDeleteCharacterId(null)}
+        characterName={characters.find(c => c.character_id === deleteCharacterId)?.name || ''}
+        onConfirm={() => handleDeleteCharacter(deleteCharacterId!)}
+      />
 
       {/* Bottom Navigation - Mobile Only - Only show when not embedded */}
       {!embedded && (
-        <div className="fixed bottom-0 left-0 right-0 bg-slate-800/90 backdrop-blur-md border-t border-white/10 md:hidden">
-          <div className="flex justify-around items-center py-2">
-            <button
-              onClick={handleNavigation.dashboard}
-              className="flex flex-col items-center p-3 transition-colors text-white/60 hover:text-white"
-            >
-              <TrendUp className="w-6 h-6 mb-1" />
-              <span className="text-xs">Dashboard</span>
-            </button>
-            <button
-              onClick={handleNavigation.players}
-              className="flex flex-col items-center p-3 transition-colors text-white/60 hover:text-white"
-            >
-              <Users className="w-6 h-6 mb-1" />
-              <span className="text-xs">Players</span>
-            </button>
-            <button
-              onClick={handleNavigation.games}
-              className="flex flex-col items-center p-3 transition-colors text-primary"
-            >
-              <Star className="w-6 h-6 mb-1" />
-              <span className="text-xs">Games</span>
-            </button>
-            <button
-              onClick={handleNavigation.settings}
-              className="flex flex-col items-center p-3 transition-colors text-white/60 hover:text-white"
-            >
-              <Gear className="w-6 h-6 mb-1" />
-              <span className="text-xs">Settings</span>
-            </button>
+        <div className="fixed bottom-0 left-0 right-0 md:hidden">
+          <div className="bg-slate-800 border-t border-slate-700 px-4 py-3">
+            <div className="flex items-center justify-between">
+              <Button
+                variant="ghost"
+                size="sm"
+                onClick={() => onNavigation(navigationSource === 'game-detail' ? 'game-detail' : 'games', game.game_id)}
+                className="text-slate-300 hover:text-white"
+              >
+                <ArrowLeft className="w-4 h-4 mr-2" />
+                Retour
+              </Button>
+              <Button 
+                onClick={() => setIsAddDialogOpen(true)}
+                className="bg-primary hover:bg-primary/90 text-primary-foreground"
+              >
+                <Plus className="w-4 h-4 mr-2" />
+                Ajouter
+              </Button>
+            </div>
           </div>
         </div>
       )}
-    </div>
+    </>
   );
 }
