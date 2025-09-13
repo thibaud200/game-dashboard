@@ -1,7 +1,5 @@
 // Player dialogs
-export { AddPlayerDialog } from './AddPlayerDialog';
-export { EditPlayerDialog } from './EditPlayerDialog';
-export { DeletePlayerDialog } from './DeletePlayerDialog';
+export { AddPlayerDialog, EditPlayerDialog, DeletePlayerDialog } from './PlayerDialogs';
 
 // Game dialogs
 export { default as AddGameDialog } from './AddGameDialog';

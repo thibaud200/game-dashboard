@@ -18,8 +18,7 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
-import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip';
-import { AddPlayerDialog, EditPlayerDialog, DeletePlayerDialog } from '@/components/dialogs';
+import { AddPlayerDialog, EditPlayerDialog, DeletePlayerDialog } from '@/components/dialogs/PlayerDialogs';
 import { Player, PlayerFormData } from '@/types';
 
 interface PlayersPageViewProps {
@@ -175,38 +174,30 @@ export function PlayersPageView(props: PlayersPageViewProps) {
                 </DropdownMenu>
               ) : (
                 <div className="flex items-center space-x-2">
-                  <Tooltip>
-                    <TooltipTrigger asChild>
-                      <Button
-                        size="sm"
-                        variant="ghost"
-                        onClick={() => props.handleViewPlayerStats(player.player_id)}
-                        className="hover:bg-white/10"
-                      >
-                        <ChartLineUp className="w-4 h-4" />
-                      </Button>
-                    </TooltipTrigger>
-                    <TooltipContent>View Stats</TooltipContent>
-                  </Tooltip>
+                <div className="flex items-center space-x-2">
+                  <Button
+                    size="sm"
+                    variant="ghost"
+                    onClick={() => props.handleViewPlayerStats(player.player_id)}
+                    className="hover:bg-white/10"
+                  >
+                    <ChartLineUp className="w-4 h-4" />
+                  </Button>
 
-                  <Tooltip>
-                    <TooltipTrigger asChild>
-                      <Button
-                        size="sm"
-                        variant="ghost"
-                        onClick={() => props.handleEditPlayer(player)}
-                        className="hover:bg-white/10"
-                      >
-                        <PencilSimple className="w-4 h-4" />
-                      </Button>
-                    </TooltipTrigger>
-                    <TooltipContent>Edit Player</TooltipContent>
-                  </Tooltip>
+                  <Button
+                    size="sm"
+                    variant="ghost"
+                    onClick={() => props.handleEditPlayer(player)}
+                    className="hover:bg-white/10"
+                  >
+                    <PencilSimple className="w-4 h-4" />
+                  </Button>
 
                   <DeletePlayerDialog
                     playerName={player.player_name}
                     onDelete={() => props.handleDeletePlayer(player.player_id)}
                   />
+                </div>
                 </div>
               )}
             </div>
