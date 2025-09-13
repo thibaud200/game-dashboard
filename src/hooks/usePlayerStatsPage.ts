@@ -46,8 +46,8 @@ export const usePlayerStatsPage = (
 ) => {
   // If selectedPlayerId is provided, filter to show only that player's stats
   const displayPlayers = selectedPlayerId 
-    ? players.filter(p => p.player_id === selectedPlayerId)
-    : players;
+    ? (players || []).filter(p => p.player_id === selectedPlayerId)
+    : (players || []);
 
   // Filter sessions for selected player if specified
   const displaySessions = selectedPlayerId
@@ -55,14 +55,15 @@ export const usePlayerStatsPage = (
     : mockSessions;
 
   const selectedPlayer = selectedPlayerId 
-    ? players.find(p => p.player_id === selectedPlayerId)
+    ? (players || []).find(p => p.player_id === selectedPlayerId)
     : null;
 
   const stats = useMemo(() => {
-    const totalPlayers = displayPlayers.length;
-    const totalGames = games.length;
-    const totalSessions = displaySessions.length;
-    const avgScore = displayPlayers.reduce((sum, p) => sum + p.average_score, 0) / displayPlayers.length || 0;
+    const totalPlayers = displayPlayers?.length || 0;
+    const totalGames = games?.length || 0;
+    const totalSessions = displaySessions?.length || 0;
+    const avgScore = displayPlayers?.length ? 
+      displayPlayers.reduce((sum, p) => sum + p.average_score, 0) / displayPlayers.length : 0;
 
     return {
       totalPlayers,
@@ -73,21 +74,21 @@ export const usePlayerStatsPage = (
   }, [displayPlayers, games, displaySessions]);
 
   const topPlayers = useMemo(() => {
-    return [...displayPlayers]
+    return displayPlayers ? [...displayPlayers]
       .sort((a, b) => b.total_score - a.total_score)
-      .slice(0, 5);
+      .slice(0, 5) : [];
   }, [displayPlayers]);
 
   const recentActivity = useMemo(() => {
-    return displaySessions
+    return displaySessions ? displaySessions
       .map(session => {
-        const player = players.find(p => p.player_id === session.player_id);
+        const player = players?.find(p => p.player_id === session.player_id);
         return {
           ...session,
           player_name: player?.player_name || 'Unknown'
         };
       })
-      .slice(0, 5);
+      .slice(0, 5) : [];
   }, [displaySessions, players]);
 
   return {

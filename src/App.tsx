@@ -175,7 +175,7 @@ export default function App() {
   const handleAddPlayer = (playerData: Omit<Player, 'player_id' | 'stats' | 'games_played' | 'wins' | 'total_score' | 'average_score' | 'created_at'>) => {
     const newPlayer: Player = {
       ...playerData,
-      player_id: Math.max(...players.map(p => p.player_id), 0) + 1,
+      player_id: Math.max(...(players?.map(p => p.player_id) || [0]), 0) + 1,
       stats: '0 pts',
       games_played: 0,
       wins: 0,
@@ -183,35 +183,35 @@ export default function App() {
       average_score: 0,
       created_at: new Date()
     };
-    setPlayers([...players, newPlayer]);
+    setPlayers([...(players || []), newPlayer]);
   };
 
   const handleUpdatePlayer = (playerId: number, playerData: Partial<Player>) => {
-    setPlayers(players.map(p => p.player_id === playerId ? { ...p, ...playerData } : p));
+    setPlayers((players || []).map(p => p.player_id === playerId ? { ...p, ...playerData } : p));
   };
 
   const handleDeletePlayer = (playerId: number) => {
-    setPlayers(players.filter(p => p.player_id !== playerId));
+    setPlayers((players || []).filter(p => p.player_id !== playerId));
   };
 
   const handleAddGame = (gameData: Omit<Game, 'game_id' | 'created_at' | 'expansions' | 'characters' | 'players'>) => {
     const newGame: Game = {
       ...gameData,
-      game_id: Math.max(...games.map(g => g.game_id), 0) + 1,
+      game_id: Math.max(...(games?.map(g => g.game_id) || [0]), 0) + 1,
       created_at: new Date(),
       expansions: [],
       characters: [],
       players: `${gameData.min_players}-${gameData.max_players}`
     };
-    setGames([...games, newGame]);
+    setGames([...(games || []), newGame]);
   };
 
   const handleUpdateGame = (gameId: number, gameData: Partial<Game>) => {
-    setGames(games.map(g => g.game_id === gameId ? { ...g, ...gameData } : g));
+    setGames((games || []).map(g => g.game_id === gameId ? { ...g, ...gameData } : g));
   };
 
   const handleDeleteGame = (gameId: number) => {
-    setGames(games.filter(g => g.game_id !== gameId));
+    setGames((games || []).filter(g => g.game_id !== gameId));
   };
 
   const handleCreateSession = async (sessionData: any) => {
@@ -225,8 +225,8 @@ export default function App() {
         return (
           <Dashboard
             stats={stats}
-            recentPlayers={players.slice(0, 3)}
-            recentGames={games.slice(0, 3)}
+            recentPlayers={players?.slice(0, 3) || []}
+            recentGames={games?.slice(0, 3) || []}
             currentView={currentView}
             onNavigation={handleNavigation}
           />
@@ -283,7 +283,7 @@ export default function App() {
           />
         );
       case 'game-detail':
-        const game = games.find(g => g.game_id === navigationContext?.id);
+        const game = games?.find(g => g.game_id === navigationContext?.id);
         return game ? (
           <GameDetailPage 
             game={game} 
@@ -292,7 +292,7 @@ export default function App() {
           />
         ) : null;
       case 'game-expansions':
-        const expansionGame = games.find(g => g.game_id === navigationContext?.id);
+        const expansionGame = games?.find(g => g.game_id === navigationContext?.id);
         return expansionGame ? (
           <GameExpansionsPage 
             game={expansionGame} 
@@ -304,7 +304,7 @@ export default function App() {
           />
         ) : null;
       case 'game-characters':
-        const characterGame = games.find(g => g.game_id === navigationContext?.id);
+        const characterGame = games?.find(g => g.game_id === navigationContext?.id);
         return characterGame ? (
           <GameCharactersPage 
             game={characterGame} 
@@ -319,8 +319,8 @@ export default function App() {
         return (
           <Dashboard
             stats={stats}
-            recentPlayers={players.slice(0, 3)}
-            recentGames={games.slice(0, 3)}
+            recentPlayers={players?.slice(0, 3) || []}
+            recentGames={games?.slice(0, 3) || []}
             currentView={currentView}
             onNavigation={handleNavigation}
           />

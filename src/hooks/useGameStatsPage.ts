@@ -59,10 +59,10 @@ export const useGameStatsPage = (
   
   // Use selectedGameId if provided, otherwise default to first game
   const [selectedGame, setSelectedGame] = useState<Game | null>(() => {
-    if (selectedGameId) {
+    if (selectedGameId && games?.length) {
       return games.find(g => g.game_id === selectedGameId) || games[0] || null;
     }
-    return games[0] || null;
+    return games?.[0] || null;
   });
 
   // Calculate comprehensive game stats
@@ -100,7 +100,7 @@ export const useGameStatsPage = (
 
     const topWinners = Object.entries(winnerFrequency)
       .map(([playerId, wins]) => {
-        const player = players.find(p => p.player_id === parseInt(playerId));
+        const player = players?.find(p => p.player_id === parseInt(playerId));
         return { player, wins: wins as number };
       })
       .filter(w => w.player)

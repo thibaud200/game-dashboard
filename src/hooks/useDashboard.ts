@@ -53,8 +53,8 @@ export const useDashboard = (data: DashboardData) => {
   };
 
   // Computed values
-  const hasPlayers = useMemo(() => recentPlayers.length > 0, [recentPlayers]);
-  const hasGames = useMemo(() => recentGames.length > 0, [recentGames]);
+  const hasPlayers = useMemo(() => recentPlayers?.length > 0, [recentPlayers]);
+  const hasGames = useMemo(() => recentGames?.length > 0, [recentGames]);
 
   return {
     // Data
