@@ -3,7 +3,6 @@ import {
   ArrowLeft,
   Plus,
   MagnifyingGlass,
-  Trophy,
   Users,
   TrendUp,
   PencilSimple,
@@ -13,19 +12,6 @@ import {
 } from '@phosphor-icons/react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
-import { Label } from '@/components/ui/label';
-import { 
-  AlertDialog, 
-  AlertDialogAction, 
-  AlertDialogCancel, 
-  AlertDialogContent, 
-  AlertDialogDescription, 
-  AlertDialogFooter, 
-  AlertDialogHeader, 
-  AlertDialogTitle, 
-  AlertDialogTrigger 
-} from '@/components/ui/alert-dialog';
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -33,6 +19,9 @@ import {
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
 import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip';
+import { AddPlayerDialog } from '@/components/dialogs/AddPlayerDialog';
+import { EditPlayerDialog } from '@/components/dialogs/EditPlayerDialog';
+import { DeletePlayerDialog } from '@/components/dialogs/DeletePlayerDialog';
 import { Player, PlayerFormData } from '@/types';
 
 interface PlayersPageViewProps {
@@ -118,65 +107,17 @@ export function PlayersPageView(props: PlayersPageViewProps) {
           </div>
           
           {/* Add Player Dialog */}
-          <Dialog open={props.isAddDialogOpen} onOpenChange={props.handleAddDialogOpen}>
-            <DialogTrigger asChild>
-              <Button className="bg-gradient-to-r from-teal-500 to-teal-600 hover:from-teal-600 hover:to-teal-700">
-                <Plus className="w-4 h-4" />
-              </Button>
-            </DialogTrigger>
-            <DialogContent className="bg-slate-800 border-white/20">
-              <DialogHeader>
-                <DialogTitle className="text-white">Add New Player</DialogTitle>
-              </DialogHeader>
-              <div className="space-y-4">
-                <div>
-                  <Label htmlFor="player_name" className="text-white">Player Name</Label>
-                  <Input
-                    id="player_name"
-                    value={props.formData.player_name}
-                    onChange={(e) => props.setFormData({ ...props.formData, player_name: e.target.value })}
-                    className="bg-white/10 border-white/20 text-white"
-                    placeholder="Enter player name"
-                  />
-                </div>
-                <div>
-                  <Label htmlFor="avatar" className="text-white">Avatar URL</Label>
-                  <Input
-                    id="avatar"
-                    value={props.formData.avatar}
-                    onChange={(e) => props.setFormData({ ...props.formData, avatar: e.target.value })}
-                    className="bg-white/10 border-white/20 text-white"
-                    placeholder="Enter avatar URL (optional)"
-                  />
-                </div>
-                <div>
-                  <Label htmlFor="favorite_game" className="text-white">Favorite Game</Label>
-                  <Input
-                    id="favorite_game"
-                    value={props.formData.favorite_game}
-                    onChange={(e) => props.setFormData({ ...props.formData, favorite_game: e.target.value })}
-                    className="bg-white/10 border-white/20 text-white"
-                    placeholder="Enter favorite game (optional)"
-                  />
-                </div>
-                <div className="flex gap-4">
-                  <Button onClick={props.handleAddPlayer} className="flex-1">
-                    Add Player
-                  </Button>
-                  <Button 
-                    variant="outline" 
-                    onClick={() => {
-                      props.resetForm();
-                      props.handleAddDialogOpen(false);
-                    }}
-                    className="flex-1"
-                  >
-                    Cancel
-                  </Button>
-                </div>
-              </div>
-            </DialogContent>
-          </Dialog>
+          <AddPlayerDialog
+            isOpen={props.isAddDialogOpen}
+            onOpenChange={props.handleAddDialogOpen}
+            formData={props.formData}
+            setFormData={props.setFormData}
+            onAdd={props.handleAddPlayer}
+            onCancel={() => {
+              props.resetForm();
+              props.handleAddDialogOpen(false);
+            }}
+          />
         </div>
       </div>
 
@@ -222,7 +163,11 @@ export function PlayersPageView(props: PlayersPageViewProps) {
                       Edit
                     </DropdownMenuItem>
                     <DropdownMenuItem 
-                      onClick={() => props.handleDeletePlayer(player.player_id)}
+                      onClick={() => {
+                        if (window.confirm(`Are you sure you want to delete ${player.player_name}? This action cannot be undone.`)) {
+                          props.handleDeletePlayer(player.player_id);
+                        }
+                      }}
                       className="text-white hover:bg-white/10"
                     >
                       <Trash className="w-4 h-4 mr-2" />
@@ -260,34 +205,10 @@ export function PlayersPageView(props: PlayersPageViewProps) {
                     <TooltipContent>Edit Player</TooltipContent>
                   </Tooltip>
 
-                  <AlertDialog>
-                    <AlertDialogTrigger asChild>
-                      <Button
-                        size="sm"
-                        variant="ghost"
-                        className="hover:bg-white/10 text-red-400 hover:text-red-300"
-                      >
-                        <Trash className="w-4 h-4" />
-                      </Button>
-                    </AlertDialogTrigger>
-                    <AlertDialogContent className="bg-slate-800 border-white/20">
-                      <AlertDialogHeader>
-                        <AlertDialogTitle className="text-white">Delete Player</AlertDialogTitle>
-                        <AlertDialogDescription className="text-white/80">
-                          Are you sure you want to delete {player.player_name}? This action cannot be undone.
-                        </AlertDialogDescription>
-                      </AlertDialogHeader>
-                      <AlertDialogFooter>
-                        <AlertDialogCancel className="bg-white/10 text-white border-white/20">Cancel</AlertDialogCancel>
-                        <AlertDialogAction
-                          onClick={() => props.handleDeletePlayer(player.player_id)}
-                          className="bg-red-600 hover:bg-red-700"
-                        >
-                          Delete
-                        </AlertDialogAction>
-                      </AlertDialogFooter>
-                    </AlertDialogContent>
-                  </AlertDialog>
+                  <DeletePlayerDialog
+                    playerName={player.player_name}
+                    onDelete={() => props.handleDeletePlayer(player.player_id)}
+                  />
                 </div>
               )}
             </div>
@@ -310,92 +231,17 @@ export function PlayersPageView(props: PlayersPageViewProps) {
       </div>
 
       {/* Edit Player Dialog */}
-      <Dialog open={props.isEditDialogOpen} onOpenChange={props.handleEditDialogOpen}>
-        <DialogContent className="bg-slate-800 border-white/20">
-          <DialogHeader>
-            <DialogTitle className="text-white">Edit Player</DialogTitle>
-          </DialogHeader>
-          <div className="space-y-4">
-            <div>
-              <Label htmlFor="edit_player_name" className="text-white">Player Name</Label>
-              <Input
-                id="edit_player_name"
-                value={props.formData.player_name}
-                onChange={(e) => props.setFormData({ ...props.formData, player_name: e.target.value })}
-                className="bg-white/10 border-white/20 text-white"
-                placeholder="Enter player name"
-              />
-            </div>
-            <div>
-              <Label htmlFor="edit_avatar" className="text-white">Avatar URL</Label>
-              <Input
-                id="edit_avatar"
-                value={props.formData.avatar}
-                onChange={(e) => props.setFormData({ ...props.formData, avatar: e.target.value })}
-                className="bg-white/10 border-white/20 text-white"
-                placeholder="Enter avatar URL"
-              />
-            </div>
-            <div>
-              <Label htmlFor="edit_favorite_game" className="text-white">Favorite Game</Label>
-              <Input
-                id="edit_favorite_game"
-                value={props.formData.favorite_game}
-                onChange={(e) => props.setFormData({ ...props.formData, favorite_game: e.target.value })}
-                className="bg-white/10 border-white/20 text-white"
-                placeholder="Enter favorite game"
-              />
-            </div>
-            <div className="grid grid-cols-2 gap-4">
-              <div>
-                <Label htmlFor="edit_games_played" className="text-white">Games Played</Label>
-                <Input
-                  id="edit_games_played"
-                  type="number"
-                  value={props.formData.games_played}
-                  onChange={(e) => props.setFormData({ ...props.formData, games_played: parseInt(e.target.value) || 0 })}
-                  className="bg-white/10 border-white/20 text-white"
-                />
-              </div>
-              <div>
-                <Label htmlFor="edit_wins" className="text-white">Wins</Label>
-                <Input
-                  id="edit_wins"
-                  type="number"
-                  value={props.formData.wins}
-                  onChange={(e) => props.setFormData({ ...props.formData, wins: parseInt(e.target.value) || 0 })}
-                  className="bg-white/10 border-white/20 text-white"
-                />
-              </div>
-            </div>
-            <div>
-              <Label htmlFor="edit_total_score" className="text-white">Total Score</Label>
-              <Input
-                id="edit_total_score"
-                type="number"
-                value={props.formData.total_score}
-                onChange={(e) => props.setFormData({ ...props.formData, total_score: parseInt(e.target.value) || 0 })}
-                className="bg-white/10 border-white/20 text-white"
-              />
-            </div>
-            <div className="flex gap-4">
-              <Button onClick={props.handleUpdatePlayer} className="flex-1">
-                Update Player
-              </Button>
-              <Button 
-                variant="outline" 
-                onClick={() => {
-                  props.resetForm();
-                  props.handleEditDialogOpen(false);
-                }}
-                className="flex-1"
-              >
-                Cancel
-              </Button>
-            </div>
-          </div>
-        </DialogContent>
-      </Dialog>
+      <EditPlayerDialog
+        isOpen={props.isEditDialogOpen}
+        onOpenChange={props.handleEditDialogOpen}
+        formData={props.formData}
+        setFormData={props.setFormData}
+        onUpdate={props.handleUpdatePlayer}
+        onCancel={() => {
+          props.resetForm();
+          props.handleEditDialogOpen(false);
+        }}
+      />
 
     </div>
   );

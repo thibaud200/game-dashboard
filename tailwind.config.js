@@ -143,5 +143,5 @@ const defaultTheme = {
 
 export default {
   content: ["./index.html", "./src/**/*.{js,ts,jsx,tsx}"],
-  theme: { ...defaultTheme, ...theme }
+  theme: { ...defaultTheme, ...theme },
 };
