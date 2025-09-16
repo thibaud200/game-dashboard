@@ -1,7 +1,6 @@
 import React from 'react';
 import { toast } from 'sonner';
 import { useNewGamePage } from '@/hooks/useNewGamePage';
-import { TooltipProvider } from '@/components/ui/tooltip';
 import NewGameView from '@/views/NewGameView';
 
 interface Player {
@@ -81,15 +80,13 @@ export default function NewGamePage({
   };
 
   return (
-    <TooltipProvider>
-      <NewGameView
-        {...hookData}
-        handleSubmit={handleSubmitWithToast}
-        games={games}
-        players={players}
-        onNavigation={onNavigation}
-        currentView={currentView}
-      />
-    </TooltipProvider>
+    <NewGameView
+      {...hookData}
+      handleSubmit={handleSubmitWithToast}
+      games={games}
+      players={players}
+      onNavigation={onNavigation}
+      currentView={currentView}
+    />
   );
 }

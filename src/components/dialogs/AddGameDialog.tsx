@@ -546,7 +546,7 @@ export default function AddGameDialog({
               <Label htmlFor="has_character">Has character roles</Label>
             </div>
             {formData.has_characters && (
-              <>
+              <div>
                 <div className="flex items-center justify-between">
                   <Label>Characters/Roles</Label>
                   <Button 
@@ -617,7 +617,7 @@ export default function AddGameDialog({
                 </div>
               </div>
             ))}
-              </>
+              </div>
             )}
           </div>
 

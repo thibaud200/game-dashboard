@@ -1,7 +1,6 @@
 import React, { useState } from 'react';
 import { Game, BGGGame } from '@/types';
 import { useGamesPage, GamesPageData } from '@/hooks/useGamesPage';
-import { TooltipProvider } from '@/components/ui/tooltip';
 import GamesPageView from '@/views/GamesPageView';
 
 interface GamesPageProps {
@@ -82,8 +81,7 @@ export default function GamesPage(props: GamesPageProps) {
   };
 
   return (
-    <TooltipProvider>
-      <GamesPageView
+    <GamesPageView
         games={games}
         currentView={currentView || 'games'}
         totalGames={totalGames}
@@ -109,6 +107,5 @@ export default function GamesPage(props: GamesPageProps) {
         setExpandedGame={setExpandedGame}
         setEditDialogOpen={handleEditDialogOpen}
       />
-    </TooltipProvider>
   );
 }

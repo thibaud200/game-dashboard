@@ -31,7 +31,7 @@ export default function GameExpansionsView(props: UseGameExpansionsProps) {
   } = props;
 
   return (
-    <>
+    <div>
       {/* Header - Only show when not embedded */}
       {!embedded && (
         <div className="bg-slate-800/50 border-b border-slate-700/50">
@@ -219,6 +219,6 @@ export default function GameExpansionsView(props: UseGameExpansionsProps) {
           </div>
         </div>
       )}
-    </>
+    </div>
   );
 }

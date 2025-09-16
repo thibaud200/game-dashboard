@@ -1,4 +1,4 @@
-import { ComponentProps, ComponentType, createContext, CSSProperties, ReactNode, useContext, useId, useMemo } from "react";
+import { ComponentProps, ComponentType, createContext, CSSProperties, ReactNode, useContext, useId, useMemo, Fragment } from "react";
 import * as RechartsPrimitive from "recharts";
 
 import { cn } from "@/lib/utils";
@@ -193,7 +193,7 @@ function ChartLineUpTooltipContent({
               {formatter && item?.value !== undefined && item.name ? (
                 formatter(item.value, item.name, item, index, item.payload)
               ) : (
-                <>
+                <Fragment>
                   {itemConfig?.icon ? (
                     <itemConfig.icon />
                   ) : (
@@ -236,7 +236,7 @@ function ChartLineUpTooltipContent({
                       </span>
                     )}
                   </div>
-                </>
+                </Fragment>
               )}
             </div>
           );

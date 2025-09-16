@@ -1,7 +1,6 @@
 import React from 'react';
 import { DashboardView } from '@/views/DashboardView';
 import { useDashboard, DashboardData } from '@/hooks/useDashboard';
-import { TooltipProvider } from '@/components/ui/tooltip';
 import { Player, Game, NavigationHandler } from '@/types';
 
 interface DashboardProps {
@@ -28,9 +27,5 @@ export default function Dashboard(props: DashboardProps) {
 
   const logic = useDashboard(dashboardData);
 
-  return (
-    <TooltipProvider>
-      <DashboardView {...logic} />
-    </TooltipProvider>
-  );
+  return <DashboardView {...logic} />;
 }

@@ -272,7 +272,7 @@ interface GameOverviewProps {
 
 function GameOverview({ game, gameTypes, onNavigation }: GameOverviewProps) {
   return (
-    <>
+    <div>
       {/* Game Overview Card */}
       <Card className="bg-slate-800/50 border-slate-700/50 mb-6 md:mb-8">
         <CardContent className="p-4 md:p-6">
@@ -475,6 +475,6 @@ function GameOverview({ game, gameTypes, onNavigation }: GameOverviewProps) {
           </CardContent>
         </Card>
       </div>
-    </>
+    </div>
   );
 }

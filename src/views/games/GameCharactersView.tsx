@@ -31,7 +31,7 @@ export default function GameCharactersView(props: UseGameCharactersProps) {
   } = props;
 
   return (
-    <>
+    <div>
       {/* Header - Only show when not embedded */}
       {!embedded && (
         <div className="bg-slate-800/50 border-b border-slate-700/50">
@@ -243,6 +243,6 @@ export default function GameCharactersView(props: UseGameCharactersProps) {
           </div>
         </div>
       )}
-    </>
+    </div>
   );
 }

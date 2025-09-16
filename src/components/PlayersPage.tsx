@@ -1,7 +1,6 @@
 import React from 'react';
 import { PlayersPageView } from '@/views/PlayersPageView';
 import { usePlayersPage, PlayersPageData } from '@/hooks/usePlayersPage';
-import { TooltipProvider } from '@/components/ui/tooltip';
 import { Player, NavigationHandler } from '@/types';
 
 interface PlayersPageProps {
@@ -25,9 +24,5 @@ export default function PlayersPage(props: PlayersPageProps) {
 
   const logic = usePlayersPage(playersPageData);
 
-  return (
-    <TooltipProvider>
-      <PlayersPageView {...logic} />
-    </TooltipProvider>
-  );
+  return <PlayersPageView {...logic} />;
 }
