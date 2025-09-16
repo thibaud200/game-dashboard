@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { ArrowLeft, Users, TrendUp } from '@phosphor-icons/react';
 import PlayerStatsPage from './PlayerStatsPage';
 import GameStatsPage from './GameStatsPage';
@@ -32,13 +32,32 @@ export default function StatsPage({
     initialTab = navigationContext.initialTab;
   } else if (selectedGameId || navigationContext?.source === 'games') {
     initialTab = 'games';
+  } else if (navigationContext?.source === 'players') {
+    initialTab = 'players';
   }
 
   const [activeTab, setActiveTab] = useState<'players' | 'games'>(initialTab);
 
+  // Update active tab when navigation context changes
+  useEffect(() => {
+    let newTab: 'players' | 'games' = 'players';
+    if (navigationContext?.initialTab) {
+      newTab = navigationContext.initialTab;
+    } else if (selectedGameId || navigationContext?.source === 'games') {
+      newTab = 'games';
+    } else if (navigationContext?.source === 'players') {
+      newTab = 'players';
+    }
+    setActiveTab(newTab);
+  }, [navigationContext, selectedGameId, selectedPlayerId]);
+
   const handleBackNavigation = () => {
     // Go back to the appropriate page based on context
-    if (selectedPlayerId) {
+    if (navigationContext?.source === 'players') {
+      onNavigation('players');
+    } else if (navigationContext?.source === 'games') {
+      onNavigation('games');
+    } else if (selectedPlayerId) {
       onNavigation('players');
     } else if (selectedGameId) {
       onNavigation('games');
@@ -108,6 +127,7 @@ export default function StatsPage({
               players={players}
               onNavigation={onNavigation}
               currentView="game-stats"
+              selectedCircleId={selectedGameId}
             />
           </div>
         )}

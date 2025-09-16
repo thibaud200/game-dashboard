@@ -180,33 +180,19 @@ export default function GamesPageView({
             </TooltipContent>
           </Tooltip>
           <h1 className="text-2xl font-bold">Games</h1>
-          <div className="flex space-x-2">
-            <Tooltip>
-              <TooltipTrigger asChild>
-                <button
-                  onClick={() => onNavigation('game-stats')}
-                  className="p-2 hover:bg-white/10 rounded-lg transition-colors"
-                >
-                  <ChartLineUp className="w-6 h-6" />
-                </button>
-              </TooltipTrigger>
-              <TooltipContent>
-                <p>View Game Stats</p>
-              </TooltipContent>
-            </Tooltip>
-            
-            <AddGameDialog
-              isOpen={isAddDialogOpen}
-              onOpenChange={onAddDialogToggle}
-              formData={formData}
-              onFormDataChange={onFormDataChange}
-              onBGGGameSelect={onBGGGameSelect}
-              onAddGame={onAddGame}
-              onResetForm={onResetForm}
-              isBGGSearchOpen={isBGGSearchOpen}
-              onBGGSearchToggle={setBGGSearchOpen}
-            />
-          </div>
+          <Tooltip>
+            <TooltipTrigger asChild>
+              <button
+                onClick={() => onNavigation('stats', undefined, 'games')}
+                className="p-2 hover:bg-white/10 rounded-lg transition-colors"
+              >
+                <ChartLineUp className="w-6 h-6" />
+              </button>
+            </TooltipTrigger>
+            <TooltipContent>
+              <p>View Game Stats</p>
+            </TooltipContent>
+          </Tooltip>
         </div>
 
         {/* Search */}
@@ -219,6 +205,21 @@ export default function GamesPageView({
             onChange={(e) => onSearchChange(e.target.value)}
             placeholder="Search games, designers, publishers..."
             className="pl-10 bg-white/10 border-white/20 text-white placeholder:text-white/60"
+          />
+        </div>
+
+        {/* Add Game Button */}
+        <div className="mb-6">
+          <AddGameDialog
+            isOpen={isAddDialogOpen}
+            onOpenChange={onAddDialogToggle}
+            formData={formData}
+            onFormDataChange={onFormDataChange}
+            onBGGGameSelect={onBGGGameSelect}
+            onAddGame={onAddGame}
+            onResetForm={onResetForm}
+            isBGGSearchOpen={isBGGSearchOpen}
+            onBGGSearchToggle={setBGGSearchOpen}
           />
         </div>
 
@@ -436,7 +437,7 @@ export default function GamesPageView({
                           <Tooltip>
                             <TooltipTrigger asChild>
                               <button 
-                                onClick={() => onNavigation('game-stats', game.game_id)}
+                                onClick={() => onNavigation('stats', game.game_id, 'games')}
                                 className="p-2 hover:bg-teal-500/20 rounded-lg transition-colors text-teal-400 hover:text-teal-300"
                                 aria-label="View game stats"
                               >
@@ -502,7 +503,7 @@ export default function GamesPageView({
                                 View Details
                               </DropdownMenuItem>
                               <DropdownMenuItem 
-                                onClick={() => onNavigation('game-stats', game.game_id)}
+                                onClick={() => onNavigation('stats', game.game_id, 'games')}
                                 className="hover:bg-teal-500/20 cursor-pointer text-teal-400"
                               >
                                 <ChartLineUp className="w-4 h-4 mr-2" />

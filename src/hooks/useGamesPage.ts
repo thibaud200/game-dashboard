@@ -167,7 +167,7 @@ export const useGamesPage = (data: GamesPageData) => {
   };
 
   const handleGameStatsClick = () => {
-    onNavigation('game-stats');
+    onNavigation('stats', undefined, 'games');
   };
 
   // Dialog handlers
