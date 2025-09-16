@@ -37,11 +37,11 @@ export const useDashboard = (data: DashboardData) => {
   };
 
   const handlePlayerStatsClick = (playerId: number) => {
-    onNavigation('player-stats', playerId);
+    onNavigation('stats', playerId, 'players');
   };
 
   const handleGameStatsClick = (gameId: number) => {
-    onNavigation('game-stats', gameId);
+    onNavigation('stats', gameId, 'games');
   };
 
   const handleNewGameClick = () => {
