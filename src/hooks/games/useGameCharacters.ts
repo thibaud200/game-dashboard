@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import React, { useState } from 'react';
 import { toast } from 'sonner';
 import { GameCharacter, Game } from '@/types';
 
@@ -44,7 +44,7 @@ export function useGameCharacters(props: UseGameCharactersProps) {
     });
   };
 
-  const handleAddCharacter = async (e: any) => {
+  const handleAddCharacter = async (e: React.FormEvent) => {
     e.preventDefault();
     
     if (!formData.name.trim() || !formData.character_key.trim()) {
@@ -71,7 +71,7 @@ export function useGameCharacters(props: UseGameCharactersProps) {
     }
   };
 
-  const handleEditCharacter = async (e: any) => {
+  const handleEditCharacter = async (e: React.FormEvent) => {
     e.preventDefault();
     
     if (!editingCharacter || !formData.name.trim() || !formData.character_key.trim()) {

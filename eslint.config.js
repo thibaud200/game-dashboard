@@ -24,7 +24,8 @@ export default [
       '*.d.ts',
       'packages/',
       '.git/',
-      'test-backend.mjs'
+      'test-backend.mjs',
+      'backend/**/*'
     ]
   },
   ...compat.extends('eslint:recommended'),

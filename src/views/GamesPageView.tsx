@@ -72,6 +72,7 @@ interface GamesPageViewProps {
 
 export default function GamesPageView({
   games,
+  currentView: _currentView,
   totalGames,
   averageRating,
   formData,
@@ -363,7 +364,7 @@ export default function GamesPageView({
                                   ).join(', ')}
                                   onChange={(e) => {
                                     const expansionTexts = e.target.value.split(',').map(text => text.trim()).filter(text => text);
-                                    expansionTexts.map((text, index) => {
+                                    const _parsedExpansions = expansionTexts.map((text, index) => {
                                       const match = text.match(/^(.+?)\s*\((\d{4})\)$/);
                                       if (match) {
                                         return {

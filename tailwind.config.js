@@ -9,7 +9,7 @@ try {
   if (fs.existsSync(themePath)) {
     theme = JSON.parse(fs.readFileSync(themePath, "utf-8"));
   }
-} catch (err) {
+} catch {
   // Theme parsing error - fallback to default theme
 }
 const defaultTheme = {
@@ -144,4 +144,4 @@ const defaultTheme = {
 export default {
   content: ["./index.html", "./src/**/*.{js,ts,jsx,tsx}"],
   theme: { ...defaultTheme, ...theme },
-};
+};;

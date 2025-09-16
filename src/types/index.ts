@@ -210,9 +210,11 @@ export interface BaseDialogProps {
 }
 
 // Hook return types for common patterns
+import React from 'react';
+
 export interface UseFormReturn<T> {
   formData: T;
-  setFormData: (data: T | ((prev: T) => T)) => void;
+  setFormData: React.Dispatch<React.SetStateAction<T>>;
   resetForm: () => void;
   isValid: boolean;
 }

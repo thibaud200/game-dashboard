@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import React, { useState } from 'react';
 import { toast } from 'sonner';
 import { GameExpansion, Game } from '@/types';
 
@@ -42,7 +42,7 @@ export function useGameExpansions(props: UseGameExpansionsProps) {
     });
   };
 
-  const handleAddExpansion = async (e: any) => {
+  const handleAddExpansion = async (e: React.FormEvent) => {
     e.preventDefault();
     
     if (!formData.name.trim()) {
@@ -68,7 +68,7 @@ export function useGameExpansions(props: UseGameExpansionsProps) {
     }
   };
 
-  const handleEditExpansion = async (e: any) => {
+  const handleEditExpansion = async (e: React.FormEvent) => {
     e.preventDefault();
     
     if (!editingExpansion || !formData.name.trim()) {

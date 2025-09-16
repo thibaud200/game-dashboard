@@ -107,7 +107,8 @@ export default function NewGameView({
   handleSubmit,
   games,
   players,
-  onNavigation
+  onNavigation,
+  currentView: _currentView
 }: NewGameViewProps) {
   // Safety checks for arrays
   const safeGames = games || [];
@@ -118,7 +119,7 @@ export default function NewGameView({
     try {
       await handleSubmit();
       onNavigation('dashboard');
-    } catch (error) {
+    } catch (_error) {
       // Error handling is done in the hook
     }
   };
