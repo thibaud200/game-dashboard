@@ -66,85 +66,16 @@ export default function GameStatsView({
 }: GameStatsViewProps) {
   if (!selectedGame || !gameStats) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-slate-900 to-slate-800 text-white">
-        <div className="px-4 pt-8 pb-6">
-          <div className="flex items-center justify-between mb-6">
-            <button
-              onClick={() => onNavigation('games')}
-              className="p-2 hover:bg-white/10 rounded-lg transition-colors"
-            >
-              <ArrowLeft className="w-6 h-6" />
-            </button>
-            <h1 className="text-2xl font-bold">Game Stats</h1>
-            <div className="w-10" />
-          </div>
-          <div className="text-center text-white/60">
-            No game data available
-          </div>
+      <div className="space-y-6">
+        <div className="text-center text-white/60">
+          No game data available
         </div>
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-900 to-slate-800 text-white">
-      {/* Header */}
-      <div className="px-4 pt-8 pb-6">
-        <div className="flex items-center justify-between mb-6">
-          <button
-            onClick={() => onNavigation('games')}
-            className="p-2 hover:bg-white/10 rounded-lg transition-colors"
-          >
-            <ArrowLeft className="w-6 h-6" />
-          </button>
-          <h1 className="text-2xl font-bold">
-            {selectedGameId && selectedGame ? `${selectedGame.name} Stats` : 'Game Statistics'}
-          </h1>
-          <div className="w-10" />
-        </div>
-
-        {/* Game Selector - Only show when not viewing specific game stats */}
-        {!selectedGameId && (
-          <div className="mb-6">
-            <select
-              value={selectedGame?.game_id || ''}
-              onChange={(e) => {
-                const game = games.find(g => g.game_id === parseInt(e.target.value));
-                setSelectedGame(game || null);
-              }}
-              className="w-full bg-white/10 border border-white/20 rounded-xl px-4 py-3 text-white focus:outline-none focus:ring-2 focus:ring-primary"
-            >
-              {games.map(game => (
-                <option key={game.game_id} value={game.game_id} className="bg-slate-800 text-white">
-                  {game.name}
-                </option>
-              ))}
-            </select>
-          </div>
-        )}
-
-        {/* Period Selector */}
-        <div className="flex space-x-2 mb-6">
-          {(['week', 'month', 'year', 'all'] as const).map(period => (
-            <button
-              key={period}
-              onClick={() => setSelectedPeriod(period)}
-              className={`px-4 py-2 rounded-lg transition-colors capitalize ${
-                selectedPeriod === period
-                  ? 'bg-primary text-primary-foreground'
-                  : 'bg-white/10 text-white/80 hover:bg-white/20'
-              }`}
-            >
-              {period}
-            </button>
-          ))}
-        </div>
-
-
-      </div>
-
-      {/* Content */}
-      <div className="px-4 space-y-6 pb-32">
+    <div className="space-y-6">
         {/* Game Overview */}
         <div className="bg-white/10 backdrop-blur-md rounded-2xl p-6 border border-white/20 shadow-xl">
           <div className="flex items-center space-x-4 mb-6">
@@ -346,6 +277,5 @@ export default function GameStatsView({
           </div>
         </div>
       </div>
-    </div>
-  );
-}
+    );
+  }

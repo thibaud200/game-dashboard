@@ -206,19 +206,6 @@ export default function GamesPageView({
               isBGGSearchOpen={isBGGSearchOpen}
               onBGGSearchToggle={setBGGSearchOpen}
             />
-            <Tooltip>
-              <TooltipTrigger asChild>
-                <button 
-                  onClick={onAddDialogToggle}
-                  className="p-2 hover:bg-white/10 rounded-lg transition-colors"
-                >
-                  <Plus className="w-6 h-6" />
-                </button>
-              </TooltipTrigger>
-              <TooltipContent>
-                <p>Add New Game</p>
-              </TooltipContent>
-            </Tooltip>
           </div>
         </div>
 

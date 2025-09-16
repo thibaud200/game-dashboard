@@ -52,25 +52,7 @@ export default function PlayerStatsView({
   currentView: _currentView
 }: PlayerStatsViewProps) {
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-900 to-slate-800 text-white">
-      {/* Header */}
-      <div className="px-4 pt-8 pb-6">
-        <div className="flex items-center justify-between mb-6">
-          <button
-            onClick={() => onNavigation('players')}
-            className="p-2 hover:bg-white/10 rounded-lg transition-colors"
-          >
-            <ArrowLeft className="w-6 h-6" />
-          </button>
-          <h1 className="text-2xl font-bold">
-            {selectedPlayer ? `${selectedPlayer.player_name} Stats` : 'Player Statistics'}
-          </h1>
-          <div className="w-10" /> {/* Spacer */}
-        </div>
-      </div>
-
-      {/* Content */}
-      <div className="px-4 space-y-6 pb-32">
+    <div className="space-y-6">
         {selectedPlayer ? (
           /* Individual Player Stats */
           <>
@@ -281,7 +263,5 @@ export default function PlayerStatsView({
           </div>
         </div>
       </div>
-
-    </div>
-  );
-}
+    );
+  }

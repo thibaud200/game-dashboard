@@ -84,12 +84,6 @@ export function PlayersPageView(props: PlayersPageViewProps) {
                 props.handleAddDialogOpen(false);
               }}
             />
-            <button 
-              onClick={() => props.handleAddDialogOpen(true)}
-              className="p-2 hover:bg-white/10 rounded-lg transition-colors"
-            >
-              <Plus className="w-6 h-6" />
-            </button>
           </div>
         </div>
 
