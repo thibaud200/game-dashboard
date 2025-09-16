@@ -66,6 +66,8 @@ export default function BGGSearch({ onGameSelect, onClose }: BGGSearchProps) {
         <div className="relative flex-1">
           <MagnifyingGlass className="absolute left-3 top-1/2 transform -translate-y-1/2 text-white/60 w-4 h-4" />
           <Input
+            id="bgg-search"
+            name="bgg-search"
             value={query}
             onChange={(e) => setQuery(e.target.value)}
             onKeyPress={handleKeyPress}

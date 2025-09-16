@@ -98,6 +98,7 @@ export function EditPlayerDialog({
             <Label htmlFor="edit_player_name" className="text-white">Player Name *</Label>
             <Input
               id="edit_player_name"
+              name="edit_player_name"
               value={formData.player_name}
               onChange={(e) => handleInputChange('player_name', e.target.value)}
               className={`bg-white/10 border-white/20 text-white ${errors.player_name ? 'border-red-500' : ''}`}
@@ -111,6 +112,7 @@ export function EditPlayerDialog({
             <Label htmlFor="edit_avatar" className="text-white">Avatar URL</Label>
             <Input
               id="edit_avatar"
+              name="edit_avatar"
               value={formData.avatar}
               onChange={(e) => handleInputChange('avatar', e.target.value)}
               className={`bg-white/10 border-white/20 text-white ${errors.avatar ? 'border-red-500' : ''}`}
@@ -124,6 +126,7 @@ export function EditPlayerDialog({
             <Label htmlFor="edit_favorite_game" className="text-white">Favorite Game</Label>
             <Input
               id="edit_favorite_game"
+              name="edit_favorite_game"
               value={formData.favorite_game}
               onChange={(e) => handleInputChange('favorite_game', e.target.value)}
               className="bg-white/10 border-white/20 text-white"

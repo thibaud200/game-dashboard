@@ -227,6 +227,8 @@ export default function GamesPageView({
         <div className="relative mb-6">
           <MagnifyingGlass className="absolute left-3 top-1/2 transform -translate-y-1/2 text-white/60 w-4 h-4" />
           <Input
+            id="games-search"
+            name="games-search"
             value={searchQuery}
             onChange={(e) => onSearchChange(e.target.value)}
             placeholder="Search games, designers, publishers..."
@@ -277,11 +279,7 @@ export default function GamesPageView({
                           <Badge variant="secondary" className="bg-teal-600/20 text-teal-300 text-xs">
                             {game.category}
                           </Badge>
-                          {getGameModesBadges(game).map((badge, index) => (
-                            <React.Fragment key={index}>
-                              {badge}
-                            </React.Fragment>
-                          ))}
+                          {getGameModesBadges(game)}
                           <Badge variant="outline" className="border-white/20 text-white/60 text-xs">
                             {game.min_players === game.max_players ? `${game.min_players}` : `${game.min_players}-${game.max_players}`} players
                           </Badge>

@@ -260,6 +260,7 @@ export default function AddGameDialog({
             <Label htmlFor="game-name">Game Name *</Label>
             <Input
               id="game-name"
+              name="game-name"
               value={formData.name}
               onChange={(e) => handleInputChange('name', e.target.value)}
               className={`bg-slate-700 border-slate-600 text-white ${errors.name ? 'border-red-500' : ''}`}
@@ -273,6 +274,7 @@ export default function AddGameDialog({
             <Label htmlFor="game-image">Image URL</Label>
             <Input
               id="game-image"
+              name="game-image"
               value={formData.image}
               onChange={(e) => handleInputChange('image', e.target.value)}
               className={`bg-slate-700 border-slate-600 text-white ${errors.image ? 'border-red-500' : ''}`}
@@ -287,6 +289,7 @@ export default function AddGameDialog({
               <Label htmlFor="min-players">Min Players *</Label>
               <Input
                 id="min-players"
+                name="min-players"
                 type="number"
                 min="1"
                 value={formData.min_players}
@@ -301,6 +304,7 @@ export default function AddGameDialog({
               <Label htmlFor="max-players">Max Players *</Label>
               <Input
                 id="max-players"
+                name="max-players"
                 type="number"
                 min="1"
                 value={formData.max_players}
@@ -317,6 +321,7 @@ export default function AddGameDialog({
               <Label htmlFor="duration">Duration</Label>
               <Input
                 id="duration"
+                name="duration"
                 value={formData.duration}
                 onChange={(e) => onFormDataChange({ duration: e.target.value })}
                 className="bg-slate-700 border-slate-600 text-white"
@@ -327,6 +332,7 @@ export default function AddGameDialog({
               <Label htmlFor="age-min">Min Age</Label>
               <Input
                 id="age-min"
+                name="age-min"
                 type="number"
                 min="1"
                 value={formData.age_min}
@@ -407,6 +413,7 @@ export default function AddGameDialog({
             <Label htmlFor="category">Category</Label>
             <Input
               id="category"
+              name="category"
               value={formData.category}
               onChange={(e) => onFormDataChange({ category: e.target.value })}
               className="bg-slate-700 border-slate-600 text-white"
@@ -418,6 +425,7 @@ export default function AddGameDialog({
               <Label htmlFor="designer">Designer</Label>
               <Input
                 id="designer"
+                name="designer"
                 value={formData.designer}
                 onChange={(e) => onFormDataChange({ designer: e.target.value })}
                 className="bg-slate-700 border-slate-600 text-white"
@@ -428,6 +436,7 @@ export default function AddGameDialog({
               <Label htmlFor="publisher">Publisher</Label>
               <Input
                 id="publisher"
+                name="publisher"
                 value={formData.publisher}
                 onChange={(e) => onFormDataChange({ publisher: e.target.value })}
                 className="bg-slate-700 border-slate-600 text-white"
@@ -440,6 +449,7 @@ export default function AddGameDialog({
               <Label htmlFor="year-published">Year</Label>
               <Input
                 id="year-published"
+                name="year-published"
                 type="number"
                 min="1800"
                 max="2030"
@@ -452,6 +462,7 @@ export default function AddGameDialog({
               <Label htmlFor="bgg-rating">BGG Rating</Label>
               <Input
                 id="bgg-rating"
+                name="bgg-rating"
                 type="number"
                 min="0"
                 max="10"
@@ -465,6 +476,7 @@ export default function AddGameDialog({
               <Label htmlFor="weight">Weight (1-5)</Label>
               <Input
                 id="weight"
+                name="weight"
                 type="number"
                 min="0"
                 max="5"
@@ -479,6 +491,7 @@ export default function AddGameDialog({
             <Label htmlFor="description">Description</Label>
             <Textarea
               id="description"
+              name="description"
               value={formData.description}
               onChange={(e) => onFormDataChange({ description: e.target.value })}
               className="bg-slate-700 border-slate-600 text-white"
@@ -501,6 +514,8 @@ export default function AddGameDialog({
               <div className="space-y-2">
                 <Label>Expansions</Label>
                 <Textarea
+                  id="expansions-list"
+                  name="expansions-list"
                   value={(formData.expansions || [])
                     .map(expansion => 
                       `${expansion.name}${expansion.year_published && expansion.year_published > 0 ? ` (${expansion.year_published})` : ''}`

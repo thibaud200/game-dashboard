@@ -147,6 +147,7 @@ export default function EditGameDialog({
             <Label htmlFor="edit-game-name">Game Name *</Label>
             <Input
               id="edit-game-name"
+              name="edit-game-name"
               value={formData.name}
               onChange={(e) => onFormDataChange({ name: e.target.value })}
               className="bg-slate-700 border-slate-600 text-white"
@@ -157,6 +158,7 @@ export default function EditGameDialog({
             <Label htmlFor="edit-game-image">Image URL</Label>
             <Input
               id="edit-game-image"
+              name="edit-game-image"
               value={formData.image}
               onChange={(e) => onFormDataChange({ image: e.target.value })}
               className="bg-slate-700 border-slate-600 text-white"
@@ -168,6 +170,7 @@ export default function EditGameDialog({
               <Label htmlFor="edit-min-players">Min Players</Label>
               <Input
                 id="edit-min-players"
+                name="edit-min-players"
                 type="number"
                 min="1"
                 value={formData.min_players}
@@ -179,6 +182,7 @@ export default function EditGameDialog({
               <Label htmlFor="edit-max-players">Max Players</Label>
               <Input
                 id="edit-max-players"
+                name="edit-max-players"
                 type="number"
                 min="1"
                 value={formData.max_players}
@@ -192,6 +196,7 @@ export default function EditGameDialog({
               <Label htmlFor="edit-duration">Duration</Label>
               <Input
                 id="edit-duration"
+                name="edit-duration"
                 value={formData.duration}
                 onChange={(e) => onFormDataChange({ duration: e.target.value })}
                 className="bg-slate-700 border-slate-600 text-white"
@@ -202,6 +207,7 @@ export default function EditGameDialog({
               <Label htmlFor="edit-age-min">Min Age</Label>
               <Input
                 id="edit-age-min"
+                name="edit-age-min"
                 type="number"
                 min="1"
                 value={formData.age_min}
