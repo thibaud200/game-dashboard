@@ -64,12 +64,33 @@ export function PlayersPageView(props: PlayersPageViewProps) {
             <ArrowLeft className="w-6 h-6" />
           </button>
           <h1 className="text-2xl font-bold">Players</h1>
-          <button
-            onClick={props.handlePlayerStatsClick}
-            className="p-2 hover:bg-white/10 rounded-lg transition-colors"
-          >
-            <TrendUp className="w-6 h-6" />
-          </button>
+          <div className="flex space-x-2">
+            <button
+              onClick={props.handlePlayerStatsClick}
+              className="p-2 hover:bg-white/10 rounded-lg transition-colors"
+            >
+              <TrendUp className="w-6 h-6" />
+            </button>
+            
+            {/* Add Player Dialog */}
+            <AddPlayerDialog
+              isOpen={props.isAddDialogOpen}
+              onOpenChange={props.handleAddDialogOpen}
+              formData={props.formData}
+              setFormData={props.setFormData}
+              onAdd={props.handleAddPlayer}
+              onCancel={() => {
+                props.resetForm();
+                props.handleAddDialogOpen(false);
+              }}
+            />
+            <button 
+              onClick={() => props.handleAddDialogOpen(true)}
+              className="p-2 hover:bg-white/10 rounded-lg transition-colors"
+            >
+              <Plus className="w-6 h-6" />
+            </button>
+          </div>
         </div>
 
         {/* Quick Stats */}
@@ -94,29 +115,14 @@ export function PlayersPageView(props: PlayersPageViewProps) {
           </div>
         </div>
 
-        {/* Search and Add */}
-        <div className="flex gap-3 mb-6">
-          <div className="relative flex-1">
-            <MagnifyingGlass className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-white/60" />
-            <Input
-              placeholder="Search players..."
-              value={props.searchQuery}
-              onChange={(e) => props.setSearchQuery(e.target.value)}
-              className="pl-10 bg-white/10 border-white/20 text-white placeholder:text-white/60"
-            />
-          </div>
-          
-          {/* Add Player Dialog */}
-          <AddPlayerDialog
-            isOpen={props.isAddDialogOpen}
-            onOpenChange={props.handleAddDialogOpen}
-            formData={props.formData}
-            setFormData={props.setFormData}
-            onAdd={props.handleAddPlayer}
-            onCancel={() => {
-              props.resetForm();
-              props.handleAddDialogOpen(false);
-            }}
+        {/* Search */}
+        <div className="relative mb-6">
+          <MagnifyingGlass className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-white/60" />
+          <Input
+            placeholder="Search players..."
+            value={props.searchQuery}
+            onChange={(e) => props.setSearchQuery(e.target.value)}
+            className="pl-10 bg-white/10 border-white/20 text-white placeholder:text-white/60"
           />
         </div>
       </div>
