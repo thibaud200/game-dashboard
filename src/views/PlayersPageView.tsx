@@ -222,6 +222,15 @@ export function PlayersPageView(props: PlayersPageViewProps) {
         )}
       </div>
 
+      {/* Floating Add Player Button */}
+      <button
+        onClick={() => props.handleAddDialogOpen(true)}
+        className="fixed bottom-24 right-6 w-14 h-14 bg-gradient-to-r from-teal-500 to-teal-600 rounded-full shadow-lg hover:shadow-xl transition-all duration-200 hover:scale-105 flex items-center justify-center z-50 hover:from-teal-600 hover:to-teal-700"
+        aria-label="Add new player"
+      >
+        <Plus className="w-6 h-6 text-white" />
+      </button>
+
       {/* Edit Player Dialog */}
       <EditPlayerDialog
         isOpen={props.isEditDialogOpen}

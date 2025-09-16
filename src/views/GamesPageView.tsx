@@ -554,6 +554,15 @@ export default function GamesPageView({
         )}
       </div>
 
+      {/* Floating Add Game Button */}
+      <button
+        onClick={onAddDialogToggle}
+        className="fixed bottom-24 right-6 w-14 h-14 bg-gradient-to-r from-emerald-500 to-emerald-600 rounded-full shadow-lg hover:shadow-xl transition-all duration-200 hover:scale-105 flex items-center justify-center z-50 hover:from-emerald-600 hover:to-emerald-700"
+        aria-label="Add new game"
+      >
+        <Plus className="w-6 h-6 text-white" />
+      </button>
+
       {/* Edit Game Dialog */}
       <EditGameDialog
         isOpen={isEditDialogOpen}

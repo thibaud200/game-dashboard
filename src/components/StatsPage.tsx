@@ -117,7 +117,7 @@ export default function StatsPage({
               games={games}
               onNavigation={onNavigation}
               currentView="player-stats"
-              selectedPlayerId={selectedPlayerId}
+              selectedPlayerId={navigationContext?.source === 'players' ? navigationContext?.id : selectedPlayerId}
             />
           </div>
         ) : (
@@ -127,7 +127,7 @@ export default function StatsPage({
               players={players}
               onNavigation={onNavigation}
               currentView="game-stats"
-              selectedCircleId={selectedGameId}
+              selectedCircleId={navigationContext?.source === 'games' ? navigationContext?.id : selectedGameId}
             />
           </div>
         )}

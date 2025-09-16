@@ -174,6 +174,8 @@ export default function App() {
       let initialTab: 'players' | 'games' = 'players';
       if (source === 'games' || currentView === 'games') {
         initialTab = 'games';
+      } else if (source === 'players' || currentView === 'players') {
+        initialTab = 'players';
       }
       setNavigationContext({ id, source, initialTab });
     } else {
