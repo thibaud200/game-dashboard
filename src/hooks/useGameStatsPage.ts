@@ -57,19 +57,28 @@ export const useGameStatsPage = (
 ) => {
   const [selectedPeriod, setSelectedPeriod] = useState<'week' | 'month' | 'year' | 'all'>('month');
   
-  // Use selectedGameId if provided, otherwise default to first game
+  // Use selectedGameId if provided, otherwise null for global stats
   const [selectedGame, setSelectedGame] = useState<Game | null>(() => {
     if (selectedGameId && games?.length) {
-      return games.find(g => g.game_id === selectedGameId) || games[0] || null;
+      return games.find(g => g.game_id === selectedGameId) || null;
     }
-    return games?.[0] || null;
+    return null; // No game selected = global stats
   });
 
   // Calculate comprehensive game stats
   const gameStats = useMemo(() => {
-    if (!selectedGame) return null;
+    let gameSessions: GameSession[];
+    let isGlobalStats = false;
 
-    const gameSessions = mockGameSessions.filter(s => s.game_id === selectedGame.game_id);
+    if (selectedGame) {
+      // Specific game stats
+      gameSessions = mockGameSessions.filter(s => s.game_id === selectedGame.game_id);
+    } else {
+      // Global stats for all games
+      gameSessions = mockGameSessions;
+      isGlobalStats = true;
+    }
+
     const totalSessions = gameSessions.length;
     const totalPlayers = gameSessions.reduce((sum, s) => sum + s.player_count, 0);
     const averagePlayerCount = totalSessions > 0 ? totalPlayers / totalSessions : 0;
@@ -118,6 +127,16 @@ export const useGameStatsPage = (
       return acc;
     }, {} as Record<string, number>);
 
+    // Game popularity (for global stats)
+    const gamePopularity = isGlobalStats ? 
+      gameSessions.reduce((acc, session) => {
+        const game = games.find(g => g.game_id === session.game_id);
+        if (game) {
+          acc[game.name] = (acc[game.name] || 0) + 1;
+        }
+        return acc;
+      }, {} as Record<string, number>) : {};
+
     return {
       totalSessions,
       totalPlayers,
@@ -130,9 +149,11 @@ export const useGameStatsPage = (
       topWinners,
       performanceTrend,
       playFrequency,
-      recentSessions: gameSessions.slice(-5)
+      recentSessions: gameSessions.slice(-5),
+      isGlobalStats,
+      gamePopularity
     };
-  }, [selectedGame, players]);
+  }, [selectedGame, players, games]);
 
   return {
     selectedPeriod,

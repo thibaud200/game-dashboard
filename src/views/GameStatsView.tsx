@@ -64,7 +64,7 @@ export default function GameStatsView({
   selectedGameId,
   players
 }: GameStatsViewProps) {
-  if (!selectedGame || !gameStats) {
+  if (!gameStats) {
     return (
       <div className="space-y-6">
         <div className="text-center text-white/60">
@@ -74,22 +74,66 @@ export default function GameStatsView({
     );
   }
 
+  // Check if we're showing global stats or specific game stats
+  const isGlobalStats = gameStats.isGlobalStats;
+
   return (
     <div className="space-y-6">
-        {/* Game Overview */}
+      {/* Header - different for global vs specific game */}
+      {isGlobalStats ? (
+        /* Global Game Statistics Header */
+        <div className="bg-white/10 backdrop-blur-md rounded-2xl p-6 border border-white/20 shadow-xl">
+          <div className="flex items-center space-x-4 mb-6">
+            <div className="w-16 h-16 rounded-lg bg-gradient-to-br from-primary to-secondary flex items-center justify-center">
+              <ChartBar className="w-8 h-8 text-white" />
+            </div>
+            <div>
+              <h2 className="text-2xl font-bold">All Games Statistics</h2>
+              <p className="text-white/60">
+                Overview across {games.length} games
+              </p>
+            </div>
+          </div>
+
+          {/* Global Stats Grid */}
+          <div className="grid grid-cols-2 gap-4">
+            <div className="bg-white/5 rounded-xl p-4 text-center">
+              <Calendar className="w-8 h-8 text-blue-400 mx-auto mb-2" />
+              <div className="text-2xl font-bold">{gameStats.totalSessions}</div>
+              <div className="text-white/60 text-sm">Total Sessions</div>
+            </div>
+            <div className="bg-white/5 rounded-xl p-4 text-center">
+              <Users className="w-8 h-8 text-green-400 mx-auto mb-2" />
+              <div className="text-2xl font-bold">{gameStats.averagePlayerCount.toFixed(1)}</div>
+              <div className="text-white/60 text-sm">Avg Players</div>
+            </div>
+            <div className="bg-white/5 rounded-xl p-4 text-center">
+              <Clock className="w-8 h-8 text-purple-400 mx-auto mb-2" />
+              <div className="text-2xl font-bold">{Math.round(gameStats.averageSessionTime)}m</div>
+              <div className="text-white/60 text-sm">Avg Duration</div>
+            </div>
+            <div className="bg-white/5 rounded-xl p-4 text-center">
+              <Target className="w-8 h-8 text-orange-400 mx-auto mb-2" />
+              <div className="text-2xl font-bold">{gameStats.averageScore.toFixed(0)}</div>
+              <div className="text-white/60 text-sm">Avg Score</div>
+            </div>
+          </div>
+        </div>
+      ) : (
+        /* Specific Game Overview */
         <div className="bg-white/10 backdrop-blur-md rounded-2xl p-6 border border-white/20 shadow-xl">
           <div className="flex items-center space-x-4 mb-6">
             <img
-              src={selectedGame.image || 'https://images.unsplash.com/photo-1606092195730-5d7b9af1efc5?w=150&h=150&fit=crop'}
-              alt={selectedGame.name}
+              src={selectedGame?.image || 'https://images.unsplash.com/photo-1606092195730-5d7b9af1efc5?w=150&h=150&fit=crop'}
+              alt={selectedGame?.name}
               className="w-16 h-16 rounded-lg object-cover"
             />
             <div>
-              <h2 className="text-2xl font-bold">{selectedGame.name}</h2>
+              <h2 className="text-2xl font-bold">{selectedGame?.name}</h2>
               <p className="text-white/60">
-                {selectedGame.category} • {selectedGame.players} players
+                {selectedGame?.category} • {selectedGame?.players} players
               </p>
-              {selectedGame.bgg_rating && (
+              {selectedGame?.bgg_rating && (
                 <div className="flex items-center space-x-1 mt-1">
                   <Star className="w-4 h-4 text-yellow-400" />
                   <span className="text-white/60 text-sm">{selectedGame.bgg_rating}/10</span>
@@ -121,7 +165,80 @@ export default function GameStatsView({
               <div className="text-white/60 text-sm">Avg Score</div>
             </div>
           </div>
+
+          {/* Back to Global Stats button when viewing specific game */}
+          <div className="mt-4 pt-4 border-t border-white/10">
+            <button
+              onClick={() => setSelectedGame(null)}
+              className="w-full px-4 py-2 bg-white/10 hover:bg-white/20 rounded-lg transition-colors text-center"
+            >
+              ← Back to All Games Statistics
+            </button>
+          </div>
         </div>
+      )}
+
+      {/* Game Selector - only show in global stats mode */}
+      {isGlobalStats && (
+        <div className="bg-white/10 backdrop-blur-md rounded-2xl p-6 border border-white/20 shadow-xl">
+          <h3 className="text-lg font-semibold mb-4">Select a Game for Detailed Stats</h3>
+          <div className="grid grid-cols-1 gap-3">
+            {games.map((game) => {
+              const gameSessions = gameStats.gamePopularity[game.name] || 0;
+              return (
+                <button
+                  key={game.game_id}
+                  onClick={() => setSelectedGame(game)}
+                  className="flex items-center space-x-3 p-3 bg-white/5 hover:bg-white/10 rounded-xl transition-colors text-left"
+                >
+                  <img
+                    src={game.image || 'https://images.unsplash.com/photo-1606092195730-5d7b9af1efc5?w=150&h=150&fit=crop'}
+                    alt={game.name}
+                    className="w-12 h-12 rounded-lg object-cover"
+                  />
+                  <div className="flex-1">
+                    <div className="font-medium">{game.name}</div>
+                    <div className="text-white/60 text-sm">{gameSessions} sessions</div>
+                  </div>
+                  <ChartBar className="w-5 h-5 text-primary" />
+                </button>
+              );
+            })}
+          </div>
+        </div>
+      )}
+
+      {/* Game Popularity Chart - only for global stats */}
+      {isGlobalStats && (
+        <div className="bg-white/10 backdrop-blur-md rounded-2xl p-6 border border-white/20 shadow-xl">
+          <div className="flex items-center justify-between mb-4">
+            <h3 className="text-lg font-semibold">Game Popularity</h3>
+            <ChartBar className="w-5 h-5 text-primary" />
+          </div>
+          <div className="space-y-3">
+            {Object.entries(gameStats.gamePopularity)
+              .sort((a, b) => (b[1] as number) - (a[1] as number))
+              .map(([gameName, sessions]) => {
+                const maxSessions = Math.max(...Object.values(gameStats.gamePopularity).map(v => v as number));
+                const percentage = maxSessions > 0 ? ((sessions as number) / maxSessions) * 100 : 0;
+                return (
+                  <div key={gameName} className="space-y-1">
+                    <div className="flex justify-between text-sm">
+                      <span>{gameName}</span>
+                      <span>{sessions as number} sessions</span>
+                    </div>
+                    <div className="w-full bg-white/10 rounded-full h-2">
+                      <div
+                        className="bg-gradient-to-r from-primary to-primary/60 h-2 rounded-full transition-all duration-300"
+                        style={{ width: `${percentage}%` }}
+                      />
+                    </div>
+                  </div>
+                );
+              })}
+          </div>
+        </div>
+      )}
 
         {/* Session Performance Chart */}
         <div className="bg-white/10 backdrop-blur-md rounded-2xl p-6 border border-white/20 shadow-xl">
