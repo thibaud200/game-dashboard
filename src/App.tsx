@@ -260,7 +260,8 @@ export default function App() {
             players={players} 
             games={games}
             currentView={currentView}
-            onNavigation={handleNavigation} 
+            onNavigation={handleNavigation}
+            selectedPlayerId={navigationContext?.id}
           />
         );
       case 'game-stats':

@@ -35,8 +35,14 @@ interface PlayerSession {
 // Mock session data for demonstration
 const mockSessions: PlayerSession[] = [
   { game_id: 1, game_name: 'Strategy Pro', player_id: 1, score: 95, is_winner: true },
-  { game_id: 1, game_name: 'Strategy Pro', player_id: 2, score: 78, is_winner: false },
   { game_id: 2, game_name: 'Battle Arena', player_id: 1, score: 120, is_winner: true },
+  { game_id: 3, game_name: 'Mind Games', player_id: 1, score: 78, is_winner: false },
+  { game_id: 1, game_name: 'Strategy Pro', player_id: 2, score: 85, is_winner: false },
+  { game_id: 2, game_name: 'Battle Arena', player_id: 2, score: 110, is_winner: false },
+  { game_id: 3, game_name: 'Mind Games', player_id: 2, score: 92, is_winner: true },
+  { game_id: 1, game_name: 'Strategy Pro', player_id: 3, score: 88, is_winner: false },
+  { game_id: 2, game_name: 'Battle Arena', player_id: 3, score: 105, is_winner: false },
+  { game_id: 3, game_name: 'Mind Games', player_id: 3, score: 86, is_winner: false },
 ];
 
 export const usePlayerStatsPage = (
