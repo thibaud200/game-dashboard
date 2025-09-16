@@ -257,7 +257,7 @@ export const useGamesPage = (data: GamesPageData) => {
   };
 
   const handleViewGameStats = (gameId: number) => {
-    onNavigation('game-stats', gameId);
+    onNavigation('stats', gameId, 'games');
   };
 
   const handleManageExpansions = (gameId: number) => {

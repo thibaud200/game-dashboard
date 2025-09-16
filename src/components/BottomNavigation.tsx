@@ -48,17 +48,7 @@ export default function BottomNavigation({ currentView, onNavigation, showStats 
 
   const handleNavigation = (view: string) => {
     if (view === 'stats') {
-      // Show stats selector or navigate to default stats page
-      // Check current context to decide which stats to show
-      const currentPath = window.location.pathname;
-      if (currentPath.includes('player') || currentView.includes('player')) {
-        onNavigation('player-stats');
-      } else if (currentPath.includes('game') || currentView.includes('game')) {
-        onNavigation('game-stats');
-      } else {
-        // Default to player stats from dashboard
-        onNavigation('player-stats');
-      }
+      onNavigation('stats');
     } else {
       onNavigation(view);
     }
@@ -70,7 +60,7 @@ export default function BottomNavigation({ currentView, onNavigation, showStats 
         {navItems.map((item) => {
           const Icon = item.icon;
           const isActive = currentView === item.id || 
-            (item.id === 'stats' && (currentView === 'player-stats' || currentView === 'game-stats'));
+            (item.id === 'stats' && (currentView === 'player-stats' || currentView === 'game-stats' || currentView === 'stats'));
           
           return (
             <button

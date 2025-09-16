@@ -136,7 +136,7 @@ export const usePlayersPage = (data: PlayersPageData) => {
   };
 
   const handleViewPlayerStats = (playerId: number) => {
-    onNavigation('player-stats', playerId);
+    onNavigation('stats', playerId, 'players');
   };
 
   return {

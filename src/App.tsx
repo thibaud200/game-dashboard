@@ -3,8 +3,7 @@ import Dashboard from '@/components/Dashboard';
 import PlayersPage from '@/components/PlayersPage';
 import GamesPage from '@/components/GamesPage';
 import SettingsPage from '@/components/SettingsPage';
-import PlayerStatsPage from '@/components/PlayerStatsPage';
-import GameStatsPage from '@/components/GameStatsPage';
+import StatsPage from '@/components/StatsPage';
 import NewGamePage from '@/components/NewGamePage';
 import GameDetailPage from '@/components/GameDetailPage';
 import GameExpansionsPage from '@/components/GameExpansionsPage';
@@ -168,7 +167,18 @@ export default function App() {
 
   const handleNavigation = (view: string, id?: number, source?: string) => {
     setCurrentView(view);
-    setNavigationContext({ id, source });
+    
+    // Enhanced context setting for stats
+    if (view === 'stats') {
+      // Determine which tab to show based on source or current context
+      let initialTab: 'players' | 'games' = 'players';
+      if (source === 'games' || currentView === 'games') {
+        initialTab = 'games';
+      }
+      setNavigationContext({ id, source, initialTab });
+    } else {
+      setNavigationContext({ id, source });
+    }
   };
 
   // Handler functions for data management
@@ -255,22 +265,17 @@ export default function App() {
       case 'settings':
         return <SettingsPage onNavigation={handleNavigation} currentView={currentView} />;
       case 'player-stats':
+      case 'game-stats':
+      case 'stats':
         return (
-          <PlayerStatsPage 
+          <StatsPage 
             players={players} 
             games={games}
             currentView={currentView}
             onNavigation={handleNavigation}
             selectedPlayerId={navigationContext?.id}
-          />
-        );
-      case 'game-stats':
-        return (
-          <GameStatsPage 
-            games={games} 
-            players={players}
-            currentView={currentView}
-            onNavigation={handleNavigation} 
+            selectedGameId={navigationContext?.id}
+            navigationContext={navigationContext}
           />
         );
       case 'new-game':
