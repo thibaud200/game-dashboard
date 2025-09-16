@@ -58,6 +58,12 @@ export const useNewGamePage = (
   const [notes, setNotes] = useState<string>('');
   const [isSubmitting, setIsSubmitting] = useState(false);
 
+  // Cooperative scoring state
+  const [objectives, setObjectives] = useState<Array<{id: string, text: string, completed: boolean, points: number}>>([]);
+  const [teamScore, setTeamScore] = useState<number>(0);
+  const [difficultyLevel, setDifficultyLevel] = useState<string>('normal');
+  const [teamSuccess, setTeamSuccess] = useState<boolean>(false);
+
   const selectedGame = games.find(g => g.game_id.toString() === selectedGameId) || null;
 
   const handlePlayerToggle = (playerId: number) => {
@@ -77,10 +83,60 @@ export const useNewGamePage = (
     }));
   };
 
+  // Cooperative scoring handlers
+  const addObjective = () => {
+    const newObjective = {
+      id: Date.now().toString(),
+      text: '',
+      completed: false,
+      points: 0
+    };
+    setObjectives([...objectives, newObjective]);
+  };
+
+  const addPresetObjectives = () => {
+    const commonObjectives = [
+      { id: Date.now().toString(), text: 'Complete primary mission', completed: false, points: 50 },
+      { id: (Date.now() + 1).toString(), text: 'No player eliminated', completed: false, points: 20 },
+      { id: (Date.now() + 2).toString(), text: 'Finish within time limit', completed: false, points: 30 },
+      { id: (Date.now() + 3).toString(), text: 'Collect all bonus items', completed: false, points: 25 }
+    ];
+    setObjectives([...objectives, ...commonObjectives]);
+  };
+
+  const updateObjective = (id: string, field: string, value: any) => {
+    setObjectives(prev => prev.map(obj => 
+      obj.id === id ? { ...obj, [field]: value } : obj
+    ));
+  };
+
+  const removeObjective = (id: string) => {
+    setObjectives(prev => prev.filter(obj => obj.id !== id));
+  };
+
+  const calculateTeamScore = () => {
+    const completedObjectives = objectives.filter(obj => obj.completed);
+    const totalPoints = completedObjectives.reduce((sum, obj) => sum + obj.points, 0);
+    setTeamScore(totalPoints);
+    return totalPoints;
+  };
+
   const canSubmit = (): boolean => {
-    return Boolean(selectedGameId && 
+    const hasValidGame = Boolean(selectedGameId && 
            selectedPlayers.length >= (selectedGame?.min_players || 1) &&
            selectedPlayers.length <= (selectedGame?.max_players || 8));
+    
+    if (!hasValidGame) return false;
+    
+    // Additional validation for cooperative mode
+    if (sessionType === 'cooperative') {
+      // At least one objective or a team score should be set
+      const hasObjectives = objectives.length > 0;
+      const hasTeamScore = teamScore > 0;
+      return hasObjectives || hasTeamScore;
+    }
+    
+    return true;
   };
 
   const handleSubmit = async () => {
@@ -99,7 +155,18 @@ export const useNewGamePage = (
           player_id: playerId,
           score: playerScores[playerId] || 0,
           is_winner: winnerId === playerId.toString()
-        }))
+        })),
+        // Cooperative scoring data
+        ...(sessionType === 'cooperative' && {
+          team_score: teamScore,
+          team_success: teamSuccess,
+          difficulty_level: difficultyLevel,
+          objectives: objectives.map(obj => ({
+            description: obj.text,
+            completed: obj.completed,
+            points: obj.points
+          }))
+        })
       };
 
       await onCreateSession(sessionData);
@@ -120,6 +187,10 @@ export const useNewGamePage = (
     setWinnerId('');
     setDuration('');
     setNotes('');
+    setObjectives([]);
+    setTeamScore(0);
+    setDifficultyLevel('normal');
+    setTeamSuccess(false);
   };
 
   return {
@@ -140,6 +211,16 @@ export const useNewGamePage = (
     setNotes,
     isSubmitting,
     
+    // Cooperative scoring state
+    objectives,
+    setObjectives,
+    teamScore,
+    setTeamScore,
+    difficultyLevel,
+    setDifficultyLevel,
+    teamSuccess,
+    setTeamSuccess,
+    
     // Computed
     selectedGame,
     
@@ -148,6 +229,13 @@ export const useNewGamePage = (
     handleScoreChange,
     canSubmit,
     handleSubmit,
-    resetForm
+    resetForm,
+    
+    // Cooperative scoring methods
+    addObjective,
+    addPresetObjectives,
+    updateObjective,
+    removeObjective,
+    calculateTeamScore
   };
 };

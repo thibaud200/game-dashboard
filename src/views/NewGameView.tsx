@@ -6,7 +6,7 @@ import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Checkbox } from "@/components/ui/checkbox";
-import { ArrowLeft, Play, Users, Trophy, Timer } from '@phosphor-icons/react';
+import { ArrowLeft, Play, Users, Trophy, Timer, Target, Plus, Trash } from '@phosphor-icons/react';
 
 interface Player {
   player_id: number
@@ -68,6 +68,16 @@ interface NewGameViewProps {
   setNotes: (notes: string) => void
   isSubmitting: boolean
   
+  // Cooperative scoring state
+  objectives: Array<{id: string, text: string, completed: boolean, points: number}>
+  setObjectives: (objectives: Array<{id: string, text: string, completed: boolean, points: number}>) => void
+  teamScore: number
+  setTeamScore: (score: number) => void
+  difficultyLevel: string
+  setDifficultyLevel: (level: string) => void
+  teamSuccess: boolean
+  setTeamSuccess: (success: boolean) => void
+  
   // Computed
   selectedGame: Game | null
   
@@ -76,6 +86,13 @@ interface NewGameViewProps {
   handleScoreChange: (playerId: number, value: string) => void
   canSubmit: () => boolean
   handleSubmit: () => Promise<{ success: boolean }>
+  
+  // Cooperative scoring methods
+  addObjective: () => void
+  addPresetObjectives: () => void
+  updateObjective: (id: string, field: string, value: any) => void
+  removeObjective: (id: string) => void
+  calculateTeamScore: () => number
   
   // Data
   games: Game[]
@@ -100,11 +117,24 @@ export default function NewGameView({
   notes,
   setNotes,
   isSubmitting,
+  objectives,
+  setObjectives,
+  teamScore,
+  setTeamScore,
+  difficultyLevel,
+  setDifficultyLevel,
+  teamSuccess,
+  setTeamSuccess,
   selectedGame,
   handlePlayerToggle,
   handleScoreChange,
   canSubmit,
   handleSubmit,
+  addObjective,
+  addPresetObjectives,
+  updateObjective,
+  removeObjective,
+  calculateTeamScore,
   games,
   players,
   onNavigation,
@@ -174,16 +204,16 @@ export default function NewGameView({
                     </SelectTrigger>
                     <SelectContent className="bg-slate-800 border-white/20">
                       {selectedGame.supports_competitive && (
-                        <SelectItem value="competitive">Competitive</SelectItem>
+                        <SelectItem value="competitive">Competitive - Players compete against each other</SelectItem>
                       )}
                       {selectedGame.supports_cooperative && (
-                        <SelectItem value="cooperative">Cooperative</SelectItem>
+                        <SelectItem value="cooperative">Cooperative - Players work together</SelectItem>
                       )}
                       {selectedGame.supports_campaign && (
-                        <SelectItem value="campaign">Campaign</SelectItem>
+                        <SelectItem value="campaign">Campaign - Ongoing story mode</SelectItem>
                       )}
                       {selectedGame.supports_hybrid && (
-                        <SelectItem value="hybrid">Hybrid</SelectItem>
+                        <SelectItem value="hybrid">Hybrid - Mix of team and individual goals</SelectItem>
                       )}
                     </SelectContent>
                   </Select>
@@ -200,6 +230,20 @@ export default function NewGameView({
                 {selectedGame.description && (
                   <p className="text-white/60 text-sm mt-2">{selectedGame.description}</p>
                 )}
+                <div className="flex flex-wrap gap-2 mt-3">
+                  {selectedGame.supports_competitive && (
+                    <span className="px-2 py-1 bg-orange-500/20 text-orange-300 text-xs rounded">Competitive</span>
+                  )}
+                  {selectedGame.supports_cooperative && (
+                    <span className="px-2 py-1 bg-green-500/20 text-green-300 text-xs rounded">Cooperative</span>
+                  )}
+                  {selectedGame.supports_campaign && (
+                    <span className="px-2 py-1 bg-purple-500/20 text-purple-300 text-xs rounded">Campaign</span>
+                  )}
+                  {selectedGame.supports_hybrid && (
+                    <span className="px-2 py-1 bg-blue-500/20 text-blue-300 text-xs rounded">Hybrid</span>
+                  )}
+                </div>
               </div>
             )}
           </CardContent>
@@ -239,13 +283,159 @@ export default function NewGameView({
           </Card>
         )}
 
-        {/* Scoring */}
+        {/* Cooperative Scoring */}
+        {selectedPlayers.length > 0 && sessionType === 'cooperative' && (
+          <Card className="bg-white/10 backdrop-blur-md border-white/20">
+            <CardHeader>
+              <CardTitle className="flex items-center gap-2 text-white">
+                <Target className="w-5 h-5" />
+                Cooperative Objectives
+              </CardTitle>
+            </CardHeader>
+            <CardContent className="space-y-4">
+              {/* Difficulty Level */}
+              <div>
+                <Label className="text-white/80">Difficulty Level</Label>
+                <Select value={difficultyLevel} onValueChange={setDifficultyLevel}>
+                  <SelectTrigger className="bg-white/5 border-white/20 text-white">
+                    <SelectValue />
+                  </SelectTrigger>
+                  <SelectContent className="bg-slate-800 border-white/20">
+                    <SelectItem value="easy">Easy</SelectItem>
+                    <SelectItem value="normal">Normal</SelectItem>
+                    <SelectItem value="hard">Hard</SelectItem>
+                    <SelectItem value="expert">Expert</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+
+              {/* Team Success */}
+              <div className="flex items-center space-x-3 p-3 bg-white/5 rounded-lg">
+                <Checkbox
+                  checked={teamSuccess}
+                  onCheckedChange={(checked) => setTeamSuccess(!!checked)}
+                  className="data-[state=checked]:bg-green-500 data-[state=checked]:border-green-500"
+                />
+                <Label className="text-white font-medium">Team Victory</Label>
+              </div>
+
+              {/* Team Score */}
+              <div>
+                <Label className="text-white/80">Team Score</Label>
+                <Input
+                  type="number"
+                  placeholder="0"
+                  value={teamScore}
+                  onChange={(e) => setTeamScore(parseInt(e.target.value) || 0)}
+                  className="bg-white/5 border-white/20 text-white"
+                />
+              </div>
+
+              {/* Objectives */}
+              <div>
+                <div className="flex items-center justify-between mb-3">
+                  <Label className="text-white/80">Shared Objectives</Label>
+                  <div className="flex gap-2">
+                    {objectives.length === 0 && (
+                      <Button
+                        onClick={addPresetObjectives}
+                        size="sm"
+                        variant="outline"
+                        className="bg-white/10 text-white border-white/20 hover:bg-white/20"
+                      >
+                        <Target className="w-4 h-4 mr-1" />
+                        Add Common
+                      </Button>
+                    )}
+                    <Button
+                      onClick={addObjective}
+                      size="sm"
+                      variant="outline"
+                      className="bg-white/10 text-white border-white/20 hover:bg-white/20"
+                    >
+                      <Plus className="w-4 h-4 mr-1" />
+                      Add Custom
+                    </Button>
+                  </div>
+                </div>
+                
+                {objectives.length === 0 && (
+                  <div className="text-center py-8 text-white/60">
+                    <Target className="w-12 h-12 mx-auto mb-3 opacity-50" />
+                    <p className="text-sm">No objectives set yet</p>
+                    <p className="text-xs mt-1">Add objectives to track your team's progress</p>
+                  </div>
+                )}
+                
+                {objectives.map((objective, index) => (
+                  <div key={objective.id} className="space-y-2 p-3 bg-white/5 rounded-lg">
+                    <div className="flex items-center gap-2">
+                      <span className="text-white/60 text-sm">#{index + 1}</span>
+                      <Button
+                        onClick={() => removeObjective(objective.id)}
+                        size="sm"
+                        variant="ghost"
+                        className="text-red-400 hover:text-red-300 hover:bg-red-400/10 p-1 h-auto"
+                      >
+                        <Trash className="w-3 h-3" />
+                      </Button>
+                    </div>
+                    
+                    <Input
+                      placeholder="Objective description..."
+                      value={objective.text}
+                      onChange={(e) => updateObjective(objective.id, 'text', e.target.value)}
+                      className="bg-white/5 border-white/20 text-white"
+                    />
+                    
+                    <div className="flex items-center gap-4">
+                      <div className="flex items-center space-x-2">
+                        <Input
+                          type="number"
+                          placeholder="Points"
+                          value={objective.points}
+                          onChange={(e) => updateObjective(objective.id, 'points', parseInt(e.target.value) || 0)}
+                          className="w-20 bg-white/5 border-white/20 text-white"
+                        />
+                        <span className="text-white/60 text-sm">pts</span>
+                      </div>
+                      
+                      <div className="flex items-center space-x-2">
+                        <Checkbox
+                          checked={objective.completed}
+                          onCheckedChange={(checked) => updateObjective(objective.id, 'completed', !!checked)}
+                          className="data-[state=checked]:bg-green-500 data-[state=checked]:border-green-500"
+                        />
+                        <span className="text-white/60 text-sm">Completed</span>
+                      </div>
+                    </div>
+                  </div>
+                ))}
+                
+                {objectives.length > 0 && (
+                  <div className="mt-3 p-3 bg-white/5 rounded-lg">
+                    <div className="flex items-center justify-between">
+                      <span className="text-white/80">Total Objectives Score:</span>
+                      <span className="text-white font-semibold">{calculateTeamScore()} pts</span>
+                    </div>
+                    <div className="text-white/60 text-sm mt-1">
+                      {objectives.filter(obj => obj.completed).length} of {objectives.length} completed
+                    </div>
+                  </div>
+                )}
+              </div>
+            </CardContent>
+          </Card>
+        )}
+
+        {/* Competitive Scoring */}
+        {/* Competitive Scoring */}
         {selectedPlayers.length > 0 && sessionType === 'competitive' && (
           <Card className="bg-white/10 backdrop-blur-md border-white/20">
             <CardHeader>
               <CardTitle className="flex items-center gap-2 text-white">
                 <Trophy className="w-5 h-5" />
-                Scoring
+                Competitive Scoring
               </CardTitle>
             </CardHeader>
             <CardContent className="space-y-4">
@@ -281,6 +471,76 @@ export default function NewGameView({
               })}
             </CardContent>
           </Card>
+        )}
+
+        {/* Hybrid Scoring */}
+        {selectedPlayers.length > 0 && sessionType === 'hybrid' && (
+          <>
+            {/* Team Component */}
+            <Card className="bg-white/10 backdrop-blur-md border-white/20">
+              <CardHeader>
+                <CardTitle className="flex items-center gap-2 text-white">
+                  <Target className="w-5 h-5" />
+                  Team Objectives
+                </CardTitle>
+              </CardHeader>
+              <CardContent className="space-y-4">
+                <div className="flex items-center space-x-3 p-3 bg-white/5 rounded-lg">
+                  <Checkbox
+                    checked={teamSuccess}
+                    onCheckedChange={(checked) => setTeamSuccess(!!checked)}
+                    className="data-[state=checked]:bg-green-500 data-[state=checked]:border-green-500"
+                  />
+                  <Label className="text-white font-medium">Team Objectives Completed</Label>
+                </div>
+
+                <div>
+                  <Label className="text-white/80">Team Score</Label>
+                  <Input
+                    type="number"
+                    placeholder="0"
+                    value={teamScore}
+                    onChange={(e) => setTeamScore(parseInt(e.target.value) || 0)}
+                    className="bg-white/5 border-white/20 text-white"
+                  />
+                </div>
+              </CardContent>
+            </Card>
+
+            {/* Individual Component */}
+            <Card className="bg-white/10 backdrop-blur-md border-white/20">
+              <CardHeader>
+                <CardTitle className="flex items-center gap-2 text-white">
+                  <Trophy className="w-5 h-5" />
+                  Individual Scores
+                </CardTitle>
+              </CardHeader>
+              <CardContent className="space-y-4">
+                {safeSelectedPlayers.map(playerId => {
+                  const player = safePlayers.find(p => p.player_id === playerId);
+                  if (!player) return null;
+
+                  return (
+                    <div key={playerId} className="flex items-center gap-4">
+                      <div className="flex items-center gap-3 flex-1">
+                        {player.avatar && (
+                          <img src={player.avatar} alt={player.player_name} className="w-8 h-8 rounded-full" />
+                        )}
+                        <span className="text-white font-medium">{player.player_name}</span>
+                      </div>
+                      <Input
+                        type="number"
+                        placeholder="Score"
+                        value={playerScores[playerId] || ''}
+                        onChange={(e) => handleScoreChange(playerId, e.target.value)}
+                        className="w-20 bg-white/5 border-white/20 text-white"
+                      />
+                    </div>
+                  );
+                })}
+              </CardContent>
+            </Card>
+          </>
         )}
 
         {/* Session Details */}

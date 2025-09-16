@@ -135,6 +135,33 @@ const mockData = {
       expansions: [],
       characters: [],
       players: '2-8'
+    },
+    {
+      game_id: 4,
+      name: 'Pandemic Legacy',
+      description: 'Save the world together in this cooperative game',
+      image: 'https://images.unsplash.com/photo-1578662996442-48f60103fc96?w=150&h=150&fit=crop',
+      min_players: 2,
+      max_players: 4,
+      duration: '60-90 minutes',
+      difficulty: 'Medium',
+      category: 'Cooperative',
+      year_published: 2015,
+      publisher: 'Z-Man Games',
+      designer: 'Matt Leacock',
+      bgg_rating: 8.6,
+      weight: 2.8,
+      age_min: 13,
+      supports_cooperative: true,
+      supports_competitive: false,
+      supports_campaign: true,
+      supports_hybrid: false,
+      has_expansion: true,
+      has_characters: true,
+      created_at: new Date(),
+      expansions: [],
+      characters: [],
+      players: '2-4'
     }
   ]
 };
