@@ -7,18 +7,13 @@ interface ErrorFallbackProps {
 }
 
 export const ErrorFallback = ({ error, resetErrorBoundary }: ErrorFallbackProps) => {
-  // In development mode, also show the error boundary UI but log the error
-  if (import.meta.env.DEV) {
-    console.error('ErrorBoundary caught an error:', error);
-  }
-
   return (
     <div className="min-h-screen bg-slate-900 text-white flex items-center justify-center p-4">
       <div className="w-full max-w-md">
         <Alert variant="destructive" className="mb-6">
           <AlertTitle>Runtime Error</AlertTitle>
           <AlertDescription>
-            Something unexpected happened while running the application. The error details are shown below.
+            Something unexpected happened while running the application.
           </AlertDescription>
         </Alert>
         

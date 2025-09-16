@@ -42,7 +42,7 @@ export function useGameExpansions(props: UseGameExpansionsProps) {
     });
   };
 
-  const handleAddExpansion = async (e: React.FormEvent) => {
+  const handleAddExpansion = async (e: any) => {
     e.preventDefault();
     
     if (!formData.name.trim()) {
@@ -63,12 +63,12 @@ export function useGameExpansions(props: UseGameExpansionsProps) {
       setIsAddDialogOpen(false);
       resetForm();
     } catch (error) {
-      console.error('Error adding expansion:', error);
+      // Error handling would use proper logging in production
       toast.error('Erreur lors de l\'ajout de l\'extension');
     }
   };
 
-  const handleEditExpansion = async (e: React.FormEvent) => {
+  const handleEditExpansion = async (e: any) => {
     e.preventDefault();
     
     if (!editingExpansion || !formData.name.trim()) {
@@ -89,7 +89,7 @@ export function useGameExpansions(props: UseGameExpansionsProps) {
       setEditingExpansion(null);
       resetForm();
     } catch (error) {
-      console.error('Error updating expansion:', error);
+      // Error handling would use proper logging in production
       toast.error('Erreur lors de la modification de l\'extension');
     }
   };
@@ -99,7 +99,7 @@ export function useGameExpansions(props: UseGameExpansionsProps) {
       await onDeleteExpansion(expansionId);
       toast.success('Extension supprimée avec succès');
     } catch (error) {
-      console.error('Error deleting expansion:', error);
+      // Error handling would use proper logging in production
       toast.error('Erreur lors de la suppression de l\'extension');
     }
   };

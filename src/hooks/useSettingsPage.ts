@@ -46,18 +46,15 @@ export const useSettingsPage = (data: SettingsPageData) => {
   };
 
   const handleExportData = () => {
-    // Implementation for data export
-    console.log('Exporting data...');
+    // Implementation for data export would go here
   };
 
   const handleImportData = () => {
-    // Implementation for data import
-    console.log('Importing data...');
+    // Implementation for data import would go here
   };
 
   const handleResetData = () => {
-    // Implementation for data reset
-    console.log('Resetting data...');
+    // Implementation for data reset would go here
   };
 
   return {

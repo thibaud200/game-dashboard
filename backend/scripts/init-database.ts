@@ -1,7 +1,6 @@
 import DatabaseManager from '../database/DatabaseManager';
+import winston from 'winston';
 
-//pour le logging
-const winston = require('winston');
 // Logger setup
 const logger = winston.createLogger({
   level: 'info',
@@ -35,6 +34,7 @@ async function initializeDatabase() {
   }
 }
 
-if (require.main === module) {
+// Check if script is run directly
+if (import.meta.url === `file://${process.argv[1]}`) {
   initializeDatabase();
 }

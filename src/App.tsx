@@ -225,8 +225,10 @@ export default function App() {
   };
 
   const handleCreateSession = async (sessionData: any) => {
+    const gameData = {
+      ...sessionData
+    };
     // Implementation for creating game sessions
-    console.log('Creating session:', sessionData);
   };
 
   const renderCurrentView = () => {
@@ -288,7 +290,7 @@ export default function App() {
             onCreateSession={handleCreateSession}
           />
         );
-      case 'game-detail':
+      case 'game-detail': {
         const game = games?.find(g => g.game_id === navigationContext?.id);
         return game ? (
           <GameDetailPage 
@@ -297,7 +299,8 @@ export default function App() {
             onNavigation={handleNavigation} 
           />
         ) : null;
-      case 'game-expansions':
+      }
+      case 'game-expansions': {
         const expansionGame = games?.find(g => g.game_id === navigationContext?.id);
         return expansionGame ? (
           <GameExpansionsPage 
@@ -309,7 +312,8 @@ export default function App() {
             onDeleteExpansion={async () => {}}
           />
         ) : null;
-      case 'game-characters':
+      }
+      case 'game-characters': {
         const characterGame = games?.find(g => g.game_id === navigationContext?.id);
         return characterGame ? (
           <GameCharactersPage 
@@ -321,6 +325,7 @@ export default function App() {
             onDeleteCharacter={async () => {}}
           />
         ) : null;
+      }
       default:
         return (
           <Dashboard

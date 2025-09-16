@@ -105,7 +105,7 @@ export const useNewGamePage = (
       await onCreateSession(sessionData);
       return { success: true };
     } catch (error) {
-      console.error('Error creating session:', error);
+      // Error handling would use proper logging in production
       throw error;
     } finally {
       setIsSubmitting(false);

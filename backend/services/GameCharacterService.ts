@@ -1,5 +1,5 @@
 import { Database } from 'sqlite3';
-import { GameCharacter, CreateGameRequest, UpdateGameRequest } from '../models/interfaces';
+import { GameCharacter } from '../models/interfaces';
 
 export class GameCharacterService {
   constructor(private db: Database) {}

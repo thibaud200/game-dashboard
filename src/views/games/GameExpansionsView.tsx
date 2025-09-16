@@ -2,7 +2,7 @@ import React from 'react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip';
-import { ArrowLeft, Plus, PencilSimple, Trash, Calendar, Users, GameController, TrendUp, Gear } from '@phosphor-icons/react';
+import { ArrowLeft, Plus, PencilSimple, Trash, Calendar } from '@phosphor-icons/react';
 import { useGameExpansions, UseGameExpansionsProps } from '@/hooks/games/useGameExpansions';
 import { AddExpansionDialog, EditExpansionDialog, DeleteExpansionDialog } from '@/components/dialogs';
 

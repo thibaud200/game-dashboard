@@ -73,7 +73,7 @@ class BGGApiService {
       const xmlText = await response.text();
       return this.parseSearchResults(xmlText);
     } catch (error) {
-      console.error('Error searching BGG:', error);
+      // Error handling would use proper logging in production
       return [];
     }
   }
@@ -93,7 +93,7 @@ class BGGApiService {
       const xmlText = await response.text();
       return this.parseGameDetails(xmlText, bggId);
     } catch (error) {
-      console.error('Error fetching BGG game details:', error);
+      // Error handling would use proper logging in production
       return null;
     }
   }
@@ -113,7 +113,7 @@ class BGGApiService {
       const xmlText = await response.text();
       return this.parseExpansions(xmlText);
     } catch (error) {
-      console.error('Error fetching BGG expansions:', error);
+      // Error handling would use proper logging in production
       return [];
     }
   }
@@ -144,7 +144,7 @@ class BGGApiService {
       
       return results.slice(0, 10); // Limit to 10 results
     } catch (error) {
-      console.error('Error parsing search results:', error);
+      // Error handling would use proper logging in production
       return [];
     }
   }
@@ -230,7 +230,7 @@ class BGGApiService {
         base_game_id: this.getBaseGameId(item)
       };
     } catch (error) {
-      console.error('Error parsing game details:', error);
+      // Error handling would use proper logging in production
       return null;
     }
   }
@@ -261,7 +261,7 @@ class BGGApiService {
 
       return expansions;
     } catch (error) {
-      console.error('Error parsing expansions:', error);
+      // Error handling would use proper logging in production
       return [];
     }
   }

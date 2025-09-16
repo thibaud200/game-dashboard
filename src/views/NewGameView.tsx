@@ -107,8 +107,7 @@ export default function NewGameView({
   handleSubmit,
   games,
   players,
-  onNavigation,
-  currentView
+  onNavigation
 }: NewGameViewProps) {
   // Safety checks for arrays
   const safeGames = games || [];

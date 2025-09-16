@@ -56,7 +56,6 @@ interface EditGameDialogProps {
 export default function EditGameDialog({
   isOpen,
   onOpenChange,
-  editingGame,
   formData,
   onFormDataChange,
   onUpdateGame,

@@ -1,5 +1,4 @@
 import React from 'react';
-import { Trash } from '@phosphor-icons/react';
 import { 
   AlertDialog, 
   AlertDialogAction, 

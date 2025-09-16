@@ -1,13 +1,11 @@
 import React from 'react';
 import { useGameStatsPage } from '@/hooks/useGameStatsPage';
 import {
-  TrendUp,
   Users,
   Clock,
   Star,
   ChartBar,
-  Trophy,
-  Target
+  Trophy
 } from '@phosphor-icons/react';
 
 interface Game {

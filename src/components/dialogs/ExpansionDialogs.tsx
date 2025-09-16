@@ -16,7 +16,7 @@ interface ExpansionFormData {
 interface ExpansionFormProps {
   formData: ExpansionFormData;
   setFormData: (data: ExpansionFormData | ((prev: ExpansionFormData) => ExpansionFormData)) => void;
-  onSubmit: (e: React.FormEvent) => void;
+  onSubmit: (e: any) => void;
   onCancel: () => void;
   submitText: string;
 }
@@ -104,7 +104,7 @@ interface AddExpansionDialogProps {
   onOpenChange: (open: boolean) => void;
   formData: ExpansionFormData;
   setFormData: (data: ExpansionFormData | ((prev: ExpansionFormData) => ExpansionFormData)) => void;
-  onSubmit: (e: React.FormEvent) => void;
+  onSubmit: (e: any) => void;
 }
 
 export function AddExpansionDialog({
@@ -140,7 +140,7 @@ interface EditExpansionDialogProps {
   onOpenChange: (open: boolean) => void;
   formData: ExpansionFormData;
   setFormData: (data: ExpansionFormData | ((prev: ExpansionFormData) => ExpansionFormData)) => void;
-  onSubmit: (e: React.FormEvent) => void;
+  onSubmit: (e: any) => void;
 }
 
 export function EditExpansionDialog({

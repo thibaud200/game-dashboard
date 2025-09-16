@@ -1,6 +1,10 @@
 import Database from 'better-sqlite3';
 import path from 'path';
 import fs from 'fs';
+import { fileURLToPath } from 'url';
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
 // Database configuration
 const DB_PATH = path.join(__dirname, 'board_game_score.db');
@@ -24,14 +28,12 @@ class DatabaseManager {
       const tables = this.db.prepare("SELECT name FROM sqlite_master WHERE type='table'").all();
       
       if (tables.length === 0) {
-        console.log('Initializing database with schema...');
+        // Database initialization
         const schema = fs.readFileSync(SCHEMA_PATH, 'utf8');
         this.db.exec(schema);
-        console.log('Database initialized successfully');
       }
     } catch (error) {
-      console.error('Error initializing database:', error);
-      throw error;
+      throw new Error(`Error initializing database: ${error}`);
     }
   }
 

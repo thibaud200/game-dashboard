@@ -50,10 +50,12 @@ export const usePlayerStatsPage = (
   games: Game[],
   selectedPlayerId?: number
 ) => {
-  // If selectedPlayerId is provided, filter to show only that player's stats
-  const displayPlayers = selectedPlayerId 
-    ? (players || []).filter(p => p.player_id === selectedPlayerId)
-    : (players || []);
+  // Memoize displayPlayers to prevent dependency issues in useMemo hooks
+  const displayPlayers = useMemo(() => {
+    return selectedPlayerId 
+      ? (players || []).filter(p => p.player_id === selectedPlayerId)
+      : (players || []);
+  }, [players, selectedPlayerId]);
 
   // Filter sessions for selected player if specified
   const displaySessions = selectedPlayerId

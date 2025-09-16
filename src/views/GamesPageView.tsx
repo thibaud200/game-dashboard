@@ -19,7 +19,6 @@ import {
   ChartLineUp,
   DotsThree
 } from '@phosphor-icons/react';
-import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Card, CardContent } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
@@ -73,7 +72,6 @@ interface GamesPageViewProps {
 
 export default function GamesPageView({
   games,
-  currentView,
   totalGames,
   averageRating,
   formData,
@@ -365,7 +363,7 @@ export default function GamesPageView({
                                   ).join(', ')}
                                   onChange={(e) => {
                                     const expansionTexts = e.target.value.split(',').map(text => text.trim()).filter(text => text);
-                                    const parsedExpansions = expansionTexts.map((text, index) => {
+                                    expansionTexts.map((text, index) => {
                                       const match = text.match(/^(.+?)\s*\((\d{4})\)$/);
                                       if (match) {
                                         return {

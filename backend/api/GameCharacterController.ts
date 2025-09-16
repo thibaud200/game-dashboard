@@ -3,7 +3,7 @@ import { GameCharacterService } from '../services/GameCharacterService';
 import { Database } from 'sqlite3';
 
 //pour le logging
-const winston = require('winston');
+import winston from 'winston';
 // Logger setup
 const logger = winston.createLogger({
   level: 'info',

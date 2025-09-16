@@ -62,7 +62,6 @@ export default function GameStatsView({
   gameStats,
   games,
   onNavigation,
-  currentView,
   selectedGameId,
   players
 }: GameStatsViewProps) {

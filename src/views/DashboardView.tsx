@@ -6,8 +6,7 @@ import {
   Gear,
   Plus,
   Play,
-  ArrowLeft,
-  Circle
+  ArrowLeft
 } from '@phosphor-icons/react';
 import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip';
 import { Player, Game, NavigationHandler } from '@/types';
@@ -39,7 +38,6 @@ export function DashboardView({
   stats,
   recentPlayers,
   recentGames,
-  currentView,
   hasPlayers,
   hasGames,
   handleBackClick,
@@ -49,8 +47,7 @@ export function DashboardView({
   handlePlayerStatsClick,
   handleGameStatsClick,
   handleNewGameClick,
-  handleActivityClick,
-  onNavigation
+  handleActivityClick
 }: DashboardViewProps) {
   return (
     <div className="min-h-screen bg-gradient-to-br from-slate-900 to-slate-800 text-white">

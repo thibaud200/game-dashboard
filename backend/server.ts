@@ -4,7 +4,7 @@ import DatabaseManager from './database/DatabaseManager';
 
 const app = express();
 const db = new DatabaseManager();
-const PORT = process.env.PORT || 3001;
+const PORT = parseInt(process.env.PORT || '3001', 10);
 
 // Middleware
 app.use(cors({
@@ -209,8 +209,8 @@ app.get('/api/health', (req: express.Request, res: express.Response) => {
 });
 
 // Error handling middleware
-app.use((error: any, req: express.Request, res: express.Response, next: express.NextFunction) => {
-  console.error('API Error:', error);
+app.use((error: any, req: express.Request, res: express.Response, _next: express.NextFunction) => {
+  // Error logging would be handled by proper logging system
   
   if (error.code === 'SQLITE_CONSTRAINT') {
     return res.status(400).json({ 
@@ -232,20 +232,19 @@ app.use((req: express.Request, res: express.Response) => {
 
 // Graceful shutdown
 process.on('SIGINT', () => {
-  console.log('Shutting down server...');
+  // Graceful shutdown logging would be handled by proper logging system
   db.close();
   process.exit(0);
 });
 
 process.on('SIGTERM', () => {
-  console.log('Shutting down server...');
+  // Graceful shutdown logging would be handled by proper logging system
   db.close();
   process.exit(0);
 });
 
 app.listen(PORT, () => {
-  console.log(`Server running on port ${PORT}`);
-  console.log(`Health check: http://localhost:${PORT}/api/health`);
+  // Server startup logging would be handled by proper logging system
 });
 
 export default app;

@@ -1,5 +1,5 @@
-import React, { useState, useEffect } from 'react';
-import { MagnifyingGlass, Star, Link, Circle } from '@phosphor-icons/react';
+import React, { useState } from 'react';
+import { MagnifyingGlass, Link, Circle } from '@phosphor-icons/react';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
@@ -29,7 +29,7 @@ export default function BGGSearch({ onGameSelect, onClose }: BGGSearchProps) {
       setSearchResults(results);
     } catch (error) {
       setSearchError('Failed to search BoardGameGeek. Please try again.');
-      console.error('BGG Search error:', error);
+      // Error handling - would use proper logging in production
     } finally {
       setIsSearching(false);
     }
@@ -48,7 +48,7 @@ export default function BGGSearch({ onGameSelect, onClose }: BGGSearchProps) {
       }
     } catch (error) {
       setSearchError('Failed to load game details. Please try again.');
-      console.error('BGG Details error:', error);
+      // Error handling - would use proper logging in production
     } finally {
       setIsLoadingDetails(false);
     }

@@ -83,7 +83,7 @@ export const useGamesPage = (data: GamesPageData) => {
   // Computed values
   const filteredAndSortedGames = useMemo(() => {
     const safeGames = games || [];
-    let filtered = safeGames.filter(game => {
+    const filtered = safeGames.filter(game => {
       const matchesSearch = (game.name || '').toLowerCase().includes(searchQuery.toLowerCase()) ||
                            (game.description || '').toLowerCase().includes(searchQuery.toLowerCase());
       const matchesCategory = categoryFilter === 'all' || game.category === categoryFilter;

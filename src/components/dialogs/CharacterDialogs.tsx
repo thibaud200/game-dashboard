@@ -17,7 +17,7 @@ interface CharacterFormData {
 interface CharacterFormProps {
   formData: CharacterFormData;
   setFormData: (data: CharacterFormData | ((prev: CharacterFormData) => CharacterFormData)) => void;
-  onSubmit: (e: React.FormEvent) => void;
+  onSubmit: (e: any) => void;
   onCancel: () => void;
   submitText: string;
 }
@@ -116,7 +116,7 @@ interface AddCharacterDialogProps {
   onOpenChange: (open: boolean) => void;
   formData: CharacterFormData;
   setFormData: (data: CharacterFormData | ((prev: CharacterFormData) => CharacterFormData)) => void;
-  onSubmit: (e: React.FormEvent) => void;
+  onSubmit: (e: any) => void;
 }
 
 export function AddCharacterDialog({
@@ -152,7 +152,7 @@ interface EditCharacterDialogProps {
   onOpenChange: (open: boolean) => void;
   formData: CharacterFormData;
   setFormData: (data: CharacterFormData | ((prev: CharacterFormData) => CharacterFormData)) => void;
-  onSubmit: (e: React.FormEvent) => void;
+  onSubmit: (e: any) => void;
 }
 
 export function EditCharacterDialog({

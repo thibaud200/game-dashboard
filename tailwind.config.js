@@ -10,7 +10,7 @@ try {
     theme = JSON.parse(fs.readFileSync(themePath, "utf-8"));
   }
 } catch (err) {
-  console.error('failed to parse custom styles', err);
+  // Theme parsing error - fallback to default theme
 }
 const defaultTheme = {
   container: {

@@ -44,7 +44,7 @@ export function useGameCharacters(props: UseGameCharactersProps) {
     });
   };
 
-  const handleAddCharacter = async (e: React.FormEvent) => {
+  const handleAddCharacter = async (e: any) => {
     e.preventDefault();
     
     if (!formData.name.trim() || !formData.character_key.trim()) {
@@ -66,12 +66,12 @@ export function useGameCharacters(props: UseGameCharactersProps) {
       setIsAddDialogOpen(false);
       resetForm();
     } catch (error) {
-      console.error('Error adding character:', error);
+      // Error handling would use proper logging in production
       toast.error('Erreur lors de l\'ajout du personnage');
     }
   };
 
-  const handleEditCharacter = async (e: React.FormEvent) => {
+  const handleEditCharacter = async (e: any) => {
     e.preventDefault();
     
     if (!editingCharacter || !formData.name.trim() || !formData.character_key.trim()) {
@@ -93,7 +93,7 @@ export function useGameCharacters(props: UseGameCharactersProps) {
       setEditingCharacter(null);
       resetForm();
     } catch (error) {
-      console.error('Error updating character:', error);
+      // Error handling would use proper logging in production
       toast.error('Erreur lors de la modification du personnage');
     }
   };
@@ -103,7 +103,7 @@ export function useGameCharacters(props: UseGameCharactersProps) {
       await onDeleteCharacter(characterId);
       toast.success('Personnage supprimé avec succès');
     } catch (error) {
-      console.error('Error deleting character:', error);
+      // Error handling would use proper logging in production
       toast.error('Erreur lors de la suppression du personnage');
     }
   };

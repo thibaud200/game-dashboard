@@ -2,7 +2,7 @@ import React from 'react';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip';
-import { ArrowLeft, Plus, PencilSimple, Trash, User, Lightning, Users, Star, TrendUp, Gear } from '@phosphor-icons/react';
+import { ArrowLeft, Plus, PencilSimple, Trash, User, Lightning } from '@phosphor-icons/react';
 import { useGameCharacters, UseGameCharactersProps } from '@/hooks/games/useGameCharacters';
 import { AddCharacterDialog, EditCharacterDialog, DeleteCharacterDialog } from '@/components/dialogs';
 

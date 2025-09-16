@@ -18,7 +18,6 @@ export default function StatsPage({
   players,
   games,
   onNavigation,
-  currentView,
   selectedPlayerId,
   selectedGameId,
   navigationContext

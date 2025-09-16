@@ -3,19 +3,16 @@ import { bggApiService } from '@/services/bggApi';
 // Simple test function for BGG API
 export const testBGGApi = async () => {
   try {
-    console.info('Testing BGG API...');
-    
-    // Test search
+    // BGG API test functionality would go here
     const searchResults = await bggApiService.searchGames('Wingspan');
-    console.info('Search results:', searchResults);
 
     if (searchResults.length > 0) {
-      // Test game details
       const gameDetails = await bggApiService.getGameDetails(searchResults[0].id);
-      console.info('Game details:', gameDetails);
+      return gameDetails;
     }
   } catch (error) {
-    console.error('BGG API test failed:', error);
+    // Error handling would use proper logging in production
+    throw error;
   }
 };
 
