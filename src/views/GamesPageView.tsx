@@ -166,33 +166,34 @@ export default function GamesPageView({
       {/* Header */}
       <div className="px-4 pt-8 pb-6">
         <div className="flex items-center justify-between mb-6">
-          <Tooltip>
-            <TooltipTrigger asChild>
-              <button
-                onClick={() => onNavigation('dashboard')}
-                className="p-2 hover:bg-white/10 rounded-lg transition-colors"
-              >
-                <ArrowLeft className="w-6 h-6" />
-              </button>
-            </TooltipTrigger>
-            <TooltipContent>
-              <p>Back to Dashboard</p>
-            </TooltipContent>
-          </Tooltip>
+          <button
+            onClick={() => onNavigation('dashboard')}
+            className="p-2 hover:bg-white/10 rounded-lg transition-colors"
+          >
+            <ArrowLeft className="w-6 h-6" />
+          </button>
           <h1 className="text-2xl font-bold">Games</h1>
-          <Tooltip>
-            <TooltipTrigger asChild>
-              <button
-                onClick={() => onNavigation('stats', undefined, 'games')}
-                className="p-2 hover:bg-white/10 rounded-lg transition-colors"
-              >
-                <ChartLineUp className="w-6 h-6" />
-              </button>
-            </TooltipTrigger>
-            <TooltipContent>
-              <p>View Game Stats</p>
-            </TooltipContent>
-          </Tooltip>
+          <div className="flex space-x-2">
+            <button
+              onClick={() => onNavigation('stats', undefined, 'games')}
+              className="p-2 hover:bg-white/10 rounded-lg transition-colors"
+            >
+              <ChartLineUp className="w-6 h-6" />
+            </button>
+            
+            {/* Add Game Dialog */}
+            <AddGameDialog
+              isOpen={isAddDialogOpen}
+              onOpenChange={onAddDialogToggle}
+              formData={formData}
+              onFormDataChange={onFormDataChange}
+              onBGGGameSelect={onBGGGameSelect}
+              onAddGame={onAddGame}
+              onResetForm={onResetForm}
+              isBGGSearchOpen={isBGGSearchOpen}
+              onBGGSearchToggle={setBGGSearchOpen}
+            />
+          </div>
         </div>
 
         {/* Search */}
@@ -205,38 +206,6 @@ export default function GamesPageView({
             onChange={(e) => onSearchChange(e.target.value)}
             placeholder="Search games, designers, publishers..."
             className="pl-10 bg-white/10 border-white/20 text-white placeholder:text-white/60"
-          />
-        </div>
-
-        {/* Add Game Button */}
-        <div className="mb-6">
-          <Tooltip>
-            <TooltipTrigger asChild>
-              <button
-                onClick={onAddDialogToggle}
-                className="w-full bg-emerald-600/20 hover:bg-emerald-600/30 border-2 border-dashed border-emerald-500/50 hover:border-emerald-400 rounded-xl p-4 transition-all duration-200 group"
-              >
-                <div className="flex items-center justify-center space-x-2 text-emerald-400 group-hover:text-emerald-300">
-                  <Plus className="w-5 h-5" />
-                  <span className="font-medium">Ajouter un jeu</span>
-                </div>
-              </button>
-            </TooltipTrigger>
-            <TooltipContent>
-              <p>Ajouter un nouveau jeu à votre collection</p>
-            </TooltipContent>
-          </Tooltip>
-
-          <AddGameDialog
-            isOpen={isAddDialogOpen}
-            onOpenChange={onAddDialogToggle}
-            formData={formData}
-            onFormDataChange={onFormDataChange}
-            onBGGGameSelect={onBGGGameSelect}
-            onAddGame={onAddGame}
-            onResetForm={onResetForm}
-            isBGGSearchOpen={isBGGSearchOpen}
-            onBGGSearchToggle={setBGGSearchOpen}
           />
         </div>
 
