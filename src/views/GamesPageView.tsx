@@ -210,6 +210,23 @@ export default function GamesPageView({
 
         {/* Add Game Button */}
         <div className="mb-6">
+          <Tooltip>
+            <TooltipTrigger asChild>
+              <button
+                onClick={onAddDialogToggle}
+                className="w-full bg-emerald-600/20 hover:bg-emerald-600/30 border-2 border-dashed border-emerald-500/50 hover:border-emerald-400 rounded-xl p-4 transition-all duration-200 group"
+              >
+                <div className="flex items-center justify-center space-x-2 text-emerald-400 group-hover:text-emerald-300">
+                  <Plus className="w-5 h-5" />
+                  <span className="font-medium">Ajouter un jeu</span>
+                </div>
+              </button>
+            </TooltipTrigger>
+            <TooltipContent>
+              <p>Ajouter un nouveau jeu à votre collection</p>
+            </TooltipContent>
+          </Tooltip>
+
           <AddGameDialog
             isOpen={isAddDialogOpen}
             onOpenChange={onAddDialogToggle}
