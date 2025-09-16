@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { Plus } from '@phosphor-icons/react';
 import { Button } from '@/components/ui/button';
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, DialogTrigger } from '@/components/ui/dialog';
 import { Label } from '@/components/ui/label';
 import { Input } from '@/components/ui/input';
 import { PlayerFormData } from '@/types';
@@ -78,6 +78,9 @@ export function AddPlayerDialog({
       <DialogContent className="bg-slate-800 border-white/20">
         <DialogHeader>
           <DialogTitle className="text-white">Add New Player</DialogTitle>
+          <DialogDescription className="text-white/70">
+            Create a new player profile by filling out the form below.
+          </DialogDescription>
         </DialogHeader>
         <div className="space-y-4">
           <div>

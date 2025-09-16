@@ -3,7 +3,7 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
-import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from '@/components/ui/dialog';
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from '@/components/ui/alert-dialog';
 
 interface ExpansionFormData {
@@ -33,6 +33,7 @@ const ExpansionForm = ({
       <Label htmlFor="name" className="text-white">Nom de l'extension *</Label>
       <Input
         id="name"
+        name="name"
         value={formData.name}
         onChange={(e) => setFormData((prev: ExpansionFormData) => ({ ...prev, name: e.target.value }))}
         className="bg-slate-700/50 border-slate-600 text-white"
@@ -45,6 +46,7 @@ const ExpansionForm = ({
       <Label htmlFor="year_published" className="text-white">Année de publication</Label>
       <Input
         id="year_published"
+        name="year_published"
         type="number"
         value={formData.year_published}
         onChange={(e) => setFormData((prev: ExpansionFormData) => ({ ...prev, year_published: e.target.value }))}
@@ -59,6 +61,7 @@ const ExpansionForm = ({
       <Label htmlFor="bgg_expansion_id" className="text-white">ID BGG</Label>
       <Input
         id="bgg_expansion_id"
+        name="bgg_expansion_id"
         type="number"
         value={formData.bgg_expansion_id}
         onChange={(e) => setFormData((prev: ExpansionFormData) => ({ ...prev, bgg_expansion_id: e.target.value }))}
@@ -72,6 +75,7 @@ const ExpansionForm = ({
       <Label htmlFor="description" className="text-white">Description</Label>
       <Textarea
         id="description"
+        name="description"
         value={formData.description}
         onChange={(e) => setFormData((prev: ExpansionFormData) => ({ ...prev, description: e.target.value }))}
         className="bg-slate-700/50 border-slate-600 text-white min-h-[100px]"
@@ -115,6 +119,9 @@ export function AddExpansionDialog({
       <DialogContent className="bg-slate-800 border-slate-700 max-w-md mx-4">
         <DialogHeader>
           <DialogTitle className="text-white">Ajouter une extension</DialogTitle>
+          <DialogDescription className="text-white/70">
+            Ajoutez une nouvelle extension pour ce jeu.
+          </DialogDescription>
         </DialogHeader>
         <ExpansionForm 
           formData={formData}
@@ -148,6 +155,9 @@ export function EditExpansionDialog({
       <DialogContent className="bg-slate-800 border-slate-700 max-w-md mx-4">
         <DialogHeader>
           <DialogTitle className="text-white">Modifier l'extension</DialogTitle>
+          <DialogDescription className="text-white/70">
+            Modifiez les informations de cette extension.
+          </DialogDescription>
         </DialogHeader>
         <ExpansionForm 
           formData={formData}

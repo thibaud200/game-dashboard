@@ -3,7 +3,7 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
-import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from '@/components/ui/dialog';
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from '@/components/ui/alert-dialog';
 
 interface CharacterFormData {
@@ -34,6 +34,7 @@ const CharacterForm = ({
       <Label htmlFor="name" className="text-white">Nom du personnage *</Label>
       <Input
         id="name"
+        name="name"
         value={formData.name}
         onChange={(e) => setFormData((prev: CharacterFormData) => ({ ...prev, name: e.target.value }))}
         className="bg-slate-700/50 border-slate-600 text-white"
@@ -46,6 +47,7 @@ const CharacterForm = ({
       <Label htmlFor="character_key" className="text-white">Clé du personnage *</Label>
       <Input
         id="character_key"
+        name="character_key"
         value={formData.character_key}
         onChange={(e) => setFormData((prev: CharacterFormData) => ({ ...prev, character_key: e.target.value }))}
         className="bg-slate-700/50 border-slate-600 text-white"
@@ -59,6 +61,7 @@ const CharacterForm = ({
       <Label htmlFor="avatar" className="text-white">Avatar (URL)</Label>
       <Input
         id="avatar"
+        name="avatar"
         value={formData.avatar}
         onChange={(e) => setFormData((prev: CharacterFormData) => ({ ...prev, avatar: e.target.value }))}
         className="bg-slate-700/50 border-slate-600 text-white"
@@ -71,6 +74,7 @@ const CharacterForm = ({
       <Label htmlFor="description" className="text-white">Description</Label>
       <Textarea
         id="description"
+        name="description"
         value={formData.description}
         onChange={(e) => setFormData((prev: CharacterFormData) => ({ ...prev, description: e.target.value }))}
         className="bg-slate-700/50 border-slate-600 text-white min-h-[80px]"
@@ -82,6 +86,7 @@ const CharacterForm = ({
       <Label htmlFor="abilities" className="text-white">Capacités</Label>
       <Textarea
         id="abilities"
+        name="abilities"
         value={formData.abilities}
         onChange={(e) => setFormData((prev: CharacterFormData) => ({ ...prev, abilities: e.target.value }))}
         className="bg-slate-700/50 border-slate-600 text-white min-h-[80px]"
@@ -126,6 +131,9 @@ export function AddCharacterDialog({
       <DialogContent className="bg-slate-800 border-slate-700 max-w-md mx-4">
         <DialogHeader>
           <DialogTitle className="text-white">Ajouter un personnage</DialogTitle>
+          <DialogDescription className="text-white/70">
+            Ajoutez un nouveau personnage/rôle pour ce jeu.
+          </DialogDescription>
         </DialogHeader>
         <CharacterForm 
           formData={formData}
@@ -159,6 +167,9 @@ export function EditCharacterDialog({
       <DialogContent className="bg-slate-800 border-slate-700 max-w-md mx-4">
         <DialogHeader>
           <DialogTitle className="text-white">Modifier le personnage</DialogTitle>
+          <DialogDescription className="text-white/70">
+            Modifiez les informations de ce personnage/rôle.
+          </DialogDescription>
         </DialogHeader>
         <CharacterForm 
           formData={formData}

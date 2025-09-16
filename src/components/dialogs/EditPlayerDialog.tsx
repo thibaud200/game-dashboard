@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Dialog, DialogContent, DialogHeader, DialogTitle } from '@/components/ui/dialog';
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from '@/components/ui/dialog';
 import { Label } from '@/components/ui/label';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
@@ -92,6 +92,9 @@ export function EditPlayerDialog({
       <DialogContent className="bg-slate-800 border-white/20">
         <DialogHeader>
           <DialogTitle className="text-white">Edit Player</DialogTitle>
+          <DialogDescription className="text-white/70">
+            Update player information and statistics.
+          </DialogDescription>
         </DialogHeader>
         <div className="space-y-4">
           <div>
