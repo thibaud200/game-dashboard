@@ -64,7 +64,6 @@ export default function GameStatsPage({
       gameStats={gameStats}
       games={games}
       onNavigation={onNavigation}
-      currentView={currentView}
       selectedGameId={selectedCircleId}
       players={players}
     />

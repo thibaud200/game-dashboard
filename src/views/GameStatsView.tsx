@@ -49,7 +49,6 @@ interface GameStatsViewProps {
   gameStats: any
   games: Game[]
   onNavigation: (view: string) => void
-  currentView: string
   selectedGameId?: number
   players: Player[]
 }
@@ -141,21 +140,7 @@ export default function GameStatsView({
           ))}
         </div>
 
-        {/* Stats Type Switcher */}
-        <div className="flex space-x-2 mb-6">
-          <button
-            onClick={() => onNavigation('player-stats')}
-            className="flex-1 px-4 py-2 rounded-lg transition-colors bg-white/10 text-white/80 hover:bg-white/20"
-          >
-            Player Stats
-          </button>
-          <button
-            onClick={() => onNavigation('game-stats')}
-            className="flex-1 px-4 py-2 rounded-lg transition-colors bg-primary text-primary-foreground"
-          >
-            Game Stats
-          </button>
-        </div>
+
       </div>
 
       {/* Content */}
