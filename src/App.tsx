@@ -259,13 +259,11 @@ export default function App() {
 
   const handleCreateGameSession = async (sessionData: any) => {
     // Implementation for creating a game session
+    // eslint-disable-next-line no-console
     console.log('Creating game session:', sessionData);
   };
 
   const renderCurrentView = () => {
-    const selectedPlayer = selectedPlayerId ? players?.find(p => p.player_id === selectedPlayerId) : null;
-    const selectedGame = selectedGameId ? games?.find(g => g.game_id === selectedGameId) : null;
-
     switch (currentView) {
       case 'dashboard':
         return (
