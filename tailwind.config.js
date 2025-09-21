@@ -9,8 +9,8 @@ try {
   if (fs.existsSync(themePath)) {
     theme = JSON.parse(fs.readFileSync(themePath, "utf-8"));
   }
-} catch {
-  // Theme parsing error - fallback to default theme
+} catch (err) {
+  console.error('failed to parse custom styles', err);
 }
 const defaultTheme = {
   container: {
@@ -138,10 +138,10 @@ const defaultTheme = {
     80: "var(--size-80)",
     96: "var(--size-96)",
   },
-  darkMode: ["selector", '[data-appearance="dark"]']
+  darkMode: ["selector", '[data-appearance="dark"]'],
 };
 
 export default {
   content: ["./index.html", "./src/**/*.{js,ts,jsx,tsx}"],
   theme: { ...defaultTheme, ...theme },
-};;
+};
