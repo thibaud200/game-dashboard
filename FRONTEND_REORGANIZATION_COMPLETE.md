@@ -1,4 +1,13 @@
-# ✅ Frontend Réorganisé - Validation Complète
+# ⚠️ Fichier Migré vers src/docs/
+
+Ce fichier a été déplacé vers : `/src/docs/FRONTEND_REORGANIZATION_SUMMARY.md`
+
+Pour accéder à la documentation de réorganisation, consultez :
+`src/docs/FRONTEND_REORGANIZATION_SUMMARY.md`
+
+Voir également :
+- `/src/docs/ARCHITECTURE.md` pour l'architecture complète
+- `/src/docs/REFACTORING_GUIDE.md` pour les patterns de développement
 
 ## 🎯 Mission Accomplie
 

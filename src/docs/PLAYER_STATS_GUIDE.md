@@ -1,13 +1,4 @@
-# ⚠️ Fichier Migré vers src/docs/
-
-Ce fichier a été déplacé vers : `/src/docs/PLAYER_STATS_GUIDE.md`
-
-Pour accéder à la documentation des statistiques joueurs, consultez :
-`src/docs/PLAYER_STATS_GUIDE.md`
-
-Voir également :
-- `/src/docs/ARCHITECTURE.md` pour l'architecture complète
-- `/src/docs/REFACTORING_GUIDE.md` pour les patterns de développement
+# Individual Player Statistics - User Guide
 
 ## Overview
 The application already provides comprehensive individual player statistics functionality through the PlayerStatsPage component.

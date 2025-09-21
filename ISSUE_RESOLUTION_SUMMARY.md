@@ -1,4 +1,13 @@
-# Issue Resolution Summary
+# ⚠️ Fichier Migré vers src/docs/
+
+Ce fichier a été déplacé vers : `/src/docs/ISSUE_RESOLUTION.md`
+
+Pour accéder à la documentation de résolution des problèmes, consultez :
+`src/docs/ISSUE_RESOLUTION.md`
+
+Voir également :
+- `/src/docs/ARCHITECTURE.md` pour l'architecture complète
+- `/src/docs/REFACTORING_GUIDE.md` pour les patterns de développement
 
 ### ✅ CORS Response
 

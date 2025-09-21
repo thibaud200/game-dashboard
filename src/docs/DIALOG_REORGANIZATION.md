@@ -1,13 +1,18 @@
-# ⚠️ Fichier Migré vers src/docs/
+# Dialog Reorganization and Form Validation Summary
 
-Ce fichier a été déplacé vers : `/src/docs/DIALOG_REORGANIZATION.md`
+## Changes Made
 
-Pour accéder à la documentation des dialogs, consultez :
-`src/docs/DIALOG_REORGANIZATION.md`
-
-Voir également :
-- `/src/docs/ARCHITECTURE.md` pour l'architecture complète
-- `/src/docs/REFACTORING_GUIDE.md` pour les patterns de développement
+### 1. Dialog Reorganization
+- **Moved all dialog components to a single `src/components/dialogs/` directory**
+- **Old structure:**
+  ```
+  src/components/
+    ├── dialogs/
+    │   ├── AddPlayerDialog.tsx
+    │   ├── EditPlayerDialog.tsx
+    │   └── DeletePlayerDialog.tsx
+    └── games/
+        ├── AddGameDialog.tsx
         ├── EditGameDialog.tsx
         └── DeleteGameDialog.tsx
   ```
