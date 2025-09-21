@@ -1,22 +1,31 @@
-# 🗺️ Roadmap du Projet Board Game Dashboard
+# 🗺️ Ro### Priorité Immédiate (2-4 semaines) 
+1. **🗄️ Migration Schema BGG Complet** - Ajouter TOUS les champs manquants de board-game-scorekeep (2-3 jours)
+2. **🎮 Service UltraBoardGames** - **COPIER** le service fonctionnel de boardGameScore (1-2 jours)
+3. **🧪 Infrastructure Tests** - **TERMINÉ** ✅ Vitest + RTL + MSW configurés, tous tests passent (31/31 tests ✅)
+4. **� Tests Avancés** - **NOUVEAU** ⚡ Évolution vers 50+ tests avec intégration E2E (3-4 jours)
+5. **�📊 Cache BGG** - Performance et limitation API (2-3 jours)
+6. **📝 Formulaire BGG Pré-Import** - Copier de board-game-scorekeep (2-3 jours)du Projet Board Game Dashboard
 
 Ce document présente l'état d'avancement et les prochaines étapes pour l'application Board Game Dashboard. La roadmap est organisée pour séparer clairement ce qui est **terminé** de ce qui **reste à faire**.
 
-**📈 Statut Global** : Le projet **dépasse largement** les objectifs de la roadmap v1 (board-game-scorekeep) avec **85% des fonctionnalités atteintes ou surpassées** et une architecture plus robuste.
+**📈 Statut Global** : Le projet **dépasse largement** les objectifs de la roadmap v1 avec **85% des fonctionnalités atteintes** et une architecture plus robuste. **Infrastructure tests solide** (31/31 ✅) prête pour évolution vers 50+ tests.
 
 **🎯 Stratégie Smart** : Exploiter au maximum le code existant des projets [boardGameScore](https://github.com/thibaud200/boardGameScore) et [board-game-scorekeep](https://github.com/thibaud200/board-game-scorekeep) plutôt que de repartir de zéro.
+
+**🧪 Focus Tests** : Suite à l'analyse comparative avec board-game-scorekeep (52/52 tests), priorité donnée à l'évolution de l'infrastructure tests pour atteindre les standards de production.
 
 ### Priorité Immédiate (2-4 semaines) 
 1. **�️ Migration Schema BGG Complet** - Ajouter TOUS les champs manquants de board-game-scorekeep (2-3 jours)
 2. **🎮 Service UltraBoardGames** - **COPIER** le service fonctionnel de boardGameScore (1-2 jours)
-3. **🧪 Infrastructure Tests** - Adapter Jest + RTL de board-game-scorekeep (3-4 jours)
+3. **🧪 Infrastructure Tests** - **TERMINÉ** ✅ Vitest + RTL + MSW configurés, tous tests passent (31/31 tests ✅)
 4. **📊 Cache BGG** - Performance et limitation API (2-3 jours)
-5. **📝 Formulaire BGG Pré-Import** - Copier de board-game-scorekeep (2-3 jours)
+6. **📝 Formulaire BGG Pré-Import** - Copier de board-game-scorekeep (2-3 jours)
 
 ### Priorité Secondaire (1-2 mois)
-6. **🎨 Thème Sombre/Clair** - Finition UX (2-3 jours)
-7. **📊 Graphiques Temporels** - Infrastructure prête, implémentation visualisations (1 semaine)
-8. **🔄 Système Migration Automatique** - Versioning schema sécurisé (2-3 jours)
+7. **🎨 Thème Sombre/Clair** - Finition UX (2-3 jours)
+8. **📊 Graphiques Temporels** - Infrastructure prête, implémentation visualisations (1 semaine)
+9. **🔄 Système Migration Automatique** - Versioning schema sécurisé (2-3 jours)
+10. **🧪 Tests Performance** - Benchmarking et optimisation suite de tests (1-2 jours)
 
 ---
 
@@ -33,6 +42,22 @@ Ce document présente l'état d'avancement et les prochaines étapes pour l'appl
 -   ✅ **Normalisation BDD** : Tables `players`, `games`, `game_expansions`, `game_characters`, `sessions`, `session_players` avec clés étrangères et index
 -   ✅ **Validation Zod** : Schémas complets et middleware intégrés dans tous les contrôleurs
 -   ✅ **Optimisations SQL** : Vues `player_statistics` et `game_statistics`, résolution N+1, 37.5% réduction requêtes
+
+### 🧪 **NOUVEAU : Évolution Tests Avancés** (Ajouté suite à comparatif board-game-scorekeep)
+
+**📊 État Actuel vs Référence :**
+- ✅ **Infrastructure Solide** : 31/31 tests ✅ (spark-template) vs 52/52 tests ✅ (board-game-scorekeep)
+- ✅ **Framework Moderne** : Vitest + RTL + MSW configurés et fonctionnels
+- ⚠️ **Organisation** : Structure plate vs organisation mature (unit/technical/, functional/, integration/)
+- ❌ **Tests E2E** : Aucun workflow d'intégration vs 7 tests BGG complets 
+- ❌ **Fixtures** : Mocks basiques vs données BGG réalistes (Gloomhaven, Catan)
+
+**🎯 Plan d'Évolution Tests (3-4 jours) :**
+1. **🏗️ Restructuration** : `unit/technical/`, `unit/functional/`, `integration/`, `fixtures/`
+2. **🔄 Tests Intégration E2E** : 7 workflows BGG (search → select → import → save)
+3. **📊 Fixtures Réalistes** : Données BGG authentiques (Gloomhaven, Wingspan, Catan)
+4. **🎭 Mocks Avancés** : Builders configurables, matchers custom (`toHaveValidGameTemplate`)
+5. **📈 Extension Coverage** : 31 → 50+ tests (17 techniques + 28 fonctionnels + 7 intégration)
 
 ### 🎨 Interface Utilisateur TERMINÉE
 -   ✅ **Design System Complet** : Tailwind CSS + shadcn/ui avec glassmorphisme
@@ -77,12 +102,22 @@ Ce document présente l'état d'avancement et les prochaines étapes pour l'appl
 -   ✅ **Icônes Cohérentes** : @phosphor-icons/react dans toute l'application
 -   ✅ **Notifications** : Sonner pour feedback utilisateur
 
-### ⚠️ Tests & Qualité - **PRIORITÉ CRITIQUE**
--   ❌ **Infrastructure Tests** : Aucun framework configuré (mais code existe dans board-game-scorekeep)
--   ❌ **Tests Unitaires** : À adapter de board-game-scorekeep (52/52 ✅ dans la référence)
--   ❌ **Tests d'Intégration** : BGG/DB tests à porter
--   ⚠️ **Scripts Manuels** : `test-validation.ts` et `test-n1-optimization.ts` (validation/benchmark uniquement)
--   **Action** : Copier `tests/` complet de board-game-scorekeep et adapter au contexte actuel
+### 🧪 Tests & Qualité - **ÉVOLUTION EN COURS** ⚡
+
+**✅ État Actuel (Baseline Solide) :**
+-   ✅ **Infrastructure Tests** : Vitest + React Testing Library + MSW configurés
+-   ✅ **31/31 Tests Passent** : 100% de réussite avec couverture seuils 80%
+-   ✅ **Tests Services** : BGG API service avec mocks MSW fonctionnels
+-   ✅ **Tests Hooks** : useGamesPage et autres hooks React validés
+-   ✅ **Tests Components** : BottomNavigation, BGGSearch, SimpleDashboard
+-   ✅ **Scripts Manuels** : `test-validation.ts` et `test-n1-optimization.ts`
+
+**🎯 Objectifs Évolution (Inspiration board-game-scorekeep 52/52 tests) :**
+-   ⚡ **Structure Organisée** : Migration vers `unit/technical/`, `unit/functional/`, `integration/`
+-   ⚡ **Tests E2E** : 7 workflows BGG complets (search → select → import → save)
+-   ⚡ **Fixtures Réalistes** : Données BGG authentiques (Gloomhaven, Wingspan, Catan)
+-   ⚡ **Mocks Sophistiqués** : Builders, matchers custom, support multilingue
+-   ⚡ **50+ Tests Target** : Extension coverage pour égaler référence projet
 
 ---
 
@@ -431,3 +466,33 @@ Les éléments suivants sont des améliorations pertinentes identifiées dans le
 - 🔄 En cours ou partiellement fait
 - ❌ Pas commencé
 - [ ] À faire dans les phases futures
+
+---
+
+## 📊 **MÉTRIQUES COMPARATIVES : spark-template vs board-game-scorekeep**
+
+### 🧪 **Infrastructure Tests - Analyse Détaillée**
+
+| **Critère** | **spark-template (actuel)** | **board-game-scorekeep (référence)** | **Gap à combler** |
+|-------------|------------------------------|--------------------------------------|-------------------|
+| **Tests Total** | 31/31 ✅ (100%) | 52/52 ✅ (100%) | +21 tests |
+| **Organisation** | Structure plate | Structure mature (unit/integration/) | Restructuration |
+| **Workflow E2E** | ❌ Aucun | ✅ 7 tests BGG complets | +7 tests intégration |
+| **Fixtures** | ❌ Basiques | ✅ Données BGG réalistes | +Gloomhaven/Catan/Wingspan |
+| **Mocks** | ✅ MSW fonctionnel | ✅ Builders + matchers custom | +Sophistication |
+| **Performance** | ~5-6 secondes | ~10-15 secondes | ✅ Plus rapide |
+
+### 🎯 **Plan de Rattrapage (3-4 jours)**
+
+**Jour 1-2 : Restructuration & Tests Techniques**
+- Réorganiser en `unit/technical/`, `unit/functional/`, `integration/`
+- Ajouter 10 tests techniques (database, API, utils)
+- Créer fixtures BGG réalistes
+
+**Jour 3-4 : Tests E2E & Mocks Avancés**  
+- Implémenter 7 tests d'intégration BGG workflow
+- Développer builders et matchers custom
+- Atteindre 50+ tests pour égaler la référence
+
+### 📈 **Objectif Final**
+Transformer l'infrastructure de **31 tests basiques** en **50+ tests professionnels** avec workflow E2E, pour égaler board-game-scorekeep et préparer le passage en production.
