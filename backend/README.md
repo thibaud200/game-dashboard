@@ -1,75 +1,117 @@
-# Board Game Score Backend
+# Backend API - Board Game Dashboard
 
-This is the backend API for the Board Game Score tracking application.
+## Vue d'ensemble
 
-## Setup
+Ce document décrit l'API backend pour l'application Board Game Dashboard. Le backend est construit avec Express.js et communique avec une base de données SQLite pour la persistance des données.
 
-1. Install dependencies:
-```bash
-cd backend
-npm install
+## Structure du Projet
+
+```
+backend/
+├── database/
+│   ├── DatabaseManager.ts  # Classe pour gérer les interactions avec la BDD
+│   ├── schema.sql          # Schéma complet de la BDD
+│   ├── database-structure.md # Documentation détaillée du schéma
+│   └── README.md           # Documentation spécifique à la BDD
+└── server.ts               # Point d'entrée du serveur, gestion des routes
 ```
 
-2. Initialize the database:
-```bash
-npm run init-db
-```
+-   **`server.ts`**: Configure le serveur Express, définit les routes de l'API et gère les requêtes HTTP.
+-   **`database/DatabaseManager.ts`**: Abstrait toutes les opérations de base de données (CRUD) et fournit une interface simple pour le `server.ts`.
+-   **`database/`**: Contient toute la documentation et le code relatifs à la base de données.
 
-3. Start the development server:
-```bash
-npm run dev
-```
+## Installation et Lancement
 
-The server will run on `http://localhost:3001`
+1.  **Installer les dépendances :**
+    ```bash
+    cd backend
+    npm install
+    ```
+
+2.  **Initialiser la base de données :**
+    Ce script crée le fichier de base de données et applique le schéma si ce n'est pas déjà fait.
+    ```bash
+    npm run init-db
+    ```
+
+3.  **Démarrer le serveur de développement :**
+    ```bash
+    npm run dev
+    ```
+    Le serveur sera accessible à l'adresse `http://localhost:3001`.
 
 ## API Endpoints
 
+### Health Check
+
+-   `GET /api/health`
+    -   **Description**: Vérifie que le serveur est en ligne.
+    -   **Réponse**: `{ "status": "OK", "timestamp": "..." }`
+
 ### Players
-- `GET /api/players` - Get all players
-- `GET /api/players/:id` - Get player by ID
-- `POST /api/players` - Create new player
-- `PUT /api/players/:id` - Update player
-- `DELETE /api/players/:id` - Delete player
+
+-   `GET /api/players`
+    -   **Description**: Récupère la liste de tous les joueurs.
+-   `GET /api/players/:id`
+    -   **Description**: Récupère un joueur par son ID.
+-   `POST /api/players`
+    -   **Description**: Crée un nouveau joueur.
+    -   **Body**: `{ "player_name": "string", "avatar": "string" (optionnel), "favorite_game": "string" (optionnel) }`
+-   `PUT /api/players/:id`
+    -   **Description**: Met à jour un joueur existant.
+    -   **Body**: `{ "player_name": "string", ... (tous les champs de la table player) }`
+-   `DELETE /api/players/:id`
+    -   **Description**: Supprime un joueur.
 
 ### Games
-- `GET /api/games` - Get all games
-- `GET /api/games/:id` - Get game by ID
-- `POST /api/games` - Create new game
-- `PUT /api/games/:id` - Update game
-- `DELETE /api/games/:id` - Delete game
+
+-   `GET /api/games`
+    -   **Description**: Récupère la liste de tous les jeux, incluant leurs extensions et personnages.
+-   `GET /api/games/:id`
+    -   **Description**: Récupère un jeu par son ID, incluant ses extensions et personnages.
+-   `POST /api/games`
+    -   **Description**: Crée un nouveau jeu, avec ses extensions et personnages si fournis.
+    -   **Body**: `{ "name": "string", "min_players": "number", "max_players": "number", ... (autres champs de la table game), "expansions": [], "characters": [] }`
+-   `PUT /api/games/:id`
+    -   **Description**: Met à jour un jeu existant. Les extensions et personnages existants sont supprimés et remplacés par ceux fournis dans la requête.
+    -   **Body**: `{ "name": "string", ... (tous les champs de la table game), "expansions": [], "characters": [] }`
+-   `DELETE /api/games/:id`
+    -   **Description**: Supprime un jeu et ses relations en cascade (extensions, personnages, sessions).
 
 ### Sessions
-- `GET /api/sessions` - Get all sessions (optional ?game_id filter)
-- `POST /api/sessions` - Create new game session
+
+-   `GET /api/sessions`
+    -   **Description**: Récupère toutes les sessions de jeu. Peut être filtré par `game_id`.
+    -   **Query Param**: `?game_id=<id>` (optionnel)
+-   `POST /api/sessions`
+    -   **Description**: Crée une nouvelle session de jeu et y associe les joueurs.
+    -   **Body**: `{ "game_id": "number", "players": [{ "player_id": "number", "score": "number", ... }], ... (autres champs de la table game_sessions) }`
 
 ### Statistics
-- `GET /api/stats/players` - Get player statistics
-- `GET /api/stats/games` - Get game statistics
 
-### Health
-- `GET /api/health` - Health check endpoint
+-   `GET /api/stats/players`
+    -   **Description**: Récupère des statistiques agrégées sur les joueurs.
+    -   **Réponse**: `{ "total_players": "number", "total_games_played": "number", "overall_average_score": "number" }`
+-   `GET /api/stats/games`
+    -   **Description**: Récupère des statistiques agrégées sur les jeux.
+    -   **Réponse**: `{ "total_games": "number", "games_with_expansions": "number", "games_with_characters": "number", "average_rating": "number" }`
 
-## Database
+## Base de Données
 
-The backend uses SQLite with the `better-sqlite3` library. The database file is created automatically when the server starts.
+Le backend utilise SQLite via la bibliothèque `better-sqlite3`. La logique d'accès à la base de données est entièrement encapsulée dans la classe `DatabaseManager`.
 
-### Schema
+Pour une description détaillée du schéma, des tables, des vues et des triggers, veuillez consulter la documentation dédiée :
+-   **Documentation de la Base de Données**
 
-The database includes tables for:
-- `players` - Player information
-- `games` - Game information
-- `game_expansions` - Game expansions
-- `game_characters` - Game characters/roles
-- `game_sessions` - Game session records
-- `session_players` - Players in each session
+## Gestion des Erreurs
+
+-   **Wrapper `asyncHandler`**: Toutes les routes asynchrones sont enveloppées dans un `asyncHandler` qui propage les erreurs au middleware de gestion des erreurs.
+-   **Middleware Centralisé**: Un middleware à la fin de `server.ts` intercepte toutes les erreurs.
+    -   Il gère spécifiquement les erreurs de contrainte de la base de données (ex: `SQLITE_CONSTRAINT`).
+    -   Il renvoie une erreur 500 générique pour les autres cas, avec plus de détails en environnement de développement.
+-   **404 Handler**: Un middleware gère les requêtes vers des endpoints non trouvés.
 
 ## Environment Variables
 
-- `PORT` - Server port (default: 3001)
-- `NODE_ENV` - Environment (development/production)
-
-## Development
-
-- `npm run dev` - Start development server with auto-reload
-- `npm run build` - Build TypeScript to JavaScript
-- `npm start` - Start production server
+-   `PORT` : Port sur lequel le serveur écoute (défaut : `3001`).
+-   `NODE_ENV` : Environnement d'exécution (`development` ou `production`).

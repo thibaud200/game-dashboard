@@ -80,29 +80,6 @@ src/
 └── main.css               # 🔒 Styles structurels (ne pas modifier)
 ```
 
-## 🎯 Architecture Container/Presenter
-
-### Pattern Implémenté
-
-```typescript
-// Container (Logique)
-export default function PlayersPage(props) {
-  const logic = usePlayersPage(props);
-  return <PlayersPageView {...logic} />;
-}
-
-// Hook (Logique métier)
-export const usePlayersPage = (data) => {
-  const [state, setState] = useState();
-  const handleAction = () => { /* logique */ };
-  return { state, handleAction };
-};
-
-// View (Présentation)
-export function PlayersPageView({ state, handleAction }) {
-  return <div>{/* JSX pur */}</div>;
-}
-```
 
 ## ✅ État du Refactoring
 
@@ -151,25 +128,6 @@ export function PlayersPageView({ state, handleAction }) {
 - **Hooks** : Logique métier, état, effets
 - **Views** : JSX pur, pas de logique
 - **Types** : Interfaces centralisées dans `/types/index.ts`
-
-### Imports
-```typescript
-// 1. React
-import React, { useState, useEffect } from 'react'
-
-// 2. Libraries externes
-import { Button } from '@/components/ui/button'
-import { Plus } from '@phosphor-icons/react'
-
-// 3. Types
-import { Player, Game } from '@/types'
-
-// 4. Hooks & Services
-import { usePlayersPage } from '@/hooks/usePlayersPage'
-
-// 5. Relatifs
-import { PlayerCard } from './PlayerCard'
-```
 
 ## 🔄 Processus de Développement
 

@@ -23,23 +23,32 @@ PRAGMA table_info(session_players);
 SELECT 'PLAYERS table verification:' as check_type;
 SELECT 
     CASE 
-        WHEN COUNT(*) = 8 THEN '✅ All required columns present'
-        ELSE '❌ Missing columns: ' || (8 - COUNT(*)) || ' missing'
+        WHEN COUNT(*) = 10 THEN '✅ All required columns present'
+        ELSE '❌ Missing columns: ' || (10 - COUNT(*)) || ' missing'
     END as result
 FROM pragma_table_info('players')
-WHERE name IN ('player_id', 'player_name', 'avatar', 'games_played', 'wins', 'total_score', 'average_score', 'created_at');
+WHERE name IN ('player_id', 'player_name', 'avatar', 'games_played', 'wins', 'total_score', 'average_score', 'favorite_game', 'created_at', 'updated_at');
 
 SELECT 'GAMES table verification:' as check_type;
 SELECT 
     CASE 
-        WHEN COUNT(*) = 23 THEN '✅ All required columns present'
-        ELSE '❌ Missing columns: ' || (23 - COUNT(*)) || ' missing'
+        WHEN COUNT(*) = 25 THEN '✅ All required columns present'
+        ELSE '❌ Missing columns: ' || (25 - COUNT(*)) || ' missing'
     END as result
 FROM pragma_table_info('games')
 WHERE name IN ('game_id', 'bgg_id', 'name', 'description', 'image', 'min_players', 'max_players', 'duration', 
                'difficulty', 'category', 'year_published', 'publisher', 'designer', 'bgg_rating', 'weight', 
-               'age_min', 'game_type', 'supports_cooperative', 'supports_competitive', 'supports_campaign', 
-               'has_expansion', 'has_characters', 'created_at');
+               'age_min', 'game_type', 'supports_cooperative', 'supports_competitive', 'supports_campaign', 'supports_hybrid',
+               'has_expansion', 'has_characters', 'created_at', 'updated_at');
+
+SELECT 'GAME_EXPANSIONS table verification:' as check_type;
+SELECT 
+    CASE 
+        WHEN COUNT(*) = 6 THEN '✅ All required columns present'
+        ELSE '❌ Missing columns: ' || (6 - COUNT(*)) || ' missing'
+    END as result
+FROM pragma_table_info('game_expansions')
+WHERE name IN ('expansion_id', 'game_id', 'bgg_expansion_id', 'name', 'year_published', 'description');
 
 SELECT 'GAME_CHARACTERS table verification:' as check_type;
 SELECT 
@@ -49,6 +58,24 @@ SELECT
     END as result
 FROM pragma_table_info('game_characters')
 WHERE name IN ('character_id', 'game_id', 'character_key', 'name', 'description', 'avatar', 'abilities');
+
+SELECT 'GAME_SESSIONS table verification:' as check_type;
+SELECT 
+    CASE 
+        WHEN COUNT(*) = 8 THEN '✅ All required columns present'
+        ELSE '❌ Missing columns: ' || (8 - COUNT(*)) || ' missing'
+    END as result
+FROM pragma_table_info('game_sessions')
+WHERE name IN ('session_id', 'game_id', 'session_date', 'duration_minutes', 'winner_player_id', 'session_type', 'notes', 'created_at');
+
+SELECT 'SESSION_PLAYERS table verification:' as check_type;
+SELECT 
+    CASE 
+        WHEN COUNT(*) = 8 THEN '✅ All required columns present'
+        ELSE '❌ Missing columns: ' || (8 - COUNT(*)) || ' missing'
+    END as result
+FROM pragma_table_info('session_players')
+WHERE name IN ('session_player_id', 'session_id', 'player_id', 'character_id', 'score', 'placement', 'is_winner', 'notes');
 
 -- Check for missing avatar field specifically
 SELECT 'Avatar field check:' as check_type;
