@@ -357,7 +357,6 @@ export default function App() {
           <GameCharactersPage
             game={game}
             onNavigation={handleNavigation}
-            currentView={currentView}
             navigationSource={navigationContext.source}
             onAddCharacter={async () => ({ 
               character_id: 1, 
