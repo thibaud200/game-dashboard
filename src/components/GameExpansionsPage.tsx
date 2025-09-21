@@ -1,6 +1,6 @@
 import React from 'react';
 import GameExpansionsView from '@/views/games/GameExpansionsView';
-import { Game, GameExpansion } from '@/types';
+import { Game, GameExpansion } from '@/types/index';
 
 interface GameExpansionsPageProps {
   game: Game

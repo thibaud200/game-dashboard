@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Game, BGGGame } from '@/types';
+import { Game, BGGGame } from '@/types/index';
 import { useGamesPage, GamesPageData } from '@/hooks/useGamesPage';
 import GamesPageView from '@/views/GamesPageView';
 

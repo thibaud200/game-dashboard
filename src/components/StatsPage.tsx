@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { ArrowLeft, Users, TrendUp } from '@phosphor-icons/react';
 import PlayerStatsPage from './PlayerStatsPage';
 import GameStatsPage from './GameStatsPage';
-import { Player, Game } from '@/types';
+import { Player, Game } from '@/types/index';
 
 interface StatsPageProps {
   players: Player[];

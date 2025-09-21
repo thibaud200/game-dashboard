@@ -9,7 +9,7 @@ import NewGamePage from '@/components/NewGamePage';
 import GameDetailPage from '@/components/GameDetailPage';
 import GameExpansionsPage from '@/components/GameExpansionsPage';
 import GameCharactersPage from '@/components/GameCharactersPage';
-import { Player, Game, NavigationContext } from '@/types';
+import { Player, Game, NavigationContext } from '@/types/index';
 
 // Mock data
 const mockData = {

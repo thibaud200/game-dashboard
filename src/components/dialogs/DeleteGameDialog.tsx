@@ -11,7 +11,7 @@ import {
   AlertDialogTrigger 
 } from '@/components/ui/alert-dialog';
 
-import { Game } from '@/types';
+import { Game } from '@/types/index';
 
 interface DeleteGameDialogProps {
   game: Game

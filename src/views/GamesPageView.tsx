@@ -31,7 +31,7 @@ import {
 } from '@/components/ui/dropdown-menu';
 import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip';
 import { Textarea } from '@/components/ui/textarea';
-import { Game } from '@/types';
+import { Game } from '@/types/index';
 import { AddGameDialog, EditGameDialog, DeleteGameDialog } from '@/components/dialogs';
 
 interface GamesPageViewProps {

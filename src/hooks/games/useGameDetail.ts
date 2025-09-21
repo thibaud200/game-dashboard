@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Game } from '@/types';
+import { Game } from '@/types/index';
 
 export interface UseGameDetailProps {
   game: Game;

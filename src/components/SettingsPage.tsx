@@ -1,7 +1,7 @@
 import React from 'react';
 import { SettingsPageView } from '@/views/SettingsPageView';
 import { useSettingsPage, SettingsPageData } from '@/hooks/useSettingsPage';
-import { NavigationHandler } from '@/types';
+import { NavigationHandler } from '@/types/index';
 
 interface SettingsPageProps {
   onNavigation: NavigationHandler;

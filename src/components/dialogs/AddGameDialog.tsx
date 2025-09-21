@@ -18,7 +18,7 @@ import { Checkbox } from '@/components/ui/checkbox';
 import BGGSearch from '@/components/BGGSearch';
 import { BGGGame } from '@/services/bggApi';
 
-import { GameExpansion, GameCharacter } from '@/types';
+import { GameExpansion, GameCharacter } from '@/types/index';
 
 interface FormData {
   name: string

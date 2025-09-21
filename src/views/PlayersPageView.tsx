@@ -19,7 +19,7 @@ import {
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
 import { AddPlayerDialog, EditPlayerDialog, DeletePlayerDialog } from '@/components/dialogs';
-import { Player, PlayerFormData } from '@/types';
+import { Player, PlayerFormData } from '@/types/index';
 
 interface PlayersPageViewProps {
   players: Player[];

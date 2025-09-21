@@ -1,5 +1,5 @@
 import { useState, useEffect, useMemo } from 'react';
-import { Game, NavigationHandler, GameFormData } from '@/types';
+import { Game, NavigationHandler, GameFormData } from '@/types/index';
 
 export interface GamesPageData {
   games: Game[];
