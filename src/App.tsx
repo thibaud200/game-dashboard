@@ -308,8 +308,8 @@ export default function App() {
             games={games || []}
             currentView={currentView}
             onNavigation={handleNavigation}
-            selectedPlayerId={selectedPlayerId}
-            selectedGameId={selectedGameId}
+            selectedPlayerId={selectedPlayerId || undefined}
+            selectedGameId={selectedGameId || undefined}
             navigationContext={navigationContext}
           />
         );
