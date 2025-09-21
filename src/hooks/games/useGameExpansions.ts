@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { toast } from 'sonner';
-import { GameExpansion, Game } from '@/types/index';
+import { GameExpansion, Game } from '@/types';
 
 export interface UseGameExpansionsProps {
   game: Game;

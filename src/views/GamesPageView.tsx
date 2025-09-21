@@ -31,7 +31,7 @@ import {
 } from '@/components/ui/dropdown-menu';
 import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip';
 import { Textarea } from '@/components/ui/textarea';
-import { Game } from '@/types/index';
+import { Game } from '@/types';
 import { AddGameDialog, EditGameDialog, DeleteGameDialog } from '@/components/dialogs';
 
 interface GamesPageViewProps {
@@ -335,8 +335,6 @@ export default function GamesPageView({
                               <div>
                                 <h4 className="text-sm font-medium text-purple-300 mb-1">Expansions</h4>
                                 <Textarea
-                                  id={`game-expansions-${game.game_id}`}
-                                  name={`game-expansions-${game.game_id}`}
                                   value={(game.expansions || []).map(exp => 
                                     `${exp.name}${exp.year_published > 0 ? ` (${exp.year_published})` : ''}`
                                   ).join(', ')}
@@ -366,7 +364,7 @@ export default function GamesPageView({
                                     });
                                     
                                     // This should be handled by parent component
-                                    // onUpdateGame(game.game_id, { ...game, expansions: _parsedExpansions });
+                                    // onUpdateGame(game.game_id, { ...game, expansions: parsedExpansions });
                                   }}
                                   placeholder="Format: Extension 1 (2023), Extension 2 (2024), ..."
                                   className="min-h-[60px] bg-white/5 border-white/10 text-white text-xs resize-none"

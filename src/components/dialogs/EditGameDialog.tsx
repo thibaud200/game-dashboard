@@ -15,7 +15,7 @@ import { Textarea } from '@/components/ui/textarea';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Checkbox } from '@/components/ui/checkbox';
 
-import { Game, GameExpansion, GameCharacter } from '@/types/index';
+import { Game, GameExpansion, GameCharacter } from '@/types';
 
 interface FormData {
   name: string

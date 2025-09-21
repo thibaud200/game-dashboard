@@ -1,14 +1,13 @@
 // API service to connect frontend with backend database
-
 const API_BASE_URL = typeof window !== 'undefined' && window.location.hostname === 'localhost'
   ? 'http://localhost:3001/api' 
   : 'https://your-api-domain.com/api';
 
 class ApiService {
-  private async request<T>(endpoint: string, options: any = {}): Promise<T> {
+  private async request<T>(endpoint: string, options: RequestInit = {}): Promise<T> {
     const url = `${API_BASE_URL}${endpoint}`;
     
-    const config: any = {
+    const config: RequestInit = {
       headers: {
         'Content-Type': 'application/json',
         ...options.headers,

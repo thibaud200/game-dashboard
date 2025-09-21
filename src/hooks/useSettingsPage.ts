@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { NavigationHandler } from '@/types/index';
+import { NavigationHandler } from '@/types';
 
 export interface SettingsPageData {
   onNavigation: NavigationHandler;

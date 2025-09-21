@@ -1,7 +1,7 @@
 import React from 'react';
 import { PlayersPageView } from '@/views/PlayersPageView';
 import { usePlayersPage, PlayersPageData } from '@/hooks/usePlayersPage';
-import { Player, NavigationHandler } from '@/types/index';
+import { Player, NavigationHandler } from '@/types';
 
 interface PlayersPageProps {
   players: Player[]

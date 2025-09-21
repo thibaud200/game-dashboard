@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { toast } from 'sonner';
-import { GameCharacter, Game } from '@/types/index';
+import { GameCharacter, Game } from '@/types';
 
 export interface UseGameCharactersProps {
   game: Game;

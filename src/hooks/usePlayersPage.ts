@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { Player, NavigationHandler, PlayerFormData } from '@/types/index';
+import { Player, NavigationHandler, PlayerFormData } from '@/types';
 
 export interface PlayersPageData {
   players: Player[];

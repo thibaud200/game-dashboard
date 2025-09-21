@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Game, BGGGame } from '@/types/index';
+import { Game, BGGGame } from '@/types';
 import { useGamesPage, GamesPageData } from '@/hooks/useGamesPage';
 import GamesPageView from '@/views/GamesPageView';
 
@@ -49,12 +49,18 @@ export default function GamesPage(props: GamesPageProps) {
     isEditDialogOpen,
     searchQuery,
     setSearchQuery,
+    handleBackClick,
+    handleGameStatsClick,
     handleAddDialogOpen,
     handleEditDialogOpen,
     handleAddGame,
     handleEditGame,
     handleUpdateGame,
     handleDeleteGame,
+    handleViewGameDetail,
+    handleViewGameStats,
+    handleManageExpansions,
+    handleManageCharacters,
     handleBGGSearch,
     resetForm,
     onNavigation,

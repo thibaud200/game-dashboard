@@ -1,5 +1,5 @@
 import { useState, useEffect, useMemo } from 'react';
-import { Game, NavigationHandler, GameFormData } from '@/types/index';
+import { Game, NavigationHandler, GameFormData } from '@/types';
 
 export interface GamesPageData {
   games: Game[];
@@ -162,11 +162,11 @@ export const useGamesPage = (data: GamesPageData) => {
   };
 
   // Navigation handlers
-  const _handleBackClick = () => {
+  const handleBackClick = () => {
     onNavigation('dashboard');
   };
 
-  const _handleGameStatsClick = () => {
+  const handleGameStatsClick = () => {
     onNavigation('stats', undefined, 'games');
   };
 
@@ -252,19 +252,19 @@ export const useGamesPage = (data: GamesPageData) => {
     onDeleteGame(gameId);
   };
 
-  const _handleViewGameDetail = (gameId: number) => {
+  const handleViewGameDetail = (gameId: number) => {
     onNavigation('game-detail', gameId);
   };
 
-  const _handleViewGameStats = (gameId: number) => {
+  const handleViewGameStats = (gameId: number) => {
     onNavigation('stats', gameId, 'games');
   };
 
-  const _handleManageExpansions = (gameId: number) => {
+  const handleManageExpansions = (gameId: number) => {
     onNavigation('game-expansions', gameId, 'games');
   };
 
-  const _handleManageCharacters = (gameId: number) => {
+  const handleManageCharacters = (gameId: number) => {
     onNavigation('game-characters', gameId, 'games');
   };
 
@@ -333,12 +333,18 @@ export const useGamesPage = (data: GamesPageData) => {
     setDifficultyFilter,
     
     // Handlers
+    handleBackClick,
+    handleGameStatsClick,
     handleAddDialogOpen,
     handleEditDialogOpen,
     handleAddGame,
     handleEditGame,
     handleUpdateGame,
     handleDeleteGame,
+    handleViewGameDetail,
+    handleViewGameStats,
+    handleManageExpansions,
+    handleManageCharacters,
     handleBGGSearch,
     resetForm,
     onNavigation,

@@ -1,7 +1,7 @@
 import React from 'react';
 import { DashboardView } from '@/views/DashboardView';
 import { useDashboard, DashboardData } from '@/hooks/useDashboard';
-import { Player, Game, NavigationHandler } from '@/types/index';
+import { Player, Game, NavigationHandler } from '@/types';
 
 interface DashboardProps {
   stats: {

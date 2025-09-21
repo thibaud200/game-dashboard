@@ -1,5 +1,5 @@
 import { useMemo } from 'react';
-import { Player, Game, NavigationHandler } from '@/types/index';
+import { Player, Game, NavigationHandler } from '@/types';
 
 export interface DashboardStats {
   playersCount: number;

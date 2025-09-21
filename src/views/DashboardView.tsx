@@ -9,7 +9,7 @@ import {
   ArrowLeft
 } from '@phosphor-icons/react';
 import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip';
-import { Player, Game, NavigationHandler } from '@/types/index';
+import { Player, Game, NavigationHandler } from '@/types';
 
 interface DashboardViewProps {
   stats: {

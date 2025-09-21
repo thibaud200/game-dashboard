@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { ArrowLeft, Users, TrendUp } from '@phosphor-icons/react';
 import PlayerStatsPage from './PlayerStatsPage';
 import GameStatsPage from './GameStatsPage';
-import { Player, Game } from '@/types/index';
+import { Player, Game } from '@/types';
 
 interface StatsPageProps {
   players: Player[];
@@ -22,7 +22,6 @@ export default function StatsPage({
   players,
   games,
   onNavigation,
-  currentView: _currentView,
   selectedPlayerId,
   selectedGameId,
   navigationContext
