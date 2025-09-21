@@ -139,7 +139,7 @@ const defaultTheme = {
     96: "var(--size-96)",
   },
   darkMode: ["selector", '[data-appearance="dark"]'],
-};;
+};
 
 export default {
   content: ["./index.html", "./src/**/*.{js,ts,jsx,tsx}"],
