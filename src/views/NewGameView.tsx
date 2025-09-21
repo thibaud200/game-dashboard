@@ -118,7 +118,7 @@ export default function NewGameView({
   setNotes,
   isSubmitting,
   objectives,
-  setObjectives,
+  setObjectives: _setObjectives,
   teamScore,
   setTeamScore,
   difficultyLevel,
@@ -149,7 +149,7 @@ export default function NewGameView({
     try {
       await handleSubmit();
       onNavigation('dashboard');
-    } catch (_error) {
+    } catch {
       // Error handling is done in the hook
     }
   };

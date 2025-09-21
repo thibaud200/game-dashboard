@@ -253,7 +253,7 @@ export default function App() {
     setGames((games || []).filter(g => g.game_id !== gameId));
   };
 
-  const handleCreateSession = async (sessionData: any) => {
+  const handleCreateSession = async (_sessionData: any) => {
     // Implementation for creating game sessions
   };
 

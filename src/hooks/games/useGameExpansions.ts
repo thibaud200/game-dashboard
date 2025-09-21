@@ -62,7 +62,7 @@ export function useGameExpansions(props: UseGameExpansionsProps) {
       toast.success('Extension ajoutée avec succès');
       setIsAddDialogOpen(false);
       resetForm();
-    } catch (error) {
+    } catch {
       // Error handling would use proper logging in production
       toast.error('Erreur lors de l\'ajout de l\'extension');
     }
@@ -88,7 +88,7 @@ export function useGameExpansions(props: UseGameExpansionsProps) {
       toast.success('Extension modifiée avec succès');
       setEditingExpansion(null);
       resetForm();
-    } catch (error) {
+    } catch {
       // Error handling would use proper logging in production
       toast.error('Erreur lors de la modification de l\'extension');
     }
@@ -98,7 +98,7 @@ export function useGameExpansions(props: UseGameExpansionsProps) {
     try {
       await onDeleteExpansion(expansionId);
       toast.success('Extension supprimée avec succès');
-    } catch (error) {
+    } catch {
       // Error handling would use proper logging in production
       toast.error('Erreur lors de la suppression de l\'extension');
     }

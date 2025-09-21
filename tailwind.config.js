@@ -10,6 +10,7 @@ try {
     theme = JSON.parse(fs.readFileSync(themePath, "utf-8"));
   }
 } catch (err) {
+  // eslint-disable-next-line no-console
   console.error('failed to parse custom styles', err);
 }
 const defaultTheme = {

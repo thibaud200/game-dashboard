@@ -65,7 +65,7 @@ export function useGameCharacters(props: UseGameCharactersProps) {
       toast.success('Personnage ajouté avec succès');
       setIsAddDialogOpen(false);
       resetForm();
-    } catch (error) {
+    } catch {
       // Error handling would use proper logging in production
       toast.error('Erreur lors de l\'ajout du personnage');
     }
@@ -92,7 +92,7 @@ export function useGameCharacters(props: UseGameCharactersProps) {
       toast.success('Personnage modifié avec succès');
       setEditingCharacter(null);
       resetForm();
-    } catch (error) {
+    } catch {
       // Error handling would use proper logging in production
       toast.error('Erreur lors de la modification du personnage');
     }
@@ -102,7 +102,7 @@ export function useGameCharacters(props: UseGameCharactersProps) {
     try {
       await onDeleteCharacter(characterId);
       toast.success('Personnage supprimé avec succès');
-    } catch (error) {
+    } catch {
       // Error handling would use proper logging in production
       toast.error('Erreur lors de la suppression du personnage');
     }

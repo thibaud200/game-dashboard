@@ -1,6 +1,5 @@
 import React from 'react';
 import {
-  ArrowLeft,
   TrendUp,
   Users,
   Clock,
@@ -54,14 +53,14 @@ interface GameStatsViewProps {
 }
 
 export default function GameStatsView({ 
-  selectedPeriod,
-  setSelectedPeriod,
+  selectedPeriod: _selectedPeriod,
+  setSelectedPeriod: _setSelectedPeriod,
   selectedGame,
   setSelectedGame,
   gameStats,
   games,
-  onNavigation,
-  selectedGameId,
+  onNavigation: _onNavigation,
+  selectedGameId: _selectedGameId,
   players
 }: GameStatsViewProps) {
   if (!gameStats) {

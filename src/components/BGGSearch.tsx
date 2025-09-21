@@ -27,7 +27,7 @@ export default function BGGSearch({ onGameSelect, onClose }: BGGSearchProps) {
     try {
       const results = await bggApiService.searchGames(query.trim());
       setSearchResults(results);
-    } catch (error) {
+    } catch {
       setSearchError('Failed to search BoardGameGeek. Please try again.');
       // Error handling - would use proper logging in production
     } finally {
@@ -46,7 +46,7 @@ export default function BGGSearch({ onGameSelect, onClose }: BGGSearchProps) {
       } else {
         setSearchError('Failed to load game details. Please try again.');
       }
-    } catch (error) {
+    } catch {
       setSearchError('Failed to load game details. Please try again.');
       // Error handling - would use proper logging in production
     } finally {

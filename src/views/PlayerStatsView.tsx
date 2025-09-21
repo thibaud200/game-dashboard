@@ -1,6 +1,5 @@
 import React from 'react';
 import {
-  ArrowLeft,
   Trophy,
   Clock,
   Target,
@@ -48,7 +47,7 @@ export default function PlayerStatsView({
   topPlayers,
   recentActivity,
   selectedPlayer,
-  onNavigation,
+  onNavigation: _onNavigation,
   currentView: _currentView
 }: PlayerStatsViewProps) {
   return (
