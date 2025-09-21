@@ -335,6 +335,8 @@ export default function GamesPageView({
                               <div>
                                 <h4 className="text-sm font-medium text-purple-300 mb-1">Expansions</h4>
                                 <Textarea
+                                  id={`game-expansions-${game.game_id}`}
+                                  name={`game-expansions-${game.game_id}`}
                                   value={(game.expansions || []).map(exp => 
                                     `${exp.name}${exp.year_published > 0 ? ` (${exp.year_published})` : ''}`
                                   ).join(', ')}

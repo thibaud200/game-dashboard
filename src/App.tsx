@@ -316,45 +316,42 @@ export default function App() {
             onCreateSession={handleCreateSession}
           />
         );
-      case 'game-detail':
-        {
-          const game = games?.find(g => g.game_id === navigationContext?.id);
-          return game ? (
-            <GameDetailPage 
-              game={game} 
-              currentView={currentView}
-              onNavigation={handleNavigation} 
-            />
-          ) : null;
-        }
-      case 'game-expansions':
-        {
-          const expansionGame = games?.find(g => g.game_id === navigationContext?.id);
-          return expansionGame ? (
-            <GameExpansionsPage 
-              game={expansionGame} 
-              onNavigation={handleNavigation} 
-              navigationSource={navigationContext?.source}
-              onAddExpansion={async () => ({ expansion_id: 1, name: 'Test', year_published: 2023 })}
-              onUpdateExpansion={async () => {}}
-              onDeleteExpansion={async () => {}}
-            />
-          ) : null;
-        }
-      case 'game-characters':
-        {
-          const characterGame = games?.find(g => g.game_id === navigationContext?.id);
-          return characterGame ? (
-            <GameCharactersPage 
-              game={characterGame} 
-              onNavigation={handleNavigation} 
-              navigationSource={navigationContext?.source}
-              onAddCharacter={async () => ({ character_id: 1, character_key: 'test', name: 'Test', description: 'Test', abilities: [] })}
-              onUpdateCharacter={async () => {}}
-              onDeleteCharacter={async () => {}}
-            />
-          ) : null;
-        }
+      case 'game-detail': {
+        const game = games?.find(g => g.game_id === navigationContext?.id);
+        return game ? (
+          <GameDetailPage 
+            game={game} 
+            currentView={currentView}
+            onNavigation={handleNavigation} 
+          />
+        ) : null;
+      }
+      case 'game-expansions': {
+        const expansionGame = games?.find(g => g.game_id === navigationContext?.id);
+        return expansionGame ? (
+          <GameExpansionsPage 
+            game={expansionGame} 
+            onNavigation={handleNavigation} 
+            navigationSource={navigationContext?.source}
+            onAddExpansion={async () => ({ expansion_id: 1, name: 'Test', year_published: 2023 })}
+            onUpdateExpansion={async () => {}}
+            onDeleteExpansion={async () => {}}
+          />
+        ) : null;
+      }
+      case 'game-characters': {
+        const characterGame = games?.find(g => g.game_id === navigationContext?.id);
+        return characterGame ? (
+          <GameCharactersPage 
+            game={characterGame} 
+            onNavigation={handleNavigation} 
+            navigationSource={navigationContext?.source}
+            onAddCharacter={async () => ({ character_id: 1, character_key: 'test', name: 'Test', description: 'Test', abilities: [] })}
+            onUpdateCharacter={async () => {}}
+            onDeleteCharacter={async () => {}}
+          />
+        ) : null;
+      }
       default:
         return (
           <Dashboard
