@@ -261,4 +261,10 @@ export interface SearchState {
   sortOrder: 'asc' | 'desc';
 }
 
+// Navigation types
+export interface NavigationContext {
+  source: string;
+  targetTab: 'players' | 'games';
+}
+
 export default {};
