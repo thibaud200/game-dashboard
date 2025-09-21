@@ -11,8 +11,8 @@ CREATE TABLE players (
     total_score INTEGER DEFAULT 0,
     average_score REAL DEFAULT 0.0,
     favorite_game TEXT,
-    created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
-    updated_at DATETIME DEFAULT CURRENT_TIMESTAMP
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
 -- Games table
@@ -37,10 +37,11 @@ CREATE TABLE games (
     supports_cooperative BOOLEAN DEFAULT FALSE,
     supports_competitive BOOLEAN DEFAULT FALSE,
     supports_campaign BOOLEAN DEFAULT FALSE,
+    supports_hybrid BOOLEAN DEFAULT FALSE,
     has_expansion BOOLEAN DEFAULT FALSE,
     has_characters BOOLEAN DEFAULT FALSE,
-    created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
-    updated_at DATETIME DEFAULT CURRENT_TIMESTAMP
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
 -- Game expansions table
@@ -70,14 +71,14 @@ CREATE TABLE game_characters (
 CREATE TABLE game_sessions (
     session_id INTEGER PRIMARY KEY AUTOINCREMENT,
     game_id INTEGER NOT NULL,
-    session_date DATETIME DEFAULT CURRENT_TIMESTAMP,
+    session_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     duration_minutes INTEGER,
     winner_player_id INTEGER,
     session_type TEXT CHECK(session_type IN ('competitive', 'cooperative', 'campaign')) DEFAULT 'competitive',
     notes TEXT,
-    created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     FOREIGN KEY (game_id) REFERENCES games(game_id) ON DELETE CASCADE,
-    FOREIGN KEY (winner_player_id) REFERENCES players(player_id)
+    FOREIGN KEY (winner_player_id) REFERENCES players(player_id) ON DELETE SET NULL
 );
 
 -- Session players (who played in each session)
@@ -92,7 +93,7 @@ CREATE TABLE session_players (
     notes TEXT,
     FOREIGN KEY (session_id) REFERENCES game_sessions(session_id) ON DELETE CASCADE,
     FOREIGN KEY (player_id) REFERENCES players(player_id) ON DELETE CASCADE,
-    FOREIGN KEY (character_id) REFERENCES game_characters(character_id)
+    FOREIGN KEY (character_id) REFERENCES game_characters(character_id) ON DELETE SET NULL
 );
 
 -- Indexes for better performance
@@ -117,6 +118,44 @@ CREATE TRIGGER update_games_timestamp
         UPDATE games SET updated_at = CURRENT_TIMESTAMP WHERE game_id = NEW.game_id;
     END;
 
+-- Views for dynamic statistics
+CREATE VIEW player_statistics AS
+SELECT 
+    p.player_id,
+    p.player_name,
+    p.avatar,
+    COUNT(DISTINCT sp.session_id) as games_played,
+    COUNT(CASE WHEN sp.is_winner = 1 THEN 1 END) as wins,
+    COALESCE(SUM(sp.score), 0) as total_score,
+    COALESCE(AVG(sp.score), 0) as average_score,
+    (COUNT(CASE WHEN sp.is_winner = 1 THEN 1 END) * 100.0 / 
+     NULLIF(COUNT(DISTINCT sp.session_id), 0)) as win_percentage,
+    p.favorite_game,
+    p.created_at
+FROM players p
+LEFT JOIN session_players sp ON p.player_id = sp.player_id
+GROUP BY p.player_id, p.player_name, p.avatar, p.favorite_game, p.created_at;
+
+CREATE VIEW game_statistics AS
+SELECT 
+    g.game_id,
+    g.name,
+    g.image,
+    g.min_players,
+    g.max_players,
+    g.difficulty,
+    g.category,
+    g.year_published,
+    g.bgg_rating,
+    COUNT(DISTINCT gs.session_id) as times_played,
+    (SELECT COUNT(DISTINCT sp.player_id) FROM session_players sp WHERE sp.session_id IN (SELECT session_id FROM game_sessions WHERE game_id = g.game_id)) as unique_players,
+    (SELECT AVG(sp.score) FROM session_players sp WHERE sp.session_id IN (SELECT session_id FROM game_sessions WHERE game_id = g.game_id)) as average_score,
+    (SELECT AVG(gs_inner.duration_minutes) FROM game_sessions gs_inner WHERE gs_inner.game_id = g.game_id) as average_duration,
+    g.created_at
+FROM games g
+LEFT JOIN game_sessions gs ON g.game_id = gs.game_id
+GROUP BY g.game_id;
+
 -- Sample data insertion
 INSERT INTO players (player_name, avatar, games_played, wins, total_score, average_score, favorite_game) VALUES
 ('Jane', 'https://images.unsplash.com/photo-1494790108755-2616b612b786?w=100&h=100&fit=crop&crop=face', 45, 28, 2100, 46.7, 'Strategy Pro'),
@@ -124,11 +163,11 @@ INSERT INTO players (player_name, avatar, games_played, wins, total_score, avera
 ('Maya', 'https://images.unsplash.com/photo-1438761681033-6461ffad8d80?w=100&h=100&fit=crop&crop=face', 32, 15, 1620, 50.6, 'Mind Games'),
 ('Alex', 'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=100&h=100&fit=crop&crop=face', 28, 12, 1420, 50.7, 'Strategy Pro');
 
-INSERT INTO games (bgg_id, name, description, image, min_players, max_players, duration, difficulty, category, year_published, publisher, designer, bgg_rating, weight, age_min, game_type, supports_cooperative, supports_competitive, supports_campaign, has_expansion, has_characters) VALUES
-(12345, 'Strategy Pro', 'A complex strategy game that challenges your tactical thinking.', 'https://images.unsplash.com/photo-1606092195730-5d7b9af1efc5?w=150&h=150&fit=crop', 2, 4, '60-90 min', 'Expert', 'Strategy', 2022, 'Strategy Games Inc.', 'John Designer', 7.8, 3.5, 14, 'competitive', FALSE, TRUE, TRUE, FALSE, TRUE),
-(23456, 'Battle Arena', 'Fast-paced combat game with multiple character classes.', 'https://images.unsplash.com/photo-1511512578047-dfb367046420?w=150&h=150&fit=crop', 3, 6, '45-60 min', 'Intermediate', 'Combat', 2023, 'Combat Games Ltd.', 'Sarah Designer', 7.2, 2.8, 12, 'competitive', FALSE, TRUE, TRUE, TRUE, TRUE),
-(34567, 'Mind Games', 'Psychological warfare meets board game mechanics.', 'https://images.unsplash.com/photo-1606092195730-5d7b9af1efc5?w=150&h=150&fit=crop', 2, 8, '30-45 min', 'Beginner', 'Party', 2021, 'Mind Works', 'Alex Mindmaker', 6.9, 1.5, 10, 'competitive', FALSE, TRUE, FALSE, FALSE, FALSE),
-(45678, 'Cosmic Empire', 'Build your galactic empire across the stars.', 'https://images.unsplash.com/photo-1578662996442-48f60103fc96?w=150&h=150&fit=crop', 2, 5, '90-120 min', 'Expert', 'Strategy', 2020, 'Cosmic Games', 'Maria Cosmos', 8.1, 4.2, 16, 'competitive', FALSE, TRUE, TRUE, TRUE, TRUE);
+INSERT INTO games (bgg_id, name, description, image, min_players, max_players, duration, difficulty, category, year_published, publisher, designer, bgg_rating, weight, age_min, game_type, supports_cooperative, supports_competitive, supports_campaign, supports_hybrid, has_expansion, has_characters) VALUES
+(12345, 'Strategy Pro', 'A complex strategy game that challenges your tactical thinking.', 'https://images.unsplash.com/photo-1606092195730-5d7b9af1efc5?w=150&h=150&fit=crop', 2, 4, '60-90 min', 'Expert', 'Strategy', 2022, 'Strategy Games Inc.', 'John Designer', 7.8, 3.5, 14, 'competitive', FALSE, TRUE, TRUE, FALSE, FALSE, TRUE),
+(23456, 'Battle Arena', 'Fast-paced combat game with multiple character classes.', 'https://images.unsplash.com/photo-1511512578047-dfb367046420?w=150&h=150&fit=crop', 3, 6, '45-60 min', 'Intermediate', 'Combat', 2023, 'Combat Games Ltd.', 'Sarah Designer', 7.2, 2.8, 12, 'competitive', FALSE, TRUE, TRUE, FALSE, TRUE, TRUE),
+(34567, 'Mind Games', 'Psychological warfare meets board game mechanics.', 'https://images.unsplash.com/photo-1606092195730-5d7b9af1efc5?w=150&h=150&fit=crop', 2, 8, '30-45 min', 'Beginner', 'Party', 2021, 'Mind Works', 'Alex Mindmaker', 6.9, 1.5, 10, 'competitive', FALSE, TRUE, FALSE, FALSE, FALSE, FALSE),
+(45678, 'Cosmic Empire', 'Build your galactic empire across the stars.', 'https://images.unsplash.com/photo-1578662996442-48f60103fc96?w=150&h=150&fit=crop', 2, 5, '90-120 min', 'Expert', 'Strategy', 2020, 'Cosmic Games', 'Maria Cosmos', 8.1, 4.2, 16, 'competitive', FALSE, TRUE, TRUE, TRUE, TRUE, TRUE);
 
 -- Insert game expansions
 INSERT INTO game_expansions (game_id, bgg_expansion_id, name, year_published) VALUES

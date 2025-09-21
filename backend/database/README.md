@@ -21,10 +21,10 @@ The application uses SQLite as the primary database for storing board game data,
 - **game_statistics** - Dynamic calculation of game popularity and metrics
 
 ## Files
-
-- `schema.sql` - Complete database schema with tables, indexes, triggers, and views
-- `sample_data.sql` - Sample data for testing and development
-- `migrations/` - Database migration scripts (future)
+- **`schema.sql`**: Schéma SQL complet incluant les tables, index, triggers et vues. Les données d'exemple sont également incluses dans ce fichier.
+- **`database-structure.md`**: Documentation détaillée (format Markdown) de chaque table, vue et de leurs relations.
+- **`DatabaseManager.ts`**: Classe TypeScript qui gère toutes les interactions avec la base de données.
+- **`verify_schema.sql`**: Script pour vérifier la cohérence du schéma de la base de données.
 
 ## Key Features
 
@@ -63,12 +63,7 @@ Games can define characters/roles that players can choose:
 
 ### Initialize Database
 ```bash
-sqlite3 boardgame.db < schema.sql
-```
-
-### Load Sample Data
-```bash
-sqlite3 boardgame.db < sample_data.sql
+sqlite3 board_game_score.db < schema.sql
 ```
 
 ### Query Examples

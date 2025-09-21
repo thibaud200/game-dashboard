@@ -1,3 +1,7 @@
+> [!WARNING]
+> **Fichier Obsolète**
+> Ce document est conservé à titre d'archive historique. Il décrit une réorganisation de la documentation qui a depuis été suivie par une autre, rendant son contenu obsolète. Pour la structure actuelle, veuillez vous référer à `/src/docs/README.md`.
+
 # 📁 Documentation Migration Summary
 
 ## ✅ Frontend Documentation Reorganization Complete

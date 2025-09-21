@@ -11,13 +11,13 @@ Stores information about individual players in the system.
 ```sql
 CREATE TABLE players (
     player_id INTEGER PRIMARY KEY AUTOINCREMENT,
-    player_name VARCHAR(100) NOT NULL,
+    player_name TEXT NOT NULL,
     avatar TEXT, -- URL to avatar image
     games_played INTEGER DEFAULT 0,
     wins INTEGER DEFAULT 0,
     total_score INTEGER DEFAULT 0,
-    average_score DECIMAL(5,2) DEFAULT 0.0,
-    favorite_game VARCHAR(255),
+    average_score REAL DEFAULT 0.0,
+    favorite_game TEXT,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
@@ -30,24 +30,25 @@ Stores comprehensive information about board games.
 CREATE TABLE games (
     game_id INTEGER PRIMARY KEY AUTOINCREMENT,
     bgg_id INTEGER UNIQUE, -- BoardGameGeek ID
-    name VARCHAR(255) NOT NULL,
+    name TEXT NOT NULL,
     description TEXT,
     image TEXT, -- URL to game image
     min_players INTEGER NOT NULL,
     max_players INTEGER NOT NULL,
-    duration VARCHAR(50), -- e.g., "60-90 min"
-    difficulty VARCHAR(50), -- Beginner, Intermediate, Expert
-    category VARCHAR(100),
+    duration TEXT, -- e.g., "60-90 min"
+    difficulty TEXT, -- Beginner, Intermediate, Expert
+    category TEXT,
     year_published INTEGER,
-    publisher VARCHAR(255),
-    designer VARCHAR(255),
-    bgg_rating DECIMAL(3,1), -- BGG rating (0.0-10.0)
-    weight DECIMAL(3,1), -- BGG complexity weight (1.0-5.0)
+    publisher TEXT,
+    designer TEXT,
+    bgg_rating REAL, -- BGG rating (0.0-10.0)
+    weight REAL, -- BGG complexity weight (1.0-5.0)
     age_min INTEGER,
-    game_type VARCHAR(20) CHECK (game_type IN ('competitive', 'cooperative', 'campaign', 'hybrid')),
+    game_type TEXT CHECK (game_type IN ('competitive', 'cooperative', 'campaign', 'hybrid')),
     supports_cooperative BOOLEAN DEFAULT FALSE,
     supports_competitive BOOLEAN DEFAULT FALSE,
     supports_campaign BOOLEAN DEFAULT FALSE,
+    supports_hybrid BOOLEAN DEFAULT FALSE,
     has_expansion BOOLEAN DEFAULT FALSE,
     has_characters BOOLEAN DEFAULT FALSE,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
@@ -63,7 +64,7 @@ CREATE TABLE game_expansions (
     expansion_id INTEGER PRIMARY KEY AUTOINCREMENT,
     game_id INTEGER NOT NULL,
     bgg_expansion_id INTEGER,
-    name VARCHAR(255) NOT NULL,
+    name TEXT NOT NULL,
     year_published INTEGER,
     description TEXT,
     FOREIGN KEY (game_id) REFERENCES games(game_id) ON DELETE CASCADE
@@ -77,8 +78,8 @@ Stores information about character roles/classes available in games.
 CREATE TABLE game_characters (
     character_id INTEGER PRIMARY KEY AUTOINCREMENT,
     game_id INTEGER NOT NULL,
-    character_key VARCHAR(100) NOT NULL, -- unique identifier for the character
-    name VARCHAR(255) NOT NULL,
+    character_key TEXT NOT NULL, -- unique identifier for the character
+    name TEXT NOT NULL,
     description TEXT,
     avatar TEXT, -- URL to character avatar image
     abilities TEXT, -- JSON array of abilities
@@ -96,7 +97,7 @@ CREATE TABLE game_sessions (
     session_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     duration_minutes INTEGER,
     winner_player_id INTEGER,
-    session_type VARCHAR(20) CHECK (session_type IN ('competitive', 'cooperative', 'campaign')),
+    session_type TEXT CHECK (session_type IN ('competitive', 'cooperative', 'campaign')) DEFAULT 'competitive',
     notes TEXT,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     FOREIGN KEY (game_id) REFERENCES games(game_id) ON DELETE CASCADE,
@@ -133,11 +134,10 @@ SELECT
     p.player_name,
     p.avatar,
     COUNT(DISTINCT sp.session_id) as games_played,
-    COUNT(CASE WHEN sp.is_winner = TRUE THEN 1 END) as wins,
+    COUNT(CASE WHEN sp.is_winner = 1 THEN 1 END) as wins,
     COALESCE(SUM(sp.score), 0) as total_score,
     COALESCE(AVG(sp.score), 0) as average_score,
-    (COUNT(CASE WHEN sp.is_winner = TRUE THEN 1 END) * 100.0 / 
-     NULLIF(COUNT(DISTINCT sp.session_id), 0)) as win_percentage,
+    (COUNT(CASE WHEN sp.is_winner = 1 THEN 1 END) * 100.0 / NULLIF(COUNT(DISTINCT sp.session_id), 0)) as win_percentage,
     p.favorite_game,
     p.created_at
 FROM players p
@@ -161,13 +161,12 @@ SELECT
     g.year_published,
     g.bgg_rating,
     COUNT(DISTINCT gs.session_id) as times_played,
-    COUNT(DISTINCT sp.player_id) as unique_players,
-    AVG(sp.score) as average_score,
-    AVG(gs.duration_minutes) as average_duration,
+    (SELECT COUNT(DISTINCT sp.player_id) FROM session_players sp WHERE sp.session_id IN (SELECT session_id FROM game_sessions WHERE game_id = g.game_id)) as unique_players,
+    (SELECT AVG(sp.score) FROM session_players sp WHERE sp.session_id IN (SELECT session_id FROM game_sessions WHERE game_id = g.game_id)) as average_score,
+    (SELECT AVG(gs_inner.duration_minutes) FROM game_sessions gs_inner WHERE gs_inner.game_id = g.game_id) as average_duration,
     g.created_at
 FROM games g
 LEFT JOIN game_sessions gs ON g.game_id = gs.game_id
-LEFT JOIN session_players sp ON gs.session_id = sp.session_id
 GROUP BY g.game_id, g.name, g.image, g.min_players, g.max_players, 
          g.difficulty, g.category, g.year_published, g.bgg_rating, g.created_at;
 ```
@@ -177,12 +176,12 @@ GROUP BY g.game_id, g.name, g.image, g.min_players, g.max_players,
 ```sql
 -- Performance indexes
 CREATE INDEX idx_games_bgg_id ON games(bgg_id);
-CREATE INDEX idx_sessions_date ON game_sessions(session_date);
-CREATE INDEX idx_sessions_game ON game_sessions(game_id);
-CREATE INDEX idx_session_players_session ON session_players(session_id);
-CREATE INDEX idx_session_players_player ON session_players(player_id);
-CREATE INDEX idx_expansions_game ON game_expansions(game_id);
-CREATE INDEX idx_characters_game ON game_characters(game_id);
+CREATE INDEX idx_game_sessions_date ON game_sessions(session_date);
+CREATE INDEX idx_game_sessions_game_id ON game_sessions(game_id);
+CREATE INDEX idx_session_players_session_id ON session_players(session_id);
+CREATE INDEX idx_session_players_player_id ON session_players(player_id);
+CREATE INDEX idx_game_expansions_game_id ON game_expansions(game_id);
+CREATE INDEX idx_game_characters_game_id ON game_characters(game_id);
 ```
 
 ## Sample Data Relationships

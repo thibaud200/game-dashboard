@@ -11,18 +11,23 @@ src/
 ├── components/           # Composants React principaux
 │   ├── dialogs/         # Boîtes de dialogue réutilisables
 │   ├── games/           # Composants spécifiques aux jeux
-│   ├── players/         # Composants spécifiques aux joueurs
+│   ├── players/         # Composants spécifiques aux joueurs(nexiste pas pour le moment)
 │   └── ui/              # Composants UI de base (shadcn)
+├── *.tsx                #
+├── docs/                # Documentation frontend
 ├── hooks/               # Hooks React personnalisés
 │   ├── games/           # Hooks spécifiques aux jeux
-│   └── players/         # Hooks spécifiques aux joueurs
-├── services/            # Services pour les appels API
+│   ├── players/         # Hooks spécifiques aux joueurs(nexiste pas pour le moment)
+│   └── *.tsx                #
+├── lib/                 # Utilitaires
+├── services/            # Services pour les appels API BGG
+├── styles/              # CSS
 ├── types/               # Définitions TypeScript
-├── utils/               # Utilitaires
+├── utils/               # Test BGG
 ├── views/               # Composants de vue (présentation)
 │   ├── games/           # Vues spécifiques aux jeux
-│   └── players/         # Vues spécifiques aux joueurs
-└── docs/                # Documentation frontend
+│   ├── players/         # Vues spécifiques aux joueurs (nexiste pas pour le moment)
+│   └── *.tsx            #
 ```
 
 ## Principes d'Architecture
@@ -190,27 +195,7 @@ src/
 - **Types** : PascalCase (ex: `Player`)
 - **Variables** : camelCase (ex: `gameList`)
 
-### File Naming
-- **Components** : `ComponentName.tsx`
-- **Hooks** : `useHookName.ts`
-- **Types** : `index.ts` (exports centralisés)
-- **Views** : `ViewName.tsx`
-
-### Import Organization
-```typescript
-// 1. React imports
-import React, { useState, useEffect } from 'react'
-
-// 2. External libraries
-import { Button } from '@/components/ui/button'
-
-// 3. Internal imports
-import { Player } from '@/types'
-import { usePlayersPage } from '@/hooks'
-
-// 4. Relative imports
-import './ComponentName.css'
-```
+Pour les conventions de nommage de fichiers et l'organisation des imports, veuillez vous référer au **`DEVELOPMENT_GUIDE.md`**.
 
 ## Évolutions Futures
 

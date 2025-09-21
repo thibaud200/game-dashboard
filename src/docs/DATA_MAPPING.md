@@ -1,36 +1,18 @@
-# Documentation des Mappages de Champs : Base de Données vs Frontend
+# Documentation des Mappages de Champs : Frontend
 
 ## Vue d'ensemble
 
-Ce document présente un audit complet des correspondances entre les champs de la base de données et les interfaces frontend pour identifier et documenter toutes les incohérences existantes.
+Ce document présente les correspondances entre les interfaces frontend et la base de données pour le projet Board Game Dashboard.
 
 ## Méthodologie d'Audit
 
 ✅ **Correspondance exacte** - Le champ existe avec le même nom et type  
 🔄 **Champ calculé** - Champ virtuel généré côté frontend  
-❌ **Manquant en BDD** - Champ présent en frontend mais absent en base  
-⚠️ **Manquant en Frontend** - Champ présent en base mais non utilisé en interface  
-🔀 **Mapping différent** - Champ avec nom/structure différente
+🔗 **Relation** - Champ relié à une autre table
 
 ---
 
-## 1. TABLE PLAYERS
-
-### Champs en Base de Données
-```sql
-CREATE TABLE players (
-    player_id INTEGER PRIMARY KEY AUTOINCREMENT,
-    player_name VARCHAR(100) NOT NULL,
-    avatar TEXT,
-    games_played INTEGER DEFAULT 0,
-    wins INTEGER DEFAULT 0,
-    total_score INTEGER DEFAULT 0,
-    average_score DECIMAL(5,2) DEFAULT 0.0,
-    favorite_game VARCHAR(255),
-    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-);
-```
+## 1. INTERFACE PLAYER
 
 ### Interface Frontend
 ```typescript
@@ -50,7 +32,7 @@ interface Player {
 }
 ```
 
-### Correspondances
+### Correspondances Base de Données
 
 | **Champ Frontend** | **Champ BDD** | **Type BDD** | **Status** | **Notes** |
 |-------------------|---------------|--------------|------------|-----------|
@@ -66,42 +48,9 @@ interface Player {
 | `updated_at` | `updated_at` | TIMESTAMP | ✅ Correspondance exacte | Auto-généré en BDD |
 | `stats` | 🔄 Calculé frontend | Champ virtuel | 🔄 Champ virtuel pour affichage | Format: "2,100 pts" |
 
-### 🔴 Incohérences Identifiées
-**AUCUNE** - Cette table est parfaitement mappée.
-
 ---
 
-## 2. TABLE GAMES
-
-### Champs en Base de Données
-```sql
-CREATE TABLE games (
-    game_id INTEGER PRIMARY KEY AUTOINCREMENT,
-    bgg_id INTEGER UNIQUE,
-    name VARCHAR(255) NOT NULL,
-    description TEXT,
-    image TEXT,
-    min_players INTEGER NOT NULL,
-    max_players INTEGER NOT NULL,
-    duration VARCHAR(50),
-    difficulty VARCHAR(50),
-    category VARCHAR(100),
-    year_published INTEGER,
-    publisher VARCHAR(255),
-    designer VARCHAR(255),
-    bgg_rating DECIMAL(3,1),
-    weight DECIMAL(3,1),
-    age_min INTEGER,
-    game_type VARCHAR(20) CHECK (game_type IN ('competitive', 'cooperative', 'campaign', 'hybrid')),
-    supports_cooperative BOOLEAN DEFAULT FALSE,
-    supports_competitive BOOLEAN DEFAULT FALSE,
-    supports_campaign BOOLEAN DEFAULT FALSE,
-    has_expansion BOOLEAN DEFAULT FALSE,
-    has_characters BOOLEAN DEFAULT FALSE,
-    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-);
-```
+## 2. INTERFACE GAME
 
 ### Interface Frontend
 ```typescript
@@ -122,10 +71,10 @@ interface Game {
   bgg_rating?: number
   weight?: number
   age_min?: number
-  game_type: 'competitive' | 'cooperative' | 'campaign' | 'hybrid'
   supports_cooperative: boolean
   supports_competitive: boolean
   supports_campaign: boolean
+  supports_hybrid: boolean
   has_expansion: boolean
   has_characters: boolean
   created_at: Date
@@ -138,7 +87,7 @@ interface Game {
 }
 ```
 
-### Correspondances
+### Correspondances Base de Données
 
 | **Champ Frontend** | **Champ BDD** | **Type BDD** | **Status** | **Notes** |
 |-------------------|---------------|--------------|------------|-----------|
@@ -158,37 +107,21 @@ interface Game {
 | `bgg_rating` | `bgg_rating` | DECIMAL(3,1) | ✅ Correspondance exacte | Optionnel des deux côtés |
 | `weight` | `weight` | DECIMAL(3,1) | ✅ Correspondance exacte | Optionnel des deux côtés |
 | `age_min` | `age_min` | INTEGER | ✅ Correspondance exacte | Optionnel des deux côtés |
-| `game_type` | `game_type` | VARCHAR(20) | ✅ Correspondance exacte | Enum identique |
 | `supports_cooperative` | `supports_cooperative` | BOOLEAN | ✅ Correspondance exacte | |
 | `supports_competitive` | `supports_competitive` | BOOLEAN | ✅ Correspondance exacte | |
 | `supports_campaign` | `supports_campaign` | BOOLEAN | ✅ Correspondance exacte | |
+| `supports_hybrid` | `supports_hybrid` | BOOLEAN | ✅ Correspondance exacte | |
 | `has_expansion` | `has_expansion` | BOOLEAN | ✅ Correspondance exacte | |
 | `has_characters` | `has_characters` | BOOLEAN | ✅ Correspondance exacte | |
 | `created_at` | `created_at` | TIMESTAMP | ✅ Correspondance exacte | Auto-généré en BDD |
 | `updated_at` | `updated_at` | TIMESTAMP | ✅ Correspondance exacte | Auto-généré en BDD |
-| `expansions` | 🔗 Relation | Table séparée | 🔄 Relation JOIN | Table `game_expansions` |
-| `characters` | 🔗 Relation | Table séparée | 🔄 Relation JOIN | Table `game_characters` |
+| `expansions` | 🔗 Relation | Table séparée | 🔗 Relation JOIN | Table `game_expansions` |
+| `characters` | 🔗 Relation | Table séparée | 🔗 Relation JOIN | Table `game_characters` |
 | `players` | 🔄 Calculé frontend | Champ virtuel | 🔄 Champ virtuel pour affichage | Format: "2-4" |
-
-### 🔴 Incohérences Identifiées
-**AUCUNE** - Cette table est parfaitement mappée.
 
 ---
 
-## 3. TABLE GAME_EXPANSIONS
-
-### Champs en Base de Données
-```sql
-CREATE TABLE game_expansions (
-    expansion_id INTEGER PRIMARY KEY AUTOINCREMENT,
-    game_id INTEGER NOT NULL,
-    bgg_expansion_id INTEGER,
-    name VARCHAR(255) NOT NULL,
-    year_published INTEGER,
-    description TEXT,
-    FOREIGN KEY (game_id) REFERENCES games(game_id) ON DELETE CASCADE
-);
-```
+## 3. INTERFACE GAMEEXPANSION
 
 ### Interface Frontend
 ```typescript
@@ -202,7 +135,7 @@ interface GameExpansion {
 }
 ```
 
-### Correspondances
+### Correspondances Base de Données
 
 | **Champ Frontend** | **Champ BDD** | **Type BDD** | **Status** | **Notes** |
 |-------------------|---------------|--------------|------------|-----------|
@@ -213,26 +146,9 @@ interface GameExpansion {
 | `year_published` | `year_published` | INTEGER | ✅ Correspondance exacte | Optionnel des deux côtés |
 | `description` | `description` | TEXT | ✅ Correspondance exacte | Optionnel des deux côtés |
 
-### 🔴 Incohérences Identifiées
-**AUCUNE** - Cette table est parfaitement mappée.
-
 ---
 
-## 4. TABLE GAME_CHARACTERS
-
-### Champs en Base de Données
-```sql
-CREATE TABLE game_characters (
-    character_id INTEGER PRIMARY KEY AUTOINCREMENT,
-    game_id INTEGER NOT NULL,
-    character_key VARCHAR(100) NOT NULL,
-    name VARCHAR(255) NOT NULL,
-    description TEXT,
-    avatar TEXT,
-    abilities TEXT, -- JSON array of abilities
-    FOREIGN KEY (game_id) REFERENCES games(game_id) ON DELETE CASCADE
-);
-```
+## 4. INTERFACE GAMECHARACTER
 
 ### Interface Frontend
 ```typescript
@@ -247,7 +163,7 @@ interface GameCharacter {
 }
 ```
 
-### Correspondances
+### Correspondances Base de Données
 
 | **Champ Frontend** | **Champ BDD** | **Type BDD** | **Status** | **Notes** |
 |-------------------|---------------|--------------|------------|-----------|
@@ -259,28 +175,9 @@ interface GameCharacter {
 | `avatar` | `avatar` | TEXT | ✅ Correspondance exacte | Optionnel des deux côtés |
 | `abilities` | `abilities` | TEXT (JSON) | ✅ Correspondance exacte | Array→JSON conversion |
 
-### 🔴 Incohérences Identifiées
-**AUCUNE** - Cette table est parfaitement mappée.
-
 ---
 
-## 5. TABLE GAME_SESSIONS
-
-### Champs en Base de Données
-```sql
-CREATE TABLE game_sessions (
-    session_id INTEGER PRIMARY KEY AUTOINCREMENT,
-    game_id INTEGER NOT NULL,
-    session_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    duration_minutes INTEGER,
-    winner_player_id INTEGER,
-    session_type VARCHAR(20) CHECK (session_type IN ('competitive', 'cooperative', 'campaign')),
-    notes TEXT,
-    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    FOREIGN KEY (game_id) REFERENCES games(game_id) ON DELETE CASCADE,
-    FOREIGN KEY (winner_player_id) REFERENCES players(player_id) ON DELETE SET NULL
-);
-```
+## 5. INTERFACE GAMESESSION
 
 ### Interface Frontend
 ```typescript
@@ -296,7 +193,7 @@ interface GameSession {
 }
 ```
 
-### Correspondances
+### Correspondances Base de Données
 
 | **Champ Frontend** | **Champ BDD** | **Type BDD** | **Status** | **Notes** |
 |-------------------|---------------|--------------|------------|-----------|
@@ -309,29 +206,9 @@ interface GameSession {
 | `notes` | `notes` | TEXT | ✅ Correspondance exacte | Optionnel des deux côtés |
 | `created_at` | `created_at` | TIMESTAMP | ✅ Correspondance exacte | Auto-généré en BDD |
 
-### 🔴 Incohérences Identifiées
-**AUCUNE** - Cette table est parfaitement mappée.
-
 ---
 
-## 6. TABLE SESSION_PLAYERS
-
-### Champs en Base de Données
-```sql
-CREATE TABLE session_players (
-    session_player_id INTEGER PRIMARY KEY AUTOINCREMENT,
-    session_id INTEGER NOT NULL,
-    player_id INTEGER NOT NULL,
-    character_id INTEGER,
-    score INTEGER DEFAULT 0,
-    placement INTEGER,
-    is_winner BOOLEAN DEFAULT FALSE,
-    notes TEXT,
-    FOREIGN KEY (session_id) REFERENCES game_sessions(session_id) ON DELETE CASCADE,
-    FOREIGN KEY (player_id) REFERENCES players(player_id) ON DELETE CASCADE,
-    FOREIGN KEY (character_id) REFERENCES game_characters(character_id) ON DELETE SET NULL
-);
-```
+## 6. INTERFACE SESSIONPLAYER
 
 ### Interface Frontend
 ```typescript
@@ -347,7 +224,7 @@ interface SessionPlayer {
 }
 ```
 
-### Correspondances
+### Correspondances Base de Données
 
 | **Champ Frontend** | **Champ BDD** | **Type BDD** | **Status** | **Notes** |
 |-------------------|---------------|--------------|------------|-----------|
@@ -360,40 +237,11 @@ interface SessionPlayer {
 | `is_winner` | `is_winner` | BOOLEAN | ✅ Correspondance exacte | |
 | `notes` | `notes` | TEXT | ✅ Correspondance exacte | Optionnel des deux côtés |
 
-### 🔴 Incohérences Identifiées
-**AUCUNE** - Cette table est parfaitement mappée.
-
 ---
 
-## RÉSUMÉ DES INCOHÉRENCES
+## RÉSUMÉ DES CORRESPONDANCES
 
-### 🔴 Actions Critiques Requises
-
-### 🔴 Actions Critiques Requises
-
-**AUCUNE** - Toutes les tables sont parfaitement mappées.
-
-#### Champs Automatiquement Gérés
-
-**TOUTES LES TABLES** - Les champs `created_at` et `updated_at` :
-- ✅ `created_at` : Existe en BDD, pas dans formulaires → Mise à jour automatique avec date du jour
-- ✅ `updated_at` : Existe en BDD, pas dans formulaires → Mise à jour automatique avec date du jour
-
-#### Champs Calculés (Pas d'action requise)
-
-- **`stats`** (Players) : Champ virtuel calculé = `${total_score} pts`
-- **`players`** (Games) : Champ virtuel calculé = `${min_players}-${max_players}`
-
----
-
-## SCRIPT DE MIGRATION REQUIS
-
-**AUCUN SCRIPT REQUIS** - Tous les champs sont déjà présents dans la base de données.
-
----
-
-## VALIDATION DES CORRESPONDANCES
-
+### 🟢 Statut Global
 ✅ **Table Players** : 100% mappée  
 ✅ **Table Games** : 100% mappée  
 ✅ **Table Game_Expansions** : 100% mappée  
@@ -402,3 +250,27 @@ interface SessionPlayer {
 ✅ **Table Session_Players** : 100% mappée  
 
 **Score Global** : 100% de correspondance - Toutes les tables sont parfaitement mappées
+
+### 🔄 Champs Calculés (Frontend uniquement)
+- **`stats`** (Players) : Calculé = `${total_score} pts`
+- **`players`** (Games) : Calculé = `${min_players}-${max_players}`
+
+### 🔄 Champs Automatiques (BDD uniquement)
+- **`created_at`** : Auto-rempli à la création avec CURRENT_TIMESTAMP
+- **`updated_at`** : Auto-rempli à la modification via triggers
+
+---
+
+## 7. Règles de Gestion et Statut
+
+### Règles Clés
+-   **Champs Automatiques (`created_at`, `updated_at`)**: Ces champs sont gérés exclusivement par la base de données via des valeurs par défaut (`CURRENT_TIMESTAMP`) et des triggers. Ils ne doivent pas être envoyés dans les requêtes `POST` ou `PUT` depuis le frontend.
+-   **Champs Calculés (Frontend)**:
+    -   `Player.stats`: Généré côté client pour l'affichage (ex: `"2,100 pts"`).
+    -   `Game.players`: Généré côté client à partir de `min_players` et `max_players` (ex: `"2-4"`).
+-   **Relations de Données**:
+    -   `Game.expansions`: Chargées depuis la table `game_expansions` si `Game.has_expansion` est `true`.
+    -   `Game.characters`: Chargées depuis la table `game_characters` si `Game.has_characters` est `true`.
+
+### Statut Final
+🎯 **Alignement Complet**: Toutes les interfaces du frontend sont désormais alignées avec le schéma de la base de données. La structure est cohérente et prête pour la persistance des données via l'API backend.
