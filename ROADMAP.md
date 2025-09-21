@@ -1,47 +1,155 @@
-# 🗺️ Roadmap du Projet
+# 🗺️ Roadmap du Projet Board Game Dashboard
 
 Ce document présente les axes de développement futurs pour l'application Board Game Dashboard. La roadmap est organisée par priorité pour guider les prochaines étapes de manière logique et efficace.
 
-## ✅ Réalisé Récemment
+## ✅ Accomplissements Récents (Phase 1 : Foundation)
 
 Un effort majeur de refactoring et d'organisation a été accompli, posant des bases solides pour la suite du développement.
 
--   **Architecture Frontend** : Mise en place et documentation du pattern **Container/Presenter**, séparant la logique de la présentation.
--   **Documentation Centralisée** : Toute la documentation du frontend a été réorganisée, nettoyée et centralisée dans le répertoire `/src/docs/`.
--   **Composants Modulaires** : Les boîtes de dialogue ont été extraites dans des composants réutilisables et la validation des formulaires a été intégrée.
--   **Conventions de Code** : Définition de guides de développement clairs pour garantir la cohérence et la qualité du code.
+### 🏗️ Architecture & Organisation
+-   ✅ **Architecture Frontend Complète** : Mise en place du pattern **Container/Presenter** avec séparation stricte logique/présentation
+-   ✅ **Documentation Centralisée** : Réorganisation complète de la documentation dans `/src/docs/` avec guides détaillés
+-   ✅ **Structure Modulaire** : Organisation cohérente des composants, hooks, views et services
+-   ✅ **Backend API RESTful** : Mise en place d'un serveur Express avec endpoints CRUD complets
+-   ✅ **Base de Données SQLite** : Schéma complet avec tables, vues et relations optimisées
 
-## 🎯 Priorité Haute : Prochaines Étapes
+### 🎨 Interface Utilisateur
+-   ✅ **Design System Complet** : Interface moderne avec Tailwind CSS et composants shadcn/ui
+-   ✅ **Navigation Contextuelle** : Système de navigation mobile/desktop avec gestion d'état
+-   ✅ **Formulaires Avancés** : Validation, modales réutilisables et UX optimisée
+-   ✅ **Responsive Design** : Adaptation complète mobile/tablet/desktop
 
-Cette section regroupe les tâches ayant le plus fort impact sur la qualité, la performance et la maintenabilité de l'application.
+### 🔧 Fonctionnalités Core
+-   ✅ **Gestion Joueurs** : CRUD complet avec statistiques détaillées
+-   ✅ **Gestion Jeux** : CRUD avec intégration BGG API, extensions et personnages
+-   ✅ **Sessions de Jeu** : Création de parties avec scoring coopératif/compétitif
+-   ✅ **Statistiques** : Vues joueurs et jeux avec métriques calculées
+-   ✅ **Intégration BGG** : Recherche automatique et import des données BoardGameGeek
 
-### 🚀 Backend
--   [ ] **Utiliser les Vues SQL** : Mettre à jour `DatabaseManager.ts` pour utiliser les vues `player_statistics` et `game_statistics` au lieu de calculer les statistiques manuellement. Cela simplifiera le code et centralisera la logique dans la BDD.
--   [ ] **Résoudre le problème N+1** : Optimiser la méthode `getAllGames` pour récupérer les jeux, leurs extensions et leurs personnages en une seule requête (via des `JOIN`s) afin d'éviter les requêtes multiples et d'améliorer drastiquement les performances.
--   [ ] **Validation avec Zod** : Remplacer la validation manuelle dans `server.ts` par une bibliothèque comme **Zod**. Cela rendra l'API plus robuste, sécurisée et le code plus déclaratif.
+## 🎯 Phase 2 : Optimisation & Robustesse (Priorité Haute)
 
-### ⚛️ Frontend
--   [ ] **Migration vers React Query** : Remplacer la gestion manuelle de l'état serveur (`useState`/`useEffect` pour les appels API) par **React Query**. C'est la priorité n°1 pour le frontend afin de simplifier le code et de gérer automatiquement le cache, la synchronisation et le re-fetching des données.
+### 🚀 Backend - Performance & Sécurité
+-   [ ] **Validation Zod** : Remplacer la validation manuelle par un schéma Zod déclaratif
+  - Impact : ⭐⭐⭐ Sécurité API et robustesse du système
+  - Effort : 🔨🔨 Moyen (2-3 jours)
+  
+-   [ ] **Optimisation N+1** : Résoudre les requêtes multiples avec des JOINs optimisés
+  - Impact : ⭐⭐⭐ Performance dramatiquement améliorée
+  - Effort : 🔨🔨🔨 Élevé (1 semaine)
 
-## 🏗️ Améliorations d'Architecture (Moyen Terme)
+-   [ ] **Utilisation des Vues SQL** : Exploiter `player_statistics` et `game_statistics` existantes
+  - Impact : ⭐⭐ Code plus simple et performance améliorée
+  - Effort : 🔨 Faible (1-2 jours)
 
-### 🚀 Backend
--   [ ] **Système de Migration BDD** : Mettre en place un outil de migration (ex: `knex.js`) pour gérer les évolutions du schéma de manière versionnée, sécurisée et reproductible.
--   [ ] **Pagination de l'API** : Ajouter la pagination sur les endpoints qui retournent des listes (`/api/games`, `/api/players`) pour garantir l'évolutivité de l'application.
+### ⚛️ Frontend - Modernisation & UX
+-   [ ] **Migration React Query** : Remplacer useState/useEffect par React Query
+  - Impact : ⭐⭐⭐ Cache automatique, synchronisation, UX fluide
+  - Effort : 🔨🔨🔨 Élevé (1-2 semaines)
+  - **Priorité #1 Frontend**
 
-### ⚛️ Frontend
--   [ ] **Tests End-to-End (E2E)** : Mettre en place des tests automatisés avec **Cypress** ou **Playwright** pour valider les parcours utilisateurs critiques et prévenir les régressions.
--   [ ] **Refactoring des Types** : Simplifier les types de requêtes API dans `src/types/index.ts` en utilisant les utilitaires TypeScript (`Omit`, `Pick`) pour réduire la duplication de code.
--   [ ] **Progressive Web App (PWA)** : Rendre l'application installable et permettre une utilisation basique hors ligne.
+-   [ ] **Gestion d'Erreurs Globale** : Error boundaries et toasts d'erreur cohérents
+  - Impact : ⭐⭐ UX robuste et debugging facilité
+  - Effort : 🔨 Faible (2-3 jours)
 
-## ✨ Fonctionnalités Futures (Long Terme)
+## 🏗️ Phase 3 : Évolutivité & Qualité (Moyen Terme)
 
-### Statistiques et Gamification
--   [ ] **Graphiques de Performance** : Intégrer une bibliothèque de graphiques (ex: `recharts`) pour visualiser l'évolution des scores et des victoires.
--   [ ] **Analyse des Tendances** : Développer des vues pour identifier les jeux les plus joués, les adversaires les plus fréquents, etc.
--   [ ] **Comparaison entre Joueurs** : Afficher des statistiques comparatives (head-to-head).
--   [ ] **Système de Succès (Achievements)** : Mettre en place des trophées pour des accomplissements spécifiques (ex: "Première victoire", "Maître de Catan").
+### 🚀 Backend - Scalabilité
+-   [ ] **Système de Migration BDD** : Outil de migration (ex: `knex.js`) pour versioning du schéma
+  - Impact : ⭐⭐ Déploiements sécurisés et reproductibles
+  - Effort : 🔨🔨 Moyen (3-4 jours)
 
-### Sessions de Jeu
--   [ ] **Gestion des Campagnes** : Suivi amélioré des parties en mode campagne avec un état persistant entre les sessions.
--   [ ] **Photos de Session** : Permettre d'ajouter des photos à une session de jeu pour immortaliser les moments forts.
+-   [ ] **Pagination API** : Pagination sur `/api/games` et `/api/players`
+  - Impact : ⭐⭐⭐ Évolutivité avec grandes datasets
+  - Effort : 🔨 Faible (2-3 jours)
+
+-   [ ] **Cache Redis** : Mise en cache des statistiques calculées et requêtes BGG
+  - Impact : ⭐⭐ Performance sur les requêtes fréquentes
+  - Effort : 🔨🔨 Moyen (1 semaine)
+
+### ⚛️ Frontend - Qualité & Testing
+-   [ ] **Tests End-to-End** : Tests automatisés avec **Cypress** ou **Playwright**
+  - Impact : ⭐⭐⭐ Prévention des régressions
+  - Effort : 🔨🔨🔨 Élevé (1-2 semaines)
+
+-   [ ] **Refactoring Types** : Utilisation d'utilitaires TypeScript (`Omit`, `Pick`)
+  - Impact : ⭐ Code plus maintenable
+  - Effort : 🔨 Faible (2-3 jours)
+
+-   [ ] **Progressive Web App** : Installation et fonctionnement hors ligne basique
+  - Impact : ⭐⭐ Expérience native mobile
+  - Effort : 🔨🔨 Moyen (1 semaine)
+
+## ✨ Phase 4 : Fonctionnalités Avancées (Long Terme)
+
+### 📊 Analytics & Intelligence
+-   [ ] **Tableau de Bord Avancé** : Graphiques avec `recharts` (évolution scores, tendances)
+  - Impact : ⭐⭐⭐ Insights utilisateur puissants
+  - Effort : 🔨🔨🔨 Élevé (2-3 semaines)
+
+-   [ ] **Machine Learning Basique** : Recommandations de jeux basées sur l'historique
+  - Impact : ⭐⭐ Personnalisation intelligente
+  - Effort : 🔨🔨🔨🔨 Très élevé (1-2 mois)
+
+-   [ ] **Export/Import Données** : Sauvegarde et transfert des données utilisateur
+  - Impact : ⭐⭐ Portabilité et backup
+  - Effort : 🔨🔨 Moyen (1 semaine)
+
+### 🎮 Expérience de Jeu Enrichie
+-   [ ] **Mode Tournoi** : Organisation de compétitions avec brackets et classements
+  - Impact : ⭐⭐⭐ Nouvelles possibilités de jeu
+  - Effort : 🔨🔨🔨 Élevé (2-3 semaines)
+
+-   [ ] **Intégration Photos** : Upload et gestion d'images de sessions
+  - Impact : ⭐⭐ Valeur émotionnelle et partage
+  - Effort : 🔨🔨 Moyen (1 semaine)
+
+-   [ ] **Gestion Campagnes Legacy** : Suivi état persistant entre sessions
+  - Impact : ⭐⭐ Support jeux narratifs complexes
+  - Effort : 🔨🔨🔨 Élevé (2-3 semaines)
+
+### 🏆 Gamification & Social
+-   [ ] **Système d'Achievements** : Trophées et succès déblocables
+  - Impact : ⭐⭐⭐ Engagement et rétention
+  - Effort : 🔨🔨 Moyen (1-2 semaines)
+
+-   [ ] **Profils & Comparaisons** : Head-to-head, rivalités, statistiques sociales
+  - Impact : ⭐⭐ Aspect social et compétitif
+  - Effort : 🔨🔨🔨 Élevé (2-3 semaines)
+
+-   [ ] **Partage & Export** : Génération automatique de résumés de parties
+  - Impact : ⭐⭐ Partage social externe
+  - Effort : 🔨🔨 Moyen (1 semaine)
+
+## 🔧 Maintenance Continue
+
+### 🛡️ Sécurité & Performance
+-   [ ] **Audit Sécurité** : Scan des vulnérabilités et mise à jour des dépendances
+-   [ ] **Monitoring Performance** : Métriques temps de réponse et détection des goulots
+-   [ ] **Sauvegarde Automatique** : Backup incrémental de la base de données
+
+### 📚 Documentation & DevEx
+-   [ ] **Documentation API** : Swagger/OpenAPI pour les endpoints
+-   [ ] **Guide Contributeur** : Processus PR, standards de code, setup dev
+-   [ ] **Déploiement Automatisé** : CI/CD avec tests et déploiement
+
+---
+
+## 📋 Légende
+
+**Impact** : Valeur apportée au projet
+- ⭐ Faible : Amélioration mineure
+- ⭐⭐ Moyen : Amélioration notable
+- ⭐⭐⭐ Élevé : Transformation significative
+
+**Effort** : Complexité de développement
+- 🔨 Faible : 1-3 jours
+- 🔨🔨 Moyen : 1 semaine
+- 🔨🔨🔨 Élevé : 2-3 semaines
+- 🔨🔨🔨🔨 Très élevé : 1+ mois
+
+## 🎯 Prochaines Actions Recommandées
+
+1. **React Query Migration** (Frontend) - Impact immédiat sur l'UX
+2. **Validation Zod** (Backend) - Sécurisation de l'API
+3. **Optimisation N+1** (Backend) - Performance critique
+4. **Tests E2E** (QA) - Stabilité long terme
