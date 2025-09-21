@@ -255,6 +255,7 @@ export default function App() {
 
   const handleCreateSession = async (sessionData: any) => {
     // Implementation for creating game sessions
+    console.log('Creating session:', sessionData);
   };
 
   const renderCurrentView = () => {
@@ -294,7 +295,7 @@ export default function App() {
         return <SettingsPage onNavigation={handleNavigation} currentView={currentView} />;
       case 'player-stats':
       case 'game-stats':
-      case 'stats':
+      case 'stats': {
         return (
           <StatsPage 
             players={players} 
@@ -306,6 +307,7 @@ export default function App() {
             navigationContext={navigationContext}
           />
         );
+      }
       case 'new-game':
         return (
           <NewGamePage

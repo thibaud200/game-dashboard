@@ -4,10 +4,10 @@ const API_BASE_URL = typeof window !== 'undefined' && window.location.hostname =
   : 'https://your-api-domain.com/api';
 
 class ApiService {
-  private async request<T>(endpoint: string, options: RequestInit = {}): Promise<T> {
+  private async request<T>(endpoint: string, options: Record<string, any> = {}): Promise<T> {
     const url = `${API_BASE_URL}${endpoint}`;
     
-    const config: RequestInit = {
+    const config: Record<string, any> = {
       headers: {
         'Content-Type': 'application/json',
         ...options.headers,
