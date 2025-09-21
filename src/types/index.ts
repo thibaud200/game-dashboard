@@ -1,4 +1,5 @@
 // Shared types for the application
+import React from 'react';
 
 export interface Player {
   player_id: number;
@@ -210,8 +211,6 @@ export interface BaseDialogProps {
 }
 
 // Hook return types for common patterns
-import React from 'react';
-
 export interface UseFormReturn<T> {
   formData: T;
   setFormData: React.Dispatch<React.SetStateAction<T>>;
