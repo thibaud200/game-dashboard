@@ -162,11 +162,11 @@ export const useGamesPage = (data: GamesPageData) => {
   };
 
   // Navigation handlers
-  const handleBackClick = () => {
+  const _handleBackClick = () => {
     onNavigation('dashboard');
   };
 
-  const handleGameStatsClick = () => {
+  const _handleGameStatsClick = () => {
     onNavigation('stats', undefined, 'games');
   };
 
@@ -252,19 +252,19 @@ export const useGamesPage = (data: GamesPageData) => {
     onDeleteGame(gameId);
   };
 
-  const handleViewGameDetail = (gameId: number) => {
+  const _handleViewGameDetail = (gameId: number) => {
     onNavigation('game-detail', gameId);
   };
 
-  const handleViewGameStats = (gameId: number) => {
+  const _handleViewGameStats = (gameId: number) => {
     onNavigation('stats', gameId, 'games');
   };
 
-  const handleManageExpansions = (gameId: number) => {
+  const _handleManageExpansions = (gameId: number) => {
     onNavigation('game-expansions', gameId, 'games');
   };
 
-  const handleManageCharacters = (gameId: number) => {
+  const _handleManageCharacters = (gameId: number) => {
     onNavigation('game-characters', gameId, 'games');
   };
 
@@ -333,18 +333,12 @@ export const useGamesPage = (data: GamesPageData) => {
     setDifficultyFilter,
     
     // Handlers
-    handleBackClick,
-    handleGameStatsClick,
     handleAddDialogOpen,
     handleEditDialogOpen,
     handleAddGame,
     handleEditGame,
     handleUpdateGame,
     handleDeleteGame,
-    handleViewGameDetail,
-    handleViewGameStats,
-    handleManageExpansions,
-    handleManageCharacters,
     handleBGGSearch,
     resetForm,
     onNavigation,

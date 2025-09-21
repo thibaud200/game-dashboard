@@ -366,7 +366,7 @@ export default function GamesPageView({
                                     });
                                     
                                     // This should be handled by parent component
-                                    // onUpdateGame(game.game_id, { ...game, expansions: parsedExpansions });
+                                    // onUpdateGame(game.game_id, { ...game, expansions: _parsedExpansions });
                                   }}
                                   placeholder="Format: Extension 1 (2023), Extension 2 (2024), ..."
                                   className="min-h-[60px] bg-white/5 border-white/10 text-white text-xs resize-none"

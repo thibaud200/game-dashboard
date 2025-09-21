@@ -296,10 +296,9 @@ export default function App() {
             currentView={currentView}
           />
         );
-      case 'settings': {
+      case 'settings':
         return <SettingsPage onNavigation={handleNavigation} currentView={currentView} />;
-      }
-      case 'stats': {
+      case 'stats':
         return (
           <StatsPage
             players={players || []}
@@ -311,8 +310,7 @@ export default function App() {
             navigationContext={navigationContext}
           />
         );
-      }
-      case 'new-game': {
+      case 'new-game':
         return (
           <NewGamePage
             players={players || []}
@@ -322,7 +320,6 @@ export default function App() {
             currentView={currentView}
           />
         );
-      }
       case 'game-detail': {
         const game = selectedGameId ? games?.find(g => g.game_id === selectedGameId) : null;
         return game ? (

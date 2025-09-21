@@ -25,7 +25,10 @@ export default [
       'packages/',
       '.git/',
       'test-backend.mjs',
-      'backend/**/*'
+      'backend/',
+      'backend/**/*',
+      'tailwind.config.js',
+      'vite.config.ts'
     ]
   },
   ...compat.extends('eslint:recommended'),
