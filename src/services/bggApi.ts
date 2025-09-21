@@ -72,7 +72,7 @@ class BGGApiService {
       
       const xmlText = await response.text();
       return this.parseSearchResults(xmlText);
-    } catch (error) {
+    } catch {
       // Error handling would use proper logging in production
       return [];
     }
@@ -92,7 +92,7 @@ class BGGApiService {
       
       const xmlText = await response.text();
       return this.parseGameDetails(xmlText, bggId);
-    } catch (error) {
+    } catch {
       // Error handling would use proper logging in production
       return null;
     }
@@ -112,7 +112,7 @@ class BGGApiService {
       
       const xmlText = await response.text();
       return this.parseExpansions(xmlText);
-    } catch (error) {
+    } catch {
       // Error handling would use proper logging in production
       return [];
     }
@@ -143,7 +143,7 @@ class BGGApiService {
       }
       
       return results.slice(0, 10); // Limit to 10 results
-    } catch (error) {
+    } catch {
       // Error handling would use proper logging in production
       return [];
     }
@@ -229,7 +229,7 @@ class BGGApiService {
         is_expansion: this.getLinkValues(item, 'boardgameexpansion').length > 0,
         base_game_id: this.getBaseGameId(item)
       };
-    } catch (error) {
+    } catch {
       // Error handling would use proper logging in production
       return null;
     }
@@ -260,7 +260,7 @@ class BGGApiService {
       });
 
       return expansions;
-    } catch (error) {
+    } catch {
       // Error handling would use proper logging in production
       return [];
     }

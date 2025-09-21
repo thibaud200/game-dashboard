@@ -1,38 +1,36 @@
 // API service to connect frontend with backend database
-const API_BASE_URL = typeof window !== 'undefined' && window.location.hostname === 'localhost'
-  ? 'http://localhost:3001/api' 
-  : 'https://your-api-domain.com/api';
 
-class ApiService {
-  private async request<T>(endpoint: string, options: RequestInit = {}): Promise<T> {
-    const url = `${API_BASE_URL}${endpoint}`;
+export class ApiService {
+  private readonly baseUrl: string;
+
+  constructor() {
+    this.baseUrl = import.meta.env.VITE_API_URL || 'http://localhost:5000/api';
+  }
+
+  private async request<T>(endpoint: string, options: globalThis.RequestInit = {}): Promise<T> {
+    const url = `${this.baseUrl}${endpoint}`;
     
-    const config: RequestInit = {
+    const config: globalThis.RequestInit = {
+      method: 'GET',
       headers: {
         'Content-Type': 'application/json',
-        ...options.headers,
       },
       ...options,
     };
 
-    try {
-      const response = await fetch(url, config);
-      
-      if (!response.ok) {
-        const errorData = await response.json().catch(() => ({ error: 'Unknown error' }));
-        throw new Error(errorData.error || `HTTP ${response.status}: ${response.statusText}`);
-      }
-      
-      // Handle 204 No Content responses
-      if (response.status === 204) {
-        return {} as T;
-      }
-      
-      return await response.json();
-    } catch (error) {
-      // Error handling would use proper logging in production
-      throw error;
+    const response = await fetch(url, config);
+    
+    if (!response.ok) {
+      const errorData = await response.json().catch(() => ({ error: 'Unknown error' }));
+      throw new Error(errorData.error || `HTTP ${response.status}: ${response.statusText}`);
     }
+    
+    // Handle 204 No Content responses
+    if (response.status === 204) {
+      return {} as T;
+    }
+    
+    return await response.json();
   }
 
   // Player operations

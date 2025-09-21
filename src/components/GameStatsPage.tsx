@@ -44,7 +44,7 @@ export default function GameStatsPage({
   games, 
   players, 
   onNavigation, 
-  currentView, 
+  currentView: _currentView, 
   selectedCircleId 
 }: GameStatsPageProps) {
   const {

@@ -1,5 +1,5 @@
-import express from 'express';
-import cors from 'cors';
+import express = require('express');
+import cors = require('cors');
 import DatabaseManager from './database/DatabaseManager';
 
 const app = express();
@@ -22,19 +22,21 @@ const asyncHandler = (fn: Function) => (req: express.Request, res: express.Respo
 
 // Player routes
 app.get('/api/players', asyncHandler(async (req: express.Request, res: express.Response) => {
-  const players = db.getAllPlayers();
+  // 🚀 OPTIMIZED: Use player_statistics view instead of manual calculation
+  const players = db.getAllPlayersOptimized();
   res.json(players);
 }));
 
 app.get('/api/players/:id', asyncHandler(async (req: express.Request, res: express.Response) => {
   const playerId = parseInt(req.params.id);
-  const player = db.getPlayerById(playerId);
+  // 🚀 OPTIMIZED: Use player_statistics view instead of manual calculation
+  const player = db.getPlayerByIdOptimized(playerId);
   
   if (!player) {
     return res.status(404).json({ error: 'Player not found' });
   }
   
-  res.json(player);
+  return res.json(player);
 }));
 
 app.post('/api/players', asyncHandler(async (req: express.Request, res: express.Response) => {
@@ -47,9 +49,9 @@ app.post('/api/players', asyncHandler(async (req: express.Request, res: express.
   
   try {
     const newPlayer = db.createPlayer(playerData);
-    res.status(201).json(newPlayer);
+    return res.status(201).json(newPlayer);
   } catch (error) {
-    if (error.code === 'SQLITE_CONSTRAINT_UNIQUE') {
+    if (typeof error === 'object' && error !== null && 'code' in error && (error as any).code === 'SQLITE_CONSTRAINT_UNIQUE') {
       return res.status(400).json({ error: 'Email already exists' });
     }
     throw error;
@@ -69,9 +71,9 @@ app.put('/api/players/:id', asyncHandler(async (req: express.Request, res: expre
     if (!updatedPlayer) {
       return res.status(404).json({ error: 'Player not found' });
     }
-    res.json(updatedPlayer);
+    return res.json(updatedPlayer);
   } catch (error) {
-    if (error.code === 'SQLITE_CONSTRAINT_UNIQUE') {
+    if (typeof error === 'object' && error !== null && 'code' in error && (error as any).code === 'SQLITE_CONSTRAINT_UNIQUE') {
       return res.status(400).json({ error: 'Email already exists' });
     }
     throw error;
@@ -86,24 +88,26 @@ app.delete('/api/players/:id', asyncHandler(async (req: express.Request, res: ex
     return res.status(404).json({ error: 'Player not found' });
   }
   
-  res.status(204).send();
+  return res.status(204).send();
 }));
 
 // Game routes
 app.get('/api/games', asyncHandler(async (req: express.Request, res: express.Response) => {
-  const games = db.getAllGames();
+  // 🚀 OPTIMIZED: Use game_statistics view instead of manual calculation
+  const games = db.getAllGamesOptimized();
   res.json(games);
 }));
 
 app.get('/api/games/:id', asyncHandler(async (req: express.Request, res: express.Response) => {
   const gameId = parseInt(req.params.id);
-  const game = db.getGameById(gameId);
+  // 🚀 OPTIMIZED: Use game_statistics view instead of manual calculation
+  const game = db.getGameByIdOptimized(gameId);
   
   if (!game) {
     return res.status(404).json({ error: 'Game not found' });
   }
   
-  res.json(game);
+  return res.json(game);
 }));
 
 app.post('/api/games', asyncHandler(async (req: express.Request, res: express.Response) => {
@@ -123,7 +127,7 @@ app.post('/api/games', asyncHandler(async (req: express.Request, res: express.Re
   }
   
   const newGame = db.createGame(gameData);
-  res.status(201).json(newGame);
+  return res.status(201).json(newGame);
 }));
 
 app.put('/api/games/:id', asyncHandler(async (req: express.Request, res: express.Response) => {
@@ -148,7 +152,7 @@ app.put('/api/games/:id', asyncHandler(async (req: express.Request, res: express
     return res.status(404).json({ error: 'Game not found' });
   }
   
-  res.json(updatedGame);
+  return res.json(updatedGame);
 }));
 
 app.delete('/api/games/:id', asyncHandler(async (req: express.Request, res: express.Response) => {
@@ -159,14 +163,14 @@ app.delete('/api/games/:id', asyncHandler(async (req: express.Request, res: expr
     return res.status(404).json({ error: 'Game not found' });
   }
   
-  res.status(204).send();
+  return res.status(204).send();
 }));
 
 // Session routes
 app.get('/api/sessions', asyncHandler(async (req: express.Request, res: express.Response) => {
   const gameId = req.query.game_id ? parseInt(req.query.game_id as string) : undefined;
   const sessions = db.getGameSessions(gameId);
-  res.json(sessions);
+  return res.json(sessions);
 }));
 
 app.post('/api/sessions', asyncHandler(async (req: express.Request, res: express.Response) => {
@@ -189,18 +193,20 @@ app.post('/api/sessions', asyncHandler(async (req: express.Request, res: express
     }
   }
   
-  res.status(201).json(newSession);
+  return res.status(201).json(newSession);
 }));
 
 // Statistics routes
 app.get('/api/stats/players', asyncHandler(async (req: express.Request, res: express.Response) => {
-  const stats = db.getPlayerStats();
-  res.json(stats);
+  // 🚀 OPTIMIZED: Use enhanced player statistics with player_statistics view
+  const stats = db.getPlayerStatsOptimized();
+  return res.json(stats);
 }));
 
 app.get('/api/stats/games', asyncHandler(async (req: express.Request, res: express.Response) => {
-  const stats = db.getGameStats();
-  res.json(stats);
+  // 🚀 OPTIMIZED: Use enhanced game statistics with game_statistics view
+  const stats = db.getGameStatsOptimized();
+  return res.json(stats);
 }));
 
 // Health check
@@ -219,7 +225,7 @@ app.use((error: any, req: express.Request, res: express.Response, _next: express
     });
   }
   
-  res.status(500).json({ 
+  return res.status(500).json({ 
     error: 'Internal server error',
     message: process.env.NODE_ENV === 'development' ? error.message : 'Something went wrong'
   });
@@ -227,7 +233,7 @@ app.use((error: any, req: express.Request, res: express.Response, _next: express
 
 // 404 handler
 app.use((req: express.Request, res: express.Response) => {
-  res.status(404).json({ error: 'Endpoint not found' });
+  return res.status(404).json({ error: 'Endpoint not found' });
 });
 
 // Graceful shutdown
@@ -244,7 +250,8 @@ process.on('SIGTERM', () => {
 });
 
 app.listen(PORT, () => {
-  // Server startup logging would be handled by proper logging system
+  console.log(`🚀 Server running on http://localhost:${PORT}`);
+  console.log(`📊 API health check: http://localhost:${PORT}/api/health`);
 });
 
 export default app;
