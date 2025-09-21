@@ -257,7 +257,7 @@ export default function App() {
     setGames((games || []).filter(g => g.game_id !== gameId));
   };
 
-  const handleCreateGameSession = (sessionData: any) => {
+  const handleCreateGameSession = async (sessionData: any) => {
     // Implementation for creating a game session
     console.log('Creating game session:', sessionData);
   };
@@ -339,9 +339,13 @@ export default function App() {
           <GameExpansionsPage
             game={game}
             onNavigation={handleNavigation}
-            currentView={currentView}
             navigationSource={navigationContext.source}
-            onAddExpansion={async () => ({ expansion_id: 1, name: '', description: '' })}
+            onAddExpansion={async () => ({ 
+              expansion_id: 1, 
+              name: '', 
+              description: '',
+              year_published: 0
+            })}
             onUpdateExpansion={async () => {}}
             onDeleteExpansion={async () => {}}
           />
@@ -355,7 +359,14 @@ export default function App() {
             onNavigation={handleNavigation}
             currentView={currentView}
             navigationSource={navigationContext.source}
-            onAddCharacter={async () => ({ character_id: 1, name: '', description: '', avatar: '' })}
+            onAddCharacter={async () => ({ 
+              character_id: 1, 
+              character_key: '', 
+              name: '', 
+              description: '', 
+              abilities: [],
+              avatar: '' 
+            })}
             onUpdateCharacter={async () => {}}
             onDeleteCharacter={async () => {}}
           />
