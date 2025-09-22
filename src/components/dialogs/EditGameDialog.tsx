@@ -41,6 +41,12 @@ interface FormData {
   supports_campaign: boolean
   supports_hybrid: boolean
   bgg_id?: number
+  thumbnail?: string
+  min_playtime?: number
+  max_playtime?: number
+  categories?: string[]
+  mechanics?: string[]
+  families?: string[]
 }
 
 interface EditGameDialogProps {
@@ -145,6 +151,7 @@ export default function EditGameDialog({
           </DialogDescription>
         </DialogHeader>
         <div className="space-y-4">
+          {/* Champs standards */}
           <div>
             <Label htmlFor="edit-game-name">Game Name *</Label>
             <Input
@@ -167,6 +174,18 @@ export default function EditGameDialog({
               placeholder="https://..."
             />
           </div>
+          {/* Champs BGG */}
+          <div>
+            <Label htmlFor="edit-game-thumbnail">Thumbnail URL</Label>
+            <Input
+              id="edit-game-thumbnail"
+              value={formData.thumbnail || ''}
+              onChange={(e) => onFormDataChange({ thumbnail: e.target.value })}
+              className="bg-slate-700 border-slate-600 text-white"
+              placeholder="https://..."
+            />
+          </div>
+          {/* ...le reste du bloc principal (Game Modes, Expansions, Characters, etc.)... */}
           <div className="grid grid-cols-2 gap-4">
             <div>
               <Label htmlFor="edit-min-players">Min Players</Label>
@@ -218,7 +237,31 @@ export default function EditGameDialog({
               />
             </div>
           </div>
-          <div className="grid grid-cols-2 gap-4">
+          <div className="grid grid-cols-3 gap-4">
+            <div>
+              <Label htmlFor="edit-min-playtime">Min Playtime</Label>
+              <Input
+                id="edit-min-playtime"
+                type="number"
+                min="0"
+                value={formData.min_playtime || ''}
+                onChange={(e) => onFormDataChange({ min_playtime: parseInt(e.target.value) || 0 })}
+                className="bg-slate-700 border-slate-600 text-white"
+                placeholder="min"
+              />
+            </div>
+            <div>
+              <Label htmlFor="edit-max-playtime">Max Playtime</Label>
+              <Input
+                id="edit-max-playtime"
+                type="number"
+                min="0"
+                value={formData.max_playtime || ''}
+                onChange={(e) => onFormDataChange({ max_playtime: parseInt(e.target.value) || 0 })}
+                className="bg-slate-700 border-slate-600 text-white"
+                placeholder="max"
+              />
+            </div>
             <div>
               <Label htmlFor="edit-difficulty">Difficulty</Label>
               <Select value={formData.difficulty} onValueChange={(value) => onFormDataChange({ difficulty: value })}>
@@ -232,6 +275,8 @@ export default function EditGameDialog({
                 </SelectContent>
               </Select>
             </div>
+          </div>
+          <div className="grid grid-cols-2 gap-4">
             <div>
               <Label>Game Modes</Label>
               <div className="grid grid-cols-2 gap-2 mt-2">
@@ -294,6 +339,54 @@ export default function EditGameDialog({
               onChange={(e) => onFormDataChange({ category: e.target.value })}
               className="bg-slate-700 border-slate-600 text-white"
               placeholder="Strategy, Party, etc."
+            />
+          </div>
+          <div>
+            <Label htmlFor="edit-categories">Categories (JSON)</Label>
+            <Textarea
+              id="edit-categories"
+              value={formData.categories ? JSON.stringify(formData.categories, null, 2) : ''}
+              onChange={(e) => {
+                try {
+                  onFormDataChange({ categories: JSON.parse(e.target.value) });
+                } catch {
+                  onFormDataChange({ categories: [] });
+                }
+              }}
+              className="bg-slate-700 border-slate-600 text-white"
+              placeholder='["Adventure", "Fantasy"]'
+            />
+          </div>
+          <div>
+            <Label htmlFor="edit-mechanics">Mechanics (JSON)</Label>
+            <Textarea
+              id="edit-mechanics"
+              value={formData.mechanics ? JSON.stringify(formData.mechanics, null, 2) : ''}
+              onChange={(e) => {
+                try {
+                  onFormDataChange({ mechanics: JSON.parse(e.target.value) });
+                } catch {
+                  onFormDataChange({ mechanics: [] });
+                }
+              }}
+              className="bg-slate-700 border-slate-600 text-white"
+              placeholder='["Hand Management", "Cooperative Game"]'
+            />
+          </div>
+          <div>
+            <Label htmlFor="edit-families">Families (JSON)</Label>
+            <Textarea
+              id="edit-families"
+              value={formData.families ? JSON.stringify(formData.families, null, 2) : ''}
+              onChange={(e) => {
+                try {
+                  onFormDataChange({ families: JSON.parse(e.target.value) });
+                } catch {
+                  onFormDataChange({ families: [] });
+                }
+              }}
+              className="bg-slate-700 border-slate-600 text-white"
+              placeholder='["Legacy", "Family"]'
             />
           </div>
           <div className="grid grid-cols-2 gap-4">
@@ -505,7 +598,7 @@ export default function EditGameDialog({
               </div>
             )}
           </div>
-          <Button onClick={onUpdateGame} className="w-full bg-blue-600 hover:bg-blue-700">
+          <Button onClick={onUpdateGame} className="w-full bg-emerald-600 hover:bg-emerald-700">
             Update Game
           </Button>
         </div>

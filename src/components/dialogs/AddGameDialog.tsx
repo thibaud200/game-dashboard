@@ -44,6 +44,12 @@ interface FormData {
   supports_campaign: boolean
   supports_hybrid: boolean
   bgg_id?: number
+  thumbnail?: string
+  min_playtime?: number
+  max_playtime?: number
+  categories?: string[]
+  mechanics?: string[]
+  families?: string[]
 }
 
 interface ValidationErrors {
@@ -258,7 +264,30 @@ export default function AddGameDialog({
           {isBGGSearchOpen && (
             <div className="p-4 bg-slate-700 rounded-lg border border-slate-600">
               <BGGSearch 
-                onGameSelect={onBGGGameSelect}
+                onGameSelect={(bggGame) => {
+                  onFormDataChange({
+                    name: bggGame.name || '',
+                    image: bggGame.image || '',
+                    year_published: bggGame.year_published || new Date().getFullYear(),
+                    publisher: Array.isArray(bggGame.publishers) ? bggGame.publishers.join(', ') : (bggGame.publishers || ''),
+                    designer: Array.isArray(bggGame.designers) ? bggGame.designers.join(', ') : (bggGame.designers || ''),
+                    bgg_rating: bggGame.rating || 0,
+                    weight: bggGame.weight || 0,
+                    min_players: bggGame.min_players || 1,
+                    max_players: bggGame.max_players || 1,
+                    duration: bggGame.playing_time ? `${bggGame.playing_time} min` : '',
+                    age_min: bggGame.min_age || 1,
+                    bgg_id: bggGame.id || undefined,
+                    thumbnail: bggGame.thumbnail || '',
+                    min_playtime: bggGame.min_playtime || 0,
+                    max_playtime: bggGame.max_playtime || 0,
+                    categories: bggGame.categories || [],
+                    mechanics: bggGame.mechanics || [],
+                    families: [],
+                  });
+                  onBGGGameSelect(bggGame);
+                  onBGGSearchToggle(false);
+                }}
                 onClose={() => onBGGSearchToggle(false)}
               />
             </div>
@@ -291,6 +320,16 @@ export default function AddGameDialog({
             {errors.image && (
               <p className="text-red-400 text-sm mt-1">{errors.image}</p>
             )}
+          </div>
+          <div>
+            <Label htmlFor="edit-game-thumbnail">Thumbnail URL</Label>
+            <Input
+              id="edit-game-thumbnail"
+              value={formData.thumbnail || ''}
+              onChange={(e) => onFormDataChange({ thumbnail: e.target.value })}
+              className="bg-slate-700 border-slate-600 text-white"
+              placeholder="https://..."
+            />
           </div>
           <div className="grid grid-cols-2 gap-4">
             <div>
@@ -349,7 +388,31 @@ export default function AddGameDialog({
               />
             </div>
           </div>
-          <div className="grid grid-cols-2 gap-4">
+          <div className="grid grid-cols-3 gap-4">
+            <div>
+              <Label htmlFor="edit-min-playtime">Min Playtime</Label>
+              <Input
+                id="edit-min-playtime"
+                type="number"
+                min="0"
+                value={formData.min_playtime || ''}
+                onChange={(e) => onFormDataChange({ min_playtime: parseInt(e.target.value) || 0 })}
+                className="bg-slate-700 border-slate-600 text-white"
+                placeholder="min"
+              />
+            </div>
+            <div>
+              <Label htmlFor="edit-max-playtime">Max Playtime</Label>
+              <Input
+                id="edit-max-playtime"
+                type="number"
+                min="0"
+                value={formData.max_playtime || ''}
+                onChange={(e) => onFormDataChange({ max_playtime: parseInt(e.target.value) || 0 })}
+                className="bg-slate-700 border-slate-600 text-white"
+                placeholder="max"
+              />
+            </div>
             <div>
               <Label htmlFor="difficulty">Difficulty</Label>
               <Select value={formData.difficulty} onValueChange={(value) => onFormDataChange({ difficulty: value })}>
@@ -363,6 +426,9 @@ export default function AddGameDialog({
                 </SelectContent>
               </Select>
             </div>
+          </div>
+          <div className="grid grid-cols-2 gap-4">
+            
             <div>
               <Label>Game Modes</Label>
               <div className="grid grid-cols-2 gap-2 mt-2">
@@ -426,6 +492,54 @@ export default function AddGameDialog({
               onChange={(e) => onFormDataChange({ category: e.target.value })}
               className="bg-slate-700 border-slate-600 text-white"
               placeholder="Strategy, Party, etc."
+            />
+          </div>
+          <div>
+            <Label htmlFor="edit-categories">Categories (JSON)</Label>
+            <Textarea
+              id="edit-categories"
+              value={formData.categories ? JSON.stringify(formData.categories, null, 2) : ''}
+              onChange={(e) => {
+                try {
+                  onFormDataChange({ categories: JSON.parse(e.target.value) });
+                } catch {
+                  onFormDataChange({ categories: [] });
+                }
+              }}
+              className="bg-slate-700 border-slate-600 text-white"
+              placeholder='["Adventure", "Fantasy"]'
+            />
+          </div>
+          <div>
+            <Label htmlFor="edit-mechanics">Mechanics (JSON)</Label>
+            <Textarea
+              id="edit-mechanics"
+              value={formData.mechanics ? JSON.stringify(formData.mechanics, null, 2) : ''}
+              onChange={(e) => {
+                try {
+                  onFormDataChange({ mechanics: JSON.parse(e.target.value) });
+                } catch {
+                  onFormDataChange({ mechanics: [] });
+                }
+              }}
+              className="bg-slate-700 border-slate-600 text-white"
+              placeholder='["Hand Management", "Cooperative Game"]'
+            />
+          </div>
+          <div>
+            <Label htmlFor="edit-families">Families (JSON)</Label>
+            <Textarea
+              id="edit-families"
+              value={formData.families ? JSON.stringify(formData.families, null, 2) : ''}
+              onChange={(e) => {
+                try {
+                  onFormDataChange({ families: JSON.parse(e.target.value) });
+                } catch {
+                  onFormDataChange({ families: [] });
+                }
+              }}
+              className="bg-slate-700 border-slate-600 text-white"
+              placeholder='["Legacy", "Family"]'
             />
           </div>
           <div className="grid grid-cols-2 gap-4">

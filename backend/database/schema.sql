@@ -19,6 +19,13 @@ CREATE TABLE players (
 CREATE TABLE games (
     game_id INTEGER PRIMARY KEY AUTOINCREMENT,
     bgg_id INTEGER UNIQUE,
+    thumbnail TEXT,
+    playing_time INTEGER,
+    min_playtime INTEGER,
+    max_playtime INTEGER,
+    categories TEXT, -- JSON array
+    mechanics TEXT, -- JSON array
+    families TEXT, -- JSON array
     name TEXT NOT NULL,
     description TEXT,
     image TEXT,

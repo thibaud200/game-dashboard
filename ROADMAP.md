@@ -1,5 +1,5 @@
 # 🗺️ Ro### Priorité Immédiate (2-4 semaines) 
-1. **🗄️ Migration Schema BGG Complet** - Ajouter TOUS les champs manquants de board-game-scorekeep (2-3 jours)
+1. ✅**🗄️ Migration Schema BGG Complet** - **TERMINÉ** - Ajouter TOUS les champs manquants de board-game-scorekeep (2-3 jours)
 2. **🎮 Service UltraBoardGames** - **COPIER** le service fonctionnel de boardGameScore (1-2 jours)
 3. **🧪 Infrastructure Tests** - **TERMINÉ** ✅ Vitest + RTL + MSW configurés, tous tests passent (31/31 tests ✅)
 4. **� Tests Avancés** - **NOUVEAU** ⚡ Évolution vers 50+ tests avec intégration E2E (3-4 jours)
