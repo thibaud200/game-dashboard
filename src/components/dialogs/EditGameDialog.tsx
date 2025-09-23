@@ -57,6 +57,7 @@ interface EditGameDialogProps {
   onFormDataChange: (data: Partial<FormData>) => void
   onUpdateGame: () => void
   onResetForm: () => void
+  darkMode: boolean
 }
 
 export default function EditGameDialog({
@@ -65,7 +66,8 @@ export default function EditGameDialog({
   formData,
   onFormDataChange,
   onUpdateGame,
-  onResetForm
+  onResetForm,
+  darkMode
 }: EditGameDialogProps) {
   const setFormData = (updater: (prev: FormData) => FormData) => {
     const newData = updater(formData);
@@ -143,52 +145,54 @@ export default function EditGameDialog({
         onResetForm();
       }
     }}>
-      <DialogContent className="bg-slate-800 border-slate-700 text-white max-w-2xl max-h-[90vh] overflow-y-auto">
+      <DialogContent className={
+        `${darkMode ? 'bg-slate-800 border-slate-700 text-white' : 'bg-slate-50 border-slate-200 text-slate-900'} max-w-2xl max-h-[90vh] overflow-y-auto`
+      }>
         <DialogHeader>
-          <DialogTitle>Edit Game</DialogTitle>
-          <DialogDescription className="text-white/70">
+          <DialogTitle className={darkMode ? 'text-white' : 'text-blue-700'}>Edit Game</DialogTitle>
+          <DialogDescription className={darkMode ? 'text-white/70' : 'text-slate-500'}>
             Update game information and details.
           </DialogDescription>
         </DialogHeader>
         <div className="space-y-4">
           {/* Champs standards */}
           <div>
-            <Label htmlFor="edit-game-name">Game Name *</Label>
+            <Label htmlFor="edit-game-name" className={darkMode ? 'text-white' : 'text-blue-700'}>Game Name *</Label>
             <Input
               id="edit-game-name"
               name="edit-game-name"
               value={formData.name}
               onChange={(e) => onFormDataChange({ name: e.target.value })}
-              className="bg-slate-700 border-slate-600 text-white"
+              className={darkMode ? 'bg-slate-700 border-slate-600 text-white' : 'bg-slate-100 border-slate-300 text-slate-900'}
               placeholder="Enter game name"
             />
           </div>
           <div>
-            <Label htmlFor="edit-game-image">Image URL</Label>
+            <Label htmlFor="edit-game-image" className={darkMode ? 'text-white' : 'text-blue-700'}>Image URL</Label>
             <Input
               id="edit-game-image"
               name="edit-game-image"
               value={formData.image}
               onChange={(e) => onFormDataChange({ image: e.target.value })}
-              className="bg-slate-700 border-slate-600 text-white"
+              className={darkMode ? 'bg-slate-700 border-slate-600 text-white' : 'bg-slate-100 border-slate-300 text-slate-900'}
               placeholder="https://..."
             />
           </div>
           {/* Champs BGG */}
           <div>
-            <Label htmlFor="edit-game-thumbnail">Thumbnail URL</Label>
+            <Label htmlFor="edit-game-thumbnail" className={darkMode ? 'text-white' : 'text-blue-700'}>Thumbnail URL</Label>
             <Input
               id="edit-game-thumbnail"
               value={formData.thumbnail || ''}
               onChange={(e) => onFormDataChange({ thumbnail: e.target.value })}
-              className="bg-slate-700 border-slate-600 text-white"
+              className={darkMode ? 'bg-slate-700 border-slate-600 text-white' : 'bg-slate-100 border-slate-300 text-slate-900'}
               placeholder="https://..."
             />
           </div>
           {/* ...le reste du bloc principal (Game Modes, Expansions, Characters, etc.)... */}
           <div className="grid grid-cols-2 gap-4">
             <div>
-              <Label htmlFor="edit-min-players">Min Players</Label>
+              <Label htmlFor="edit-min-players" className={darkMode ? 'text-white' : 'text-blue-700'}>Min Players</Label>
               <Input
                 id="edit-min-players"
                 name="edit-min-players"
@@ -196,11 +200,11 @@ export default function EditGameDialog({
                 min="1"
                 value={formData.min_players}
                 onChange={(e) => onFormDataChange({ min_players: parseInt(e.target.value) || 1 })}
-                className="bg-slate-700 border-slate-600 text-white"
+                className={darkMode ? 'bg-slate-700 border-slate-600 text-white' : 'bg-slate-100 border-slate-300 text-slate-900'}
               />
             </div>
             <div>
-              <Label htmlFor="edit-max-players">Max Players</Label>
+              <Label htmlFor="edit-max-players" className={darkMode ? 'text-white' : 'text-blue-700'}>Max Players</Label>
               <Input
                 id="edit-max-players"
                 name="edit-max-players"
@@ -208,7 +212,7 @@ export default function EditGameDialog({
                 min="1"
                 value={formData.max_players}
                 onChange={(e) => onFormDataChange({ max_players: parseInt(e.target.value) || 1 })}
-                className="bg-slate-700 border-slate-600 text-white"
+                className={darkMode ? 'bg-slate-700 border-slate-600 text-white' : 'bg-slate-100 border-slate-300 text-slate-900'}
               />
             </div>
           </div>

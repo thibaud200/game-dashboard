@@ -77,6 +77,7 @@ interface AddGameDialogProps {
   onResetForm: () => void
   isBGGSearchOpen: boolean
   onBGGSearchToggle: (open: boolean) => void
+  darkMode: boolean
 }
 
 export default function AddGameDialog({
@@ -88,7 +89,8 @@ export default function AddGameDialog({
   onAddGame,
   onResetForm,
   isBGGSearchOpen,
-  onBGGSearchToggle
+  onBGGSearchToggle,
+  darkMode
 }: AddGameDialogProps) {
   const [errors, setErrors] = useState<ValidationErrors>({});
 
@@ -242,10 +244,12 @@ export default function AddGameDialog({
           <Plus className="w-4 h-4" />
         </Button>
       </DialogTrigger>
-      <DialogContent className="bg-slate-800 border-slate-700 text-white max-w-2xl max-h-[90vh] overflow-y-auto">
+      <DialogContent className={
+        `${darkMode ? 'bg-slate-800 border-slate-700 text-white' : 'bg-slate-50 border-slate-200 text-slate-900'} max-w-2xl max-h-[90vh] overflow-y-auto`
+      }>
         <DialogHeader>
           <DialogTitle>Add New Game</DialogTitle>
-          <DialogDescription className="text-white/70">
+          <DialogDescription className={darkMode ? 'text-white/70' : 'text-slate-500'}>
             Add a new game to your collection by filling out the details below.
           </DialogDescription>
         </DialogHeader>

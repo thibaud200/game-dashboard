@@ -12,6 +12,7 @@ interface EditPlayerDialogProps {
   setFormData: (data: PlayerFormData) => void;
   onUpdate: () => void;
   onCancel: () => void;
+  darkMode: boolean;
 }
 
 interface ValidationErrors {
@@ -28,7 +29,8 @@ export function EditPlayerDialog({
   formData,
   setFormData,
   onUpdate,
-  onCancel
+  onCancel,
+  darkMode = true
 }: EditPlayerDialogProps) {
   const [errors, setErrors] = useState<ValidationErrors>({});
 
@@ -89,22 +91,22 @@ export function EditPlayerDialog({
 
   return (
     <Dialog open={isOpen} onOpenChange={onOpenChange}>
-      <DialogContent className="bg-slate-800 border-white/20">
+      <DialogContent className={darkMode ? "bg-slate-800 border-white/20" : "bg-white border-slate-200 text-slate-900"}>
         <DialogHeader>
-          <DialogTitle className="text-white">Edit Player</DialogTitle>
-          <DialogDescription className="text-white/70">
+          <DialogTitle className={darkMode ? "text-white" : "text-blue-700"}>Edit Player</DialogTitle>
+          <DialogDescription className={darkMode ? "text-white/70" : "text-slate-500"}>
             Update player information and statistics.
           </DialogDescription>
         </DialogHeader>
         <div className="space-y-4">
           <div>
-            <Label htmlFor="edit_player_name" className="text-white">Player Name *</Label>
+            <Label htmlFor="edit_player_name" className={darkMode ? "text-white" : "text-blue-700"}>Player Name *</Label>
             <Input
               id="edit_player_name"
               name="edit_player_name"
               value={formData.player_name}
               onChange={(e) => handleInputChange('player_name', e.target.value)}
-              className={`bg-white/10 border-white/20 text-white ${errors.player_name ? 'border-red-500' : ''}`}
+              className={darkMode ? `bg-white/10 border-white/20 text-white ${errors.player_name ? 'border-red-500' : ''}` : `bg-slate-100 border-slate-300 text-slate-900 ${errors.player_name ? 'border-red-500' : ''}`}
               placeholder="Enter player name"
             />
             {errors.player_name && (
@@ -112,13 +114,13 @@ export function EditPlayerDialog({
             )}
           </div>
           <div>
-            <Label htmlFor="edit_avatar" className="text-white">Avatar URL</Label>
+            <Label htmlFor="edit_avatar" className={darkMode ? "text-white" : "text-blue-700"}>Avatar URL</Label>
             <Input
               id="edit_avatar"
               name="edit_avatar"
               value={formData.avatar}
               onChange={(e) => handleInputChange('avatar', e.target.value)}
-              className={`bg-white/10 border-white/20 text-white ${errors.avatar ? 'border-red-500' : ''}`}
+              className={darkMode ? `bg-white/10 border-white/20 text-white ${errors.avatar ? 'border-red-500' : ''}` : `bg-slate-100 border-slate-300 text-slate-900 ${errors.avatar ? 'border-red-500' : ''}`}
               placeholder="https://example.com/avatar.jpg"
             />
             {errors.avatar && (
@@ -126,40 +128,40 @@ export function EditPlayerDialog({
             )}
           </div>
           <div>
-            <Label htmlFor="edit_favorite_game" className="text-white">Favorite Game</Label>
+            <Label htmlFor="edit_favorite_game" className={darkMode ? "text-white" : "text-blue-700"}>Favorite Game</Label>
             <Input
               id="edit_favorite_game"
               name="edit_favorite_game"
               value={formData.favorite_game}
               onChange={(e) => handleInputChange('favorite_game', e.target.value)}
-              className="bg-white/10 border-white/20 text-white"
+              className={darkMode ? "bg-white/10 border-white/20 text-white" : "bg-slate-100 border-slate-300 text-slate-900"}
               placeholder="Enter favorite game"
             />
           </div>
           <div className="grid grid-cols-2 gap-4">
             <div>
-              <Label htmlFor="edit_games_played" className="text-white">Games Played</Label>
+              <Label htmlFor="edit_games_played" className={darkMode ? "text-white" : "text-blue-700"}>Games Played</Label>
               <Input
                 id="edit_games_played"
                 type="number"
                 min="0"
                 value={formData.games_played}
                 onChange={(e) => handleInputChange('games_played', parseInt(e.target.value) || 0)}
-                className={`bg-white/10 border-white/20 text-white ${errors.games_played ? 'border-red-500' : ''}`}
+                className={darkMode ? `bg-white/10 border-white/20 text-white ${errors.games_played ? 'border-red-500' : ''}` : `bg-slate-100 border-slate-300 text-slate-900 ${errors.games_played ? 'border-red-500' : ''}`}
               />
               {errors.games_played && (
                 <p className="text-red-400 text-sm mt-1">{errors.games_played}</p>
               )}
             </div>
             <div>
-              <Label htmlFor="edit_wins" className="text-white">Wins</Label>
+              <Label htmlFor="edit_wins" className={darkMode ? "text-white" : "text-blue-700"}>Wins</Label>
               <Input
                 id="edit_wins"
                 type="number"
                 min="0"
                 value={formData.wins}
                 onChange={(e) => handleInputChange('wins', parseInt(e.target.value) || 0)}
-                className={`bg-white/10 border-white/20 text-white ${errors.wins ? 'border-red-500' : ''}`}
+                className={darkMode ? `bg-white/10 border-white/20 text-white ${errors.wins ? 'border-red-500' : ''}` : `bg-slate-100 border-slate-300 text-slate-900 ${errors.wins ? 'border-red-500' : ''}`}
               />
               {errors.wins && (
                 <p className="text-red-400 text-sm mt-1">{errors.wins}</p>
@@ -167,14 +169,14 @@ export function EditPlayerDialog({
             </div>
           </div>
           <div>
-            <Label htmlFor="edit_total_score" className="text-white">Total Score</Label>
+            <Label htmlFor="edit_total_score" className={darkMode ? "text-white" : "text-blue-700"}>Total Score</Label>
             <Input
               id="edit_total_score"
               type="number"
               min="0"
               value={formData.total_score}
               onChange={(e) => handleInputChange('total_score', parseInt(e.target.value) || 0)}
-              className={`bg-white/10 border-white/20 text-white ${errors.total_score ? 'border-red-500' : ''}`}
+              className={darkMode ? `bg-white/10 border-white/20 text-white ${errors.total_score ? 'border-red-500' : ''}` : `bg-slate-100 border-slate-300 text-slate-900 ${errors.total_score ? 'border-red-500' : ''}`}
             />
             {errors.total_score && (
               <p className="text-red-400 text-sm mt-1">{errors.total_score}</p>

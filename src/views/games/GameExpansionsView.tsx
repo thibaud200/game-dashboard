@@ -5,8 +5,7 @@ import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip
 import { ArrowLeft, Plus, PencilSimple, Trash, Calendar } from '@phosphor-icons/react';
 import { useGameExpansions, UseGameExpansionsProps } from '@/hooks/games/useGameExpansions';
 import { AddExpansionDialog, EditExpansionDialog, DeleteExpansionDialog } from '@/components/dialogs';
-
-export default function GameExpansionsView(props: UseGameExpansionsProps) {
+export default function GameExpansionsView(props: UseGameExpansionsProps & { darkMode: boolean }) {
   const {
     isAddDialogOpen,
     editingExpansion,
@@ -22,19 +21,19 @@ export default function GameExpansionsView(props: UseGameExpansionsProps) {
     handleEditExpansion,
     handleDeleteExpansion
   } = useGameExpansions(props);
-
   const {
     game,
     onNavigation,
     navigationSource,
-    embedded = false
+    embedded = false,
+    darkMode
   } = props;
 
   return (
-    <div>
+    <div className={darkMode ? 'bg-slate-900 min-h-screen' : 'bg-gradient-to-br from-slate-100 to-slate-300 min-h-screen'}>
       {/* Header - Only show when not embedded */}
       {!embedded && (
-        <div className="bg-slate-800/50 border-b border-slate-700/50">
+        <div className={darkMode ? "bg-slate-800/50 border-b border-slate-700/50" : "bg-white border-b border-slate-200"}>
           <div className="max-w-7xl mx-auto px-4 md:px-6 py-4 md:py-6">
             <div className="flex items-center gap-3 md:gap-4">
               <Tooltip>
@@ -54,14 +53,14 @@ export default function GameExpansionsView(props: UseGameExpansionsProps) {
               </Tooltip>
               <div className="h-6 w-px bg-slate-600 hidden md:block"></div>
               <h1 className="text-lg md:text-xl font-semibold text-white flex-1 truncate">
-                Extensions - {game.name}
+                <span className={darkMode ? "text-white" : "text-slate-900"}>Extensions - {game.name}</span>
               </h1>
               
               <Tooltip>
                 <TooltipTrigger asChild>
                   <Button 
                     onClick={() => setIsAddDialogOpen(true)}
-                    className="bg-primary hover:bg-primary/90 text-primary-foreground text-sm md:text-base"
+                    className={darkMode ? "bg-primary hover:bg-primary/90 text-primary-foreground text-sm md:text-base" : "bg-teal-500 hover:bg-teal-600 text-white text-sm md:text-base"}
                   >
                     <Plus className="w-4 h-4 md:mr-2" />
                     <span className="hidden md:inline">Ajouter une extension</span>
@@ -78,7 +77,7 @@ export default function GameExpansionsView(props: UseGameExpansionsProps) {
       )}
 
       {/* Content */}
-      <div className={embedded ? "" : "max-w-7xl mx-auto px-4 md:px-6 py-4 md:py-8 pb-32 md:pb-8"}>
+  <div className={embedded ? "" : darkMode ? "max-w-7xl mx-auto px-4 md:px-6 py-4 md:py-8 pb-32 md:pb-8" : "max-w-7xl mx-auto px-4 md:px-6 py-4 md:py-8 pb-32 md:pb-8 bg-slate-100"}>
         {/* Embedded Header with Add Button */}
         {embedded && (
           <div className="flex items-center justify-between mb-4 md:mb-6">
@@ -96,24 +95,24 @@ export default function GameExpansionsView(props: UseGameExpansionsProps) {
         {expansions.length > 0 ? (
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6">
             {expansions.map((expansion) => (
-              <Card key={expansion.expansion_id} className="bg-slate-800/50 border-slate-700/50">
+              <Card key={expansion.expansion_id} className={darkMode ? 'bg-slate-800 text-white border-slate-700' : 'bg-white text-slate-900 border-slate-200'}>
                 <CardHeader className="pb-3 md:pb-6">
-                  <CardTitle className="text-white text-base md:text-lg">{expansion.name}</CardTitle>
+                  <CardTitle className={darkMode ? 'text-white text-base md:text-lg' : 'text-slate-900 text-base md:text-lg'}>{expansion.name}</CardTitle>
                 </CardHeader>
                 <CardContent className="space-y-3 md:space-y-4">
                   {expansion.year_published && (
-                    <div className="flex items-center gap-2 text-slate-300">
-                      <Calendar className="w-4 h-4 text-primary" />
+                    <div className={darkMode ? 'flex items-center gap-2 text-slate-300' : 'flex items-center gap-2 text-slate-700'}>
+                      <Calendar className={darkMode ? 'w-4 h-4 text-primary' : 'w-4 h-4 text-slate-700'} />
                       <span className="text-sm">{expansion.year_published}</span>
                     </div>
                   )}
                   
                   {expansion.description && (
-                    <p className="text-slate-300 text-sm">{expansion.description}</p>
+                    <p className={darkMode ? 'text-slate-300 text-sm' : 'text-slate-700 text-sm'}>{expansion.description}</p>
                   )}
                   
                   {expansion.bgg_expansion_id && (
-                    <p className="text-slate-400 text-xs">BGG ID: {expansion.bgg_expansion_id}</p>
+                    <p className={darkMode ? 'text-slate-400 text-xs' : 'text-slate-500 text-xs'}>BGG ID: {expansion.bgg_expansion_id}</p>
                   )}
 
                   <div className="flex gap-2 pt-2 md:pt-4">
@@ -123,7 +122,7 @@ export default function GameExpansionsView(props: UseGameExpansionsProps) {
                           variant="outline"
                           size="sm"
                           onClick={() => openEditDialog(expansion)}
-                          className="border-slate-600 text-slate-300 hover:bg-slate-700/50 flex-1"
+                          className={darkMode ? 'border-slate-600 bg-slate-800 text-white hover:bg-slate-700 flex-1' : 'border-slate-300 bg-white text-slate-900 hover:bg-slate-100 flex-1'}
                         >
                           <PencilSimple className="w-4 h-4 md:mr-2" />
                           <span className="hidden md:inline">Modifier</span>
@@ -140,7 +139,7 @@ export default function GameExpansionsView(props: UseGameExpansionsProps) {
                           variant="outline"
                           size="sm"
                           onClick={() => setDeleteExpansionId(expansion.expansion_id!)}
-                          className="border-red-600/50 text-red-400 hover:bg-red-600/10 hover:border-red-600"
+                          className={darkMode ? 'border-red-600/50 text-red-400 hover:bg-red-600/10 hover:border-red-600' : 'border-red-300 text-red-600 hover:bg-red-100 hover:border-red-600'}
                         >
                           <Trash className="w-4 h-4" />
                         </Button>
@@ -155,12 +154,12 @@ export default function GameExpansionsView(props: UseGameExpansionsProps) {
             ))}
           </div>
         ) : (
-          <Card className="bg-slate-800/50 border-slate-700/50">
+          <Card className={darkMode ? 'bg-slate-800 text-white border-slate-700' : 'bg-white text-slate-900 border-slate-200'}>
             <CardContent className="text-center py-12">
-              <p className="text-slate-400 mb-4">Aucune extension ajoutée pour ce jeu.</p>
+              <p className={darkMode ? 'text-slate-400 mb-4' : 'text-slate-500 mb-4'}>Aucune extension ajoutée pour ce jeu.</p>
               <Button 
                 onClick={() => setIsAddDialogOpen(true)}
-                className="bg-primary hover:bg-primary/90 text-primary-foreground"
+                className={darkMode ? 'border-slate-600 bg-slate-800 text-white hover:bg-slate-700' : 'bg-teal-500 hover:bg-teal-600 text-white'}
               >
                 <Plus className="w-4 h-4 mr-2" />
                 Ajouter la première extension
@@ -170,13 +169,14 @@ export default function GameExpansionsView(props: UseGameExpansionsProps) {
         )}
       </div>
 
-      {/* Dialogs */}
+      {/* Dialogs harmonisés */}
       <AddExpansionDialog
         isOpen={isAddDialogOpen}
         onOpenChange={setIsAddDialogOpen}
         formData={formData}
         setFormData={setFormData}
         onSubmit={handleAddExpansion}
+        darkMode={darkMode}
       />
 
       <EditExpansionDialog
@@ -185,6 +185,7 @@ export default function GameExpansionsView(props: UseGameExpansionsProps) {
         formData={formData}
         setFormData={setFormData}
         onSubmit={handleEditExpansion}
+        darkMode={darkMode}
       />
 
       <DeleteExpansionDialog
@@ -192,18 +193,19 @@ export default function GameExpansionsView(props: UseGameExpansionsProps) {
         onOpenChange={(open) => !open && setDeleteExpansionId(null)}
         expansionName={expansions.find(e => e.expansion_id === deleteExpansionId)?.name || ''}
         onConfirm={() => handleDeleteExpansion(deleteExpansionId!)}
+        darkMode={darkMode}
       />
 
       {/* Bottom Navigation - Mobile Only - Only show when not embedded */}
       {!embedded && (
         <div className="fixed bottom-0 left-0 right-0 md:hidden">
-          <div className="bg-slate-800 border-t border-slate-700 px-4 py-3">
+          <div className={darkMode ? 'bg-slate-800 border-t border-slate-700 px-4 py-3' : 'bg-slate-100 border-t border-slate-300 px-4 py-3'}>
             <div className="flex items-center justify-between">
               <Button
                 variant="ghost"
                 size="sm"
                 onClick={() => onNavigation(navigationSource === 'game-detail' ? 'game-detail' : 'games', game.game_id)}
-                className="text-slate-300 hover:text-white"
+                className={darkMode ? 'text-slate-300 hover:text-white' : 'text-slate-700 hover:text-slate-900'}
               >
                 <ArrowLeft className="w-4 h-4 mr-2" />
                 Retour

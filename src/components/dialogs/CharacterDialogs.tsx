@@ -117,6 +117,7 @@ interface AddCharacterDialogProps {
   formData: CharacterFormData;
   setFormData: (data: CharacterFormData | ((prev: CharacterFormData) => CharacterFormData)) => void;
   onSubmit: (e: any) => void;
+  darkMode: boolean;
 }
 
 export function AddCharacterDialog({
@@ -124,14 +125,15 @@ export function AddCharacterDialog({
   onOpenChange,
   formData,
   setFormData,
-  onSubmit
+  onSubmit,
+  darkMode
 }: AddCharacterDialogProps) {
   return (
     <Dialog open={isOpen} onOpenChange={onOpenChange}>
-      <DialogContent className="bg-slate-800 border-slate-700 max-w-md mx-4">
+      <DialogContent className={darkMode ? "bg-slate-800 border-slate-700 max-w-md mx-4" : "bg-white border-slate-200 max-w-md mx-4"}>
         <DialogHeader>
-          <DialogTitle className="text-white">Ajouter un personnage</DialogTitle>
-          <DialogDescription className="text-white/70">
+          <DialogTitle className={darkMode ? "text-white" : "text-slate-900"}>Ajouter un personnage</DialogTitle>
+          <DialogDescription className={darkMode ? "text-white/70" : "text-slate-700/70"}>
             Ajoutez un nouveau personnage/rôle pour ce jeu.
           </DialogDescription>
         </DialogHeader>
@@ -153,6 +155,7 @@ interface EditCharacterDialogProps {
   formData: CharacterFormData;
   setFormData: (data: CharacterFormData | ((prev: CharacterFormData) => CharacterFormData)) => void;
   onSubmit: (e: any) => void;
+  darkMode: boolean;
 }
 
 export function EditCharacterDialog({
@@ -160,14 +163,15 @@ export function EditCharacterDialog({
   onOpenChange,
   formData,
   setFormData,
-  onSubmit
+  onSubmit,
+  darkMode
 }: EditCharacterDialogProps) {
   return (
     <Dialog open={isOpen} onOpenChange={onOpenChange}>
-      <DialogContent className="bg-slate-800 border-slate-700 max-w-md mx-4">
+      <DialogContent className={darkMode ? "bg-slate-800 border-slate-700 max-w-md mx-4" : "bg-white border-slate-200 max-w-md mx-4"}>
         <DialogHeader>
-          <DialogTitle className="text-white">Modifier le personnage</DialogTitle>
-          <DialogDescription className="text-white/70">
+          <DialogTitle className={darkMode ? "text-white" : "text-slate-900"}>Modifier le personnage</DialogTitle>
+          <DialogDescription className={darkMode ? "text-white/70" : "text-slate-700/70"}>
             Modifiez les informations de ce personnage/rôle.
           </DialogDescription>
         </DialogHeader>
@@ -188,25 +192,27 @@ interface DeleteCharacterDialogProps {
   onOpenChange: (open: boolean) => void;
   characterName: string;
   onConfirm: () => void;
+  darkMode: boolean;
 }
 
 export function DeleteCharacterDialog({
   isOpen,
   onOpenChange,
   characterName,
-  onConfirm
+  onConfirm,
+  darkMode
 }: DeleteCharacterDialogProps) {
   return (
     <AlertDialog open={isOpen} onOpenChange={onOpenChange}>
-      <AlertDialogContent className="bg-slate-800 border-slate-700">
+      <AlertDialogContent className={darkMode ? "bg-slate-800 border-slate-700" : "bg-white border-slate-200"}>
         <AlertDialogHeader>
-          <AlertDialogTitle className="text-white">Supprimer le personnage</AlertDialogTitle>
-          <AlertDialogDescription className="text-slate-300">
+          <AlertDialogTitle className={darkMode ? "text-white" : "text-slate-900"}>Supprimer le personnage</AlertDialogTitle>
+          <AlertDialogDescription className={darkMode ? "text-slate-300" : "text-slate-700"}>
             Êtes-vous sûr de vouloir supprimer le personnage "{characterName}" ? Cette action est irréversible.
           </AlertDialogDescription>
         </AlertDialogHeader>
         <AlertDialogFooter>
-          <AlertDialogCancel className="border-slate-600 text-slate-300 hover:bg-slate-700/50">
+          <AlertDialogCancel className={darkMode ? "border-slate-600 text-slate-300 hover:bg-slate-700/50" : "border-slate-300 text-slate-700 hover:bg-slate-100"}>
             Annuler
           </AlertDialogCancel>
           <AlertDialogAction 

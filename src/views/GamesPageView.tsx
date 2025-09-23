@@ -19,42 +19,33 @@ import {
   ChartLineUp,
   DotsThree
 } from '@phosphor-icons/react';
-import { Input } from '@/components/ui/input';
-import { Card, CardContent } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import {
   DropdownMenu,
-  DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuTrigger,
-  DropdownMenuSeparator
+  DropdownMenuSeparator,
+  DropdownMenuContent
 } from '@/components/ui/dropdown-menu';
 import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip';
 import { Textarea } from '@/components/ui/textarea';
+import { Input } from '@/components/ui/input';
 import { Game } from '@/types';
 import { AddGameDialog, EditGameDialog, DeleteGameDialog } from '@/components/dialogs';
+import { Card, CardContent } from '@/components/ui/card';
 
 interface GamesPageViewProps {
-  // Data
   games: Game[];
   currentView: string;
   totalGames: number;
   averageRating: number;
-  
-  // Form state
   formData: any;
   editingGame: Game | null;
-  
-  // Dialog state
   isAddDialogOpen: boolean;
   isEditDialogOpen: boolean;
   isBGGSearchOpen: boolean;
   expandedGame: number | null;
-  
-  // Search and filters
   searchQuery: string;
-  
-  // Handlers
   onNavigation: (view: string, gameId?: number, source?: string) => void;
   onSearchChange: (query: string) => void;
   onAddDialogToggle: () => void;
@@ -68,35 +59,33 @@ interface GamesPageViewProps {
   setBGGSearchOpen: (open: boolean) => void;
   setExpandedGame: (gameId: number | null) => void;
   setEditDialogOpen: (open: boolean) => void;
+  darkMode: boolean;
 }
-
-export default function GamesPageView({
-  games,
-  currentView: _currentView,
-  totalGames,
-  averageRating,
-  formData,
-  editingGame,
-  isAddDialogOpen,
-  isEditDialogOpen,
-  isBGGSearchOpen,
-  expandedGame,
-  searchQuery,
-  onNavigation,
-  onSearchChange,
-  onAddDialogToggle,
-  onFormDataChange,
-  onBGGGameSelect,
-  onAddGame,
-  onResetForm,
-  onEditGame,
-  onUpdateGame,
-  onDeleteGame,
-  setBGGSearchOpen,
-  setExpandedGame,
-  setEditDialogOpen
-}: GamesPageViewProps) {
+export function GamesPageView(props: GamesPageViewProps) {
   
+  const {
+    games,
+    totalGames,
+    averageRating,
+    formData,
+    isAddDialogOpen,
+    isBGGSearchOpen,
+    expandedGame,
+    searchQuery,
+    onNavigation,
+    onSearchChange,
+    onAddDialogToggle,
+    onFormDataChange,
+    onBGGGameSelect,
+    onAddGame,
+    onResetForm,
+    onEditGame,
+    onUpdateGame,
+    onDeleteGame,
+    setBGGSearchOpen,
+    setExpandedGame,
+    darkMode
+  } = props;
   // Safety check for games array
   const safeGames = games || [];
   
@@ -161,8 +150,22 @@ export default function GamesPageView({
     ));
   };
 
+  // Classes dynamiques cohérentes avec Dashboard
+  const mainClass = darkMode
+    ? "min-h-screen bg-gradient-to-br from-slate-900 to-slate-800 text-white"
+    : "min-h-screen bg-gradient-to-br from-slate-100 to-slate-300 text-slate-900";
+  const cardClass = darkMode
+    ? "bg-white/10 backdrop-blur-md rounded-2xl p-4 border border-white/20 shadow-xl"
+    : "bg-white rounded-2xl p-4 border border-slate-300 shadow-xl";
+  const titleClass = darkMode
+    ? "text-lg font-semibold text-white"
+    : "text-lg font-semibold text-slate-900";
+  const descClass = darkMode
+    ? "text-white/60 text-sm"
+    : "text-slate-500 text-sm";
+
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-900 to-slate-800 text-white">
+    <div className={mainClass}>
       {/* Header */}
       <div className="px-4 pt-8 pb-6">
         <div className="flex items-center justify-between mb-6">
@@ -194,6 +197,18 @@ export default function GamesPageView({
               onResetForm={onResetForm}
               isBGGSearchOpen={isBGGSearchOpen}
               onBGGSearchToggle={setBGGSearchOpen}
+              darkMode={darkMode}
+            />
+            {/* Edit Game Dialog */}
+            <EditGameDialog
+              isOpen={props.isEditDialogOpen}
+              onOpenChange={props.setEditDialogOpen}
+              formData={formData}
+              onFormDataChange={onFormDataChange}
+              onUpdateGame={onUpdateGame}
+              onResetForm={onResetForm}
+              editingGame={props.editingGame}
+              darkMode={darkMode}
             />
           </div>
         </div>
@@ -213,21 +228,27 @@ export default function GamesPageView({
 
         {/* Games Stats */}
         <div className="grid grid-cols-3 gap-4 mb-6">
-          <div className="bg-white/10 backdrop-blur-md rounded-xl p-3 text-center border border-white/20">
-            <div className="text-2xl font-bold text-emerald-400">{totalGames}</div>
-            <div className="text-xs text-white/80">Total Games</div>
+          <div className={
+            `${darkMode ? 'bg-white/10 border-white/20' : 'bg-slate-50 border-slate-200'} backdrop-blur-md rounded-xl p-3 text-center border`
+          }>
+            <div className={darkMode ? "text-2xl font-bold text-emerald-400" : "text-2xl font-bold text-emerald-700"}>{totalGames}</div>
+            <div className={darkMode ? "text-xs text-white/80" : "text-xs text-slate-500"}>Total Games</div>
           </div>
-          <div className="bg-white/10 backdrop-blur-md rounded-xl p-3 text-center border border-white/20">
-            <div className="text-2xl font-bold text-blue-400">
+          <div className={
+            `${darkMode ? 'bg-white/10 border-white/20' : 'bg-slate-50 border-slate-200'} backdrop-blur-md rounded-xl p-3 text-center border`
+          }>
+            <div className={darkMode ? "text-2xl font-bold text-blue-400" : "text-2xl font-bold text-blue-700"}>
               {[...new Set(safeGames.map(g => g.category || 'Unknown'))].length}
             </div>
-            <div className="text-xs text-white/80">Categories</div>
+            <div className={darkMode ? "text-xs text-white/80" : "text-xs text-slate-500"}>Categories</div>
           </div>
-          <div className="bg-white/10 backdrop-blur-md rounded-xl p-3 text-center border border-white/20">
-            <div className="text-2xl font-bold text-purple-400">
+          <div className={
+            `${darkMode ? 'bg-white/10 border-white/20' : 'bg-slate-50 border-slate-200'} backdrop-blur-md rounded-xl p-3 text-center border`
+          }>
+            <div className={darkMode ? "text-2xl font-bold text-purple-400" : "text-2xl font-bold text-purple-700"}>
               {averageRating > 0 ? averageRating.toFixed(1) : '0.0'}
             </div>
-            <div className="text-xs text-white/80">Avg Rating</div>
+            <div className={darkMode ? "text-xs text-white/80" : "text-xs text-slate-500"}>Avg Rating</div>
           </div>
         </div>
       </div>
@@ -236,7 +257,7 @@ export default function GamesPageView({
       <div className="px-4 pb-32">
         <div className="grid grid-cols-1 gap-4">
           {safeGames.map((game) => (
-            <Card key={game.game_id} className="bg-white/10 backdrop-blur-md border-white/20">
+            <Card key={game.game_id} className={cardClass}>
               <CardContent className="p-0">
                 <div className="flex">
                   <img
@@ -247,29 +268,29 @@ export default function GamesPageView({
                   <div className="flex-1 p-3 sm:p-4 min-w-0">
                     <div className="flex items-start justify-between">
                       <div className="flex-1 min-w-0 pr-2">
-                        <h3 className="font-semibold text-white mb-1 truncate">{game.name}</h3>
-                        <p className="text-sm text-white/70 mb-2 line-clamp-2">{game.description}</p>
+                        <h3 className={titleClass + " mb-1 truncate"}>{game.name}</h3>
+                        <p className={descClass + " mb-2 line-clamp-2"}>{game.description}</p>
                         
                         <div className="flex flex-wrap gap-2 mb-2">
-                          <Badge variant="secondary" className="bg-teal-600/20 text-teal-300 text-xs">
+                          <Badge variant="secondary" className={darkMode ? "bg-teal-600/20 text-teal-300 text-xs" : "bg-teal-100 text-teal-700 text-xs"}>
                             {game.category}
                           </Badge>
                           {getGameModesBadges(game)}
-                          <Badge variant="outline" className="border-white/20 text-white/60 text-xs">
+                          <Badge variant="outline" className={darkMode ? "border-white/20 text-white/60 text-xs" : "border-slate-300 text-slate-500 text-xs"}>
                             {game.min_players === game.max_players ? `${game.min_players}` : `${game.min_players}-${game.max_players}`} players
                           </Badge>
-                          <Badge variant="outline" className="border-white/20 text-white/60 text-xs">
+                          <Badge variant="outline" className={darkMode ? "border-white/20 text-white/60 text-xs" : "border-slate-300 text-slate-500 text-xs"}>
                             <Clock className="w-3 h-3 mr-1" />
                             {game.duration}
                           </Badge>
-                          <Badge variant="outline" className={`border-white/20 text-xs ${getDifficultyColor(game.difficulty)}`}>
+                          <Badge variant="outline" className={`border-white/20 text-xs ${getDifficultyColor(game.difficulty)} ${!darkMode ? 'border-slate-300 text-slate-500' : ''}`}> 
                             <Target className="w-3 h-3 mr-1" />
                             {game.difficulty}
                           </Badge>
                         </div>
 
                         <div className="flex items-center justify-between text-xs text-white/60">
-                          <div className="flex items-center space-x-4">
+                          <div className={darkMode ? "flex items-center space-x-4 text-white/60" : "flex items-center space-x-4 text-slate-500"}>
                             <span className="flex items-center space-x-1">
                               <Calendar className="w-3 h-3" />
                               <span>{game.year_published}</span>
@@ -292,7 +313,7 @@ export default function GamesPageView({
                         </div>
 
                         {(game.designer !== 'Unknown' || game.publisher !== 'Unknown') && (
-                          <div className="mt-1 text-xs text-white/50">
+                          <div className={darkMode ? "mt-1 text-xs text-white/50" : "mt-1 text-xs text-slate-400"}>
                             {game.designer !== 'Unknown' && `By ${game.designer}`}
                             {game.designer !== 'Unknown' && game.publisher !== 'Unknown' && ' • '}
                             {game.publisher !== 'Unknown' && game.publisher}
@@ -412,7 +433,9 @@ export default function GamesPageView({
                             <TooltipTrigger asChild>
                               <button 
                                 onClick={() => onNavigation('game-detail', game.game_id, 'games')}
-                                className="p-2 hover:bg-white/10 rounded-lg transition-colors text-white/60 hover:text-white"
+                                className={
+                                  `p-2 rounded-lg transition-colors ${darkMode ? 'text-white/60 hover:text-white hover:bg-white/10' : 'text-slate-600 hover:text-slate-900 hover:bg-slate-100'}`
+                                }
                                 aria-label="View game details"
                               >
                                 <Eye className="w-4 h-4" />
@@ -440,7 +463,9 @@ export default function GamesPageView({
                             <TooltipTrigger asChild>
                               <button 
                                 onClick={() => onEditGame(game)}
-                                className="p-2 hover:bg-white/10 rounded-lg transition-colors text-white/60 hover:text-white"
+                                className={
+                                  `p-2 rounded-lg transition-colors ${darkMode ? 'text-white/60 hover:text-white hover:bg-white/10' : 'text-slate-600 hover:text-slate-900 hover:bg-slate-100'}`
+                                }
                                 aria-label="Edit game"
                               >
                                 <PencilSimple className="w-4 h-4" />
@@ -485,7 +510,9 @@ export default function GamesPageView({
                             <DropdownMenuContent align="end" className="bg-slate-800 border-slate-700 text-white">
                               <DropdownMenuItem 
                                 onClick={() => onNavigation('game-detail', game.game_id, 'games')}
-                                className="hover:bg-slate-700 cursor-pointer"
+                                className={
+                                  `cursor-pointer ${darkMode ? 'hover:bg-slate-700 text-white' : 'hover:bg-slate-100 text-slate-700'}`
+                                }
                               >
                                 <Eye className="w-4 h-4 mr-2" />
                                 View Details
@@ -499,14 +526,18 @@ export default function GamesPageView({
                               </DropdownMenuItem>
                               <DropdownMenuItem 
                                 onClick={() => onEditGame(game)}
-                                className="hover:bg-slate-700 cursor-pointer"
+                                className={
+                                  `cursor-pointer ${darkMode ? 'hover:bg-slate-700 text-white' : 'hover:bg-slate-100 text-slate-700'}`
+                                }
                               >
                                 <PencilSimple className="w-4 h-4 mr-2" />
                                 Edit Game
                               </DropdownMenuItem>
                               <DropdownMenuItem 
                                 onClick={() => onNavigation('game-expansions', game.game_id, 'games')}
-                                className="hover:bg-slate-700 cursor-pointer"
+                                className={
+                                  `cursor-pointer ${darkMode ? 'hover:bg-slate-700 text-white' : 'hover:bg-slate-100 text-slate-700'}`
+                                }
                               >
                                 <Crown className="w-4 h-4 mr-2" />
                                 Manage Expansions
@@ -514,7 +545,9 @@ export default function GamesPageView({
                               {(game.has_characters || game.characters?.length > 0) && (
                                 <DropdownMenuItem 
                                   onClick={() => onNavigation('game-characters', game.game_id, 'games')}
-                                  className="hover:bg-slate-700 cursor-pointer"
+                                  className={
+                                    `cursor-pointer ${darkMode ? 'hover:bg-slate-700 text-white' : 'hover:bg-slate-100 text-slate-700'}`
+                                  }
                                 >
                                   <Users className="w-4 h-4 mr-2" />
                                   Manage Characters
@@ -527,7 +560,9 @@ export default function GamesPageView({
                                 trigger={
                                   <DropdownMenuItem 
                                     onSelect={(e) => e.preventDefault()}
-                                    className="hover:bg-red-500/20 cursor-pointer text-red-400"
+                                    className={
+                                      `cursor-pointer ${darkMode ? 'hover:bg-red-500/20 text-red-400' : 'hover:bg-red-100 text-red-600'}`
+                                    }
                                   >
                                     <Trash className="w-4 h-4 mr-2" />
                                     Delete Game
@@ -557,24 +592,16 @@ export default function GamesPageView({
       {/* Floating Add Game Button */}
       <button
         onClick={onAddDialogToggle}
-        className="fixed bottom-24 right-6 w-14 h-14 bg-gradient-to-r from-emerald-500 to-emerald-600 rounded-full shadow-lg hover:shadow-xl transition-all duration-200 hover:scale-105 flex items-center justify-center z-50 hover:from-emerald-600 hover:to-emerald-700"
+        className={
+          `fixed bottom-24 right-6 w-14 h-14 rounded-full shadow-lg hover:shadow-xl transition-all duration-200 hover:scale-105 flex items-center justify-center z-50 ` +
+          (darkMode
+            ? 'bg-gradient-to-r from-emerald-500 to-emerald-600 hover:from-emerald-600 hover:to-emerald-700'
+            : 'bg-gradient-to-r from-emerald-200 to-emerald-400 hover:from-emerald-300 hover:to-emerald-500 border border-emerald-400')
+        }
         aria-label="Add new game"
       >
-        <Plus className="w-6 h-6 text-white" />
+        <Plus className={darkMode ? "w-6 h-6 text-white" : "w-6 h-6 text-emerald-700"} />
       </button>
-
-      {/* Edit Game Dialog */}
-      <EditGameDialog
-        isOpen={isEditDialogOpen}
-        onOpenChange={setEditDialogOpen}
-        editingGame={editingGame}
-        formData={formData}
-        onFormDataChange={onFormDataChange}
-        onUpdateGame={onUpdateGame}
-        onResetForm={() => {
-          onResetForm();
-        }}
-      />
 
     </div>
   );

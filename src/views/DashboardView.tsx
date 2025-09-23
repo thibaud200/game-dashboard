@@ -1,4 +1,5 @@
 import React from 'react';
+// Annulation de l'import Button
 import {
   Users,
   GameController,
@@ -13,25 +14,26 @@ import { Player, Game, NavigationHandler } from '@/types';
 
 interface DashboardViewProps {
   stats: {
-    playersCount: number;
-    gamesCount: number;
-    loading: boolean;
-    error: null | string;
-  };
-  recentPlayers: Player[];
-  recentGames: Game[];
-  currentView: string;
-  hasPlayers: boolean;
-  hasGames: boolean;
-  handleBackClick: () => void;
-  handleSettingsClick: () => void;
-  handlePlayersClick: () => void;
-  handleGamesClick: () => void;
-  handlePlayerStatsClick: (playerId: number) => void;
-  handleGameStatsClick: (gameId: number) => void;
-  handleNewGameClick: () => void;
-  handleActivityClick: () => void;
-  onNavigation: NavigationHandler;
+    playersCount: number,
+    gamesCount: number,
+    loading: boolean,
+    error: null | string
+  },
+  recentPlayers: Player[],
+  recentGames: Game[],
+  currentView: string,
+  hasPlayers: boolean,
+  hasGames: boolean,
+  handleBackClick: () => void,
+  handleSettingsClick: () => void,
+  handlePlayersClick: () => void,
+  handleGamesClick: () => void,
+  handlePlayerStatsClick: (playerId: number) => void,
+  handleGameStatsClick: (gameId: number) => void,
+  handleNewGameClick: () => void,
+  handleActivityClick: () => void,
+  onNavigation: NavigationHandler,
+  darkMode: boolean
 }
 
 export function DashboardView({
@@ -48,10 +50,29 @@ export function DashboardView({
   handleGameStatsClick,
   handleNewGameClick,
   handleActivityClick,
-  onNavigation: _onNavigation
+  onNavigation: _onNavigation,
+  darkMode
 }: DashboardViewProps) {
+  // Classes dynamiques
+  const mainClass = darkMode
+    ? "min-h-screen bg-gradient-to-br from-slate-900 to-slate-800 text-white"
+    : "min-h-screen bg-gradient-to-br from-slate-100 to-slate-300 text-slate-900";
+  // Classes dynamiques pour cards, titres, textes
+  const cardClass = darkMode
+    ? "bg-white/10 backdrop-blur-md rounded-2xl p-4 border border-white/20 shadow-xl"
+    : "bg-white rounded-2xl p-4 border border-slate-300 shadow-xl";
+  const titleClass = darkMode
+    ? "text-lg font-semibold text-white"
+    : "text-lg font-semibold text-slate-900";
+  const labelClass = darkMode
+    ? "font-medium text-white"
+    : "font-medium text-slate-900";
+  const descClass = darkMode
+    ? "text-white/60 text-sm"
+    : "text-slate-500 text-sm";
+
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-900 to-slate-800 text-white">
+    <div className={mainClass}>
       {/* Header */}
       <div className="px-4 pt-8 pb-6">
         <div className="flex items-center justify-between mb-6">
@@ -137,9 +158,9 @@ export function DashboardView({
       {/* Contenu principal */}
       <div className="px-4 space-y-6 pb-32">
         {/* Section Joueurs */}
-        <div className="bg-white/10 backdrop-blur-md rounded-2xl p-4 border border-white/20 shadow-xl">
+        <div className={cardClass}>
           <div className="flex items-center justify-between mb-4">
-            <h2 className="text-lg font-semibold">Player Statistics</h2>
+            <h2 className={titleClass}>Player Statistics</h2>
             <Tooltip>
               <TooltipTrigger asChild>
                 <button
@@ -169,17 +190,17 @@ export function DashboardView({
                       className="w-8 h-8 rounded-full mb-2 mx-auto object-cover"
                     />
                     <div className="text-center">
-                      <div className="text-sm font-medium text-white truncate">
+                      <div className={labelClass + " truncate"}>
                         {player.player_name}
                       </div>
-                      <div className="text-xs text-white/60">{player.stats}</div>
+                      <div className={descClass}>{player.stats}</div>
                     </div>
                   </div>
                 </button>
               ))
             ) : (
               <div className="col-span-3 text-center py-4">
-                <div className="text-white/60 text-sm">No players yet</div>
+                <div className={descClass}>No players yet</div>
                 <button
                   onClick={handlePlayersClick}
                   className="text-teal-400 hover:text-teal-300 text-sm mt-1 transition-colors"
@@ -192,9 +213,9 @@ export function DashboardView({
         </div>
 
         {/* Section Jeux récents */}
-        <div className="bg-white/10 backdrop-blur-md rounded-2xl p-4 border border-white/20 shadow-xl">
+        <div className={cardClass}>
           <div className="flex items-center justify-between mb-4">
-            <h2 className="text-lg font-semibold">Recent Games</h2>
+            <h2 className={titleClass}>Recent Games</h2>
             <Tooltip>
               <TooltipTrigger asChild>
                 <button
@@ -224,10 +245,10 @@ export function DashboardView({
                       className="w-full h-16 object-cover"
                     />
                     <div className="p-2">
-                      <div className="text-sm font-medium text-white truncate">
+                      <div className={labelClass + " truncate"}>
                         {game.name}
                       </div>
-                      <div className="text-xs text-white/60">
+                      <div className={descClass}>
                         {game.players} players
                       </div>
                     </div>
@@ -236,7 +257,7 @@ export function DashboardView({
               ))
             ) : (
               <div className="col-span-3 text-center py-4">
-                <div className="text-white/60 text-sm">No games yet</div>
+                <div className={descClass}>No games yet</div>
                 <button
                   onClick={handleGamesClick}
                   className="text-teal-400 hover:text-teal-300 text-sm mt-1 transition-colors"
@@ -249,8 +270,8 @@ export function DashboardView({
         </div>
 
         {/* Recent Activity */}
-        <div className="bg-white/10 backdrop-blur-md rounded-2xl p-4 border border-white/20 shadow-xl">
-          <h2 className="text-lg font-semibold mb-4">Recent Activity</h2>
+        <div className={cardClass}>
+          <h2 className={titleClass + " mb-4"}>Recent Activity</h2>
           <div className="space-y-3">
             <button
               onClick={handleActivityClick}
@@ -260,8 +281,8 @@ export function DashboardView({
                 <Play className="w-4 h-4" />
               </div>
               <div className="flex-1 text-left">
-                <div className="text-sm font-medium">New game started</div>
-                <div className="text-xs text-white/60">5 minutes ago</div>
+                <div className={labelClass}>New game started</div>
+                <div className={descClass}>5 minutes ago</div>
               </div>
             </button>
             <button
@@ -272,8 +293,8 @@ export function DashboardView({
                 <Users className="w-4 h-4" />
               </div>
               <div className="flex-1 text-left">
-                <div className="text-sm font-medium">Player joined</div>
-                <div className="text-xs text-white/60">12 minutes ago</div>
+                <div className={labelClass}>Player joined</div>
+                <div className={descClass}>12 minutes ago</div>
               </div>
             </button>
           </div>

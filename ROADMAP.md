@@ -22,7 +22,9 @@ Ce document présente l'état d'avancement et les prochaines étapes pour l'appl
 6. **📝 Formulaire BGG Pré-Import** - Copier de board-game-scorekeep (2-3 jours)
 
 ### Priorité Secondaire (1-2 mois)
-7. **🎨 Thème Sombre/Clair** - Finition UX (2-3 jours)
+7. **🎨 Harmonisation UI/UX Globale** - REPORTÉ
+    - L'harmonisation complète des boutons, couleurs, tailles et cohérence visuelle sur toutes les pages/dialogs est reportée.
+    - Prochaines étapes : stabilisation technique, audit des usages, puis reprise du design UI/UX en phase dédiée.
 8. **📊 Graphiques Temporels** - Infrastructure prête, implémentation visualisations (1 semaine)
 9. **🔄 Système Migration Automatique** - Versioning schema sécurisé (2-3 jours)
 10. **🧪 Tests Performance** - Benchmarking et optimisation suite de tests (1-2 jours)

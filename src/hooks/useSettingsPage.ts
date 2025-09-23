@@ -4,6 +4,8 @@ import { NavigationHandler } from '@/types';
 export interface SettingsPageData {
   onNavigation: NavigationHandler;
   currentView?: string;
+  darkMode?: boolean;
+  setDarkMode?: (enabled: boolean) => void;
 }
 
 export const useSettingsPage = (data: SettingsPageData) => {
@@ -11,7 +13,9 @@ export const useSettingsPage = (data: SettingsPageData) => {
 
   // Local state for settings
   const [notifications, setNotifications] = useState(true);
-  const [darkMode, setDarkMode] = useState(false);
+  // Utilise le darkMode global si fourni
+  const darkMode = data.darkMode ?? true;
+  const setDarkMode = data.setDarkMode ?? (() => {});
   const [language, setLanguage] = useState('en');
   const [autoSave, setAutoSave] = useState(true);
   const [showTooltips, setShowTooltips] = useState(true);
@@ -29,7 +33,7 @@ export const useSettingsPage = (data: SettingsPageData) => {
 
   const handleDarkModeChange = (enabled: boolean) => {
     setDarkMode(enabled);
-    // Here you would apply theme changes
+    // Ici, on applique le thème global
   };
 
   const handleLanguageChange = (lang: string) => {

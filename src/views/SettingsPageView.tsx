@@ -34,8 +34,31 @@ interface SettingsPageViewProps {
 }
 
 export function SettingsPageView(props: SettingsPageViewProps) {
+  const mainClass = props.darkMode
+    ? "min-h-screen bg-gradient-to-br from-slate-900 to-slate-800 text-white"
+    : "min-h-screen bg-gradient-to-br from-slate-100 to-slate-300 text-slate-900";
+
+  // Classes dynamiques pour les cards et textes
+  const cardClass = props.darkMode
+    ? "bg-white/10 backdrop-blur-md rounded-2xl p-4 border border-white/20 shadow-xl"
+    : "bg-white rounded-2xl p-4 border border-slate-300 shadow-xl";
+  const titleClass = props.darkMode
+    ? "text-lg font-semibold mb-4 text-white"
+    : "text-lg font-semibold mb-4 text-slate-900";
+  const labelClass = props.darkMode
+    ? "font-medium text-white"
+    : "font-medium text-slate-900";
+  const descClass = props.darkMode
+    ? "text-white/60 text-sm"
+    : "text-slate-500 text-sm";
+  const aboutTextClass = props.darkMode
+    ? "space-y-2 text-white/80"
+    : "space-y-2 text-slate-800";
+  const aboutDescClass = props.darkMode
+    ? "text-sm text-white/60"
+    : "text-sm text-slate-500";
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-900 to-slate-800 text-white">
+  <div className={mainClass}>
       {/* Header */}
       <div className="px-4 pt-8 pb-6">
         <div className="flex items-center justify-between mb-6">
@@ -53,15 +76,15 @@ export function SettingsPageView(props: SettingsPageViewProps) {
       {/* Content */}
       <div className="px-4 space-y-6 pb-32">
         {/* Preferences */}
-        <div className="bg-white/10 backdrop-blur-md rounded-2xl p-4 border border-white/20 shadow-xl">
-          <h2 className="text-lg font-semibold mb-4">Preferences</h2>
+        <div className={cardClass}>
+          <h2 className={titleClass}>Preferences</h2>
           <div className="space-y-4">
             <div className="flex items-center justify-between">
               <div className="flex items-center space-x-3">
                 <Bell className="w-5 h-5 text-blue-400" />
                 <div>
-                  <div className="font-medium">Notifications</div>
-                  <div className="text-white/60 text-sm">Get notified about game updates</div>
+                  <div className={labelClass}>Notifications</div>
+                  <div className={descClass}>Get notified about game updates</div>
                 </div>
               </div>
               <Switch 
@@ -74,8 +97,8 @@ export function SettingsPageView(props: SettingsPageViewProps) {
               <div className="flex items-center space-x-3">
                 <Moon className="w-5 h-5 text-purple-400" />
                 <div>
-                  <div className="font-medium">Dark Mode</div>
-                  <div className="text-white/60 text-sm">Use dark theme</div>
+                  <div className={labelClass}>Dark Mode</div>
+                  <div className={descClass}>Use dark theme</div>
                 </div>
               </div>
               <Switch 
@@ -88,8 +111,8 @@ export function SettingsPageView(props: SettingsPageViewProps) {
               <div className="flex items-center space-x-3">
                 <Globe className="w-5 h-5 text-green-400" />
                 <div>
-                  <div className="font-medium">Language</div>
-                  <div className="text-white/60 text-sm">Choose your language</div>
+                  <div className={labelClass}>Language</div>
+                  <div className={descClass}>Choose your language</div>
                 </div>
               </div>
               <Select value={props.language} onValueChange={props.handleLanguageChange}>
@@ -108,8 +131,8 @@ export function SettingsPageView(props: SettingsPageViewProps) {
               <div className="flex items-center space-x-3">
                 <FloppyDisk className="w-5 h-5 text-orange-400" />
                 <div>
-                  <div className="font-medium">Auto Save</div>
-                  <div className="text-white/60 text-sm">Automatically save changes</div>
+                  <div className={labelClass}>Auto Save</div>
+                  <div className={descClass}>Automatically save changes</div>
                 </div>
               </div>
               <Switch 
@@ -122,8 +145,8 @@ export function SettingsPageView(props: SettingsPageViewProps) {
               <div className="flex items-center space-x-3">
                 <Info className="w-5 h-5 text-yellow-400" />
                 <div>
-                  <div className="font-medium">Show Tooltips</div>
-                  <div className="text-white/60 text-sm">Display helpful tooltips</div>
+                  <div className={labelClass}>Show Tooltips</div>
+                  <div className={descClass}>Display helpful tooltips</div>
                 </div>
               </div>
               <Switch 
@@ -135,8 +158,8 @@ export function SettingsPageView(props: SettingsPageViewProps) {
         </div>
 
         {/* Data Management */}
-        <div className="bg-white/10 backdrop-blur-md rounded-2xl p-4 border border-white/20 shadow-xl">
-          <h2 className="text-lg font-semibold mb-4">Data Management</h2>
+        <div className={cardClass}>
+          <h2 className={titleClass}>Data Management</h2>
           <div className="space-y-3">
             <Button 
               onClick={props.handleExportData}
@@ -168,11 +191,11 @@ export function SettingsPageView(props: SettingsPageViewProps) {
         </div>
 
         {/* About */}
-        <div className="bg-white/10 backdrop-blur-md rounded-2xl p-4 border border-white/20 shadow-xl">
-          <h2 className="text-lg font-semibold mb-4">About</h2>
-          <div className="space-y-2 text-white/80">
+        <div className={cardClass}>
+          <h2 className={titleClass}>About</h2>
+          <div className={aboutTextClass}>
             <div>Board Game Dashboard v1.0.0</div>
-            <div className="text-sm text-white/60">
+            <div className={aboutDescClass}>
               A modern dashboard for tracking your board game sessions and player statistics.
             </div>
           </div>
