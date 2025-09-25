@@ -1,23 +1,8 @@
 import React, { useState } from 'react';
-import { Game, BGGGame } from '@/types';
+import { BGGGame } from '@/types';
 import { useGamesPage, GamesPageData } from '@/hooks/useGamesPage';
 import { GamesPageView } from '@/views/GamesPageView';
 
-interface GamesPageProps {
-  games: Game[];
-  onNavigation: (view: string, gameId?: number, source?: string) => void;
-  onAddGame: (game: Omit<Game, 'game_id' | 'players'>) => void;
-  onUpdateGame: (gameId: number, game: Partial<Game>) => void;
-  onDeleteGame: (gameId: number) => void;
-  onAddExpansion?: (gameId: number, expansion: any) => void;
-  onUpdateExpansion?: (expansionId: number, expansion: any) => void;
-  onDeleteExpansion?: (expansionId: number) => void;
-  onAddCharacter?: (gameId: number, character: any) => void;
-  onUpdateCharacter?: (characterId: number, character: any) => void;
-  onDeleteCharacter?: (characterId: number) => void;
-  currentView?: string;
-  darkMode: boolean;
-}
 
 export default function GamesPage({
   games: gamesProp,
@@ -31,9 +16,8 @@ export default function GamesPage({
   onAddCharacter,
   onUpdateCharacter,
   onDeleteCharacter,
-  currentView: currentViewProp,
-  darkMode
-}: GamesPageProps) {
+  currentView: currentViewProp
+}) {
   const [expandedGame, setExpandedGame] = useState<number | null>(null);
   const [isBGGSearchOpen, setIsBGGSearchOpen] = useState(false);
 
@@ -88,37 +72,33 @@ export default function GamesPage({
     setIsBGGSearchOpen(false);
   };
 
-  const onAddDialogToggle = () => {
-    handleAddDialogOpen(!isAddDialogOpen);
-  };
 
   return (
-    <GamesPageView
-        games={gamesProp}
-        currentView={currentViewProp || 'games'}
-        totalGames={totalGames}
-        averageRating={averageRating}
-        formData={formData}
-        editingGame={editingGame}
-        isAddDialogOpen={isAddDialogOpen}
-        isEditDialogOpen={isEditDialogOpen}
-        isBGGSearchOpen={isBGGSearchOpen}
-        expandedGame={expandedGame}
-        searchQuery={searchQuery}
-        onNavigation={onNavigationProp}
-        onSearchChange={setSearchQuery}
-        onAddDialogToggle={onAddDialogToggle}
-        onFormDataChange={handleFormDataChange}
-        onBGGGameSelect={handleBGGGameSelect}
-        onAddGame={handleAddGame}
-        onResetForm={resetForm}
-        onEditGame={handleEditGame}
-        onUpdateGame={handleUpdateGame}
-        onDeleteGame={handleDeleteGame}
-        setBGGSearchOpen={setIsBGGSearchOpen}
-        setExpandedGame={setExpandedGame}
-        setEditDialogOpen={handleEditDialogOpen}
-  darkMode={!!darkMode}
-      />
+  <GamesPageView
+    games={gamesProp}
+    currentView={currentViewProp || 'games'}
+    totalGames={totalGames}
+    averageRating={averageRating}
+    formData={formData}
+    editingGame={editingGame}
+    isAddDialogOpen={isAddDialogOpen}
+    isEditDialogOpen={isEditDialogOpen}
+    isBGGSearchOpen={isBGGSearchOpen}
+    expandedGame={expandedGame}
+    searchQuery={searchQuery}
+    onNavigation={onNavigationProp}
+    onSearchChange={setSearchQuery}
+    onFormDataChange={handleFormDataChange}
+    onBGGGameSelect={handleBGGGameSelect}
+    onAddGame={handleAddGame}
+    onResetForm={resetForm}
+    onEditGame={handleEditGame}
+    onUpdateGame={handleUpdateGame}
+    onDeleteGame={handleDeleteGame}
+    setBGGSearchOpen={setIsBGGSearchOpen}
+    setExpandedGame={setExpandedGame}
+    setAddDialogOpen={handleAddDialogOpen}
+    setEditDialogOpen={handleEditDialogOpen}
+  />
   );
 }

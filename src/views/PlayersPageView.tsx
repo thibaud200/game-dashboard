@@ -20,6 +20,7 @@ import {
 } from '@/components/ui/dropdown-menu';
 import { AddPlayerDialog, EditPlayerDialog } from '@/components/dialogs';
 import { Player, PlayerFormData } from '@/types';
+import { useTheme } from '@/theme/ThemeProvider';
 
 interface PlayersPageViewProps {
   players: Player[];
@@ -46,13 +47,12 @@ interface PlayersPageViewProps {
   handleViewPlayerStats: (playerId: number) => void;
   resetForm: () => void;
   onNavigation: (view: string, id?: number) => void;
-  darkMode: boolean;
 }
 
-export function PlayersPageView(props: PlayersPageViewProps) {
+export function PlayersPageView(props: Omit<PlayersPageViewProps, 'darkMode'>) {
+  const { darkMode } = useTheme();
   // Safety check for players array
   const safePlayers = props.players || [];
-  const darkMode = props.darkMode;
   return (
     <div className={darkMode ? "min-h-screen bg-gradient-to-br from-slate-900 to-slate-800 text-white" : "min-h-screen bg-gradient-to-br from-slate-100 to-slate-300 text-slate-900"}>
       {/* Header */}
@@ -83,7 +83,18 @@ export function PlayersPageView(props: PlayersPageViewProps) {
                 props.resetForm();
                 props.handleAddDialogOpen(false);
               }}
-              darkMode={darkMode}
+            />
+            {/* Edit Player Dialog */}
+            <EditPlayerDialog
+              isOpen={props.isEditDialogOpen}
+              onOpenChange={props.handleEditDialogOpen}
+              formData={props.formData}
+              setFormData={props.setFormData}
+              onUpdate={props.handleUpdatePlayer}
+              onCancel={() => {
+                props.resetForm();
+                props.handleEditDialogOpen(false);
+              }}
             />
           </div>
         </div>
@@ -154,7 +165,7 @@ export function PlayersPageView(props: PlayersPageViewProps) {
                   variant="ghost"
                   size="sm"
                   onClick={() => props.handleViewPlayerStats(player.player_id)}
-                  className={darkMode ? "text-white/60 hover:text-white hover:bg-white/10" : "text-slate-600 hover:text-slate-900 hover:bg-slate-100"}
+                  className={darkMode ? "text-teal-400 hover:text-teal-300 hover:bg-teal-500/20" : "text-teal-600 hover:text-teal-700 hover:bg-teal-100"}
                   aria-label="View player stats"
                 >
                   <ChartLineUp className="w-4 h-4" />
@@ -233,27 +244,19 @@ export function PlayersPageView(props: PlayersPageViewProps) {
       </div>
 
       {/* Floating Add Player Button */}
+
       <button
         onClick={() => props.handleAddDialogOpen(true)}
-        className="fixed bottom-24 right-6 w-14 h-14 bg-gradient-to-r from-teal-500 to-teal-600 rounded-full shadow-lg hover:shadow-xl transition-all duration-200 hover:scale-105 flex items-center justify-center z-50 hover:from-teal-600 hover:to-teal-700"
+        className={
+          `fixed bottom-24 right-6 w-14 h-14 rounded-full shadow-lg hover:shadow-xl transition-all duration-200 hover:scale-105 flex items-center justify-center z-50 ` +
+          (darkMode
+            ? 'bg-gradient-to-r from-emerald-500 to-emerald-600 hover:from-emerald-600 hover:to-emerald-700'
+            : 'bg-gradient-to-r from-emerald-200 to-emerald-400 hover:from-emerald-300 hover:to-emerald-500 border border-emerald-400')
+        }
         aria-label="Add new player"
       >
-        <Plus className="w-6 h-6 text-white" />
+        <Plus className={darkMode ? "w-6 h-6 text-white" : "w-6 h-6 text-emerald-700"} />
       </button>
-
-      {/* Edit Player Dialog */}
-      <EditPlayerDialog
-        isOpen={props.isEditDialogOpen}
-        onOpenChange={props.handleEditDialogOpen}
-        formData={props.formData}
-        setFormData={props.setFormData}
-        onUpdate={props.handleUpdatePlayer}
-        onCancel={() => {
-          props.resetForm();
-          props.handleEditDialogOpen(false);
-        }}
-        darkMode={darkMode}
-      />
 
     </div>
   );

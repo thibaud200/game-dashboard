@@ -4,6 +4,7 @@ import { Label } from '@/components/ui/label';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { PlayerFormData } from '@/types';
+import { useTheme } from '@/theme/ThemeProvider';
 
 interface EditPlayerDialogProps {
   isOpen: boolean;
@@ -12,7 +13,6 @@ interface EditPlayerDialogProps {
   setFormData: (data: PlayerFormData) => void;
   onUpdate: () => void;
   onCancel: () => void;
-  darkMode: boolean;
 }
 
 interface ValidationErrors {
@@ -29,9 +29,9 @@ export function EditPlayerDialog({
   formData,
   setFormData,
   onUpdate,
-  onCancel,
-  darkMode = true
+  onCancel
 }: EditPlayerDialogProps) {
+  const { darkMode } = useTheme();
   const [errors, setErrors] = useState<ValidationErrors>({});
 
   const validateForm = (): boolean => {
@@ -187,9 +187,9 @@ export function EditPlayerDialog({
               Update Player
             </Button>
             <Button 
-              variant="outline" 
+              variant="outline"
               onClick={onCancel}
-              className="flex-1"
+              className={darkMode ? "flex-1 bg-slate-600 text-white border-2 border-slate-400 hover:bg-slate-700" : "flex-1 bg-slate-200 text-slate-900 border-slate-400 hover:bg-slate-300"}
             >
               Cancel
             </Button>

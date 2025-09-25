@@ -15,6 +15,7 @@ import { ArrowLeft, Users, Clock, Star, Barbell, Calendar, Buildings, User, Dots
 import GameExpansionsPage from '@/components/GameExpansionsPage';
 import GameCharactersPage from '@/components/GameCharactersPage';
 import { UseGameDetailProps } from '@/hooks/games/useGameDetail';
+import { useTheme } from '@/theme/ThemeProvider';
 
 interface GameDetailViewProps extends UseGameDetailProps {
   activeTab: string;
@@ -36,7 +37,6 @@ interface GameDetailViewProps extends UseGameDetailProps {
   setActiveTab: (tab: string) => void;
   hasExpansionHandlers: boolean;
   hasCharacterHandlers: boolean;
-  darkMode: boolean;
 }
 
 export default function GameDetailView({
@@ -56,8 +56,9 @@ export default function GameDetailView({
   onUpdateCharacter,
   onDeleteCharacter,
   onNavigation,
-  darkMode
 }: GameDetailViewProps) {
+  const { darkMode } = useTheme();
+
   return (
     <div className={darkMode ? "min-h-screen bg-gradient-to-br from-slate-900 to-slate-800" : "min-h-screen bg-gradient-to-br from-slate-100 to-slate-300"}>
       {/* Header */}
@@ -147,32 +148,33 @@ export default function GameDetailView({
         {/* Desktop Layout with Tabs */}
         <div className="hidden md:block">
           <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
-            <TabsList className={darkMode ? "grid w-full grid-cols-3 bg-slate-800/50 border-slate-700/50" : "grid w-full grid-cols-3 bg-white border-slate-200"}>
+            <TabsList className={darkMode ? "grid w-full grid-cols-3 bg-slate-800/80 border-b-4 border-primary/70 shadow-lg rounded-t-lg overflow-hidden h-16 min-h-[4rem]" : "grid w-full grid-cols-3 bg-white border-b-4 border-primary/70 shadow-lg rounded-t-lg overflow-hidden h-16 min-h-[4rem]"}>
               <TabsTrigger 
                 value="overview" 
-                className={darkMode ? "data-[state=active]:bg-primary data-[state=active]:text-primary-foreground text-white" : "data-[state=active]:bg-primary data-[state=active]:text-primary-foreground text-slate-900"}
+                className={darkMode ? "data-[state=active]:bg-primary data-[state=active]:text-primary-foreground text-white font-semibold border-b-2 border-primary data-[state=active]:shadow-lg data-[state=active]:border-b-4 data-[state=active]:border-primary/80 data-[state=inactive]:bg-slate-800/70 data-[state=inactive]:text-white/60 px-6 py-4 text-lg flex items-center justify-center gap-2 text-center h-16 min-h-[4rem] leading-tight" : "data-[state=active]:bg-primary data-[state=active]:text-primary-foreground text-slate-900 font-semibold border-b-2 border-primary data-[state=active]:shadow-lg data-[state=active]:border-b-4 data-[state=active]:border-primary/80 data-[state=inactive]:bg-white data-[state=inactive]:text-slate-400 px-6 py-4 text-lg flex items-center justify-center gap-2 text-center h-16 min-h-[4rem] leading-tight"}
               >
                 Vue générale
               </TabsTrigger>
               <TabsTrigger 
                 value="expansions" 
-                className={darkMode ? "data-[state=active]:bg-primary data-[state=active]:text-primary-foreground text-white" : "data-[state=active]:bg-primary data-[state=active]:text-primary-foreground text-slate-900"}
+                className={darkMode ? "data-[state=active]:bg-primary data-[state=active]:text-primary-foreground text-white font-semibold border-b-2 border-primary data-[state=active]:shadow-lg data-[state=active]:border-b-4 data-[state=active]:border-primary/80 data-[state=inactive]:bg-slate-800/70 data-[state=inactive]:text-white/60 px-6 py-4 text-lg flex items-center justify-center gap-2 text-center h-16 min-h-[4rem] leading-tight" : "data-[state=active]:bg-primary data-[state=active]:text-primary-foreground text-slate-900 font-semibold border-b-2 border-primary data-[state=active]:shadow-lg data-[state=active]:border-b-4 data-[state=active]:border-primary/80 data-[state=inactive]:bg-white data-[state=inactive]:text-slate-400 px-6 py-4 text-lg flex items-center justify-center gap-2 text-center h-16 min-h-[4rem] leading-tight"}
               >
                 Extensions ({game.expansions?.length || 0})
               </TabsTrigger>
               <TabsTrigger 
                 value="characters" 
-                className={darkMode ? "data-[state=active]:bg-primary data-[state=active]:text-primary-foreground text-white" : "data-[state=active]:bg-primary data-[state=active]:text-primary-foreground text-slate-900"}
+                className={darkMode ? "data-[state=active]:bg-primary data-[state=active]:text-primary-foreground text-white font-semibold border-b-2 border-primary data-[state=active]:shadow-lg data-[state=active]:border-b-4 data-[state=active]:border-primary/80 data-[state=inactive]:bg-slate-800/70 data-[state=inactive]:text-white/60 px-6 py-4 text-lg flex items-center justify-center gap-2 text-center h-16 min-h-[4rem] leading-tight" : "data-[state=active]:bg-primary data-[state=active]:text-primary-foreground text-slate-900 font-semibold border-b-2 border-primary data-[state=active]:shadow-lg data-[state=active]:border-b-4 data-[state=active]:border-primary/80 data-[state=inactive]:bg-white data-[state=inactive]:text-slate-400 px-6 py-4 text-lg flex items-center justify-center gap-2 text-center h-16 min-h-[4rem] leading-tight"}
               >
                 Personnages ({game.characters?.length || 0})
               </TabsTrigger>
             </TabsList>
 
-            <TabsContent value="overview" className="mt-6">
+            <TabsContent value="overview" className="mt-8">
+              {/* contenu Vue générale */}
               <GameOverview game={game} gameTypes={gameTypes} onNavigation={onNavigation} darkMode={darkMode} />
             </TabsContent>
-
-            <TabsContent value="expansions" className="mt-6">
+            <TabsContent value="expansions" className="mt-8">
+              {/* contenu Extensions */}
               {hasExpansionHandlers && (
                 <GameExpansionsPage
                   game={game}
@@ -182,12 +184,11 @@ export default function GameDetailView({
                   onUpdateExpansion={onUpdateExpansion!}
                   onDeleteExpansion={onDeleteExpansion!}
                   embedded={true}
-                  darkMode={darkMode}
                 />
               )}
             </TabsContent>
-
-            <TabsContent value="characters" className="mt-6">
+            <TabsContent value="characters" className="mt-8">
+              {/* contenu Personnages */}
               {hasCharacterHandlers && (
                 <GameCharactersPage
                   game={game}
@@ -197,7 +198,6 @@ export default function GameDetailView({
                   onUpdateCharacter={onUpdateCharacter!}
                   onDeleteCharacter={onDeleteCharacter!}
                   embedded={true}
-                  darkMode={darkMode}
                 />
               )}
             </TabsContent>
@@ -216,7 +216,6 @@ export default function GameDetailView({
               onUpdateExpansion={onUpdateExpansion!}
               onDeleteExpansion={onDeleteExpansion!}
               embedded={true}
-              darkMode={darkMode}
             />
           )}
           {activeTab === 'characters' && hasCharacterHandlers && (
@@ -228,7 +227,6 @@ export default function GameDetailView({
               onUpdateCharacter={onUpdateCharacter!}
               onDeleteCharacter={onDeleteCharacter!}
               embedded={true}
-              darkMode={darkMode}
             />
           )}
         </div>

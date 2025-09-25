@@ -5,6 +5,7 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { bggApiService, BGGSearchResult, BGGGame } from '@/services/bggApi';
+import { useTheme } from '@/theme/ThemeProvider';
 
 interface BGGSearchProps {
   onGameSelect: (game: BGGGame) => void
@@ -12,7 +13,8 @@ interface BGGSearchProps {
   darkMode?: boolean;
 }
 
-export default function BGGSearch({ onGameSelect, onClose, darkMode = true }: BGGSearchProps) {
+export default function BGGSearch({ onGameSelect, onClose }: BGGSearchProps) {
+  const { darkMode } = useTheme();
   const [query, setQuery] = useState('');
   const [searchResults, setSearchResults] = useState<BGGSearchResult[]>([]);
   const [isSearching, setIsSearching] = useState(false);

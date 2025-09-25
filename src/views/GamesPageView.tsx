@@ -33,6 +33,7 @@ import { Input } from '@/components/ui/input';
 import { Game } from '@/types';
 import { AddGameDialog, EditGameDialog, DeleteGameDialog } from '@/components/dialogs';
 import { Card, CardContent } from '@/components/ui/card';
+import { useTheme } from '@/theme/ThemeProvider';
 
 interface GamesPageViewProps {
   games: Game[];
@@ -48,7 +49,7 @@ interface GamesPageViewProps {
   searchQuery: string;
   onNavigation: (view: string, gameId?: number, source?: string) => void;
   onSearchChange: (query: string) => void;
-  onAddDialogToggle: () => void;
+  setAddDialogOpen: (open: boolean) => void;
   onFormDataChange: (data: any) => void;
   onBGGGameSelect: (bggGame: any) => void;
   onAddGame: () => void;
@@ -59,9 +60,10 @@ interface GamesPageViewProps {
   setBGGSearchOpen: (open: boolean) => void;
   setExpandedGame: (gameId: number | null) => void;
   setEditDialogOpen: (open: boolean) => void;
-  darkMode: boolean;
 }
-export function GamesPageView(props: GamesPageViewProps) {
+
+export function GamesPageView(props: Omit<GamesPageViewProps, 'darkMode'>) {
+  const { darkMode } = useTheme();
   
   const {
     games,
@@ -74,7 +76,7 @@ export function GamesPageView(props: GamesPageViewProps) {
     searchQuery,
     onNavigation,
     onSearchChange,
-    onAddDialogToggle,
+  setAddDialogOpen,
     onFormDataChange,
     onBGGGameSelect,
     onAddGame,
@@ -83,8 +85,7 @@ export function GamesPageView(props: GamesPageViewProps) {
     onUpdateGame,
     onDeleteGame,
     setBGGSearchOpen,
-    setExpandedGame,
-    darkMode
+    setExpandedGame
   } = props;
   // Safety check for games array
   const safeGames = games || [];
@@ -183,13 +184,10 @@ export function GamesPageView(props: GamesPageViewProps) {
             >
               <ChartLineUp className="w-6 h-6" />
             </button>
-            
-
-            
             {/* Add Game Dialog */}
             <AddGameDialog
               isOpen={isAddDialogOpen}
-              onOpenChange={onAddDialogToggle}
+              onOpenChange={setAddDialogOpen}
               formData={formData}
               onFormDataChange={onFormDataChange}
               onBGGGameSelect={onBGGGameSelect}
@@ -197,7 +195,6 @@ export function GamesPageView(props: GamesPageViewProps) {
               onResetForm={onResetForm}
               isBGGSearchOpen={isBGGSearchOpen}
               onBGGSearchToggle={setBGGSearchOpen}
-              darkMode={darkMode}
             />
             {/* Edit Game Dialog */}
             <EditGameDialog
@@ -208,7 +205,6 @@ export function GamesPageView(props: GamesPageViewProps) {
               onUpdateGame={onUpdateGame}
               onResetForm={onResetForm}
               editingGame={props.editingGame}
-              darkMode={darkMode}
             />
           </div>
         </div>
@@ -591,7 +587,7 @@ export function GamesPageView(props: GamesPageViewProps) {
 
       {/* Floating Add Game Button */}
       <button
-        onClick={onAddDialogToggle}
+        onClick={() => setAddDialogOpen(true)}
         className={
           `fixed bottom-24 right-6 w-14 h-14 rounded-full shadow-lg hover:shadow-xl transition-all duration-200 hover:scale-105 flex items-center justify-center z-50 ` +
           (darkMode

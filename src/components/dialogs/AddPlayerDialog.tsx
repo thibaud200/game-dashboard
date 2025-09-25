@@ -5,6 +5,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription, Di
 import { Label } from '@/components/ui/label';
 import { Input } from '@/components/ui/input';
 import { PlayerFormData } from '@/types';
+import { useTheme } from '@/theme/ThemeProvider';
 
 interface AddPlayerDialogProps {
   isOpen: boolean;
@@ -13,7 +14,6 @@ interface AddPlayerDialogProps {
   setFormData: (data: PlayerFormData) => void;
   onAdd: () => void;
   onCancel: () => void;
-  darkMode: boolean;
 }
 
 interface ValidationErrors {
@@ -27,9 +27,9 @@ export function AddPlayerDialog({
   formData,
   setFormData,
   onAdd,
-  onCancel,
-  darkMode = true
-}: AddPlayerDialogProps) {
+  onCancel
+}: Omit<AddPlayerDialogProps, 'darkMode'>) {
+  const { darkMode } = useTheme();
   const [errors, setErrors] = useState<ValidationErrors>({});
 
   const validateForm = (): boolean => {
@@ -77,10 +77,10 @@ export function AddPlayerDialog({
           <Plus className="w-4 h-4" />
         </Button>
       </DialogTrigger>
-      <DialogContent className={darkMode ? "bg-slate-800 border-white/20" : "bg-white border-slate-200 text-slate-900"}>
+      <DialogContent className={darkMode ? 'bg-slate-800 border-white/20' : 'bg-white border-slate-200 text-slate-900'}>
         <DialogHeader>
-          <DialogTitle className={darkMode ? "text-white" : "text-blue-700"}>Add New Player</DialogTitle>
-          <DialogDescription className={darkMode ? "text-white/70" : "text-slate-500"}>
+          <DialogTitle className={darkMode ? 'text-white' : 'text-blue-700'}>Add New Player</DialogTitle>
+          <DialogDescription className={darkMode ? 'text-white/70' : 'text-slate-500'}>
             Create a new player profile by filling out the form below.
           </DialogDescription>
         </DialogHeader>
@@ -129,9 +129,9 @@ export function AddPlayerDialog({
               Add Player
             </Button>
             <Button 
-              variant="outline" 
+              variant="outline"
               onClick={onCancel}
-              className="flex-1"
+              className={darkMode ? "flex-1 bg-slate-600 text-white border-2 border-slate-400 hover:bg-slate-700" : "flex-1 bg-slate-200 text-slate-900 border-slate-400 hover:bg-slate-300"}
             >
               Cancel
             </Button>

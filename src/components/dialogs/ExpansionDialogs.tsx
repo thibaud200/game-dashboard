@@ -5,6 +5,7 @@ import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from '@/components/ui/dialog';
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from '@/components/ui/alert-dialog';
+import { useTheme } from '@/theme/ThemeProvider';
 
 interface ExpansionFormData {
   name: string;
@@ -105,7 +106,6 @@ interface AddExpansionDialogProps {
   formData: ExpansionFormData;
   setFormData: (data: ExpansionFormData | ((prev: ExpansionFormData) => ExpansionFormData)) => void;
   onSubmit: (e: any) => void;
-  darkMode: boolean;
 }
 
 export function AddExpansionDialog({
@@ -113,9 +113,9 @@ export function AddExpansionDialog({
   onOpenChange,
   formData,
   setFormData,
-  onSubmit,
-  darkMode
+  onSubmit
 }: AddExpansionDialogProps) {
+  const { darkMode } = useTheme();
   return (
     <Dialog open={isOpen} onOpenChange={onOpenChange}>
       <DialogContent className={darkMode ? "bg-slate-800 border-slate-700 max-w-md mx-4" : "bg-white border-slate-200 max-w-md mx-4"}>
@@ -143,7 +143,6 @@ interface EditExpansionDialogProps {
   formData: ExpansionFormData;
   setFormData: (data: ExpansionFormData | ((prev: ExpansionFormData) => ExpansionFormData)) => void;
   onSubmit: (e: any) => void;
-  darkMode: boolean;
 }
 
 export function EditExpansionDialog({
@@ -151,9 +150,9 @@ export function EditExpansionDialog({
   onOpenChange,
   formData,
   setFormData,
-  onSubmit,
-  darkMode
+  onSubmit
 }: EditExpansionDialogProps) {
+  const { darkMode } = useTheme();
   return (
     <Dialog open={isOpen} onOpenChange={onOpenChange}>
       <DialogContent className={darkMode ? "bg-slate-800 border-slate-700 max-w-md mx-4" : "bg-white border-slate-200 max-w-md mx-4"}>
@@ -180,16 +179,15 @@ interface DeleteExpansionDialogProps {
   onOpenChange: (open: boolean) => void;
   expansionName: string;
   onConfirm: () => void;
-  darkMode: boolean;
 }
 
 export function DeleteExpansionDialog({
   isOpen,
   onOpenChange,
   expansionName,
-  onConfirm,
-  darkMode
+  onConfirm
 }: DeleteExpansionDialogProps) {
+  const { darkMode } = useTheme();
   return (
     <AlertDialog open={isOpen} onOpenChange={onOpenChange}>
       <AlertDialogContent className={darkMode ? "bg-slate-800 border-slate-700" : "bg-white border-slate-200"}>

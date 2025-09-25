@@ -1,6 +1,9 @@
 import React from 'react';
+import { useTheme } from '@/theme/ThemeProvider';
 
-export default function SimpleDashboard({ darkMode = true }: { darkMode?: boolean }) {
+export default function SimpleDashboard() {
+  const { darkMode } = useTheme();
+
   return (
     <div className={darkMode ? "min-h-screen bg-slate-900 text-white" : "min-h-screen bg-slate-100 text-slate-900"}>
       <div className="container mx-auto px-4 py-8">

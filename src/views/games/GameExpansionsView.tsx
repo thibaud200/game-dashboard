@@ -5,7 +5,10 @@ import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip
 import { ArrowLeft, Plus, PencilSimple, Trash, Calendar } from '@phosphor-icons/react';
 import { useGameExpansions, UseGameExpansionsProps } from '@/hooks/games/useGameExpansions';
 import { AddExpansionDialog, EditExpansionDialog, DeleteExpansionDialog } from '@/components/dialogs';
-export default function GameExpansionsView(props: UseGameExpansionsProps & { darkMode: boolean }) {
+import { useTheme } from '@/theme/ThemeProvider';
+
+export default function GameExpansionsView(props: Omit<UseGameExpansionsProps, 'darkMode'>) {
+  const { darkMode } = useTheme();
   const {
     isAddDialogOpen,
     editingExpansion,
@@ -25,8 +28,7 @@ export default function GameExpansionsView(props: UseGameExpansionsProps & { dar
     game,
     onNavigation,
     navigationSource,
-    embedded = false,
-    darkMode
+    embedded = false
   } = props;
 
   return (
@@ -171,29 +173,26 @@ export default function GameExpansionsView(props: UseGameExpansionsProps & { dar
 
       {/* Dialogs harmonisés */}
       <AddExpansionDialog
-        isOpen={isAddDialogOpen}
-        onOpenChange={setIsAddDialogOpen}
-        formData={formData}
-        setFormData={setFormData}
-        onSubmit={handleAddExpansion}
-        darkMode={darkMode}
+  isOpen={isAddDialogOpen}
+  onOpenChange={setIsAddDialogOpen}
+  formData={formData}
+  setFormData={setFormData}
+  onSubmit={handleAddExpansion}
       />
 
       <EditExpansionDialog
-        isOpen={!!editingExpansion}
-        onOpenChange={(open) => !open && closeDialogs()}
-        formData={formData}
-        setFormData={setFormData}
-        onSubmit={handleEditExpansion}
-        darkMode={darkMode}
+  isOpen={!!editingExpansion}
+  onOpenChange={(open) => !open && closeDialogs()}
+  formData={formData}
+  setFormData={setFormData}
+  onSubmit={handleEditExpansion}
       />
 
       <DeleteExpansionDialog
-        isOpen={!!deleteExpansionId}
-        onOpenChange={(open) => !open && setDeleteExpansionId(null)}
-        expansionName={expansions.find(e => e.expansion_id === deleteExpansionId)?.name || ''}
-        onConfirm={() => handleDeleteExpansion(deleteExpansionId!)}
-        darkMode={darkMode}
+  isOpen={!!deleteExpansionId}
+  onOpenChange={(open) => !open && setDeleteExpansionId(null)}
+  expansionName={expansions.find(e => e.expansion_id === deleteExpansionId)?.name || ''}
+  onConfirm={() => handleDeleteExpansion(deleteExpansionId!)}
       />
 
       {/* Bottom Navigation - Mobile Only - Only show when not embedded */}

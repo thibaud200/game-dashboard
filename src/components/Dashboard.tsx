@@ -2,6 +2,7 @@ import React from 'react';
 import { DashboardView } from '@/views/DashboardView';
 import { useDashboard, DashboardData } from '@/hooks/useDashboard';
 import { Player, Game, NavigationHandler } from '@/types';
+import { useTheme } from '@/theme/ThemeProvider';
 
 interface DashboardProps {
   stats: {
@@ -12,22 +13,22 @@ interface DashboardProps {
   };
   recentPlayers: Player[];
   recentGames: Game[];
-  darkMode: boolean;
+  // darkMode supprimé, maintenant géré par le contexte
   currentView: string;
   onNavigation: NavigationHandler;
 }
 
 export default function Dashboard(props: DashboardProps) {
+  const { darkMode } = useTheme();
   const dashboardData: DashboardData = {
     stats: props.stats,
     recentPlayers: props.recentPlayers,
     recentGames: props.recentGames,
-    darkMode: props.darkMode,
     currentView: props.currentView,
     onNavigation: props.onNavigation
   };
 
   const logic = useDashboard(dashboardData);
 
-  return <DashboardView {...logic} darkMode={!!props.darkMode} />;
+  return <DashboardView {...logic} darkMode={darkMode} />;
 }

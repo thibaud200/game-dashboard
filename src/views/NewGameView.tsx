@@ -7,6 +7,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Checkbox } from "@/components/ui/checkbox";
 import { ArrowLeft, Play, Users, Trophy, Timer, Target, Plus, Trash } from '@phosphor-icons/react';
+import { useTheme } from '@/theme/ThemeProvider';
 
 interface Player {
   player_id: number
@@ -101,7 +102,6 @@ interface NewGameViewProps {
   // Navigation
   onNavigation: (view: string) => void
   currentView: string
-  darkMode: boolean
 }
 
 export default function NewGameView({ 
@@ -140,8 +140,9 @@ export default function NewGameView({
   players,
   onNavigation,
   currentView: _currentView,
-  darkMode
 }: NewGameViewProps) {
+  const { darkMode } = useTheme();
+  
   // Safety checks for arrays
   const safeGames = games || [];
   const safePlayers = players || [];

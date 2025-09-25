@@ -12,7 +12,6 @@ export interface DashboardData {
   stats: DashboardStats;
   recentPlayers: Player[];
   recentGames: Game[];
-  darkMode: boolean;
   currentView: string;
   onNavigation: NavigationHandler;
 }

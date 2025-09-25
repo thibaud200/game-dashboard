@@ -301,35 +301,37 @@ export function DashboardView({
         </div>
 
         {/* Actions rapides */}
-        <div className="grid grid-cols-2 gap-4">
-          <Tooltip>
-            <TooltipTrigger asChild>
-              <button
-                onClick={handleNewGameClick}
-                className="bg-gradient-to-r from-teal-500 to-teal-600 rounded-2xl p-4 flex flex-col items-center justify-center hover:from-teal-600 hover:to-teal-700 transition-all duration-200 shadow-lg hover:shadow-xl hover:scale-105"
-              >
-                <Play className="w-8 h-8 mb-2" />
-                <span className="font-medium">New Game</span>
-              </button>
-            </TooltipTrigger>
-            <TooltipContent>
-              <p>Start a New Game Session</p>
-            </TooltipContent>
-          </Tooltip>
-          <Tooltip>
-            <TooltipTrigger asChild>
-              <button
-                onClick={handlePlayersClick}
-                className="bg-gradient-to-r from-emerald-500 to-emerald-600 rounded-2xl p-4 flex flex-col items-center justify-center hover:from-emerald-600 hover:to-emerald-700 transition-all duration-200 shadow-lg hover:shadow-xl hover:scale-105"
-              >
-                <Plus className="w-8 h-8 mb-2" />
-                <span className="font-medium">Add Player</span>
-              </button>
-            </TooltipTrigger>
-            <TooltipContent>
-              <p>Go to Players Page</p>
-            </TooltipContent>
-          </Tooltip>
+        <div className="flex justify-center items-center w-full mt-4 mb-20 md:mb-0">
+          <div className="flex flex-col md:flex-row gap-4 md:gap-8 w-full md:w-auto">
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <button
+                  onClick={handleNewGameClick}
+                  className="bg-gradient-to-r from-teal-500 to-teal-600 rounded-2xl px-5 py-4 md:px-8 md:py-5 flex flex-col items-center justify-center hover:from-teal-600 hover:to-teal-700 transition-all duration-200 shadow-lg hover:shadow-xl hover:scale-105 w-full md:w-[220px]"
+                >
+                  <Play className="w-7 h-7 md:w-9 md:h-9 mb-2" />
+                  <span className="font-bold text-base md:text-lg">New Game</span>
+                </button>
+              </TooltipTrigger>
+              <TooltipContent>
+                <p>Start a New Game Session</p>
+              </TooltipContent>
+            </Tooltip>
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <button
+                  onClick={handlePlayersClick}
+                  className="bg-gradient-to-r from-emerald-500 to-emerald-600 rounded-2xl px-5 py-4 md:px-8 md:py-5 flex flex-col items-center justify-center hover:from-emerald-600 hover:to-emerald-700 transition-all duration-200 shadow-lg hover:shadow-xl hover:scale-105 w-full md:w-[220px]"
+                >
+                  <Plus className="w-7 h-7 md:w-9 md:h-9 mb-2" />
+                  <span className="font-bold text-base md:text-lg">Add Player</span>
+                </button>
+              </TooltipTrigger>
+              <TooltipContent>
+                <p>Go to Players Page</p>
+              </TooltipContent>
+            </Tooltip>
+          </div>
         </div>
       </div>
     </div>

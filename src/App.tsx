@@ -11,6 +11,7 @@ import GameCharactersPage from '@/components/GameCharactersPage';
 import BottomNavigation from '@/components/BottomNavigation';
 import { TooltipProvider } from '@/components/ui/tooltip';
 import { Player, Game } from '@/types';
+import { ThemeProvider, useTheme } from '@/theme/ThemeProvider';
 
 // Mock data (extended with all required fields)
 const mockData = {
@@ -167,15 +168,17 @@ const mockData = {
 };
 
 export default function App() {
-  // Mode sombre par défaut
-  const [darkMode, setDarkMode] = useState(true);
-  useEffect(() => {
-    if (darkMode) {
-      document.body.classList.add('dark');
-    } else {
-      document.body.classList.remove('dark');
-    }
-  }, [darkMode]);
+  return (
+    <ThemeProvider>
+      <TooltipProvider>
+        <AppContent />
+      </TooltipProvider>
+    </ThemeProvider>
+  );
+}
+
+function AppContent() {
+  const { darkMode } = useTheme();
 
   const [stats, setStats] = useState({
     playersCount: 0,
@@ -277,7 +280,6 @@ export default function App() {
             recentGames={games?.slice(0, 3) || []}
             currentView={currentView}
             onNavigation={handleNavigation}
-            darkMode={darkMode}
           />
         );
       case 'players':
@@ -299,11 +301,17 @@ export default function App() {
             onAddGame={handleAddGame}
             onUpdateGame={handleUpdateGame}
             onDeleteGame={handleDeleteGame}
-            darkMode={darkMode}
+            onAddExpansion={async () => ({ expansion_id: 1, name: 'Test', year_published: 2023 })}
+            onUpdateExpansion={async () => {}}
+            onDeleteExpansion={async () => {}}
+            onAddCharacter={async () => ({ character_id: 1, character_key: 'test', name: 'Test', description: 'Test', abilities: [] })}
+            onUpdateCharacter={async () => {}}
+            onDeleteCharacter={async () => {}}
+            currentView={currentView}
           />
         );
       case 'settings':
-        return <SettingsPage onNavigation={handleNavigation} currentView={currentView} darkMode={darkMode} setDarkMode={setDarkMode} />;
+  return <SettingsPage onNavigation={handleNavigation} currentView={currentView} />;
       case 'player-stats':
       case 'game-stats':
       case 'stats':
@@ -316,7 +324,6 @@ export default function App() {
             selectedPlayerId={navigationContext?.id}
             selectedGameId={navigationContext?.id}
             navigationContext={navigationContext}
-            darkMode={darkMode}
           />
         );
       case 'new-game':
@@ -337,7 +344,6 @@ export default function App() {
               game={game} 
               currentView={currentView}
               onNavigation={handleNavigation}
-              darkMode={darkMode}
             />
           ) : null;
         }
@@ -377,7 +383,6 @@ export default function App() {
             recentGames={games?.slice(0, 3) || []}
             currentView={currentView}
             onNavigation={handleNavigation}
-            darkMode={darkMode}
           />
         );
     }
@@ -392,11 +397,9 @@ export default function App() {
   }
 
   return (
-    <TooltipProvider>
-      <div className={darkMode ? "min-h-screen bg-gradient-to-br from-slate-900 to-slate-800 text-white" : "min-h-screen bg-gradient-to-br from-slate-100 to-slate-300 text-slate-900"}>
-        {renderCurrentView()}
-        <BottomNavigation currentView={currentView} onNavigation={handleNavigation} />
-      </div>
-    </TooltipProvider>
+    <div className={darkMode ? "min-h-screen bg-gradient-to-br from-slate-900 to-slate-800 text-white" : "min-h-screen bg-gradient-to-br from-slate-100 to-slate-300 text-slate-900"}>
+      {renderCurrentView()}
+      <BottomNavigation currentView={currentView} onNavigation={handleNavigation} />
+    </div>
   );
 }

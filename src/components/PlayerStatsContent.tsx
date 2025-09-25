@@ -1,5 +1,6 @@
 import React from 'react';
 import { usePlayerStatsPage } from '@/hooks/usePlayerStatsPage';
+import { useTheme } from '@/theme/ThemeProvider';
 import {
   Trophy,
   Clock,
@@ -36,16 +37,14 @@ interface PlayerStatsContentProps {
   players: Player[]
   games: Game[]
   selectedPlayerId?: number
-  darkMode?: boolean
 }
 
 export default function PlayerStatsContent({ 
   players, 
   games,
-  selectedPlayerId,
-  darkMode = true
+  selectedPlayerId
 }: PlayerStatsContentProps) {
-  // darkMode est bien récupéré depuis les props, valeur par défaut true
+  const { darkMode } = useTheme();
   const {
     stats,
     topPlayers,

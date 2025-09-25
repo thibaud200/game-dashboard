@@ -10,9 +10,8 @@ interface GameExpansionsPageProps {
   onUpdateExpansion: (expansionId: number, expansionData: any) => Promise<void>
   onDeleteExpansion: (expansionId: number) => Promise<void>
   embedded?: boolean;
-  darkMode?: boolean;
 }
 
-export default function GameExpansionsPage(props: GameExpansionsPageProps) {
-  return <GameExpansionsView {...props} darkMode={!!props.darkMode} />;
+export default function GameExpansionsPage(props: Omit<GameExpansionsPageProps, 'darkMode'>) {
+  return <GameExpansionsView {...props} />;
 }

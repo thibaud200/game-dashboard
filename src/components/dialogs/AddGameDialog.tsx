@@ -17,6 +17,7 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { Checkbox } from '@/components/ui/checkbox';
 import BGGSearch from '@/components/BGGSearch';
 import { BGGGame } from '@/services/bggApi';
+import { useTheme } from '@/theme/ThemeProvider';
 
 import { GameExpansion, GameCharacter } from '@/types';
 
@@ -77,7 +78,6 @@ interface AddGameDialogProps {
   onResetForm: () => void
   isBGGSearchOpen: boolean
   onBGGSearchToggle: (open: boolean) => void
-  darkMode: boolean
 }
 
 export default function AddGameDialog({
@@ -90,8 +90,8 @@ export default function AddGameDialog({
   onResetForm,
   isBGGSearchOpen,
   onBGGSearchToggle,
-  darkMode
-}: AddGameDialogProps) {
+}: Omit<AddGameDialogProps, 'darkMode'>) {
+  const { darkMode } = useTheme();
   const [errors, setErrors] = useState<ValidationErrors>({});
 
   const validateForm = (): boolean => {
@@ -762,9 +762,21 @@ export default function AddGameDialog({
             )}
           </div>
 
-          <Button onClick={handleAddGame} className="w-full bg-emerald-600 hover:bg-emerald-700">
-            Add Game
-          </Button>
+          <div className="flex gap-4 mt-4">
+            <Button
+              onClick={handleAddGame}
+              className="flex-1 bg-emerald-600 hover:bg-emerald-700"
+            >
+              Add Game
+            </Button>
+            <Button
+              variant="outline"
+              onClick={onResetForm}
+              className={darkMode ? "flex-1 bg-slate-600 text-white border-2 border-slate-400 hover:bg-slate-700" : "flex-1 bg-slate-200 text-slate-900 border-slate-400 hover:bg-slate-300"}
+            >
+              Cancel
+            </Button>
+          </div>
         </div>
       </DialogContent>
     </Dialog>

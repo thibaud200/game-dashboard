@@ -5,8 +5,10 @@ import { Tooltip, TooltipContent, TooltipTrigger } from '@/components/ui/tooltip
 import { ArrowLeft, Plus, PencilSimple, Trash, User, Lightning } from '@phosphor-icons/react';
 import { useGameCharacters, UseGameCharactersProps } from '@/hooks/games/useGameCharacters';
 import { AddCharacterDialog, EditCharacterDialog, DeleteCharacterDialog } from '@/components/dialogs';
+import { useTheme } from '@/theme/ThemeProvider';
 
-export default function GameCharactersView(props: UseGameCharactersProps & { darkMode: boolean }) {
+export default function GameCharactersView(props: Omit<UseGameCharactersProps, 'darkMode'>) {  
+  const { darkMode } = useTheme();
   const {
     isAddDialogOpen,
     editingCharacter,
@@ -27,8 +29,7 @@ export default function GameCharactersView(props: UseGameCharactersProps & { dar
     game,
     onNavigation,
     navigationSource,
-    embedded = false,
-    darkMode
+    embedded = false
   } = props;
 
   // Classes dynamiques pour le thème
@@ -189,7 +190,6 @@ export default function GameCharactersView(props: UseGameCharactersProps & { dar
         formData={formData}
         setFormData={setFormData}
         onSubmit={handleAddCharacter}
-        darkMode={darkMode}
       />
 
       <EditCharacterDialog
@@ -198,7 +198,6 @@ export default function GameCharactersView(props: UseGameCharactersProps & { dar
         formData={formData}
         setFormData={setFormData}
         onSubmit={handleEditCharacter}
-        darkMode={darkMode}
       />
 
       <DeleteCharacterDialog
@@ -206,7 +205,6 @@ export default function GameCharactersView(props: UseGameCharactersProps & { dar
         onOpenChange={(open) => !open && setDeleteCharacterId(null)}
         characterName={characters.find(c => c.character_id === deleteCharacterId)?.name || ''}
         onConfirm={() => handleDeleteCharacter(deleteCharacterId!)}
-        darkMode={darkMode}
       />
 
       {/* Bottom Navigation - Mobile Only - Only show when not embedded */}

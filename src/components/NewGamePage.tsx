@@ -62,6 +62,7 @@ export default function NewGamePage({
   currentView,
   onCreateSession 
 }: NewGamePageProps) {
+  // darkMode est géré dans la vue
   const hookData = useNewGamePage(games, players, onCreateSession);
 
   const handleSubmitWithToast = async (): Promise<{ success: boolean }> => {

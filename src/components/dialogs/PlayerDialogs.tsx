@@ -5,6 +5,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from 
 import { Label } from '@/components/ui/label';
 import { Input } from '@/components/ui/input';
 import { PlayerFormData } from '@/types';
+import { useTheme } from '@/theme/ThemeProvider';
 
 interface ValidationErrors {
   player_name?: string;
@@ -19,7 +20,6 @@ interface AddPlayerDialogProps {
   setFormData: (data: PlayerFormData) => void;
   onAdd: () => void;
   onCancel: () => void;
-  darkMode?: boolean;
 }
 
 export function AddPlayerDialog({
@@ -29,8 +29,8 @@ export function AddPlayerDialog({
   setFormData,
   onAdd,
   onCancel,
-  darkMode = true
 }: AddPlayerDialogProps) {
+  const { darkMode } = useTheme();
   const [errors, setErrors] = useState<ValidationErrors>({});
 
   const validateForm = (): boolean => {
@@ -140,7 +140,6 @@ interface EditPlayerDialogProps {
   setFormData: (data: PlayerFormData) => void;
   onUpdate: () => void;
   onCancel: () => void;
-  darkMode?: boolean;
 }
 
 export function EditPlayerDialog({
@@ -150,8 +149,8 @@ export function EditPlayerDialog({
   setFormData,
   onUpdate,
   onCancel,
-  darkMode = true
 }: EditPlayerDialogProps) {
+  const { darkMode } = useTheme();
   const [errors, setErrors] = useState<ValidationErrors>({});
 
   const validateForm = (): boolean => {

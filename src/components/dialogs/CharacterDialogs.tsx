@@ -5,6 +5,7 @@ import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from '@/components/ui/dialog';
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle } from '@/components/ui/alert-dialog';
+import { useTheme } from '@/theme/ThemeProvider';
 
 interface CharacterFormData {
   name: string;
@@ -117,7 +118,6 @@ interface AddCharacterDialogProps {
   formData: CharacterFormData;
   setFormData: (data: CharacterFormData | ((prev: CharacterFormData) => CharacterFormData)) => void;
   onSubmit: (e: any) => void;
-  darkMode: boolean;
 }
 
 export function AddCharacterDialog({
@@ -126,8 +126,8 @@ export function AddCharacterDialog({
   formData,
   setFormData,
   onSubmit,
-  darkMode
 }: AddCharacterDialogProps) {
+  const { darkMode } = useTheme();
   return (
     <Dialog open={isOpen} onOpenChange={onOpenChange}>
       <DialogContent className={darkMode ? "bg-slate-800 border-slate-700 max-w-md mx-4" : "bg-white border-slate-200 max-w-md mx-4"}>
@@ -155,7 +155,6 @@ interface EditCharacterDialogProps {
   formData: CharacterFormData;
   setFormData: (data: CharacterFormData | ((prev: CharacterFormData) => CharacterFormData)) => void;
   onSubmit: (e: any) => void;
-  darkMode: boolean;
 }
 
 export function EditCharacterDialog({
@@ -164,8 +163,8 @@ export function EditCharacterDialog({
   formData,
   setFormData,
   onSubmit,
-  darkMode
 }: EditCharacterDialogProps) {
+  const { darkMode } = useTheme();
   return (
     <Dialog open={isOpen} onOpenChange={onOpenChange}>
       <DialogContent className={darkMode ? "bg-slate-800 border-slate-700 max-w-md mx-4" : "bg-white border-slate-200 max-w-md mx-4"}>
@@ -192,7 +191,6 @@ interface DeleteCharacterDialogProps {
   onOpenChange: (open: boolean) => void;
   characterName: string;
   onConfirm: () => void;
-  darkMode: boolean;
 }
 
 export function DeleteCharacterDialog({
@@ -200,8 +198,8 @@ export function DeleteCharacterDialog({
   onOpenChange,
   characterName,
   onConfirm,
-  darkMode
 }: DeleteCharacterDialogProps) {
+  const { darkMode } = useTheme();
   return (
     <AlertDialog open={isOpen} onOpenChange={onOpenChange}>
       <AlertDialogContent className={darkMode ? "bg-slate-800 border-slate-700" : "bg-white border-slate-200"}>

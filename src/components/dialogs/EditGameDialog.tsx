@@ -14,6 +14,7 @@ import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Checkbox } from '@/components/ui/checkbox';
+import { useTheme } from '@/theme/ThemeProvider';
 
 import { Game, GameExpansion, GameCharacter } from '@/types';
 
@@ -57,7 +58,6 @@ interface EditGameDialogProps {
   onFormDataChange: (data: Partial<FormData>) => void
   onUpdateGame: () => void
   onResetForm: () => void
-  darkMode: boolean
 }
 
 export default function EditGameDialog({
@@ -66,9 +66,10 @@ export default function EditGameDialog({
   formData,
   onFormDataChange,
   onUpdateGame,
-  onResetForm,
-  darkMode
-}: EditGameDialogProps) {
+  onResetForm
+}: Omit<EditGameDialogProps, 'darkMode'>) {
+  const { darkMode } = useTheme();
+
   const setFormData = (updater: (prev: FormData) => FormData) => {
     const newData = updater(formData);
     onFormDataChange(newData);
@@ -554,7 +555,7 @@ export default function EditGameDialog({
                         type="button"
                         onClick={() => removeCharacter(charIndex)}
                         variant="outline"
-                        className="border-red-500 text-red-400 hover:bg-red-500/20"
+                        className={darkMode ? "border-red-500 text-red-400 bg-slate-700 hover:bg-red-500/20" : "border-red-500 text-red-600 bg-slate-200 hover:bg-red-100"}
                       >
                         <Trash className="w-3 h-3" />
                       </Button>
@@ -602,9 +603,21 @@ export default function EditGameDialog({
               </div>
             )}
           </div>
-          <Button onClick={onUpdateGame} className="w-full bg-emerald-600 hover:bg-emerald-700">
-            Update Game
-          </Button>
+          <div className="flex gap-4 mt-4">
+            <Button
+              onClick={onUpdateGame}
+              className="flex-1 bg-emerald-600 hover:bg-emerald-700"
+            >
+              Update Game
+            </Button>
+            <Button
+              variant="outline"
+              onClick={onResetForm}
+              className={darkMode ? "flex-1 bg-slate-600 text-white border-2 border-slate-400 hover:bg-slate-700" : "flex-1 bg-slate-200 text-slate-900 border-slate-400 hover:bg-slate-300"}
+            >
+              Cancel
+            </Button>
+          </div>
         </div>
       </DialogContent>
     </Dialog>
