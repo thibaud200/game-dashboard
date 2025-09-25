@@ -5,15 +5,16 @@ import { Player, Game, NavigationHandler } from '@/types';
 
 interface DashboardProps {
   stats: {
-    playersCount: number
-    gamesCount: number
-    loading: boolean
-    error: null | string
-  }
-  recentPlayers: Player[]
-  recentGames: Game[]
-  currentView: string
-  onNavigation: NavigationHandler
+    playersCount: number;
+    gamesCount: number;
+    loading: boolean;
+    error: null | string;
+  };
+  recentPlayers: Player[];
+  recentGames: Game[];
+  darkMode: boolean;
+  currentView: string;
+  onNavigation: NavigationHandler;
 }
 
 export default function Dashboard(props: DashboardProps) {
@@ -21,11 +22,12 @@ export default function Dashboard(props: DashboardProps) {
     stats: props.stats,
     recentPlayers: props.recentPlayers,
     recentGames: props.recentGames,
+    darkMode: props.darkMode,
     currentView: props.currentView,
     onNavigation: props.onNavigation
   };
 
   const logic = useDashboard(dashboardData);
 
-  return <DashboardView {...logic} />;
+  return <DashboardView {...logic} darkMode={!!props.darkMode} />;
 }

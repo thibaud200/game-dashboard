@@ -8,7 +8,7 @@ interface StatsPageProps {
   players: Player[];
   games: Game[];
   onNavigation: (view: string, id?: number, source?: string) => void;
-  currentView: string;
+  _currentView: string;
   selectedPlayerId?: number;
   selectedGameId?: number;
   navigationContext?: {
@@ -16,15 +16,18 @@ interface StatsPageProps {
     source?: string;
     initialTab?: 'players' | 'games';
   };
+  darkMode: boolean;
 }
 
 export default function StatsPage({
   players,
   games,
   onNavigation,
+  _currentView,
   selectedPlayerId,
   selectedGameId,
-  navigationContext
+  navigationContext,
+  darkMode
 }: StatsPageProps) {
   // Determine initial tab based on navigation context
   let initialTab: 'players' | 'games' = 'players';
@@ -66,18 +69,32 @@ export default function StatsPage({
     }
   };
 
+  // Classes dynamiques cohérentes avec Dashboard
+  const mainClass = darkMode
+    ? "min-h-screen bg-gradient-to-br from-slate-900 to-slate-800 text-white"
+    : "min-h-screen bg-gradient-to-br from-slate-100 to-slate-300 text-slate-900";
+  const cardClass = darkMode
+    ? "bg-white/10 backdrop-blur-md rounded-2xl p-4 border border-white/20 shadow-xl"
+    : "bg-white rounded-2xl p-4 border border-slate-300 shadow-xl";
+  const tabActiveClass = darkMode
+    ? "bg-teal-600 text-white"
+    : "bg-teal-300 text-slate-900";
+  const tabInactiveClass = darkMode
+    ? "bg-white/10 text-white/80 hover:bg-white/20"
+    : "bg-slate-100 text-slate-500 hover:bg-slate-200";
+
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-900 to-slate-800 text-white">
+    <div className={mainClass}>
       {/* Header */}
       <div className="px-4 pt-8 pb-6">
         <div className="flex items-center justify-between mb-6">
           <button
             onClick={handleBackNavigation}
-            className="p-2 hover:bg-white/10 rounded-lg transition-colors"
+            className={darkMode ? "p-2 hover:bg-white/10 rounded-lg transition-colors" : "p-2 hover:bg-slate-200 rounded-lg transition-colors"}
           >
             <ArrowLeft className="w-6 h-6" />
           </button>
-          <h1 className="text-2xl font-bold">Statistics</h1>
+          <h1 className={darkMode ? "text-2xl font-bold text-white" : "text-2xl font-bold text-slate-900"}>Statistics</h1>
           <div className="w-10" /> {/* Spacer for centering */}
         </div>
 
@@ -87,8 +104,8 @@ export default function StatsPage({
             onClick={() => setActiveTab('players')}
             className={`flex-1 px-4 py-3 rounded-lg transition-colors flex items-center justify-center space-x-2 ${
               activeTab === 'players'
-                ? 'bg-primary text-primary-foreground'
-                : 'bg-white/10 text-white/80 hover:bg-white/20'
+                ? tabActiveClass
+                : tabInactiveClass
             }`}
           >
             <Users className="w-5 h-5" />
@@ -98,8 +115,8 @@ export default function StatsPage({
             onClick={() => setActiveTab('games')}
             className={`flex-1 px-4 py-3 rounded-lg transition-colors flex items-center justify-center space-x-2 ${
               activeTab === 'games'
-                ? 'bg-primary text-primary-foreground'
-                : 'bg-white/10 text-white/80 hover:bg-white/20'
+                ? tabActiveClass
+                : tabInactiveClass
             }`}
           >
             <TrendUp className="w-5 h-5" />
@@ -112,23 +129,27 @@ export default function StatsPage({
       <div className="flex-1">
         {activeTab === 'players' ? (
           <div className="px-4 space-y-6 pb-32">
-            <PlayerStatsPage
-              players={players}
-              games={games}
-              onNavigation={onNavigation}
-              currentView="player-stats"
-              selectedPlayerId={navigationContext?.source === 'players' ? navigationContext?.id : selectedPlayerId}
-            />
+            <div className={cardClass}>
+              <PlayerStatsPage
+                players={players}
+                games={games}
+                onNavigation={onNavigation}
+                currentView="player-stats"
+                selectedPlayerId={navigationContext?.source === 'players' ? navigationContext?.id : selectedPlayerId}
+              />
+            </div>
           </div>
         ) : (
           <div className="px-4 space-y-6 pb-32">
-            <GameStatsPage
-              games={games}
-              players={players}
-              onNavigation={onNavigation}
-              currentView="game-stats"
-              selectedCircleId={navigationContext?.source === 'games' ? navigationContext?.id : selectedGameId}
-            />
+            <div className={cardClass}>
+              <GameStatsPage
+                games={games}
+                players={players}
+                onNavigation={onNavigation}
+                currentView="game-stats"
+                selectedCircleId={navigationContext?.source === 'games' ? navigationContext?.id : selectedGameId}
+              />
+            </div>
           </div>
         )}
       </div>

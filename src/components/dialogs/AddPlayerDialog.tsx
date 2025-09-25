@@ -13,6 +13,7 @@ interface AddPlayerDialogProps {
   setFormData: (data: PlayerFormData) => void;
   onAdd: () => void;
   onCancel: () => void;
+  darkMode: boolean;
 }
 
 interface ValidationErrors {
@@ -26,7 +27,8 @@ export function AddPlayerDialog({
   formData,
   setFormData,
   onAdd,
-  onCancel
+  onCancel,
+  darkMode = true
 }: AddPlayerDialogProps) {
   const [errors, setErrors] = useState<ValidationErrors>({});
 
@@ -71,26 +73,26 @@ export function AddPlayerDialog({
   return (
     <Dialog open={isOpen} onOpenChange={onOpenChange}>
       <DialogTrigger asChild>
-        <Button className="bg-gradient-to-r from-teal-500 to-teal-600 hover:from-teal-600 hover:to-teal-700">
+        <Button className={darkMode ? "bg-gradient-to-r from-teal-500 to-teal-600 hover:from-teal-600 hover:to-teal-700" : "bg-gradient-to-r from-blue-200 to-blue-300 hover:from-blue-300 hover:to-blue-400 text-blue-700"}>
           <Plus className="w-4 h-4" />
         </Button>
       </DialogTrigger>
-      <DialogContent className="bg-slate-800 border-white/20">
+      <DialogContent className={darkMode ? "bg-slate-800 border-white/20" : "bg-white border-slate-200 text-slate-900"}>
         <DialogHeader>
-          <DialogTitle className="text-white">Add New Player</DialogTitle>
-          <DialogDescription className="text-white/70">
+          <DialogTitle className={darkMode ? "text-white" : "text-blue-700"}>Add New Player</DialogTitle>
+          <DialogDescription className={darkMode ? "text-white/70" : "text-slate-500"}>
             Create a new player profile by filling out the form below.
           </DialogDescription>
         </DialogHeader>
         <div className="space-y-4">
           <div>
-            <Label htmlFor="player_name" className="text-white">Player Name *</Label>
+            <Label htmlFor="player_name" className={darkMode ? "text-white" : "text-blue-700"}>Player Name *</Label>
             <Input
               id="player_name"
               name="player_name"
               value={formData.player_name}
               onChange={(e) => handleInputChange('player_name', e.target.value)}
-              className={`bg-white/10 border-white/20 text-white ${errors.player_name ? 'border-red-500' : ''}`}
+              className={darkMode ? `bg-white/10 border-white/20 text-white ${errors.player_name ? 'border-red-500' : ''}` : `bg-slate-100 border-slate-300 text-slate-900 ${errors.player_name ? 'border-red-500' : ''}`}
               placeholder="Enter player name"
             />
             {errors.player_name && (
@@ -98,13 +100,13 @@ export function AddPlayerDialog({
             )}
           </div>
           <div>
-            <Label htmlFor="avatar" className="text-white">Avatar URL</Label>
+            <Label htmlFor="avatar" className={darkMode ? "text-white" : "text-blue-700"}>Avatar URL</Label>
             <Input
               id="avatar"
               name="avatar"
               value={formData.avatar}
               onChange={(e) => handleInputChange('avatar', e.target.value)}
-              className={`bg-white/10 border-white/20 text-white ${errors.avatar ? 'border-red-500' : ''}`}
+              className={darkMode ? `bg-white/10 border-white/20 text-white ${errors.avatar ? 'border-red-500' : ''}` : `bg-slate-100 border-slate-300 text-slate-900 ${errors.avatar ? 'border-red-500' : ''}`}
               placeholder="https://example.com/avatar.jpg (optional)"
             />
             {errors.avatar && (
@@ -112,13 +114,13 @@ export function AddPlayerDialog({
             )}
           </div>
           <div>
-            <Label htmlFor="favorite_game" className="text-white">Favorite Game</Label>
+            <Label htmlFor="favorite_game" className={darkMode ? "text-white" : "text-blue-700"}>Favorite Game</Label>
             <Input
               id="favorite_game"
               name="favorite_game"
               value={formData.favorite_game}
               onChange={(e) => handleInputChange('favorite_game', e.target.value)}
-              className="bg-white/10 border-white/20 text-white"
+              className={darkMode ? "bg-white/10 border-white/20 text-white" : "bg-slate-100 border-slate-300 text-slate-900"}
               placeholder="Enter favorite game (optional)"
             />
           </div>

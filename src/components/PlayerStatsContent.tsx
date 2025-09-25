@@ -36,13 +36,16 @@ interface PlayerStatsContentProps {
   players: Player[]
   games: Game[]
   selectedPlayerId?: number
+  darkMode?: boolean
 }
 
 export default function PlayerStatsContent({ 
   players, 
   games,
-  selectedPlayerId 
+  selectedPlayerId,
+  darkMode = true
 }: PlayerStatsContentProps) {
+  // darkMode est bien récupéré depuis les props, valeur par défaut true
   const {
     stats,
     topPlayers,
@@ -51,7 +54,7 @@ export default function PlayerStatsContent({
   } = usePlayerStatsPage(players, games, selectedPlayerId);
 
   return (
-    <>
+  <div className={darkMode ? "" : "text-slate-900"}>
       {selectedPlayer ? (
         /* Individual Player Stats */
         <>
@@ -64,22 +67,22 @@ export default function PlayerStatsContent({
                 className="w-16 h-16 rounded-full object-cover"
               />
               <div>
-                <h2 className="text-2xl font-bold">{selectedPlayer.player_name}</h2>
-                <p className="text-white/60">Player Profile</p>
+                <h2 className={darkMode ? "text-2xl font-bold" : "text-2xl font-bold text-blue-700"}>{selectedPlayer.player_name}</h2>
+                <p className={darkMode ? "text-white/60" : "text-slate-500"}>Player Profile</p>
               </div>
             </div>
           </div>
 
           {/* Individual Player Stats */}
           <div className="grid grid-cols-2 gap-4">
-            <div className="bg-white/10 backdrop-blur-md rounded-2xl p-4 border border-white/20 shadow-xl">
+            <div className={darkMode ? "bg-white/10 backdrop-blur-md rounded-2xl p-4 border border-white/20 shadow-xl" : "bg-white rounded-2xl p-4 border border-slate-200 shadow-xl"}>
               <div className="flex items-center space-x-3">
                 <div className="w-10 h-10 bg-teal-500 rounded-full flex items-center justify-center">
                   <Trophy className="w-5 h-5" />
                 </div>
                 <div>
                   <div className="text-2xl font-bold">{selectedPlayer.wins}</div>
-                  <div className="text-white/60 text-sm">Wins</div>
+                  <div className={darkMode ? "text-white/60 text-sm" : "text-slate-500 text-sm"}>Wins</div>
                 </div>
               </div>
             </div>
@@ -90,8 +93,8 @@ export default function PlayerStatsContent({
                   <Target className="w-5 h-5" />
                 </div>
                 <div>
-                  <div className="text-2xl font-bold">{selectedPlayer.games_played}</div>
-                  <div className="text-white/60 text-sm">Games Played</div>
+                  <div className={darkMode ? "text-2xl font-bold" : "text-2xl font-bold text-blue-700"}>{selectedPlayer.games_played}</div>
+                  <div className={darkMode ? "text-white/60 text-sm" : "text-slate-500 text-sm"}>Games Played</div>
                 </div>
               </div>
             </div>
@@ -102,8 +105,8 @@ export default function PlayerStatsContent({
                   <Star className="w-5 h-5" />
                 </div>
                 <div>
-                  <div className="text-2xl font-bold">{selectedPlayer.total_score}</div>
-                  <div className="text-white/60 text-sm">Total Score</div>
+                  <div className={darkMode ? "text-2xl font-bold" : "text-2xl font-bold text-blue-700"}>{selectedPlayer.total_score}</div>
+                  <div className={darkMode ? "text-white/60 text-sm" : "text-slate-500 text-sm"}>Total Score</div>
                 </div>
               </div>
             </div>
@@ -114,8 +117,8 @@ export default function PlayerStatsContent({
                   <ChartBar className="w-5 h-5" />
                 </div>
                 <div>
-                  <div className="text-2xl font-bold">{selectedPlayer.average_score}</div>
-                  <div className="text-white/60 text-sm">Avg Score</div>
+                  <div className={darkMode ? "text-2xl font-bold" : "text-2xl font-bold text-purple-700"}>{selectedPlayer.average_score}</div>
+                  <div className={darkMode ? "text-white/60 text-sm" : "text-slate-500 text-sm"}>Avg Score</div>
                 </div>
               </div>
             </div>
@@ -124,11 +127,12 @@ export default function PlayerStatsContent({
           {/* Favorite Game */}
           {selectedPlayer.favorite_game && (
             <div className="bg-white/10 backdrop-blur-md rounded-2xl p-4 border border-white/20 shadow-xl">
-              <h3 className="text-lg font-semibold mb-2 flex items-center">
+              <h3 className={darkMode ? "text-lg font-semibold mb-2 flex items-center" : "text-lg font-semibold mb-2 flex items-center text-blue-700"}>
                 <Star className="w-5 h-5 mr-2 text-yellow-400" />
                 Favorite Game
               </h3>
               <div className="text-xl font-medium">{selectedPlayer.favorite_game}</div>
+                  <div className={darkMode ? "text-xl font-medium" : "text-xl font-medium text-blue-700"}>{selectedPlayer.favorite_game}</div>
             </div>
           )}
         </>
@@ -137,14 +141,15 @@ export default function PlayerStatsContent({
         <>
           {/* Overview Stats */}
           <div className="grid grid-cols-2 gap-4">
-            <div className="bg-white/10 backdrop-blur-md rounded-2xl p-4 border border-white/20 shadow-xl">
+            <div className={darkMode ? "bg-white/10 backdrop-blur-md rounded-2xl p-4 border border-white/20 shadow-xl" : "bg-white rounded-2xl p-4 border border-slate-200 shadow-xl"}>
               <div className="flex items-center space-x-3">
                 <div className="w-10 h-10 bg-teal-500 rounded-full flex items-center justify-center">
                   <Trophy className="w-5 h-5" />
                 </div>
                 <div>
                   <div className="text-2xl font-bold">{stats.totalPlayers}</div>
-                  <div className="text-white/60 text-sm">Total Players</div>
+                  <div className={darkMode ? "text-2xl font-bold" : "text-2xl font-bold text-blue-700"}>{stats.totalPlayers}</div>
+                  <div className={darkMode ? "text-white/60 text-sm" : "text-slate-500 text-sm"}>Total Players</div>
                 </div>
               </div>
             </div>
@@ -155,8 +160,8 @@ export default function PlayerStatsContent({
                   <Target className="w-5 h-5" />
                 </div>
                 <div>
-                  <div className="text-2xl font-bold">{stats.avgScore}</div>
-                  <div className="text-white/60 text-sm">Avg Score</div>
+                  <div className={darkMode ? "text-2xl font-bold" : "text-2xl font-bold text-purple-700"}>{stats.avgScore}</div>
+                  <div className={darkMode ? "text-white/60 text-sm" : "text-slate-500 text-sm"}>Avg Score</div>
                 </div>
               </div>
             </div>
@@ -184,11 +189,12 @@ export default function PlayerStatsContent({
                 />
                 <div className="flex-1">
                   <div className="font-medium">{player.player_name}</div>
-                  <div className="text-white/60 text-sm">{player.total_score} pts</div>
+                  <div className={darkMode ? "text-white/60 text-sm" : "text-slate-500 text-sm"}>{player.total_score} pts</div>
                 </div>
                 <div className="text-right">
                   <div className="text-sm font-medium">{player.wins} wins</div>
                   <div className="text-white/60 text-xs">{player.games_played} games</div>
+                  <div className={darkMode ? "text-white/60 text-xs" : "text-slate-400 text-xs"}>{player.games_played} games</div>
                 </div>
               </div>
             ))}
@@ -206,7 +212,7 @@ export default function PlayerStatsContent({
                 <div className={`w-3 h-3 rounded-full ${activity.is_winner ? 'bg-green-400' : 'bg-gray-400'}`} />
                 <div className="flex-1">
                   <div className="font-medium">{activity.game_name}</div>
-                  <div className="text-white/60 text-sm">Score: {activity.score} pts</div>
+                  <div className={darkMode ? "text-white/60 text-sm" : "text-slate-500 text-sm"}>Score: {activity.score} pts</div>
                 </div>
                 <div className="text-right">
                   {activity.is_winner && (
@@ -216,7 +222,9 @@ export default function PlayerStatsContent({
               </div>
             )) : (
               <div className="text-center py-4 text-white/60">
-                No recent games found
+                <div className={darkMode ? "text-center py-4 text-white/60" : "text-center py-4 text-slate-500"}>
+                  No recent games found
+                </div>
               </div>
             )}
           </div>
@@ -236,7 +244,8 @@ export default function PlayerStatsContent({
                 <div className={`w-3 h-3 rounded-full ${activity.is_winner ? 'bg-green-400' : 'bg-gray-400'}`} />
                 <div className="flex-1">
                   <div className="font-medium">{activity.player_name}</div>
-                  <div className="text-white/60 text-sm">played {activity.game_name}</div>
+                  <div className={darkMode ? "text-white/60 text-sm" : "text-slate-500 text-sm"}>played {activity.game_name}</div>
+                  <div className={darkMode ? "text-white/60 text-xs" : "text-green-700 text-xs"}>Winner</div>
                 </div>
                 <div className="text-right">
                   <div className="text-sm font-medium">{activity.score} pts</div>
@@ -256,11 +265,11 @@ export default function PlayerStatsContent({
           <ChartBar className="w-5 h-5 mr-2 text-purple-400" />
           {selectedPlayer ? `${selectedPlayer.player_name}'s Performance` : 'Performance Overview'}
         </h2>
-        <div className="text-center py-8 text-white/60">
+        <div className={darkMode ? "text-center py-8 text-white/60" : "text-center py-8 text-slate-500"}>
           <ChartBar className="w-16 h-16 mx-auto mb-4 opacity-50" />
           <p>Detailed charts coming soon...</p>
         </div>
       </div>
-    </>
+    </div>
   );
 }

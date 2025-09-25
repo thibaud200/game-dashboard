@@ -10,6 +10,7 @@ interface PlayersPageProps {
   onUpdatePlayer: (playerId: number, player: Partial<Player>) => void
   onDeletePlayer: (playerId: number) => void
   currentView?: string
+  darkMode?: boolean
 }
 
 export default function PlayersPage(props: PlayersPageProps) {
@@ -19,10 +20,10 @@ export default function PlayersPage(props: PlayersPageProps) {
     onAddPlayer: props.onAddPlayer,
     onUpdatePlayer: props.onUpdatePlayer,
     onDeletePlayer: props.onDeletePlayer,
-    currentView: props.currentView
+    currentView: props.currentView,
   };
 
   const logic = usePlayersPage(playersPageData);
 
-  return <PlayersPageView {...logic} />;
+  return <PlayersPageView {...logic} darkMode={!!props.darkMode} />;
 }

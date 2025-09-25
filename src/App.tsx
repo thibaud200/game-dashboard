@@ -167,6 +167,16 @@ const mockData = {
 };
 
 export default function App() {
+  // Mode sombre par défaut
+  const [darkMode, setDarkMode] = useState(true);
+  useEffect(() => {
+    if (darkMode) {
+      document.body.classList.add('dark');
+    } else {
+      document.body.classList.remove('dark');
+    }
+  }, [darkMode]);
+
   const [stats, setStats] = useState({
     playersCount: 0,
     gamesCount: 0,
@@ -267,6 +277,7 @@ export default function App() {
             recentGames={games?.slice(0, 3) || []}
             currentView={currentView}
             onNavigation={handleNavigation}
+            darkMode={darkMode}
           />
         );
       case 'players':
@@ -288,10 +299,11 @@ export default function App() {
             onAddGame={handleAddGame}
             onUpdateGame={handleUpdateGame}
             onDeleteGame={handleDeleteGame}
+            darkMode={darkMode}
           />
         );
       case 'settings':
-        return <SettingsPage onNavigation={handleNavigation} currentView={currentView} />;
+        return <SettingsPage onNavigation={handleNavigation} currentView={currentView} darkMode={darkMode} setDarkMode={setDarkMode} />;
       case 'player-stats':
       case 'game-stats':
       case 'stats':
@@ -299,11 +311,12 @@ export default function App() {
           <StatsPage 
             players={players} 
             games={games}
-            currentView={currentView}
+            _currentView={currentView}
             onNavigation={handleNavigation}
             selectedPlayerId={navigationContext?.id}
             selectedGameId={navigationContext?.id}
             navigationContext={navigationContext}
+            darkMode={darkMode}
           />
         );
       case 'new-game':
@@ -323,7 +336,8 @@ export default function App() {
             <GameDetailPage 
               game={game} 
               currentView={currentView}
-              onNavigation={handleNavigation} 
+              onNavigation={handleNavigation}
+              darkMode={darkMode}
             />
           ) : null;
         }
@@ -363,6 +377,7 @@ export default function App() {
             recentGames={games?.slice(0, 3) || []}
             currentView={currentView}
             onNavigation={handleNavigation}
+            darkMode={darkMode}
           />
         );
     }
@@ -378,7 +393,7 @@ export default function App() {
 
   return (
     <TooltipProvider>
-      <div className="min-h-screen bg-gradient-to-br from-slate-900 to-slate-800 text-white">
+      <div className={darkMode ? "min-h-screen bg-gradient-to-br from-slate-900 to-slate-800 text-white" : "min-h-screen bg-gradient-to-br from-slate-100 to-slate-300 text-slate-900"}>
         {renderCurrentView()}
         <BottomNavigation currentView={currentView} onNavigation={handleNavigation} />
       </div>

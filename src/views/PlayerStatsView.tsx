@@ -50,13 +50,18 @@ export default function PlayerStatsView({
   onNavigation: _onNavigation,
   currentView: _currentView
 }: PlayerStatsViewProps) {
+  // Détection du mode sombre/clair
+  const isDark = typeof window !== 'undefined' && window.document.body.classList.contains('dark');
+  const labelClass = isDark ? "text-white/60 text-sm" : "text-slate-500 text-sm";
+  const titleClass = isDark ? "text-2xl font-bold text-white" : "text-2xl font-bold text-slate-900";
+  const cardClass = isDark ? "bg-white/10 backdrop-blur-md rounded-2xl p-6 border border-white/20 shadow-xl" : "bg-white rounded-2xl p-6 border border-slate-300 shadow-xl";
+  const subLabelClass = isDark ? "text-white/60 text-xs" : "text-slate-400 text-xs";
+  const valueClass = isDark ? "text-white" : "text-slate-900";
   return (
     <div className="space-y-6">
         {selectedPlayer ? (
-          /* Individual Player Stats */
           <>
-            {/* Player Profile */}
-            <div className="bg-white/10 backdrop-blur-md rounded-2xl p-6 border border-white/20 shadow-xl">
+            <div className={cardClass}>
               <div className="flex items-center space-x-4 mb-6">
                 <img
                   src={selectedPlayer.avatar || `https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=100&h=100&fit=crop&crop=face`}
@@ -64,67 +69,65 @@ export default function PlayerStatsView({
                   className="w-16 h-16 rounded-full object-cover"
                 />
                 <div>
-                  <h2 className="text-2xl font-bold">{selectedPlayer.player_name}</h2>
-                  <p className="text-white/60">Player Profile</p>
+                  <h2 className={titleClass}>{selectedPlayer.player_name}</h2>
+                  <p className={labelClass}>Player Profile</p>
                 </div>
               </div>
             </div>
 
-            {/* Individual Player Stats */}
             <div className="grid grid-cols-2 gap-4">
-              <div className="bg-white/10 backdrop-blur-md rounded-2xl p-4 border border-white/20 shadow-xl">
+              <div className={cardClass}>
                 <div className="flex items-center space-x-3">
                   <div className="w-10 h-10 bg-teal-500 rounded-full flex items-center justify-center">
                     <Trophy className="w-5 h-5" />
                   </div>
                   <div>
-                    <div className="text-2xl font-bold">{selectedPlayer.wins}</div>
-                    <div className="text-white/60 text-sm">Wins</div>
+                    <div className={titleClass}>{selectedPlayer.wins}</div>
+                    <div className={labelClass}>Wins</div>
                   </div>
                 </div>
               </div>
 
-              <div className="bg-white/10 backdrop-blur-md rounded-2xl p-4 border border-white/20 shadow-xl">
+              <div className={cardClass}>
                 <div className="flex items-center space-x-3">
                   <div className="w-10 h-10 bg-emerald-500 rounded-full flex items-center justify-center">
                     <Target className="w-5 h-5" />
                   </div>
                   <div>
-                    <div className="text-2xl font-bold">{selectedPlayer.games_played}</div>
-                    <div className="text-white/60 text-sm">Games Played</div>
+                    <div className={titleClass}>{selectedPlayer.games_played}</div>
+                    <div className={labelClass}>Games Played</div>
                   </div>
                 </div>
               </div>
 
-              <div className="bg-white/10 backdrop-blur-md rounded-2xl p-4 border border-white/20 shadow-xl">
+              <div className={cardClass}>
                 <div className="flex items-center space-x-3">
                   <div className="w-10 h-10 bg-blue-500 rounded-full flex items-center justify-center">
                     <Star className="w-5 h-5" />
                   </div>
                   <div>
-                    <div className="text-2xl font-bold">{selectedPlayer.total_score}</div>
-                    <div className="text-white/60 text-sm">Total Score</div>
+                    <div className={titleClass}>{selectedPlayer.total_score}</div>
+                    <div className={labelClass}>Total Score</div>
                   </div>
                 </div>
               </div>
 
-              <div className="bg-white/10 backdrop-blur-md rounded-2xl p-4 border border-white/20 shadow-xl">
+              <div className={cardClass}>
                 <div className="flex items-center space-x-3">
                   <div className="w-10 h-10 bg-purple-500 rounded-full flex items-center justify-center">
                     <ChartBar className="w-5 h-5" />
                   </div>
                   <div>
-                    <div className="text-2xl font-bold">{selectedPlayer.average_score}</div>
-                    <div className="text-white/60 text-sm">Avg Score</div>
+                    <div className={titleClass}>{selectedPlayer.average_score}</div>
+                    <div className={labelClass}>Avg Score</div>
                   </div>
                 </div>
               </div>
             </div>
 
-            {/* Favorite Game */}
             {selectedPlayer.favorite_game && (
-              <div className="bg-white/10 backdrop-blur-md rounded-2xl p-4 border border-white/20 shadow-xl">
-                <h3 className="text-lg font-semibold mb-2 flex items-center">
+              <div className={cardClass}>
+                <h3 className={isDark ? "text-lg font-semibold mb-2 flex items-center text-white" : "text-lg font-semibold mb-2 flex items-center text-slate-900"}>
                   <Star className="w-5 h-5 mr-2 text-yellow-400" />
                   Favorite Game
                 </h3>
@@ -133,30 +136,28 @@ export default function PlayerStatsView({
             )}
           </>
         ) : (
-          /* Global Player Stats */
           <>
-            {/* Overview Stats */}
             <div className="grid grid-cols-2 gap-4">
-              <div className="bg-white/10 backdrop-blur-md rounded-2xl p-4 border border-white/20 shadow-xl">
+              <div className={cardClass}>
                 <div className="flex items-center space-x-3">
                   <div className="w-10 h-10 bg-teal-500 rounded-full flex items-center justify-center">
                     <Trophy className="w-5 h-5" />
                   </div>
                   <div>
-                    <div className="text-2xl font-bold">{stats.totalPlayers}</div>
-                    <div className="text-white/60 text-sm">Total Players</div>
+                    <div className={titleClass}>{stats.totalPlayers}</div>
+                    <div className={labelClass}>Total Players</div>
                   </div>
                 </div>
               </div>
 
-              <div className="bg-white/10 backdrop-blur-md rounded-2xl p-4 border border-white/20 shadow-xl">
+              <div className={cardClass}>
                 <div className="flex items-center space-x-3">
                   <div className="w-10 h-10 bg-emerald-500 rounded-full flex items-center justify-center">
                     <Target className="w-5 h-5" />
                   </div>
                   <div>
-                    <div className="text-2xl font-bold">{stats.avgScore}</div>
-                    <div className="text-white/60 text-sm">Avg Score</div>
+                    <div className={titleClass}>{stats.avgScore}</div>
+                    <div className={labelClass}>Avg Score</div>
                   </div>
                 </div>
               </div>
@@ -166,14 +167,14 @@ export default function PlayerStatsView({
 
         {/* Top Players or Recent Activity for selected player */}
         {!selectedPlayer ? (
-          <div className="bg-white/10 backdrop-blur-md rounded-2xl p-4 border border-white/20 shadow-xl">
-            <h2 className="text-lg font-semibold mb-4 flex items-center">
+          <div className={cardClass.replace('p-6', 'p-4')}>
+            <h2 className={isDark ? "text-lg font-semibold mb-4 flex items-center text-white" : "text-lg font-semibold mb-4 flex items-center text-slate-900"}>
               <Star className="w-5 h-5 mr-2 text-yellow-400" />
               Top Players
             </h2>
             <div className="space-y-3">
               {topPlayers.map((player, index) => (
-                <div key={player.player_id} className="flex items-center space-x-3 p-3 bg-white/5 rounded-xl">
+                <div key={player.player_id} className={isDark ? "flex items-center space-x-3 p-3 bg-white/5 rounded-xl" : "flex items-center space-x-3 p-3 bg-slate-100 rounded-xl"}>
                   <div className="w-8 h-8 rounded-full bg-gradient-to-r from-yellow-400 to-orange-500 flex items-center justify-center text-black font-bold text-sm">
                     {index + 1}
                   </div>
@@ -183,12 +184,12 @@ export default function PlayerStatsView({
                     className="w-8 h-8 rounded-full object-cover"
                   />
                   <div className="flex-1">
-                    <div className="font-medium">{player.player_name}</div>
-                    <div className="text-white/60 text-sm">{player.total_score} pts</div>
+                    <div className={valueClass + " font-medium"}>{player.player_name}</div>
+                    <div className={labelClass}>{player.total_score} pts</div>
                   </div>
                   <div className="text-right">
-                    <div className="text-sm font-medium">{player.wins} wins</div>
-                    <div className="text-white/60 text-xs">{player.games_played} games</div>
+                    <div className={valueClass + " text-sm font-medium"}>{player.wins} wins</div>
+                    <div className={subLabelClass}>{player.games_played} games</div>
                   </div>
                 </div>
               ))}
@@ -226,20 +227,20 @@ export default function PlayerStatsView({
         {/* Recent Activity (only for global stats) */}
         {!selectedPlayer && (
           <div className="bg-white/10 backdrop-blur-md rounded-2xl p-4 border border-white/20 shadow-xl">
-            <h2 className="text-lg font-semibold mb-4 flex items-center">
+            <h2 className={isDark ? "text-lg font-semibold mb-4 flex items-center text-white" : "text-lg font-semibold mb-4 flex items-center text-slate-900"}>
               <Clock className="w-5 h-5 mr-2 text-blue-400" />
               Recent Activity
             </h2>
             <div className="space-y-3">
               {recentActivity.map((activity, index) => (
-                <div key={index} className="flex items-center space-x-3 p-3 bg-white/5 rounded-xl">
+                <div key={index} className={isDark ? "flex items-center space-x-3 p-3 bg-white/5 rounded-xl" : "flex items-center space-x-3 p-3 bg-slate-100 rounded-xl"}>
                   <div className={`w-3 h-3 rounded-full ${activity.is_winner ? 'bg-green-400' : 'bg-gray-400'}`} />
                   <div className="flex-1">
-                    <div className="font-medium">{activity.player_name}</div>
-                    <div className="text-white/60 text-sm">played {activity.game_name}</div>
+                    <div className={valueClass + " font-medium"}>{activity.player_name}</div>
+                    <div className={labelClass}>played {activity.game_name}</div>
                   </div>
                   <div className="text-right">
-                    <div className="text-sm font-medium">{activity.score} pts</div>
+                    <div className={valueClass + " text-sm font-medium"}>{activity.score} pts</div>
                     {activity.is_winner && (
                       <div className="text-green-400 text-xs">Winner</div>
                     )}
@@ -252,11 +253,11 @@ export default function PlayerStatsView({
 
         {/* Performance Charts Placeholder */}
         <div className="bg-white/10 backdrop-blur-md rounded-2xl p-4 border border-white/20 shadow-xl">
-          <h2 className="text-lg font-semibold mb-4 flex items-center">
+          <h2 className={isDark ? "text-lg font-semibold mb-4 flex items-center text-white" : "text-lg font-semibold mb-4 flex items-center text-slate-900"}>
             <ChartBar className="w-5 h-5 mr-2 text-purple-400" />
             {selectedPlayer ? `${selectedPlayer.player_name}'s Performance` : 'Performance Overview'}
           </h2>
-          <div className="text-center py-8 text-white/60">
+          <div className={labelClass + " text-center py-8"}>
             <ChartBar className="w-16 h-16 mx-auto mb-4 opacity-50" />
             <p>Detailed charts coming soon...</p>
           </div>

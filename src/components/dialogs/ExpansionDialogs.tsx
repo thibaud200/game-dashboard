@@ -105,6 +105,7 @@ interface AddExpansionDialogProps {
   formData: ExpansionFormData;
   setFormData: (data: ExpansionFormData | ((prev: ExpansionFormData) => ExpansionFormData)) => void;
   onSubmit: (e: any) => void;
+  darkMode: boolean;
 }
 
 export function AddExpansionDialog({
@@ -112,14 +113,15 @@ export function AddExpansionDialog({
   onOpenChange,
   formData,
   setFormData,
-  onSubmit
+  onSubmit,
+  darkMode
 }: AddExpansionDialogProps) {
   return (
     <Dialog open={isOpen} onOpenChange={onOpenChange}>
-      <DialogContent className="bg-slate-800 border-slate-700 max-w-md mx-4">
+      <DialogContent className={darkMode ? "bg-slate-800 border-slate-700 max-w-md mx-4" : "bg-white border-slate-200 max-w-md mx-4"}>
         <DialogHeader>
-          <DialogTitle className="text-white">Ajouter une extension</DialogTitle>
-          <DialogDescription className="text-white/70">
+          <DialogTitle className={darkMode ? "text-white" : "text-slate-900"}>Ajouter une extension</DialogTitle>
+          <DialogDescription className={darkMode ? "text-white/70" : "text-slate-700/70"}>
             Ajoutez une nouvelle extension pour ce jeu.
           </DialogDescription>
         </DialogHeader>
@@ -141,6 +143,7 @@ interface EditExpansionDialogProps {
   formData: ExpansionFormData;
   setFormData: (data: ExpansionFormData | ((prev: ExpansionFormData) => ExpansionFormData)) => void;
   onSubmit: (e: any) => void;
+  darkMode: boolean;
 }
 
 export function EditExpansionDialog({
@@ -148,14 +151,15 @@ export function EditExpansionDialog({
   onOpenChange,
   formData,
   setFormData,
-  onSubmit
+  onSubmit,
+  darkMode
 }: EditExpansionDialogProps) {
   return (
     <Dialog open={isOpen} onOpenChange={onOpenChange}>
-      <DialogContent className="bg-slate-800 border-slate-700 max-w-md mx-4">
+      <DialogContent className={darkMode ? "bg-slate-800 border-slate-700 max-w-md mx-4" : "bg-white border-slate-200 max-w-md mx-4"}>
         <DialogHeader>
-          <DialogTitle className="text-white">Modifier l'extension</DialogTitle>
-          <DialogDescription className="text-white/70">
+          <DialogTitle className={darkMode ? "text-white" : "text-slate-900"}>Modifier l'extension</DialogTitle>
+          <DialogDescription className={darkMode ? "text-white/70" : "text-slate-700/70"}>
             Modifiez les informations de cette extension.
           </DialogDescription>
         </DialogHeader>
@@ -176,25 +180,27 @@ interface DeleteExpansionDialogProps {
   onOpenChange: (open: boolean) => void;
   expansionName: string;
   onConfirm: () => void;
+  darkMode: boolean;
 }
 
 export function DeleteExpansionDialog({
   isOpen,
   onOpenChange,
   expansionName,
-  onConfirm
+  onConfirm,
+  darkMode
 }: DeleteExpansionDialogProps) {
   return (
     <AlertDialog open={isOpen} onOpenChange={onOpenChange}>
-      <AlertDialogContent className="bg-slate-800 border-slate-700">
+      <AlertDialogContent className={darkMode ? "bg-slate-800 border-slate-700" : "bg-white border-slate-200"}>
         <AlertDialogHeader>
-          <AlertDialogTitle className="text-white">Supprimer l'extension</AlertDialogTitle>
-          <AlertDialogDescription className="text-slate-300">
+          <AlertDialogTitle className={darkMode ? "text-white" : "text-slate-900"}>Supprimer l'extension</AlertDialogTitle>
+          <AlertDialogDescription className={darkMode ? "text-slate-300" : "text-slate-700"}>
             Êtes-vous sûr de vouloir supprimer l'extension "{expansionName}" ? Cette action est irréversible.
           </AlertDialogDescription>
         </AlertDialogHeader>
         <AlertDialogFooter>
-          <AlertDialogCancel className="border-slate-600 text-slate-300 hover:bg-slate-700/50">
+          <AlertDialogCancel className={darkMode ? "border-slate-600 text-slate-300 hover:bg-slate-700/50" : "border-slate-300 text-slate-700 hover:bg-slate-100"}>
             Annuler
           </AlertDialogCancel>
           <AlertDialogAction 

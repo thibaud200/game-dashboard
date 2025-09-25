@@ -36,6 +36,7 @@ interface GameDetailViewProps extends UseGameDetailProps {
   setActiveTab: (tab: string) => void;
   hasExpansionHandlers: boolean;
   hasCharacterHandlers: boolean;
+  darkMode: boolean;
 }
 
 export default function GameDetailView({
@@ -54,13 +55,14 @@ export default function GameDetailView({
   onAddCharacter,
   onUpdateCharacter,
   onDeleteCharacter,
-  onNavigation
+  onNavigation,
+  darkMode
 }: GameDetailViewProps) {
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-900 to-slate-800">
+    <div className={darkMode ? "min-h-screen bg-gradient-to-br from-slate-900 to-slate-800" : "min-h-screen bg-gradient-to-br from-slate-100 to-slate-300"}>
       {/* Header */}
       <div className="bg-slate-800/50 backdrop-blur-sm border-b border-slate-700/50 sticky top-0 z-10">
-        <div className="max-w-7xl mx-auto px-4 md:px-6 py-3 md:py-4">
+    <div className={darkMode ? "max-w-7xl mx-auto px-4 md:px-6 py-3 md:py-4" : "max-w-7xl mx-auto px-4 md:px-6 py-3 md:py-4 bg-white border-b border-slate-200"}>
           <div className="flex items-center gap-3 md:gap-4">
             <Tooltip>
               <TooltipTrigger asChild>
@@ -80,6 +82,7 @@ export default function GameDetailView({
             </Tooltip>
             <div className="h-6 w-px bg-slate-600 hidden md:block"></div>
             <h1 className="text-lg md:text-xl font-semibold text-white flex-1 truncate">{game.name}</h1>
+            <h1 className={darkMode ? "text-lg md:text-xl font-semibold text-white flex-1 truncate" : "text-lg md:text-xl font-semibold text-slate-900 flex-1 truncate"}>{game.name}</h1>
             
             {/* Mobile Context Menu */}
             <div className="md:hidden">
@@ -96,7 +99,7 @@ export default function GameDetailView({
                     <p>More Options</p>
                   </TooltipContent>
                 </Tooltip>
-                <DropdownMenuContent align="end" className="bg-slate-800 border-slate-700 text-white w-56">
+                <DropdownMenuContent align="end" className={darkMode ? "bg-slate-800 border-slate-700 text-white w-56" : "bg-white border-slate-200 text-slate-900 w-56"}>
                   <DropdownMenuItem 
                     onClick={tabHandlers.setOverview}
                     className="hover:bg-slate-700 focus:bg-slate-700"
@@ -144,29 +147,29 @@ export default function GameDetailView({
         {/* Desktop Layout with Tabs */}
         <div className="hidden md:block">
           <Tabs value={activeTab} onValueChange={setActiveTab} className="w-full">
-            <TabsList className="grid w-full grid-cols-3 bg-slate-800/50 border-slate-700/50">
+            <TabsList className={darkMode ? "grid w-full grid-cols-3 bg-slate-800/50 border-slate-700/50" : "grid w-full grid-cols-3 bg-white border-slate-200"}>
               <TabsTrigger 
                 value="overview" 
-                className="data-[state=active]:bg-primary data-[state=active]:text-primary-foreground text-white"
+                className={darkMode ? "data-[state=active]:bg-primary data-[state=active]:text-primary-foreground text-white" : "data-[state=active]:bg-primary data-[state=active]:text-primary-foreground text-slate-900"}
               >
                 Vue générale
               </TabsTrigger>
               <TabsTrigger 
                 value="expansions" 
-                className="data-[state=active]:bg-primary data-[state=active]:text-primary-foreground text-white"
+                className={darkMode ? "data-[state=active]:bg-primary data-[state=active]:text-primary-foreground text-white" : "data-[state=active]:bg-primary data-[state=active]:text-primary-foreground text-slate-900"}
               >
                 Extensions ({game.expansions?.length || 0})
               </TabsTrigger>
               <TabsTrigger 
                 value="characters" 
-                className="data-[state=active]:bg-primary data-[state=active]:text-primary-foreground text-white"
+                className={darkMode ? "data-[state=active]:bg-primary data-[state=active]:text-primary-foreground text-white" : "data-[state=active]:bg-primary data-[state=active]:text-primary-foreground text-slate-900"}
               >
                 Personnages ({game.characters?.length || 0})
               </TabsTrigger>
             </TabsList>
 
             <TabsContent value="overview" className="mt-6">
-              <GameOverview game={game} gameTypes={gameTypes} onNavigation={onNavigation} />
+              <GameOverview game={game} gameTypes={gameTypes} onNavigation={onNavigation} darkMode={darkMode} />
             </TabsContent>
 
             <TabsContent value="expansions" className="mt-6">
@@ -179,6 +182,7 @@ export default function GameDetailView({
                   onUpdateExpansion={onUpdateExpansion!}
                   onDeleteExpansion={onDeleteExpansion!}
                   embedded={true}
+                  darkMode={darkMode}
                 />
               )}
             </TabsContent>
@@ -193,6 +197,7 @@ export default function GameDetailView({
                   onUpdateCharacter={onUpdateCharacter!}
                   onDeleteCharacter={onDeleteCharacter!}
                   embedded={true}
+                  darkMode={darkMode}
                 />
               )}
             </TabsContent>
@@ -201,7 +206,7 @@ export default function GameDetailView({
 
         {/* Mobile Layout - Show current tab content */}
         <div className="md:hidden pb-32">
-          {activeTab === 'overview' && <GameOverview game={game} gameTypes={gameTypes} onNavigation={onNavigation} />}
+          {activeTab === 'overview' && <GameOverview game={game} gameTypes={gameTypes} onNavigation={onNavigation} darkMode={darkMode} />}
           {activeTab === 'expansions' && hasExpansionHandlers && (
             <GameExpansionsPage
               game={game}
@@ -211,6 +216,7 @@ export default function GameDetailView({
               onUpdateExpansion={onUpdateExpansion!}
               onDeleteExpansion={onDeleteExpansion!}
               embedded={true}
+              darkMode={darkMode}
             />
           )}
           {activeTab === 'characters' && hasCharacterHandlers && (
@@ -222,6 +228,7 @@ export default function GameDetailView({
               onUpdateCharacter={onUpdateCharacter!}
               onDeleteCharacter={onDeleteCharacter!}
               embedded={true}
+              darkMode={darkMode}
             />
           )}
         </div>
@@ -268,11 +275,12 @@ interface GameOverviewProps {
   game: any;
   gameTypes: string[];
   onNavigation: (view: string, gameId?: number, source?: string) => void;
+  darkMode: boolean;
 }
 
-function GameOverview({ game, gameTypes, onNavigation }: GameOverviewProps) {
+function GameOverview({ game, gameTypes, onNavigation, darkMode }: GameOverviewProps) {
   return (
-    <div>
+    <div className={darkMode ? "" : "bg-white text-slate-900"}>
       {/* Game Overview Card */}
       <Card className="bg-slate-800/50 border-slate-700/50 mb-6 md:mb-8">
         <CardContent className="p-4 md:p-6">
