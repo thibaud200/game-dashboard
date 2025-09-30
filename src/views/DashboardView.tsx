@@ -1,5 +1,4 @@
 import React from 'react';
-// Annulation de l'import Button
 import {
   Users,
   GameController,

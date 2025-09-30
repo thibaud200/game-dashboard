@@ -103,9 +103,8 @@ describe('useGamesPage', () => {
       result.current.setSearchQuery('wingspan');
     });
 
-    // Les jeux filtrés devraient être accessibles via result.current.games
-    // (ceci dépend de l'implémentation exacte du hook)
-    expect(result.current.searchQuery).toBe('wingspan');
+    expect(result.current.games).toHaveLength(1);
+    expect(result.current.games[0].name).toBe('Wingspan');
   });
 
   it('should reset form data', () => {

@@ -54,6 +54,7 @@ export default function GamesPage({
   };
 
   const {
+    games: filteredGames,
     totalGames,
     averageRating,
     formData,
@@ -94,31 +95,31 @@ export default function GamesPage({
 
   return (
     <GamesPageView
-        games={gamesProp}
-        currentView={currentViewProp || 'games'}
-        totalGames={totalGames}
-        averageRating={averageRating}
-        formData={formData}
-        editingGame={editingGame}
-        isAddDialogOpen={isAddDialogOpen}
-        isEditDialogOpen={isEditDialogOpen}
-        isBGGSearchOpen={isBGGSearchOpen}
-        expandedGame={expandedGame}
-        searchQuery={searchQuery}
-        onNavigation={onNavigationProp}
-        onSearchChange={setSearchQuery}
-        onAddDialogToggle={onAddDialogToggle}
-        onFormDataChange={handleFormDataChange}
-        onBGGGameSelect={handleBGGGameSelect}
-        onAddGame={handleAddGame}
-        onResetForm={resetForm}
-        onEditGame={handleEditGame}
-        onUpdateGame={handleUpdateGame}
-        onDeleteGame={handleDeleteGame}
-        setBGGSearchOpen={setIsBGGSearchOpen}
-        setExpandedGame={setExpandedGame}
-        setEditDialogOpen={handleEditDialogOpen}
-  darkMode={!!darkMode}
-      />
+      games={filteredGames}
+      currentView={currentViewProp || 'games'}
+      totalGames={totalGames}
+      averageRating={averageRating}
+      formData={formData}
+      editingGame={editingGame}
+      isAddDialogOpen={isAddDialogOpen}
+      isEditDialogOpen={isEditDialogOpen}
+      isBGGSearchOpen={isBGGSearchOpen}
+      expandedGame={expandedGame}
+      searchQuery={searchQuery}
+      onNavigation={onNavigationProp}
+      onSearchChange={setSearchQuery}
+      onAddDialogToggle={onAddDialogToggle}
+      onFormDataChange={handleFormDataChange}
+      onBGGGameSelect={handleBGGGameSelect}
+      onAddGame={handleAddGame}
+      onResetForm={resetForm}
+      onEditGame={handleEditGame}
+      onUpdateGame={handleUpdateGame}
+      onDeleteGame={handleDeleteGame}
+      setBGGSearchOpen={setIsBGGSearchOpen}
+      setExpandedGame={setExpandedGame}
+      setEditDialogOpen={handleEditDialogOpen}
+      darkMode={!!darkMode}
+    />
   );
 }
