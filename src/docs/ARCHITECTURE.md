@@ -11,13 +11,13 @@ src/
 ├── components/           # Composants React principaux
 │   ├── dialogs/         # Boîtes de dialogue réutilisables
 │   ├── games/           # Composants spécifiques aux jeux
-│   ├── players/         # Composants spécifiques aux joueurs(nexiste pas pour le moment)
+│   ├── players/         # Composants spécifiques aux joueurs (n'existe pas pour le moment)
 │   └── ui/              # Composants UI de base (shadcn)
 ├── *.tsx                #
 ├── docs/                # Documentation frontend
 ├── hooks/               # Hooks React personnalisés
 │   ├── games/           # Hooks spécifiques aux jeux
-│   ├── players/         # Hooks spécifiques aux joueurs(nexiste pas pour le moment)
+│   ├── players/         # Hooks spécifiques aux joueurs (n'existe pas pour le moment)
 │   └── *.tsx                #
 ├── lib/                 # Utilitaires
 ├── services/            # Services pour les appels API BGG
@@ -26,7 +26,7 @@ src/
 ├── utils/               # Test BGG
 ├── views/               # Composants de vue (présentation)
 │   ├── games/           # Vues spécifiques aux jeux
-│   ├── players/         # Vues spécifiques aux joueurs (nexiste pas pour le moment)
+│   ├── players/         # Vues spécifiques aux joueurs (n'existe pas pour le moment)
 │   └── *.tsx            #
 ```
 
